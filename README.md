@@ -82,12 +82,16 @@ You can find several examples in the `examples` folder.
 
 ### Internal settings
 
-|        Key        |  Level   |      Required      | Supported values | Default | Description                                                              |
-|:-----------------:|:--------:|:------------------:|:----------------:|:-------:|--------------------------------------------------------------------------|
-|  `output_format`  |  Config  |        :x:         |      `xml`       |  `xml`  | Defines output data format                                               |
-|     `indent`      |  Config  |        :x:         |     integer      | `null`  | Defines indent applied in output data                                    |
-| `xml_declaration` |  Config  |        :x:         |     boolean      | `false` | Indicates whether an xml declaration should be added to output data      |
-|   `_templates_`   |  Config  | :heavy_check_mark: |      array       |   ---   | Stores templates for data generation                                     |
-|      `count`      | Template | :heavy_check_mark: |     integer      |   ---   | Indicates number of copies                                               |
-|      `model`      | Template | :heavy_check_mark: |      object      |   ---   | Defines data template to be copied                                       |
-|   `attributes`    |  Model   |        :x:         |      object      |   ---   | Defines attributes applied on the root node (mostly used for namespaces) |
+|               Key               |  Level   |      Required      | Supported values |    Default     | Description                                                              |
+|:-------------------------------:|:--------:|:------------------:|:----------------:|:--------------:|--------------------------------------------------------------------------|
+|         `output_format`         |  Config  |        :x:         |      `xml`       |     `xml`      | Defines output data format                                               |
+|        `output_details`         |  Config  |        :x:         |      object      |      ---       | Defines output details on how it will be consumed                        |
+|   `output_details/direction`    |  Config  |        :x:         |      `file`      |     `file`     | Defines how output will be consumed                                      |
+| `output_details/directory_path` |  Config  |        :x:         |      string      | `mimeo-output` | For `file` direction - defines an output directory                       |
+|   `output_details/file_name`    |  Config  |        :x:         |      string      | `mimeo-output` | For `file` direction - defines an output file name                       |
+|            `indent`             |  Config  |        :x:         |     integer      |     `null`     | Defines indent applied in output data                                    |
+|        `xml_declaration`        |  Config  |        :x:         |     boolean      |    `false`     | Indicates whether an xml declaration should be added to output data      |
+|          `_templates_`          |  Config  | :heavy_check_mark: |      array       |      ---       | Stores templates for data generation                                     |
+|             `count`             | Template | :heavy_check_mark: |     integer      |      ---       | Indicates number of copies                                               |
+|             `model`             | Template | :heavy_check_mark: |      object      |      ---       | Defines data template to be copied                                       |
+|          `attributes`           |  Model   |        :x:         |      object      |      ---       | Defines attributes applied on the root node (mostly used for namespaces) |
