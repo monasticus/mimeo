@@ -8,7 +8,9 @@ from model.mimeo_config import MimeoConfig, MimeoTemplate
 
 class XMLGenerator(Generator):
 
-    def __init__(self):
+    def __init__(self, mimeo_config: MimeoConfig):
+        self.indent = mimeo_config.indent
+        self.xml_declaration = mimeo_config.xml_declaration
         self.current_template = None
 
     def generate(self, templates: Union[list, Iterator[MimeoTemplate]], parent: ElemTree.Element = None):
@@ -22,20 +24,18 @@ class XMLGenerator(Generator):
                                     template.model.attributes)
 
     def stringify(self, root, mimeo_config):
-        indent = mimeo_config.indent
-        xml_declaration = mimeo_config.xml_declaration
-        if indent is None:
+        if self.indent is None:
             return ElemTree.tostring(root,
                                      encoding="utf-8",
                                      method="xml",
-                                     xml_declaration=xml_declaration).decode('ascii')
+                                     xml_declaration=self.xml_declaration).decode('ascii')
         else:
             xml_string = ElemTree.tostring(root)
             xml_minidom = minidom.parseString(xml_string)
-            if xml_declaration:
-                return xml_minidom.toprettyxml(indent=" " * indent, encoding="utf-8").decode('ascii')
+            if self.xml_declaration:
+                return xml_minidom.toprettyxml(indent=" " * self.indent, encoding="utf-8").decode('ascii')
             else:
-                return xml_minidom.childNodes[0].toprettyxml(indent=" " * indent, encoding="utf-8").decode('ascii')
+                return xml_minidom.childNodes[0].toprettyxml(indent=" " * self.indent, encoding="utf-8").decode('ascii')
 
     def __to_xml(self, parent, element_tag, element_value, attributes: dict = None):
         attributes = attributes if attributes is not None else {}

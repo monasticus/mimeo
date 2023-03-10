@@ -1,5 +1,5 @@
 from generators import Generator, XMLGenerator
-from model.mimeo_config import UnsupportedOutputFormat
+from model.mimeo_config import MimeoConfig, UnsupportedOutputFormat
 
 
 class GeneratorFactory:
@@ -7,8 +7,9 @@ class GeneratorFactory:
     XML = "xml"
 
     @staticmethod
-    def get_generator(output_format) -> Generator:
+    def get_generator(mimeo_config: MimeoConfig) -> Generator:
+        output_format = mimeo_config.output_format
         if output_format == GeneratorFactory.XML:
-            return XMLGenerator()
+            return XMLGenerator(mimeo_config)
         else:
             raise UnsupportedOutputFormat(f"Provided format ({output_format}) is not supported!")
