@@ -1,0 +1,44 @@
+{
+  "output_format": "xml",
+  "indent": 4,
+  "xml_declaration": true,
+  "_templates_": [
+    {
+      "count": 30,
+      "model": {
+        "attributes": {
+          "xmlns": "http://data-generator.arch.com/default-namespace",
+          "xmlns:pn": "http://data-generator.arch.com/prefixed-namespace"
+        },
+        "SomeEntity": {
+          "ChildNode1": 1,
+          "ChildNode2": "value-2",
+          "ChildNode3": true,
+          "ChildNode4": {
+            "GrandChild4-1": "value-4-1"
+          },
+          "ChildNode5": [
+            {
+              "GrandChild": {
+                "GrandGrandChild1": "value-1-1",
+                "GrandGrandChild2": "value-2-1"
+              }
+            },
+            {
+              "GrandChild": {
+                "GrandGrandChild1": "value-1-2",
+                "GrandGrandChild2": "value-2-2"
+              }
+            }
+          ],
+          "id": "{auto_increment()}",
+          "id2": "{auto_increment('MYID{:010d}')}",
+          "randomstring1": "{random_str()}",
+          "randomstring2": "{random_str(2)}",
+          "randomint1": "{random_int()}",
+          "randomint2": "{random_int(5)}"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "output_format": "xml",
+  "xml_declaration": true,
+  "indent": 4,
+  "_templates_": [
+    {
+      "count": 2,
+      "model": {
+        "attributes": {
+          "xmlns": "http://data-generator.arch.com/default-namespace",
+          "xmlns:pn": "http://data-generator.arch.com/prefixed-namespace"
+        },
+        "SomeEntity": {
+          "id": "{auto_increment()}",
+          "randomstring1": "{random_str()}",
+          "_templates_": [
+            {
+              "count": 3,
+              "model": {
+                "SomeDirectChild": {
+                  "id": "{auto_increment('MYID{:010d}')}",
+                  "randomstring1": "{random_str(5)}"
+                }
+              }
+            }
+          ],
+          "SomeChildren": {
+            "_templates_": [
+              {
+                "count": 5,
+                "model": {
+                  "attributes": {
+                    "xmlns": "http://data-generator.arch.com/different-default-namespace"
+                  },
+                  "SomeChildInArray": {
+                    "id": "{auto_increment('ARRAYID{:d}')}",
+                    "randomstring1": "{random_str(5)}"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  ]
+}
