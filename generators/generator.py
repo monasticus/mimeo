@@ -1,8 +1,9 @@
 import re
 from abc import ABCMeta, abstractmethod
-from typing import Any, Iterator
+from typing import Any, Iterator, Union
 
 from generators import GeneratorUtils
+from model.mimeo_config import MimeoTemplate
 
 
 class Generator(metaclass=ABCMeta):
@@ -18,7 +19,7 @@ class Generator(metaclass=ABCMeta):
                 NotImplemented)
 
     @abstractmethod
-    def generate(self, parent: Any = None) -> Iterator[Any]:
+    def generate(self, templates: Union[list, Iterator[MimeoTemplate]], parent: Any = None) -> Iterator[Any]:
         raise NotImplementedError
 
     @abstractmethod

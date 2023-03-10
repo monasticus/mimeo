@@ -8,12 +8,10 @@ from model.mimeo_config import MimeoConfig, MimeoTemplate
 
 class XMLGenerator(Generator):
 
-    def __init__(self, templates):
-        self.templates = templates
+    def __init__(self):
         self.current_template = None
 
-    def generate(self, templates: Union[list, Iterator[MimeoTemplate]] = None, parent: ElemTree.Element = None):
-        templates = templates if templates is not None else self.templates
+    def generate(self, templates: Union[list, Iterator[MimeoTemplate]], parent: ElemTree.Element = None):
         for template in templates:
             self.current_template = template
             GeneratorUtils.get_for_context(template.model.root_name).reset()

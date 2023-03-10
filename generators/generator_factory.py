@@ -7,8 +7,8 @@ class GeneratorFactory:
     XML = "xml"
 
     @staticmethod
-    def get_generator(output_format, templates) -> Generator:
+    def get_generator(output_format) -> Generator:
         if output_format == GeneratorFactory.XML:
-            return XMLGenerator(templates)
+            return XMLGenerator()
         else:
             raise UnsupportedOutputFormat(f"Provided format ({output_format}) is not supported!")
