@@ -1,0 +1,20 @@
+{
+  "output_format": "xml",
+  "indent": 4,
+  "xml_declaration": true,
+  "output_details": {
+    "direction": "stdout"
+  },
+  "_templates_": [
+    {
+      "count": 10,
+      "model": {
+        "SomeEntity": {
+          "ChildNode1": 1,
+          "ChildNode2": "value-2",
+          "ChildNode3": true
+        }
+      }
+    }
+  ]
+}

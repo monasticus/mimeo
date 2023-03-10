@@ -2,4 +2,4 @@
 
 from mimeo import Mimeograph
 
-Mimeograph("examples/config-3.json").produce()
+Mimeograph("examples/config-5.json").produce()

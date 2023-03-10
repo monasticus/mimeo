@@ -61,7 +61,7 @@ class MimeoOutputDetails:
     DIRECTORY_PATH_KEY = "directory_path"
     FILE_NAME_KEY = "file_name"
 
-    SUPPORTED_OUTPUT_DIRECTIONS = ("file",)
+    SUPPORTED_OUTPUT_DIRECTIONS = ("stdout", "file")
 
     def __init__(self, output_format: str, output_details: dict):
         self.direction = MimeoOutputDetails.__get_direction(output_details)

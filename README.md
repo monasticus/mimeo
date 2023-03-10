@@ -86,7 +86,7 @@ You can find several examples in the `examples` folder.
 |:-------------------------------:|:--------:|:------------------:|:----------------:|:--------------:|--------------------------------------------------------------------------|
 |         `output_format`         |  Config  |        :x:         |      `xml`       |     `xml`      | Defines output data format                                               |
 |        `output_details`         |  Config  |        :x:         |      object      |      ---       | Defines output details on how it will be consumed                        |
-|   `output_details/direction`    |  Config  |        :x:         |      `file`      |     `file`     | Defines how output will be consumed                                      |
+|   `output_details/direction`    |  Config  |        :x:         |  `file`, `raw`   |     `file`     | Defines how output will be consumed                                      |
 | `output_details/directory_path` |  Config  |        :x:         |      string      | `mimeo-output` | For `file` direction - defines an output directory                       |
 |   `output_details/file_name`    |  Config  |        :x:         |      string      | `mimeo-output` | For `file` direction - defines an output file name                       |
 |            `indent`             |  Config  |        :x:         |     integer      |     `null`     | Defines indent applied in output data                                    |
