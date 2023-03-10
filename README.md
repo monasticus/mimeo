@@ -95,3 +95,7 @@ You can find several examples in the `examples` folder.
 |             `count`             | Template | :heavy_check_mark: |     integer      |      ---       | Indicates number of copies                                               |
 |             `model`             | Template | :heavy_check_mark: |      object      |      ---       | Defines data template to be copied                                       |
 |          `attributes`           |  Model   |        :x:         |      object      |      ---       | Defines attributes applied on the root node (mostly used for namespaces) |
+
+# Additional note
+
+This is a beta version, not being covered with unit tests yet. They will be added in the near future.
