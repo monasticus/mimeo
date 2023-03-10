@@ -90,7 +90,7 @@ def get_value(literal_value):
 
 
 # Opening JSON file
-with open('config-3.json') as config:
+with open('examples/config-3.json') as config:
     data = json.load(config)
 
 xml_declaration = data.get_for_context("xml_declaration", False)
