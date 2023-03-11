@@ -13,5 +13,5 @@ bump_major:
 bump_minor:
 	bumpver update --minor
 
-bump_path:
+bump_patch:
 	bumpver update --patch
