@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "mimeograph"
-version = "1.0.0"
+version = "1.0.1"
 description = "Generate data based on a simple template"
 readme = "README.md"
 authors = [{ name = "T.A. Programming Svcs.", email = "tomasz.maciej.aniolowski@gmail.com" }]
@@ -24,7 +24,7 @@ keywords = ["mimeograph", "mimeo", "generate", "generator"]
 dependencies = [
     "requests",
 ]
-requires-python = ">=3.9"
+requires-python = ">=3.5"
 
 [project.optional-dependencies]
 dev = ["bumpver", "build", "twine", "isort", "pytest"]
@@ -33,7 +33,7 @@ dev = ["bumpver", "build", "twine", "isort", "pytest"]
 mimeo = "mimeo.__main__:main"
 
 [tool.bumpver]
-current_version = "1.0.0"
+current_version = "1.0.1"
 version_pattern = "MAJOR.MINOR.PATCH"
 commit_message  = "Bump version {old_version} to {new_version}"
 commit          = true
