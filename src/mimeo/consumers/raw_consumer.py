@@ -1,4 +1,4 @@
-from consumers import Consumer
+from mimeo.consumers import Consumer
 
 
 class RawConsumer(Consumer):

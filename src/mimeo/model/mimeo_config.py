@@ -1,7 +1,7 @@
 import json
 
-from model.exceptions import (UnsupportedOutputDirection,
-                              UnsupportedOutputFormat)
+from mimeo.model.exceptions import (UnsupportedOutputDirection,
+                                    UnsupportedOutputFormat)
 
 
 class MimeoConfig:

@@ -1,5 +1,5 @@
-from generators import Generator, XMLGenerator
-from model.mimeo_config import MimeoConfig, UnsupportedOutputFormat
+from mimeo.generators import Generator, XMLGenerator
+from mimeo.model.mimeo_config import MimeoConfig, UnsupportedOutputFormat
 
 
 class GeneratorFactory:

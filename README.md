@@ -1,8 +1,31 @@
-# Mimeo
 
-**Mimeo** (Mimeograph) is a tool generating XML data based on a template.
+# Mimeo (Mimeograph)
 
-E.g.  
+**Mimeo** is a tool generating custom data based on a template. It can be useful in for developers, testers or even business analists in their daily work.
+
+
+
+## Installation
+
+Install Mimeo with PyPI
+
+```sh
+python -m pip install mimeo
+```
+    
+## Usage/Examples
+
+```sh
+python -m mimeo SomeEntity-config.json
+```
+
+```sh
+mimeo SomeEntity-config.json
+```
+
+### Basic templates
+
+*Notice: Mimeo templates are JSON objects included in Mimeo configuration. More about it you will learn in [Documentation](##Documentation) section.*
 
 **Template**
 ```json
@@ -38,9 +61,9 @@ E.g.
 </SomeEntity>
 ```
 
-Mimeo exposes several functions for data generation that will make it more useful for testing purposes.
+### Additional features
 
-E.g.  
+Mimeo exposes several functions for data generation that will make it more useful for testing purposes.
 
 **Template**
 ```json
@@ -75,12 +98,12 @@ E.g.
 </SomeEntity>
 ```
 
-## Mimeo configuration
+You can find more configuration examples in the `examples` folder.
+## Documentation
 
-Mimeo configuration is defined in a json file including internal settings and data templates.  
-You can find several examples in the `examples` folder.
+### Mimeo configuration
 
-### Internal settings
+Mimeo configuration is defined in a json file using internal settings and data templates.
 
 |               Key               |  Level   |      Required      | Supported values |    Default     | Description                                                              |
 |:-------------------------------:|:--------:|:------------------:|:----------------:|:--------------:|--------------------------------------------------------------------------|
@@ -96,6 +119,13 @@ You can find several examples in the `examples` folder.
 |             `model`             | Template | :heavy_check_mark: |      object      |      ---       | Defines data template to be copied                                       |
 |          `attributes`           |  Model   |        :x:         |      object      |      ---       | Defines attributes applied on the root node (mostly used for namespaces) |
 
-# Additional note
 
-This is a beta version, not being covered with unit tests yet. They will be added in the near future.
+## License
+
+[MIT](https://choosealicense.com/licenses/mit/)
+
+
+## Authors
+
+- [@TomaszAniolowski](https://www.github.com/TomaszAniolowski)
+

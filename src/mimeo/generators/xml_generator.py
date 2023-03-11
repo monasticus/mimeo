@@ -2,8 +2,8 @@ import xml.etree.ElementTree as ElemTree
 from typing import Iterator, Union
 from xml.dom import minidom
 
-from generators import Generator, GeneratorUtils
-from model.mimeo_config import MimeoConfig, MimeoTemplate
+from mimeo.generators import Generator, GeneratorUtils
+from mimeo.model.mimeo_config import MimeoConfig, MimeoTemplate
 
 
 class XMLGenerator(Generator):

@@ -2,8 +2,8 @@ import re
 from abc import ABCMeta, abstractmethod
 from typing import Any, Iterator, Union
 
-from generators import GeneratorUtils
-from model.mimeo_config import MimeoTemplate
+from mimeo.generators import GeneratorUtils
+from mimeo.model.mimeo_config import MimeoTemplate
 
 
 class Generator(metaclass=ABCMeta):
