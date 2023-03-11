@@ -25,7 +25,7 @@ mimeo SomeEntity-config.json
 
 ### Basic templates
 
-*Notice: Mimeo templates are JSON objects included in Mimeo configuration. More about it you will learn in <a href="#user-content-documentation" id="documentation">Documentation</a> section.*
+*Notice: Mimeo templates are JSON objects included in Mimeo configuration. More about it you will learn in the **Documentation** section.*
 
 **Template**
 ```json
