@@ -10,7 +10,7 @@
 Install Mimeo with pip
 
 ```sh
-pip install arch-mimeo
+pip install mimeograph
 ```
     
 ## Usage/Examples
