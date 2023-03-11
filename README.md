@@ -7,7 +7,7 @@
 
 ## Installation
 
-Install Mimeo with PyPI
+Install Mimeo with pip
 
 ```sh
 python -m pip install mimeo
@@ -25,7 +25,7 @@ mimeo SomeEntity-config.json
 
 ### Basic templates
 
-*Notice: Mimeo templates are JSON objects included in Mimeo configuration. More about it you will learn in [Documentation](##Documentation) section.*
+*Notice: Mimeo templates are JSON objects included in Mimeo configuration. More about it you will learn in <a href="#user-content-documentation" id="documentation">Documentation</a> section.*
 
 **Template**
 ```json
