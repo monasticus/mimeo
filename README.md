@@ -10,14 +10,10 @@
 Install Mimeo with pip
 
 ```sh
-python -m pip install mimeo
+pip install arch-mimeo
 ```
     
 ## Usage/Examples
-
-```sh
-python -m mimeo SomeEntity-config.json
-```
 
 ```sh
 mimeo SomeEntity-config.json
