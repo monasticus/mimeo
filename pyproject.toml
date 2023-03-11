@@ -20,7 +20,7 @@ classifiers = [
     "Topic :: Software Development :: Testing",
     "Topic :: Utilities",
 ]
-keywords = ["mimeo", "generate", "generator"]
+keywords = ["arch-mimeo", "mimeo", "generate", "generator"]
 dependencies = [
     "requests",
 ]
