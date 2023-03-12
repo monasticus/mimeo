@@ -4,3 +4,7 @@ class UnsupportedOutputFormat(Exception):
 
 class UnsupportedOutputDirection(Exception):
     pass
+
+
+class IncorrectMimeoModel(Exception):
+    pass

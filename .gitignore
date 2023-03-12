@@ -3,5 +3,8 @@
 /**/*.egg-info/
 dist/
 
+# PyTest
+/**/.pytest_cache/
+
 # PyCharm
 .idea

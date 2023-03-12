@@ -1,6 +1,7 @@
 import json
 
-from mimeo.model.exceptions import (UnsupportedOutputDirection,
+from mimeo.model.exceptions import (IncorrectMimeoModel,
+                                    UnsupportedOutputDirection,
                                     UnsupportedOutputFormat)
 
 
@@ -46,9 +47,20 @@ class MimeoTemplate:
 class MimeoModel:
 
     def __init__(self, model: dict):
+        MimeoModel.__get_root_name(model)
         self.attributes = model.get("attributes", {})
         self.root_name = next(filter(MimeoModel.__is_not_attributes_key, iter(model)))
         self.root_data = model.get(self.root_name)
+
+    @staticmethod
+    def __get_root_name(model):
+        model_keys = [key for key in filter(MimeoModel.__is_not_attributes_key, iter(model))]
+        if len(model_keys) == 1:
+            return model_keys[0]
+        if len(model_keys) == 0:
+            raise IncorrectMimeoModel(f"No root data in Mimeo Model: {model}")
+        elif len(model_keys) > 1:
+            raise IncorrectMimeoModel(f"Multiple root data in Mimeo Model: {model}")
 
     @staticmethod
     def __is_not_attributes_key(dict_key):
