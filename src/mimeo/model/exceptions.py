@@ -8,3 +8,7 @@ class UnsupportedOutputDirection(Exception):
 
 class IncorrectMimeoModel(Exception):
     pass
+
+
+class IncorrectMimeoTemplate(Exception):
+    pass

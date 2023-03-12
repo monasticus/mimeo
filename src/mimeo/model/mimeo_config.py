@@ -1,6 +1,7 @@
 import json
 
 from mimeo.model.exceptions import (IncorrectMimeoModel,
+                                    IncorrectMimeoTemplate,
                                     UnsupportedOutputDirection,
                                     UnsupportedOutputFormat)
 
@@ -21,7 +22,7 @@ class MimeoConfig:
         self.output_details = MimeoOutputDetails(self.output_format, config.get(self.OUTPUT_DETAILS_KEY, {}))
         self.xml_declaration = config.get(self.XML_DECLARATION_KEY, False)
         self.indent = config.get(self.INDENT_KEY)
-        self.templates = (MimeoTemplate(**template) for template in config.get(self.TEMPLATES_KEY))
+        self.templates = (MimeoTemplate(template) for template in config.get(self.TEMPLATES_KEY))
 
     @staticmethod
     def __get_config(config_path):
@@ -39,17 +40,24 @@ class MimeoConfig:
 
 class MimeoTemplate:
 
-    def __init__(self, count: int, model: dict):
-        self.count = count
-        self.model = MimeoModel(model)
+    def __init__(self, template: dict):
+        MimeoTemplate.__validate_template(template)
+        self.count = template.get("count")
+        self.model = MimeoModel(template.get("model"))
+
+    @staticmethod
+    def __validate_template(template: dict):
+        if "count" not in template:
+            raise IncorrectMimeoTemplate(f"No count value in the Mimeo Template: {template}")
+        if "model" not in template:
+            raise IncorrectMimeoTemplate(f"No model data in the Mimeo Template: {template}")
 
 
 class MimeoModel:
 
     def __init__(self, model: dict):
-        MimeoModel.__get_root_name(model)
         self.attributes = model.get("attributes", {})
-        self.root_name = next(filter(MimeoModel.__is_not_attributes_key, iter(model)))
+        self.root_name = MimeoModel.__get_root_name(model)
         self.root_data = model.get(self.root_name)
 
     @staticmethod

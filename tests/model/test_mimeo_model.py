@@ -4,18 +4,6 @@ from mimeo.model.exceptions import IncorrectMimeoModel
 from mimeo.model.mimeo_config import MimeoModel
 
 
-@pytest.fixture
-def default_model():
-    return {
-        "attributes": {
-          "xmlns": "http://data-generator.arch.com/default-namespace"
-        },
-        "SomeEntity": {
-            "ChildNode": "value"
-        }
-    }
-
-
 def test_parsing_model_with_attributes():
     model = {
         "attributes": {
