@@ -61,6 +61,15 @@ def test_generator_utils_auto_increment(default_generator_utils):
     assert identifier == "00002"
 
 
+def test_generator_utils_auto_increment_with_customized_format(default_generator_utils):
+    identifier = default_generator_utils.auto_increment("{}")
+    assert identifier == "1"
+    identifier = default_generator_utils.auto_increment("MYID/{}")
+    assert identifier == "MYID/2"
+    identifier = default_generator_utils.auto_increment("MYID_{:010d}")
+    assert identifier == "MYID_0000000003"
+
+
 def test_generator_utils_auto_increment_for_different_context():
     generator_utils1 = GeneratorUtils.get_for_context("SomeEntity1")
     identifier = generator_utils1.auto_increment()
