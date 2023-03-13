@@ -12,3 +12,7 @@ class IncorrectMimeoModel(Exception):
 
 class IncorrectMimeoTemplate(Exception):
     pass
+
+
+class IncorrectMimeoConfig(Exception):
+    pass

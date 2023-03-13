@@ -1,6 +1,4 @@
-import json
-
-from mimeo.model.exceptions import (IncorrectMimeoModel,
+from mimeo.model.exceptions import (IncorrectMimeoConfig, IncorrectMimeoModel,
                                     IncorrectMimeoTemplate,
                                     UnsupportedOutputDirection,
                                     UnsupportedOutputFormat)
@@ -16,18 +14,12 @@ class MimeoConfig:
 
     SUPPORTED_OUTPUT_FORMATS = ("xml",)
 
-    def __init__(self, config_path: str):
-        config = MimeoConfig.__get_config(config_path)
+    def __init__(self, config: dict):
         self.output_format = MimeoConfig.__get_output_format(config)
         self.output_details = MimeoOutputDetails(self.output_format, config.get(self.OUTPUT_DETAILS_KEY, {}))
         self.xml_declaration = config.get(self.XML_DECLARATION_KEY, False)
         self.indent = config.get(self.INDENT_KEY)
-        self.templates = (MimeoTemplate(template) for template in config.get(self.TEMPLATES_KEY))
-
-    @staticmethod
-    def __get_config(config_path):
-        with open(config_path) as config_file:
-            return json.load(config_file)
+        self.templates = MimeoConfig.__get_templates(config)
 
     @staticmethod
     def __get_output_format(config):
@@ -35,7 +27,17 @@ class MimeoConfig:
         if output_format in MimeoConfig.SUPPORTED_OUTPUT_FORMATS:
             return output_format
         else:
-            raise UnsupportedOutputFormat(f"Provided format ({output_format}) is not supported!")
+            raise UnsupportedOutputFormat(f"Provided format [{output_format}] is not supported!")
+
+    @staticmethod
+    def __get_templates(config):
+        templates = config.get(MimeoConfig.TEMPLATES_KEY)
+        if templates is None:
+            raise IncorrectMimeoConfig(f"No templates in the Mimeo Config: {config}")
+        elif not isinstance(templates, list):
+            raise IncorrectMimeoConfig(f"_templates_ property does not store an array: {config}")
+        else:
+            return (MimeoTemplate(template) for template in config.get(MimeoConfig.TEMPLATES_KEY))
 
 
 class MimeoOutputDetails:
