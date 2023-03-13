@@ -38,6 +38,39 @@ class MimeoConfig:
             raise UnsupportedOutputFormat(f"Provided format ({output_format}) is not supported!")
 
 
+class MimeoOutputDetails:
+
+    DIRECTION_KEY = "direction"
+    DIRECTORY_PATH_KEY = "directory_path"
+    FILE_NAME_KEY = "file_name"
+
+    SUPPORTED_OUTPUT_DIRECTIONS = ("stdout", "file")
+
+    def __init__(self, output_format: str, output_details: dict):
+        self.direction = MimeoOutputDetails.__get_direction(output_details)
+        self.directory_path = MimeoOutputDetails.__get_directory_path(self.direction, output_details)
+        self.file_name_tmplt = MimeoOutputDetails.__get_file_name_template(self.direction, output_details, output_format)
+
+    @staticmethod
+    def __get_direction(output_details):
+        direction = output_details.get(MimeoOutputDetails.DIRECTION_KEY, "file")
+        if direction in MimeoOutputDetails.SUPPORTED_OUTPUT_DIRECTIONS:
+            return direction
+        else:
+            raise UnsupportedOutputDirection(f"Provided direction [{direction}] is not supported!")
+
+    @staticmethod
+    def __get_directory_path(direction: str, output_details: dict):
+        if direction == "file":
+            return output_details.get(MimeoOutputDetails.DIRECTORY_PATH_KEY, "mimeo-output")
+
+    @staticmethod
+    def __get_file_name_template(direction: str, output_details: dict, output_format: str):
+        if direction == "file":
+            file_name = output_details.get(MimeoOutputDetails.FILE_NAME_KEY, "mimeo-output")
+            return f"{file_name}-{'{}'}.{output_format}"
+
+
 class MimeoTemplate:
 
     def __init__(self, template: dict):
@@ -73,36 +106,3 @@ class MimeoModel:
     @staticmethod
     def __is_not_attributes_key(dict_key):
         return dict_key != "attributes"
-
-
-class MimeoOutputDetails:
-    
-    DIRECTION_KEY = "direction"
-    DIRECTORY_PATH_KEY = "directory_path"
-    FILE_NAME_KEY = "file_name"
-
-    SUPPORTED_OUTPUT_DIRECTIONS = ("stdout", "file")
-
-    def __init__(self, output_format: str, output_details: dict):
-        self.direction = MimeoOutputDetails.__get_direction(output_details)
-        self.directory_path = MimeoOutputDetails.__get_directory_path(self.direction, output_details)
-        self.file_name_tmplt = MimeoOutputDetails.__get_file_name_template(self.direction, output_details, output_format)
-
-    @staticmethod
-    def __get_direction(output_details):
-        direction = output_details.get(MimeoOutputDetails.DIRECTION_KEY, "file")
-        if direction in MimeoOutputDetails.SUPPORTED_OUTPUT_DIRECTIONS:
-            return direction
-        else:
-            raise UnsupportedOutputDirection(f"Provided direction ({direction}) is not supported!")
-
-    @staticmethod
-    def __get_directory_path(direction: str, output_details: dict):
-        if direction == "file":
-            return output_details.get(MimeoOutputDetails.DIRECTORY_PATH_KEY, "mimeo-output")
-
-    @staticmethod
-    def __get_file_name_template(direction: str, output_details: dict, output_format: str):
-        if direction == "file":
-            file_name = output_details.get(MimeoOutputDetails.FILE_NAME_KEY, "mimeo-output")
-            return f"{file_name}-{'{}'}.{output_format}"

@@ -23,7 +23,7 @@ def test_parsing_template():
     }
 
 
-def test_parsing_model_without_count():
+def test_parsing_template_without_count():
     template = {
       "model": {
         "SomeEntity": {
@@ -39,7 +39,7 @@ def test_parsing_model_without_count():
                                 "{'model': {'SomeEntity': {'ChildNode': 'value'}}}"
 
 
-def test_parsing_model_with_multiple_roots():
+def test_parsing_template_with_multiple_roots():
     template = {
       "count": 30
     }
