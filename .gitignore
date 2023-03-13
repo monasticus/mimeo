@@ -5,6 +5,7 @@ dist/
 
 # PyTest
 /**/.pytest_cache/
+/**/.coverage
 
 # PyCharm
 .idea

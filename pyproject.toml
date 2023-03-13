@@ -27,7 +27,7 @@ dependencies = [
 requires-python = ">=3.5"
 
 [project.optional-dependencies]
-dev = ["bumpver", "build", "twine", "isort", "pytest"]
+dev = ["bumpver", "build", "twine", "isort", "pytest", "pytest-cov"]
 
 [project.scripts]
 mimeo = "mimeo.__main__:main"
