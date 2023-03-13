@@ -1,7 +1,7 @@
 import pytest
 
-from mimeo.model.exceptions import IncorrectMimeoModel
-from mimeo.model.mimeo_config import MimeoModel
+from mimeo.exceptions import IncorrectMimeoModel
+from mimeo.config.mimeo_config import MimeoModel
 
 
 def test_parsing_model_with_attributes():

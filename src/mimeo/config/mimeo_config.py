@@ -1,7 +1,7 @@
-from mimeo.model.exceptions import (IncorrectMimeoConfig, IncorrectMimeoModel,
-                                    IncorrectMimeoTemplate,
-                                    UnsupportedOutputDirection,
-                                    UnsupportedOutputFormat)
+from mimeo.exceptions import (IncorrectMimeoConfig, IncorrectMimeoModel,
+                              IncorrectMimeoTemplate,
+                              UnsupportedOutputDirection,
+                              UnsupportedOutputFormat)
 
 
 class MimeoConfig:

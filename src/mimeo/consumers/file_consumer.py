@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from mimeo.consumers import Consumer
-from mimeo.model.mimeo_config import MimeoOutputDetails
+from mimeo.config.mimeo_config import MimeoOutputDetails
 
 
 class FileConsumer(Consumer):

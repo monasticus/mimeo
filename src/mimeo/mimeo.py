@@ -2,7 +2,7 @@ import json
 
 from mimeo.consumers import ConsumerFactory
 from mimeo.generators import GeneratorFactory
-from mimeo.model.mimeo_config import MimeoConfig
+from mimeo.config.mimeo_config import MimeoConfig
 
 
 class Mimeograph:

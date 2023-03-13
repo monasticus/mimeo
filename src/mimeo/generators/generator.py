@@ -3,7 +3,7 @@ from abc import ABCMeta, abstractmethod
 from typing import Any, Iterator, Union
 
 from mimeo.generators import GeneratorUtils
-from mimeo.model.mimeo_config import MimeoTemplate
+from mimeo.config.mimeo_config import MimeoTemplate
 
 
 class Generator(metaclass=ABCMeta):
@@ -29,7 +29,7 @@ class Generator(metaclass=ABCMeta):
     @staticmethod
     def _get_value(literal_value, template):
         literal_value_str = str(literal_value)
-        pattern = re.compile("^\{(.*)\}$")
+        pattern = re.compile("^{(.*)}$")
         if pattern.match(literal_value_str):
             match = next(pattern.finditer(literal_value))
             funct = match.group(1)

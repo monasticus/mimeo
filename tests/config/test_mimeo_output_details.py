@@ -1,7 +1,7 @@
 import pytest
 
-from mimeo.model.exceptions import UnsupportedOutputDirection
-from mimeo.model.mimeo_config import MimeoOutputDetails
+from mimeo.exceptions import UnsupportedOutputDirection
+from mimeo.config.mimeo_config import MimeoOutputDetails
 
 
 def test_parsing_output_details_stdout():

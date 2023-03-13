@@ -1,6 +1,6 @@
 from mimeo.consumers import Consumer, FileConsumer, RawConsumer
-from mimeo.model.exceptions import UnsupportedOutputDirection
-from mimeo.model.mimeo_config import MimeoConfig
+from mimeo.exceptions import UnsupportedOutputDirection
+from mimeo.config.mimeo_config import MimeoConfig
 
 
 class ConsumerFactory:
