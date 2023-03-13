@@ -1,7 +1,7 @@
 import pytest
 
-from mimeo.exceptions import IncorrectMimeoConfig, UnsupportedOutputFormat
 from mimeo.config.mimeo_config import MimeoConfig
+from mimeo.exceptions import IncorrectMimeoConfig, UnsupportedOutputFormat
 
 
 def test_parsing_config():

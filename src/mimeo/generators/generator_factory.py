@@ -1,5 +1,5 @@
-from mimeo.generators import Generator, XMLGenerator
 from mimeo.config.mimeo_config import MimeoConfig, UnsupportedOutputFormat
+from mimeo.generators import Generator, XMLGenerator
 
 
 class GeneratorFactory:
@@ -12,4 +12,4 @@ class GeneratorFactory:
         if output_format == GeneratorFactory.XML:
             return XMLGenerator(mimeo_config)
         else:
-            raise UnsupportedOutputFormat(f"Provided format ({output_format}) is not supported!")
+            raise UnsupportedOutputFormat(f"Provided format [{output_format}] is not supported!")
