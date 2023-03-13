@@ -29,10 +29,13 @@ class Generator(metaclass=ABCMeta):
     @staticmethod
     def _get_value(literal_value, template):
         literal_value_str = str(literal_value)
-        pattern = re.compile("^{(.*)}$")
+        pattern = re.compile("^{(.+)}$")
         if pattern.match(literal_value_str):
-            match = next(pattern.finditer(literal_value))
-            funct = match.group(1)
-            return eval(Generator.__GENERATOR_UTILS_CALL.format(template.model.root_name, funct))
-        else:
-            return literal_value_str if not isinstance(literal_value, bool) else literal_value_str.lower()
+            try:
+                match = next(pattern.finditer(literal_value))
+                funct = match.group(1)
+                return eval(Generator.__GENERATOR_UTILS_CALL.format(template.model.root_name, funct))
+            except (AttributeError, SyntaxError):
+                pass
+
+        return literal_value_str if not isinstance(literal_value, bool) else literal_value_str.lower()
