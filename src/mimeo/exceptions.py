@@ -16,3 +16,7 @@ class IncorrectMimeoTemplate(Exception):
 
 class IncorrectMimeoConfig(Exception):
     pass
+
+
+class NotAllowedInstantiation(Exception):
+    pass
