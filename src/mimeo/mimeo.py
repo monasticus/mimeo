@@ -7,8 +7,8 @@ from mimeo.generators import GeneratorFactory
 
 class Mimeograph:
 
-    def __init__(self, config_path):
-        self.mimeo_config = Mimeograph.__get_config(config_path)
+    def __init__(self, mimeo_config: MimeoConfig):
+        self.mimeo_config = mimeo_config
         self.__generator = GeneratorFactory.get_generator(self.mimeo_config)
         self.__consumer = ConsumerFactory.get_consumer(self.mimeo_config)
 
@@ -16,9 +16,3 @@ class Mimeograph:
         for data in self.__generator.generate(self.mimeo_config.templates):
             data_str = self.__generator.stringify(data, self.mimeo_config)
             self.__consumer.consume(data_str)
-
-    @staticmethod
-    def __get_config(config_path):
-        with open(config_path) as config_file:
-            config = json.load(config_file)
-        return MimeoConfig(config)
