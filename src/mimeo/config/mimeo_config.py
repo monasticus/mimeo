@@ -1,7 +1,7 @@
 from mimeo.exceptions import (IncorrectMimeoConfig, IncorrectMimeoModel,
                               IncorrectMimeoTemplate,
                               UnsupportedOutputDirection,
-                              UnsupportedOutputFormat)
+                              UnsupportedOutputFormat, InvalidIndent)
 
 
 class MimeoConfig:
@@ -18,7 +18,7 @@ class MimeoConfig:
         self.output_format = MimeoConfig.__get_output_format(config)
         self.output_details = MimeoOutputDetails(self.output_format, config.get(self.OUTPUT_DETAILS_KEY, {}))
         self.xml_declaration = config.get(self.XML_DECLARATION_KEY, False)
-        self.indent = config.get(self.INDENT_KEY, 0)
+        self.indent = MimeoConfig.__get_indent(config)
         self.templates = MimeoConfig.__get_templates(config)
 
     @staticmethod
@@ -28,6 +28,14 @@ class MimeoConfig:
             return output_format
         else:
             raise UnsupportedOutputFormat(f"Provided format [{output_format}] is not supported!")
+
+    @staticmethod
+    def __get_indent(config):
+        indent = config.get(MimeoConfig.INDENT_KEY, 0)
+        if indent >= 0:
+            return indent
+        else:
+            raise InvalidIndent(f"Provided indent [{indent}] is negative!")
 
     @staticmethod
     def __get_templates(config):

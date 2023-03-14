@@ -1,7 +1,7 @@
 import pytest
 
 from mimeo.config.mimeo_config import MimeoConfig
-from mimeo.exceptions import IncorrectMimeoConfig, UnsupportedOutputFormat
+from mimeo.exceptions import IncorrectMimeoConfig, UnsupportedOutputFormat, InvalidIndent
 
 
 def test_parsing_config():
@@ -52,6 +52,27 @@ def test_parsing_config_default():
     assert mimeo_template.output_details.file_name_tmplt == "mimeo-output-{}.xml"
     assert mimeo_template.xml_declaration is False
     assert mimeo_template.indent == 0
+
+
+def test_parsing_config_with_invalid_indent():
+    config = {
+        "indent": -1,
+        "_templates_": [
+            {
+                "count": 5,
+                "model": {
+                    "SomeEntity": {
+                        "ChildNode": "value"
+                    }
+                }
+            }
+        ]
+    }
+
+    with pytest.raises(InvalidIndent) as err:
+        MimeoConfig(config)
+
+    assert err.value.args[0] == "Provided indent [-1] is negative!"
 
 
 def test_parsing_config_with_unsupported_format():

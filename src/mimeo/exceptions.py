@@ -6,6 +6,10 @@ class UnsupportedOutputDirection(Exception):
     pass
 
 
+class InvalidIndent(Exception):
+    pass
+
+
 class IncorrectMimeoModel(Exception):
     pass
 
