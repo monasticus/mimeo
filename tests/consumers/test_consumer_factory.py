@@ -1,13 +1,12 @@
 import pytest
 
 from mimeo.config import MimeoConfig
-from mimeo.exceptions import UnsupportedOutputDirection
 from mimeo.consumers import ConsumerFactory, FileConsumer, RawConsumer
+from mimeo.exceptions import UnsupportedOutputDirection
 
 
 def test_get_consumer_for_file_direction():
     config = {
-        "output_format": "xml",
         "output_details": {
             "direction": "file"
         },
@@ -27,7 +26,6 @@ def test_get_consumer_for_file_direction():
 
 def test_get_consumer_for_stdout_direction():
     config = {
-        "output_format": "xml",
         "output_details": {
             "direction": "stdout"
         },
@@ -47,7 +45,6 @@ def test_get_consumer_for_stdout_direction():
 
 def test_get_consumer_for_unsupported_format():
     config = {
-        "output_format": "xml",
         "output_details": {
             "direction": "stdout"
         },
