@@ -18,7 +18,9 @@ pip install mimeograph
 
 ### Mimeo Configuration
 
-Prepare Mimeo Configuration first as a JSON file:
+Prepare Mimeo Configuration first
+- for a command line tool: in a JSON file
+- for a `Mimeograph` python class: in a `dict`
 
 ```json
 {
@@ -54,8 +56,13 @@ mimeo SomeEntity-config.json
 
 ```python
 from mimeo import Mimeograph
+from mimeo.config import MimeoConfig
 
-Mimeograph("SomeEntity-config.json").produce()
+config = {
+    # Your configuration
+}
+mimeo_config = MimeoConfig(config)
+Mimeograph(mimeo_config).produce()
 ```
 ***
 The Mimeo Configuration above will produce 2 files:
