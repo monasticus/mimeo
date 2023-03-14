@@ -9,7 +9,7 @@ from mimeo.generators import GeneratorFactory
 
 
 @pytest.fixture(autouse=True)
-def setup():
+def teardown():
     yield
     # Teardown
     shutil.rmtree("test_file_consumer-dir")
