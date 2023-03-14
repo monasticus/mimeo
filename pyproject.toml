@@ -11,7 +11,7 @@ authors = [{ name = "T.A. Programming Svcs.", email = "tomasz.maciej.aniolowski@
 license = { file = "LICENSE" }
 classifiers = [
     "License :: OSI Approved :: MIT License",
-    "Development Status :: 4 - Beta",
+    "Development Status :: 5 - Production/Stable",
     "Environment :: Console",
     "Intended Audience :: Developers",
     "Programming Language :: Python",

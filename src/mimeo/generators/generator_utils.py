@@ -1,5 +1,7 @@
+import datetime
 import random
 import string
+from datetime import date, datetime, timedelta
 
 from mimeo.exceptions import NotAllowedInstantiation
 
@@ -33,6 +35,19 @@ class GeneratorUtils:
     @staticmethod
     def random_int(length=1):
         return "".join(random.choice(string.digits) for _ in range(length))
+
+    @staticmethod
+    def date(days_delta=0):
+        date_value = date.today() if days_delta == 0 else date.today() + timedelta(days=days_delta)
+        return date_value.strftime("%Y-%m-%d")
+
+    @staticmethod
+    def date_time(days_delta=0, hours_delta=0, minutes_delta=0, seconds_delta=0):
+        time_value = datetime.now() + timedelta(days=days_delta,
+                                                hours=hours_delta,
+                                                minutes=minutes_delta,
+                                                seconds=seconds_delta)
+        return time_value.strftime("%Y-%m-%dT%H:%M:%S")
 
     @staticmethod
     def __validate_instantiation(create_key: str):

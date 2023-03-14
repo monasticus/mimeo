@@ -1,4 +1,5 @@
 import pytest
+from datetime import date, datetime, timedelta
 
 from mimeo.exceptions import NotAllowedInstantiation
 from mimeo.generators import GeneratorUtils
@@ -94,3 +95,31 @@ def test_generator_utils_reset(default_generator_utils):
 
     identifier = default_generator_utils.auto_increment()
     assert identifier == "00001"
+
+
+def test_generator_utils_date(default_generator_utils):
+    date_value = default_generator_utils.date()
+    assert date_value == date.today().strftime("%Y-%m-%d")
+
+
+def test_generator_utils_date_with_customized_positive_days_delta(default_generator_utils):
+    date_value = default_generator_utils.date(5)
+    expected_date_value = date.today() + timedelta(5)
+    assert date_value == expected_date_value.strftime("%Y-%m-%d")
+
+
+def test_generator_utils_date_with_customized_negative_days_delta(default_generator_utils):
+    date_value = default_generator_utils.date(-5)
+    expected_date_value = date.today() + timedelta(days=-5)
+    assert date_value == expected_date_value.strftime("%Y-%m-%d")
+
+
+def test_generator_utils_date_time(default_generator_utils):
+    date_time_value = default_generator_utils.date_time()
+    assert date_time_value == datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
+
+
+def test_generator_utils_date_time_with_timedelta(default_generator_utils):
+    date_time_value = default_generator_utils.date_time(1, 2, -3, 5)
+    expected_date_time_value = datetime.now() + timedelta(days=1, hours=2, minutes=-3, seconds=5)
+    assert date_time_value == expected_date_time_value.strftime("%Y-%m-%dT%H:%M:%S")
