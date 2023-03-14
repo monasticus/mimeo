@@ -12,6 +12,7 @@ class MimeoArgumentParser(ArgumentParser):
         self.add_argument("paths", nargs="+", type=str, help="take paths to Mimeo Configurations")
         self.add_argument("-x", "--xml-declaration", type=str, choices=["true", "false"])
         self.add_argument("-i", "--indent", type=int)
+        self.add_argument("-o", "--output", type=str, choices=["file", "stdout"])
         self.add_argument("-v", "--version", action="version", version="%(prog)s v1.0.2")
 
 
@@ -30,6 +31,8 @@ def get_config(config_path, args):
             config[MimeoConfig.XML_DECLARATION_KEY] = args.xml_declaration.lower() == "true"
         if args.indent is not None:
             config[MimeoConfig.INDENT_KEY] = args.indent
+        if args.output is not None:
+            config[MimeoConfig.OUTPUT_DETAILS_KEY][MimeoConfig.OUTPUT_DETAILS_DIRECTION_KEY] = args.output
     return MimeoConfig(config)
 
 

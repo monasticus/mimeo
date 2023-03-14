@@ -5,15 +5,15 @@ from mimeo.exceptions import UnsupportedOutputDirection
 
 class ConsumerFactory:
 
-    FILE = "file"
-    STD_OUT = "stdout"
+    FILE_DIRECTION = "file"
+    STD_OUT_DIRECTION = "stdout"
 
     @staticmethod
     def get_consumer(mimeo_config: MimeoConfig) -> Consumer:
         direction = mimeo_config.output_details.direction
-        if direction == ConsumerFactory.STD_OUT:
+        if direction == ConsumerFactory.STD_OUT_DIRECTION:
             return RawConsumer()
-        elif direction == ConsumerFactory.FILE:
+        elif direction == ConsumerFactory.FILE_DIRECTION:
             return FileConsumer(mimeo_config.output_details)
         else:
             raise UnsupportedOutputDirection(f"Provided direction [{direction}] is not supported!")

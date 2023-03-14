@@ -8,9 +8,15 @@ class MimeoConfig:
 
     OUTPUT_FORMAT_KEY = "output_format"
     OUTPUT_DETAILS_KEY = "output_details"
+    OUTPUT_DETAILS_DIRECTION_KEY = "direction"
+    OUTPUT_DETAILS_DIRECTORY_PATH_KEY = "directory_path"
+    OUTPUT_DETAILS_FILE_NAME_KEY = "file_name"
     XML_DECLARATION_KEY = "xml_declaration"
     INDENT_KEY = "indent"
     TEMPLATES_KEY = "_templates_"
+    TEMPLATES_COUNT_KEY = "count"
+    TEMPLATES_MODEL_KEY = "model"
+    TEMPLATES_MODEL_ATTRIBUTES_KEY = "attributes"
 
     SUPPORTED_OUTPUT_FORMATS = ("xml",)
 
@@ -50,20 +56,19 @@ class MimeoConfig:
 
 class MimeoOutputDetails:
 
-    DIRECTION_KEY = "direction"
-    DIRECTORY_PATH_KEY = "directory_path"
-    FILE_NAME_KEY = "file_name"
+    FILE_DIRECTION = "file"
+    STD_OUT_DIRECTION = "stdout"
 
-    SUPPORTED_OUTPUT_DIRECTIONS = ("stdout", "file")
+    SUPPORTED_OUTPUT_DIRECTIONS = (STD_OUT_DIRECTION, FILE_DIRECTION)
 
     def __init__(self, output_format: str, output_details: dict):
         self.direction = MimeoOutputDetails.__get_direction(output_details)
         self.directory_path = MimeoOutputDetails.__get_directory_path(self.direction, output_details)
-        self.file_name_tmplt = MimeoOutputDetails.__get_file_name_template(self.direction, output_details, output_format)
+        self.file_name_tmplt = MimeoOutputDetails.__get_file_name_tmplt(self.direction, output_details, output_format)
 
     @staticmethod
     def __get_direction(output_details):
-        direction = output_details.get(MimeoOutputDetails.DIRECTION_KEY, "file")
+        direction = output_details.get(MimeoConfig.OUTPUT_DETAILS_DIRECTION_KEY, MimeoOutputDetails.FILE_DIRECTION)
         if direction in MimeoOutputDetails.SUPPORTED_OUTPUT_DIRECTIONS:
             return direction
         else:
@@ -71,13 +76,13 @@ class MimeoOutputDetails:
 
     @staticmethod
     def __get_directory_path(direction: str, output_details: dict):
-        if direction == "file":
-            return output_details.get(MimeoOutputDetails.DIRECTORY_PATH_KEY, "mimeo-output")
+        if direction == MimeoOutputDetails.FILE_DIRECTION:
+            return output_details.get(MimeoConfig.OUTPUT_DETAILS_DIRECTORY_PATH_KEY, "mimeo-output")
 
     @staticmethod
-    def __get_file_name_template(direction: str, output_details: dict, output_format: str):
-        if direction == "file":
-            file_name = output_details.get(MimeoOutputDetails.FILE_NAME_KEY, "mimeo-output")
+    def __get_file_name_tmplt(direction: str, output_details: dict, output_format: str):
+        if direction == MimeoOutputDetails.FILE_DIRECTION:
+            file_name = output_details.get(MimeoConfig.OUTPUT_DETAILS_FILE_NAME_KEY, "mimeo-output")
             return f"{file_name}-{'{}'}.{output_format}"
 
 
@@ -85,21 +90,21 @@ class MimeoTemplate:
 
     def __init__(self, template: dict):
         MimeoTemplate.__validate_template(template)
-        self.count = template.get("count")
-        self.model = MimeoModel(template.get("model"))
+        self.count = template.get(MimeoConfig.TEMPLATES_COUNT_KEY)
+        self.model = MimeoModel(template.get(MimeoConfig.TEMPLATES_MODEL_KEY))
 
     @staticmethod
     def __validate_template(template: dict):
-        if "count" not in template:
+        if MimeoConfig.TEMPLATES_COUNT_KEY not in template:
             raise IncorrectMimeoTemplate(f"No count value in the Mimeo Template: {template}")
-        if "model" not in template:
+        if MimeoConfig.TEMPLATES_MODEL_KEY not in template:
             raise IncorrectMimeoTemplate(f"No model data in the Mimeo Template: {template}")
 
 
 class MimeoModel:
 
     def __init__(self, model: dict):
-        self.attributes = model.get("attributes", {})
+        self.attributes = model.get(MimeoConfig.TEMPLATES_MODEL_ATTRIBUTES_KEY, {})
         self.root_name = MimeoModel.__get_root_name(model)
         self.root_data = model.get(self.root_name)
 
@@ -115,4 +120,4 @@ class MimeoModel:
 
     @staticmethod
     def __is_not_attributes_key(dict_key):
-        return dict_key != "attributes"
+        return dict_key != MimeoConfig.TEMPLATES_MODEL_ATTRIBUTES_KEY

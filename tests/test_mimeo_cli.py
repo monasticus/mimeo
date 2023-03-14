@@ -233,3 +233,23 @@ def test_custom_long_indent_zero():
                                               '<ChildNode2>value-2</ChildNode2>' \
                                               '<ChildNode3>true</ChildNode3>' \
                                               '</SomeEntity>'
+
+
+def test_custom_short_output_direction():
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/config-1.json", "-o", "stdout"]
+
+    assert not path.exists("test_mimeo_cli-dir/output")
+
+    MimeoCLI.main()
+
+    assert not path.exists("test_mimeo_cli-dir/output")
+
+
+def test_custom_long_output_direction():
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/config-1.json", "--output", "stdout"]
+
+    assert not path.exists("test_mimeo_cli-dir/output")
+
+    MimeoCLI.main()
+
+    assert not path.exists("test_mimeo_cli-dir/output")
