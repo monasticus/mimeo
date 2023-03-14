@@ -14,6 +14,7 @@ class MimeoArgumentParser(ArgumentParser):
         self.add_argument("-i", "--indent", type=int)
         self.add_argument("-o", "--output", type=str, choices=["file", "stdout"])
         self.add_argument("-d", "--directory", type=str)
+        self.add_argument("-f", "--file", type=str)
         self.add_argument("-v", "--version", action="version", version="%(prog)s v1.0.2")
 
 
@@ -36,6 +37,8 @@ def get_config(config_path, args):
             config[MimeoConfig.OUTPUT_DETAILS_KEY][MimeoConfig.OUTPUT_DETAILS_DIRECTION_KEY] = args.output
         if args.directory is not None:
             config[MimeoConfig.OUTPUT_DETAILS_KEY][MimeoConfig.OUTPUT_DETAILS_DIRECTORY_PATH_KEY] = args.directory
+        if args.file is not None:
+            config[MimeoConfig.OUTPUT_DETAILS_KEY][MimeoConfig.OUTPUT_DETAILS_FILE_NAME_KEY] = args.file
     return MimeoConfig(config)
 
 
