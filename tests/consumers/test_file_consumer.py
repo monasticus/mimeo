@@ -1,9 +1,18 @@
 import shutil
 from os import path
 
+import pytest
+
 from mimeo.config import MimeoConfig
 from mimeo.consumers import ConsumerFactory
 from mimeo.generators import GeneratorFactory
+
+
+@pytest.fixture(autouse=True)
+def setup():
+    yield
+    # Teardown
+    shutil.rmtree("test_file_consumer-dir")
 
 
 def test_consume():
@@ -38,6 +47,4 @@ def test_consume():
     assert path.exists("test_file_consumer-dir/test-output-1.xml")
     consumer.consume(data[1])
     assert path.exists("test_file_consumer-dir/test-output-2.xml")
-
-    shutil.rmtree("test_file_consumer-dir")
 
