@@ -13,7 +13,7 @@ class XMLGenerator(Generator):
         self.__xml_declaration = mimeo_config.xml_declaration
         self.__current_template = None
 
-    def generate(self, templates: Union[list, Iterator[MimeoTemplate]], parent: ElemTree.Element = None):
+    def generate(self, templates: Union[list, Iterator[MimeoTemplate]], parent: ElemTree.Element = None) -> Iterator[ElemTree.Element]:
         for template in templates:
             self.__current_template = template
             GeneratorUtils.get_for_context(template.model.root_name).reset()
@@ -40,7 +40,7 @@ class XMLGenerator(Generator):
     def __to_xml(self, parent, element_tag, element_value, attributes: dict = None):
         attributes = attributes if attributes is not None else {}
         if element_tag == MimeoConfig.TEMPLATES_KEY:
-            templates = (MimeoTemplate(**template) for template in element_value)
+            templates = (MimeoTemplate(template) for template in element_value)
             curr_template = self.__current_template
             for _ in self.generate(templates, parent):
                 pass

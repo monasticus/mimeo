@@ -1,4 +1,5 @@
 import re
+import xml.etree.ElementTree as ElemTree
 from abc import ABCMeta, abstractmethod
 from typing import Any, Iterator, Union
 
@@ -19,7 +20,9 @@ class Generator(metaclass=ABCMeta):
                 NotImplemented)
 
     @abstractmethod
-    def generate(self, templates: Union[list, Iterator[MimeoTemplate]], parent: Any = None) -> Iterator[Any]:
+    def generate(self,
+                 templates: Union[list, Iterator[MimeoTemplate]],
+                 parent: Any = None) -> Iterator[ElemTree.Element]:
         raise NotImplementedError
 
     @abstractmethod
