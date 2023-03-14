@@ -48,7 +48,7 @@ def test_generate_single_template_model_with_attributes():
                 "count": 5,
                 "model": {
                     "attributes": {
-                        "xmlns": "http://data-generator.arch.com/default-namespace",
+                        "xmlns": "http://data-generator.arch.com/default-namespace"
                     },
                     "SomeEntity": {}
                 }
@@ -377,3 +377,124 @@ def test_generate_nested_templates():
         count += 1
 
     assert count == 5
+
+
+def test_stringify_with_indent_and_xml_declaration():
+    config = MimeoConfig({
+        "output_format": "xml",
+        "xml_declaration": True,
+        "indent": 4,
+        "_templates_": [
+            {
+                "count": 1,
+                "model": {
+                    "attributes": {
+                        "xmlns": "http://data-generator.arch.com/default-namespace",
+                        "xmlns:pn": "http://data-generator.arch.com/prefixed-namespace"
+                    },
+                    "SomeEntity": {
+                        "pn:ChildNode": "value"
+                    }
+                }
+            }
+        ]
+    })
+    generator = XMLGenerator(config)
+    for data in generator.generate(config.templates):
+        data_str = generator.stringify(data, config)
+        assert data_str == ('<?xml version="1.0" encoding="utf-8"?>\n'
+                            '<SomeEntity'
+                            ' xmlns="http://data-generator.arch.com/default-namespace"'
+                            ' xmlns:pn="http://data-generator.arch.com/prefixed-namespace">\n'
+                            '    <pn:ChildNode>value</pn:ChildNode>\n'
+                            '</SomeEntity>\n')
+
+
+def test_stringify_with_indent_and_without_xml_declaration():
+    config = MimeoConfig({
+        "output_format": "xml",
+        "xml_declaration": False,
+        "indent": 4,
+        "_templates_": [
+            {
+                "count": 1,
+                "model": {
+                    "attributes": {
+                        "xmlns": "http://data-generator.arch.com/default-namespace",
+                        "xmlns:pn": "http://data-generator.arch.com/prefixed-namespace"
+                    },
+                    "SomeEntity": {
+                        "pn:ChildNode": "value"
+                    }
+                }
+            }
+        ]
+    })
+    generator = XMLGenerator(config)
+    for data in generator.generate(config.templates):
+        data_str = generator.stringify(data, config)
+        assert data_str == ('<SomeEntity'
+                            ' xmlns="http://data-generator.arch.com/default-namespace"'
+                            ' xmlns:pn="http://data-generator.arch.com/prefixed-namespace">\n'
+                            '    <pn:ChildNode>value</pn:ChildNode>\n'
+                            '</SomeEntity>\n')
+
+
+def test_stringify_without_indent_and_with_xml_declaration():
+    config = MimeoConfig({
+        "output_format": "xml",
+        "xml_declaration": True,
+        "_templates_": [
+            {
+                "count": 1,
+                "model": {
+                    "attributes": {
+                        "xmlns": "http://data-generator.arch.com/default-namespace",
+                        "xmlns:pn": "http://data-generator.arch.com/prefixed-namespace"
+                    },
+                    "SomeEntity": {
+                        "pn:ChildNode": "value"
+                    }
+                }
+            }
+        ]
+    })
+    generator = XMLGenerator(config)
+    for data in generator.generate(config.templates):
+        data_str = generator.stringify(data, config)
+        # Notice no new line at the end of string chunks
+        assert data_str == ("<?xml version='1.0' encoding='utf-8'?>\n"
+                            '<SomeEntity'
+                            ' xmlns="http://data-generator.arch.com/default-namespace"'
+                            ' xmlns:pn="http://data-generator.arch.com/prefixed-namespace">'
+                            '<pn:ChildNode>value</pn:ChildNode>'
+                            '</SomeEntity>')
+
+
+def test_stringify_without_indent_and_xml_declaration():
+    config = MimeoConfig({
+        "output_format": "xml",
+        "_templates_": [
+            {
+                "count": 1,
+                "model": {
+                    "attributes": {
+                        "xmlns": "http://data-generator.arch.com/default-namespace",
+                        "xmlns:pn": "http://data-generator.arch.com/prefixed-namespace"
+                    },
+                    "SomeEntity": {
+                        "pn:ChildNode": "value"
+                    }
+                }
+            }
+        ]
+    })
+    generator = XMLGenerator(config)
+    for data in generator.generate(config.templates):
+        data_str = generator.stringify(data, config)
+        # Notice no new line at the end of string chunks
+        assert data_str == ('<SomeEntity'
+                            ' xmlns="http://data-generator.arch.com/default-namespace"'
+                            ' xmlns:pn="http://data-generator.arch.com/prefixed-namespace">'
+                            '<pn:ChildNode>value</pn:ChildNode>'
+                            '</SomeEntity>')
