@@ -51,7 +51,7 @@ def test_parsing_config_default():
     assert mimeo_template.output_details.directory_path == "mimeo-output"
     assert mimeo_template.output_details.file_name_tmplt == "mimeo-output-{}.xml"
     assert mimeo_template.xml_declaration is False
-    assert mimeo_template.indent is None
+    assert mimeo_template.indent == 0
 
 
 def test_parsing_config_with_unsupported_format():

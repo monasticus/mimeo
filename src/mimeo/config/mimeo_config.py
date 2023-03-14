@@ -18,7 +18,7 @@ class MimeoConfig:
         self.output_format = MimeoConfig.__get_output_format(config)
         self.output_details = MimeoOutputDetails(self.output_format, config.get(self.OUTPUT_DETAILS_KEY, {}))
         self.xml_declaration = config.get(self.XML_DECLARATION_KEY, False)
-        self.indent = config.get(self.INDENT_KEY)
+        self.indent = config.get(self.INDENT_KEY, 0)
         self.templates = MimeoConfig.__get_templates(config)
 
     @staticmethod

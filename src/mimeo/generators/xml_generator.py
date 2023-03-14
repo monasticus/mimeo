@@ -24,7 +24,7 @@ class XMLGenerator(Generator):
                                     template.model.attributes)
 
     def stringify(self, root, mimeo_config):
-        if self.__indent is None:
+        if self.__indent is None or self.__indent == 0:
             return ElemTree.tostring(root,
                                      encoding="utf-8",
                                      method="xml",

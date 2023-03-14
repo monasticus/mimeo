@@ -11,6 +11,7 @@ class MimeoArgumentParser(ArgumentParser):
         super().__init__(prog="mimeo", description="Generate data based on a simple template")
         self.add_argument("paths", nargs="+", type=str, help="take paths to Mimeo Configurations")
         self.add_argument("-x", "--xml-declaration", type=str, choices=["true", "false"])
+        self.add_argument("-i", "--indent", type=int, choices=[0, 2, 4])
         self.add_argument("-v", "--version", action="version", version="%(prog)s v1.0.2")
 
 
@@ -21,6 +22,10 @@ def main():
         mimeo_config = get_config(path)
         if args.xml_declaration is not None:
             mimeo_config.xml_declaration = args.xml_declaration.lower() == "true"
+        if args.indent is not None:
+            if args.indent >= 0:
+                mimeo_config.indent = args.indent
+
         Mimeograph(mimeo_config).produce()
 
 
