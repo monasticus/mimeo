@@ -140,6 +140,18 @@ Mimeo configuration is defined in a JSON file using internal settings and data t
 | `model`                         | Template | :heavy_check_mark: |      object      |      ---       | Defines data template to be copied                                       |
 | `attributes`                    |  Model   |        :x:         |      object      |      ---       | Defines attributes applied on the root node (mostly used for namespaces) |
 
+### Mimeo CLI
+
+When using Mimeo command line tool you can overwrite Mimeo Configuration properties:
+
+| Short option | Long option       | Description                                            |
+|:------------:|:------------------|:-------------------------------------------------------|
+|      -x      | --xml-declaration | overwrite the `xml_declaration` property               |
+|      -i      | --indent          | overwrite the `indent` property                        |
+|      -o      | --output          | overwrite the `output_details/direction` property      |
+|      -d      | --directory       | overwrite the `output_details/directory_path` property |
+|      -f      | --file            | overwrite the `output_details/file_name` property      |
+
 ### Mimeo Utils
 
 You can use several predefined functions to generate data by using them within curly braces:

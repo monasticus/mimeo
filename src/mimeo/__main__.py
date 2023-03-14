@@ -8,14 +8,50 @@ from mimeo.config import MimeoConfig
 class MimeoArgumentParser(ArgumentParser):
 
     def __init__(self):
-        super().__init__(prog="mimeo", description="Generate data based on a simple template")
-        self.add_argument("paths", nargs="+", type=str, help="take paths to Mimeo Configurations")
-        self.add_argument("-x", "--xml-declaration", type=str, choices=["true", "false"])
-        self.add_argument("-i", "--indent", type=int)
-        self.add_argument("-o", "--output", type=str, choices=["file", "stdout"])
-        self.add_argument("-d", "--directory", type=str)
-        self.add_argument("-f", "--file", type=str)
-        self.add_argument("-v", "--version", action="version", version="%(prog)s v1.0.2")
+        super().__init__(
+            prog="mimeo",
+            description="Generate data based on a template")
+        self.add_argument(
+            "-v",
+            "--version",
+            action="version",
+            version="%(prog)s v1.0.2")
+        self.add_argument(
+            "paths",
+            nargs="+",
+            type=str,
+            help="take paths to Mimeo Configurations")
+
+        mimeo_config_args = self.add_argument_group("Mimeo Configuration arguments")
+        mimeo_config_args.add_argument(
+            "-x",
+            "--xml-declaration",
+            type=str,
+            choices=["true", "false"],
+            help="overwrite the xml_declaration property")
+        mimeo_config_args.add_argument(
+            "-i",
+            "--indent",
+            type=int,
+            help="overwrite the indent property")
+        mimeo_config_args.add_argument(
+            "-o",
+            "--output",
+            type=str,
+            choices=["file", "stdout"],
+            help="overwrite the output_details/direction property")
+        mimeo_config_args.add_argument(
+            "-d",
+            "--directory",
+            type=str,
+            metavar="DIRECTORY_PATH",
+            help="overwrite the output_details/directory_path property")
+        mimeo_config_args.add_argument(
+            "-f",
+            "--file",
+            type=str,
+            metavar="FILE_NAME",
+            help="overwrite the output_details/file_name property")
 
 
 def main():
