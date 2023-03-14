@@ -42,9 +42,17 @@ def test_consume():
             for root in generator.generate(mimeo_config.templates)]
 
     assert not path.exists("test_file_consumer-dir")
+
     consumer.consume(data[0])
     assert path.exists("test_file_consumer-dir")
     assert path.exists("test_file_consumer-dir/test-output-1.xml")
+    assert not path.exists("test_file_consumer-dir/test-output-2.xml")
+
     consumer.consume(data[1])
     assert path.exists("test_file_consumer-dir/test-output-2.xml")
+
+    for i in range(1, 3):
+        file_path = f"test_file_consumer-dir/test-output-{i}.xml"
+        with open(file_path, "r") as file_content:
+            assert file_content.readline() == '<SomeEntity />'
 
