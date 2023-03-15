@@ -78,9 +78,11 @@ class GeneratorUtils:
         prepared_funct = re.sub(r"date\((.*)\)", r"utils.date(\1)", prepared_funct)
         prepared_funct = re.sub(r"date_time\((.*)\)", r"utils.date_time(\1)", prepared_funct)
         if prepared_funct.startswith("utils"):
-            return eval(prepared_funct)
-        else:
-            raise InvalidMimeoUtil(f"Provided function [{funct}] is invalid!")
+            try:
+                return eval(prepared_funct)
+            except (TypeError, AttributeError, SyntaxError):
+                pass
+        raise InvalidMimeoUtil(f"Provided function [{funct}] is invalid!")
 
     @staticmethod
     def __validate_instantiation(create_key: str):
