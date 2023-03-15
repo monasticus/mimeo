@@ -16,8 +16,10 @@ class XMLGenerator(Generator):
     def generate(self, templates: Union[list, Iterator[MimeoTemplate]], parent: ElemTree.Element = None) -> Iterator[ElemTree.Element]:
         for template in templates:
             self.__current_template = template
-            GeneratorUtils.get_for_context(template.model.root_name).reset()
-            for _ in iter(range(template.count)):
+            utils = GeneratorUtils.get_for_context(template.model.root_name)
+            utils.reset()
+            for i in iter(range(template.count)):
+                utils.set_curr_iter(i+1)
                 yield self.__to_xml(parent,
                                     template.model.root_name,
                                     template.model.root_data,

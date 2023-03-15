@@ -14,7 +14,7 @@ def default_generator_utils() -> GeneratorUtils:
 def setup(default_generator_utils):
     # Setup
     default_generator_utils.reset()
-    default_generator_utils.set_curr_iter(1)
+    default_generator_utils.set_curr_iter(0)
     yield
 
 
