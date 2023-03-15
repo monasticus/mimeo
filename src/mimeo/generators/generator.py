@@ -4,6 +4,7 @@ from abc import ABCMeta, abstractmethod
 from typing import Any, Iterator, Union
 
 from mimeo.config.mimeo_config import MimeoTemplate
+from mimeo.exceptions import InvalidMimeoUtil
 from mimeo.generators import GeneratorUtils
 
 
@@ -37,8 +38,8 @@ class Generator(metaclass=ABCMeta):
             try:
                 match = next(pattern.finditer(literal_value))
                 funct = match.group(1)
-                return eval(Generator.__GENERATOR_UTILS_CALL.format(template.model.root_name, funct))
-            except (AttributeError, SyntaxError):
+                return GeneratorUtils.eval(template.model.root_name, funct)
+            except InvalidMimeoUtil:
                 pass
 
         return literal_value_str if not isinstance(literal_value, bool) else literal_value_str.lower()

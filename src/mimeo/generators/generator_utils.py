@@ -1,10 +1,11 @@
 from __future__ import annotations
 import datetime
 import random
+import re
 import string
 from datetime import date, datetime, timedelta
 
-from mimeo.exceptions import NotAllowedInstantiation
+from mimeo.exceptions import NotAllowedInstantiation, InvalidMimeoUtil
 
 
 class GeneratorUtils:
@@ -58,6 +59,21 @@ class GeneratorUtils:
                                                 minutes=minutes_delta,
                                                 seconds=seconds_delta)
         return time_value.strftime("%Y-%m-%dT%H:%M:%S")
+
+    @staticmethod
+    def eval(context: str, funct: str):
+        utils = GeneratorUtils.get_for_context(context)
+        prepared_funct = funct
+        prepared_funct = re.sub(r"auto_increment\((.*)\)", r"utils.auto_increment(\1)", prepared_funct)
+        prepared_funct = re.sub(r"curr_iter\((.*)\)", r"utils.curr_iter(\1)", prepared_funct)
+        prepared_funct = re.sub(r"random_str\((.*)\)", r"utils.random_str(\1)", prepared_funct)
+        prepared_funct = re.sub(r"random_int\((.*)\)", r"utils.random_int(\1)", prepared_funct)
+        prepared_funct = re.sub(r"date\((.*)\)", r"utils.date(\1)", prepared_funct)
+        prepared_funct = re.sub(r"date_time\((.*)\)", r"utils.date_time(\1)", prepared_funct)
+        if prepared_funct.startswith("utils"):
+            return eval(prepared_funct)
+        else:
+            raise InvalidMimeoUtil(f"Provided function [{funct}] is invalid!")
 
     @staticmethod
     def __validate_instantiation(create_key: str):

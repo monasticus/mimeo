@@ -1,7 +1,7 @@
 import pytest
 from datetime import date, datetime, timedelta
 
-from mimeo.exceptions import NotAllowedInstantiation
+from mimeo.exceptions import NotAllowedInstantiation, InvalidMimeoUtil
 from mimeo.generators import GeneratorUtils
 
 
@@ -152,3 +152,20 @@ def test_generator_utils_date_time_with_timedelta(default_generator_utils):
     date_time_value = default_generator_utils.date_time(1, 2, -3, 5)
     expected_date_time_value = datetime.now() + timedelta(days=1, hours=2, minutes=-3, seconds=5)
     assert date_time_value == expected_date_time_value.strftime("%Y-%m-%dT%H:%M:%S")
+
+
+def test_generator_utils_not_allowed_functions():
+    with pytest.raises(InvalidMimeoUtil) as err:
+        GeneratorUtils.eval("SomeEntity", "reset()")
+
+    assert err.value.args[0] == "Provided function [reset()] is invalid!"
+
+    with pytest.raises(InvalidMimeoUtil) as err:
+        GeneratorUtils.eval("SomeEntity", "set_curr_iter(1)")
+
+    assert err.value.args[0] == "Provided function [set_curr_iter(1)] is invalid!"
+
+    with pytest.raises(InvalidMimeoUtil) as err:
+        GeneratorUtils.eval("SomeEntity", "eval(auto_increment())")
+
+    assert err.value.args[0] == "Provided function [eval(auto_increment())] is invalid!"

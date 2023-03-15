@@ -24,3 +24,7 @@ class IncorrectMimeoConfig(Exception):
 
 class NotAllowedInstantiation(Exception):
     pass
+
+
+class InvalidMimeoUtil(Exception):
+    pass
