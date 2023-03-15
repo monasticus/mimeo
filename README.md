@@ -159,18 +159,20 @@ You can use several predefined functions to generate data by using them within c
 <id>{auto_increment()}</id>
 ```
 
-| Function                                                                   | Example                         | Data                                                                                              |
-|:---------------------------------------------------------------------------|:--------------------------------|:--------------------------------------------------------------------------------------------------|
-| `auto_increment()`                                                         |                                 | Generate next integer in context of a model (in nested templates it will use a separated context) |
-| `auto_increment(<STRING_PATTERN>)`                                         | `auto_increment('MYID{:010d}')` | Same as `auto_increment()` but the integer is used in a string pattern provided                   |
-| `random_str()`                                                             |                                 | Generates a random string value of the default length: 20 characters                              |
-| `random_str(<LENGTH>)`                                                     | `random_str(2)`                 | Generates a random string value of the customized length                                          |
-| `random_int()`                                                             |                                 | Generates a random integer value of the default length: 1 digit                                   |
-| `random_int(<LENGTH>)`                                                     | `random_int(5)`                 | Generates a random integer value of the customized length                                         |
-| `date()`                                                                   |                                 | Generates a today's date in format YYYY-MM-DD                                                     |
-| `date(<DAYS_DELTA>)`                                                       | `date(-1)`                      | Generates a date with customized days in format YYYY-MM-DD                                        |
-| `date_time()`                                                              |                                 | Generates a current date time in format YYYY-MM-DD'T'HH:mm:SS                                     |
-| `date_time(<DAYS_DELTA>, <HOURS_DELTA>, <MINUTES_DELTA>, <SECONDS_DELTA>)` | `date(hours=5, minutes=-3)`     | Generates a date time with customized time in format YYYY-MM-DD'T'HH:mm:SS                        |
+| Function                                                                   | Example                         | Data                                                                                               |
+|:---------------------------------------------------------------------------|:--------------------------------|:---------------------------------------------------------------------------------------------------|
+| `auto_increment()`                                                         |                                 | Generates next integer in context of a model (in nested templates it will use a separated context) |
+| `auto_increment(<STRING_PATTERN>)`                                         | `auto_increment('MYID{:010d}')` | Same as `auto_increment()` but the integer is used in a string pattern provided                    |
+| `curr_iter()`                                                              |                                 | Generates a value of the current iteration in a template context                                   |
+| `curr_iter(<MODEL_NAME>)`                                                  | `curr_iter('SomeEntity')`       | Generates a value of the current iteration in a specific model context                             |
+| `random_str()`                                                             |                                 | Generates a random string value of the default length: 20 characters                               |
+| `random_str(<LENGTH>)`                                                     | `random_str(2)`                 | Generates a random string value of the customized length                                           |
+| `random_int()`                                                             |                                 | Generates a random integer value of the default length: 1 digit                                    |
+| `random_int(<LENGTH>)`                                                     | `random_int(5)`                 | Generates a random integer value of the customized length                                          |
+| `date()`                                                                   |                                 | Generates a today's date in format YYYY-MM-DD                                                      |
+| `date(<DAYS_DELTA>)`                                                       | `date(-1)`                      | Generates a date with customized days in format YYYY-MM-DD                                         |
+| `date_time()`                                                              |                                 | Generates a current date time in format YYYY-MM-DD'T'HH:mm:SS                                      |
+| `date_time(<DAYS_DELTA>, <HOURS_DELTA>, <MINUTES_DELTA>, <SECONDS_DELTA>)` | `date(hours=5, minutes=-3)`     | Generates a date time with customized time in format YYYY-MM-DD'T'HH:mm:SS                         |
 
 
 ## License
