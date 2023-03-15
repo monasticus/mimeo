@@ -3,6 +3,7 @@ import datetime
 import random
 import re
 import string
+import uuid
 from datetime import date, datetime, timedelta
 
 from mimeo.exceptions import NotAllowedInstantiation, InvalidMimeoUtil
@@ -23,21 +24,26 @@ class GeneratorUtils:
         GeneratorUtils.__validate_instantiation(create_key)
         self.__id = 0
         self.__curr_iter = 0
+        self.__keys = []
 
     def reset(self):
         self.__id = 0
+
+    def setup_iteration(self, curr_iter: int):
+        self.__curr_iter = curr_iter
+        self.__keys.append(str(uuid.uuid4()))
 
     def auto_increment(self, pattern="{:05d}"):
         self.__id += 1
         return pattern.format(self.__id)
 
-    def set_curr_iter(self, curr_iter: int):
-        self.__curr_iter = curr_iter
-
     def curr_iter(self, context: str = None):
         if context is not None:
             return GeneratorUtils.get_for_context(context).curr_iter()
         return str(self.__curr_iter)
+
+    def key(self):
+        return self.__keys[-1]
 
     @staticmethod
     def random_str(length=20):

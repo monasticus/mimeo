@@ -8,7 +8,7 @@ from mimeo.generators import GeneratorUtils, XMLGenerator
 def setup():
     # Setup
     GeneratorUtils.get_for_context("SomeEntity").reset()
-    GeneratorUtils.get_for_context("SomeEntity").set_curr_iter(0)
+    GeneratorUtils.get_for_context("SomeEntity").setup_iteration(0)
     yield
 
 

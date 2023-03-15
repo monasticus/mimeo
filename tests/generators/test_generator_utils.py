@@ -14,7 +14,7 @@ def default_generator_utils() -> GeneratorUtils:
 def setup(default_generator_utils):
     # Setup
     default_generator_utils.reset()
-    default_generator_utils.set_curr_iter(0)
+    default_generator_utils.setup_iteration(0)
     yield
 
 
@@ -87,31 +87,76 @@ def test_generator_utils_auto_increment_for_different_context():
 
 
 def test_generator_utils_curr_iter(default_generator_utils):
-    default_generator_utils.set_curr_iter(1)
+    default_generator_utils.setup_iteration(1)
     curr_iter = default_generator_utils.curr_iter()
     assert curr_iter == "1"
 
-    default_generator_utils.set_curr_iter(2)
+    default_generator_utils.setup_iteration(2)
     curr_iter = default_generator_utils.curr_iter()
     assert curr_iter == "2"
 
 
 def test_generator_utils_curr_iter_from_different_context():
     generator_utils1 = GeneratorUtils.get_for_context("SomeEntity1")
-    generator_utils1.set_curr_iter(1)
+    generator_utils1.setup_iteration(1)
     curr_iter = generator_utils1.curr_iter()
     assert curr_iter == "1"
-    generator_utils1.set_curr_iter(2)
+    generator_utils1.setup_iteration(2)
     curr_iter = generator_utils1.curr_iter()
     assert curr_iter == "2"
 
     generator_utils2 = GeneratorUtils.get_for_context("SomeEntity2")
-    generator_utils2.set_curr_iter(5)
+    generator_utils2.setup_iteration(5)
     curr_iter = generator_utils2.curr_iter()
     assert curr_iter == "5"
 
     curr_iter = generator_utils2.curr_iter("SomeEntity1")
     assert curr_iter == "2"
+
+
+def test_generator_utils_key_in_several_iterations(default_generator_utils):
+    default_generator_utils.setup_iteration(1)
+    key1_1 = default_generator_utils.key()
+    key1_2 = default_generator_utils.key()
+
+    default_generator_utils.setup_iteration(2)
+    key2_1 = default_generator_utils.key()
+    key2_2 = default_generator_utils.key()
+
+    default_generator_utils.setup_iteration(3)
+    key3_1 = default_generator_utils.key()
+    key3_2 = default_generator_utils.key()
+
+    assert key1_1 == key1_2
+    assert key2_1 == key2_2
+    assert key3_1 == key3_2
+    assert key1_1 != key2_1
+    assert key2_1 != key3_1
+    assert key3_1 != key1_1
+
+
+def test_generator_utils_key_in_several_contexts():
+    generator_utils1 = GeneratorUtils.get_for_context("SomeEntity1")
+    generator_utils2 = GeneratorUtils.get_for_context("SomeEntity2")
+    generator_utils3 = GeneratorUtils.get_for_context("SomeEntity3")
+
+    generator_utils1.setup_iteration(1)
+    generator_utils2.setup_iteration(1)
+    generator_utils3.setup_iteration(1)
+
+    key1_1 = generator_utils1.key()
+    key1_2 = generator_utils1.key()
+    key2_1 = generator_utils2.key()
+    key2_2 = generator_utils2.key()
+    key3_1 = generator_utils3.key()
+    key3_2 = generator_utils3.key()
+
+    assert key1_1 == key1_2
+    assert key2_1 == key2_2
+    assert key3_1 == key3_2
+    assert key1_1 != key2_1
+    assert key2_1 != key3_1
+    assert key3_1 != key1_1
 
 
 def test_generator_utils_reset(default_generator_utils):
@@ -161,9 +206,9 @@ def test_generator_utils_not_allowed_functions():
     assert err.value.args[0] == "Provided function [reset()] is invalid!"
 
     with pytest.raises(InvalidMimeoUtil) as err:
-        GeneratorUtils.eval("SomeEntity", "set_curr_iter(1)")
+        GeneratorUtils.eval("SomeEntity", "setup_iteration(1)")
 
-    assert err.value.args[0] == "Provided function [set_curr_iter(1)] is invalid!"
+    assert err.value.args[0] == "Provided function [setup_iteration(1)] is invalid!"
 
     with pytest.raises(InvalidMimeoUtil) as err:
         GeneratorUtils.eval("SomeEntity", "eval(auto_increment())")

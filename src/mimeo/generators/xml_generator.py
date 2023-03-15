@@ -19,7 +19,7 @@ class XMLGenerator(Generator):
             utils = GeneratorUtils.get_for_context(template.model.root_name)
             utils.reset()
             for i in iter(range(template.count)):
-                utils.set_curr_iter(i+1)
+                utils.setup_iteration(i+1)
                 yield self.__to_xml(parent,
                                     template.model.root_name,
                                     template.model.root_data,
