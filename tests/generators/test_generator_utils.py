@@ -6,7 +6,7 @@ from mimeo.generators import GeneratorUtils
 
 
 @pytest.fixture
-def default_generator_utils():
+def default_generator_utils() -> GeneratorUtils:
     return GeneratorUtils.get_for_context("SomeEntity")
 
 
@@ -14,6 +14,7 @@ def default_generator_utils():
 def setup(default_generator_utils):
     # Setup
     default_generator_utils.reset()
+    default_generator_utils.set_curr_iter(1)
     yield
 
 
@@ -83,6 +84,34 @@ def test_generator_utils_auto_increment_for_different_context():
     assert identifier == "00001"
     identifier = generator_utils2.auto_increment()
     assert identifier == "00002"
+
+
+def test_generator_utils_curr_iter(default_generator_utils):
+    default_generator_utils.set_curr_iter(1)
+    curr_iter = default_generator_utils.curr_iter()
+    assert curr_iter == "1"
+
+    default_generator_utils.set_curr_iter(2)
+    curr_iter = default_generator_utils.curr_iter()
+    assert curr_iter == "2"
+
+
+def test_generator_utils_curr_iter_from_different_context():
+    generator_utils1 = GeneratorUtils.get_for_context("SomeEntity1")
+    generator_utils1.set_curr_iter(1)
+    curr_iter = generator_utils1.curr_iter()
+    assert curr_iter == "1"
+    generator_utils1.set_curr_iter(2)
+    curr_iter = generator_utils1.curr_iter()
+    assert curr_iter == "2"
+
+    generator_utils2 = GeneratorUtils.get_for_context("SomeEntity2")
+    generator_utils2.set_curr_iter(5)
+    curr_iter = generator_utils2.curr_iter()
+    assert curr_iter == "5"
+
+    curr_iter = generator_utils2.curr_iter("SomeEntity1")
+    assert curr_iter == "2"
 
 
 def test_generator_utils_reset(default_generator_utils):

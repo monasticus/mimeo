@@ -1,3 +1,4 @@
+from __future__ import annotations
 import datetime
 import random
 import string
@@ -12,7 +13,7 @@ class GeneratorUtils:
     __INSTANCES = {}
 
     @classmethod
-    def get_for_context(cls, context: str):
+    def get_for_context(cls, context: str) -> GeneratorUtils:
         if context not in GeneratorUtils.__INSTANCES:
             cls.__INSTANCES[context] = GeneratorUtils(cls.__CREATE_KEY)
         return cls.__INSTANCES[context]
@@ -20,6 +21,7 @@ class GeneratorUtils:
     def __init__(self, create_key):
         GeneratorUtils.__validate_instantiation(create_key)
         self.__id = 0
+        self.__curr_iter = 0
 
     def reset(self):
         self.__id = 0
@@ -27,6 +29,14 @@ class GeneratorUtils:
     def auto_increment(self, pattern="{:05d}"):
         self.__id += 1
         return pattern.format(self.__id)
+
+    def set_curr_iter(self, curr_iter: int):
+        self.__curr_iter = curr_iter
+
+    def curr_iter(self, context: str = None):
+        if context is not None:
+            return GeneratorUtils.get_for_context(context).curr_iter()
+        return str(self.__curr_iter)
 
     @staticmethod
     def random_str(length=20):
