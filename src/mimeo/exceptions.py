@@ -10,6 +10,10 @@ class InvalidIndent(Exception):
     pass
 
 
+class InvalidVars(Exception):
+    pass
+
+
 class IncorrectMimeoModel(Exception):
     pass
 

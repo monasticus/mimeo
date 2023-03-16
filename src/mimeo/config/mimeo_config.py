@@ -1,7 +1,9 @@
+import re
+
 from mimeo.exceptions import (IncorrectMimeoConfig, IncorrectMimeoModel,
                               IncorrectMimeoTemplate,
                               UnsupportedOutputDirection,
-                              UnsupportedOutputFormat, InvalidIndent)
+                              UnsupportedOutputFormat, InvalidIndent, InvalidVars)
 
 
 class MimeoConfig:
@@ -13,6 +15,7 @@ class MimeoConfig:
     OUTPUT_DETAILS_FILE_NAME_KEY = "file_name"
     XML_DECLARATION_KEY = "xml_declaration"
     INDENT_KEY = "indent"
+    VARS_KEY = "vars"
     TEMPLATES_KEY = "_templates_"
     TEMPLATES_COUNT_KEY = "count"
     TEMPLATES_MODEL_KEY = "model"
@@ -25,6 +28,7 @@ class MimeoConfig:
         self.output_details = MimeoOutputDetails(self.output_format, config.get(self.OUTPUT_DETAILS_KEY, {}))
         self.xml_declaration = config.get(self.XML_DECLARATION_KEY, False)
         self.indent = MimeoConfig.__get_indent(config)
+        self.vars = MimeoConfig.__get_vars(config)
         self.templates = MimeoConfig.__get_templates(config)
 
     @staticmethod
@@ -42,6 +46,18 @@ class MimeoConfig:
             return indent
         else:
             raise InvalidIndent(f"Provided indent [{indent}] is negative!")
+
+    @staticmethod
+    def __get_vars(config):
+        variables = config.get(MimeoConfig.VARS_KEY, {})
+        if not isinstance(variables, dict):
+            raise InvalidVars(f"vars property does not store an object: {variables}")
+        for var in variables:
+            if not re.match(r"^[A-Z_0-9]+$", var):
+                raise InvalidVars(f"Provided var [{var}] includes forbidden characters "
+                                  "(you can use upper-cased letters, underscore and digits)!")
+        return variables
+
 
     @staticmethod
     def __get_templates(config):
