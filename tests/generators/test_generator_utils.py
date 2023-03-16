@@ -227,6 +227,50 @@ def test_generator_utils_key_in_several_contexts():
     assert key3_1 != key1_1
 
 
+def test_generator_utils_get_key():
+    generator_utils1 = GeneratorUtils.get_for_context("SomeEntity1")
+    generator_utils2 = GeneratorUtils.get_for_context("SomeEntity2")
+    generator_utils1.setup_iteration(1)
+    key = generator_utils1.key()
+    key_outside_context = generator_utils2.get_key("SomeEntity1")
+
+    assert key == key_outside_context
+
+
+def test_generator_utils_get_key_eval(default_context, default_generator_utils):
+    generator_utils1 = GeneratorUtils.get_for_context("SomeEntity1")
+    generator_utils2 = GeneratorUtils.get_for_context("SomeEntity2")
+    generator_utils1.setup_iteration(1)
+    key = generator_utils1.key()
+    key_outside_context = GeneratorUtils.eval("SomeEntity2", "get_key('SomeEntity1')")
+
+    assert key == key_outside_context
+
+
+def test_generator_utils_get_key_with_customized_index():
+    generator_utils1 = GeneratorUtils.get_for_context("CustomizedIndex1")
+    generator_utils2 = GeneratorUtils.get_for_context("CustomizedIndex2")
+    generator_utils1.setup_iteration(1)
+    generator_utils1.setup_iteration(2)
+    key = generator_utils1.key()
+    generator_utils1.setup_iteration(3)
+    key_outside_context = generator_utils2.get_key("CustomizedIndex1", 1)
+
+    assert key == key_outside_context
+
+
+def test_generator_utils_get_key_with_customized_index_eval():
+    generator_utils1 = GeneratorUtils.get_for_context("CustomizedIndexEval1")
+    generator_utils2 = GeneratorUtils.get_for_context("CustomizedIndexEval2")
+    generator_utils1.setup_iteration(1)
+    generator_utils1.setup_iteration(2)
+    key = generator_utils1.key()
+    generator_utils1.setup_iteration(3)
+    key_outside_context = GeneratorUtils.eval("CustomizedIndexEval2", "get_key('CustomizedIndexEval1', 1)")
+
+    assert key == key_outside_context
+
+
 def test_generator_utils_reset(default_generator_utils):
     identifier = default_generator_utils.auto_increment()
     assert identifier == "00001"
@@ -300,3 +344,8 @@ def test_generator_utils_not_allowed_functions():
         GeneratorUtils.eval("SomeEntity", "eval(auto_increment())")
 
     assert err.value.args[0] == "Provided function [eval(auto_increment())] is invalid!"
+
+    with pytest.raises(InvalidMimeoUtil) as err:
+        GeneratorUtils.eval("SomeEntity", "key('non-existing-parameter')")
+
+    assert err.value.args[0] == "Provided function [key('non-existing-parameter')] is invalid!"

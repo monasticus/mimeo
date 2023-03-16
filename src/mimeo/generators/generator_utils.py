@@ -46,6 +46,10 @@ class GeneratorUtils:
         return self.__keys[-1]
 
     @staticmethod
+    def get_key(context: str, index: int = -1):
+        return GeneratorUtils.get_for_context(context).__keys[index]
+
+    @staticmethod
     def random_str(length=20):
         return "".join(random.choice(string.ascii_letters) for _ in range(length))
 
@@ -72,7 +76,10 @@ class GeneratorUtils:
         prepared_funct = funct
         prepared_funct = re.sub(r"auto_increment\((.*)\)", r"utils.auto_increment(\1)", prepared_funct)
         prepared_funct = re.sub(r"curr_iter\((.*)\)", r"utils.curr_iter(\1)", prepared_funct)
-        prepared_funct = re.sub(r"key\((.*)\)", r"utils.key(\1)", prepared_funct)
+        if "get_key" in prepared_funct:
+            prepared_funct = re.sub(r"get_key\((.*)\)", r"utils.get_key(\1)", prepared_funct)
+        elif "key" in prepared_funct:
+            prepared_funct = re.sub(r"key\((.*)\)", r"utils.key(\1)", prepared_funct)
         prepared_funct = re.sub(r"random_str\((.*)\)", r"utils.random_str(\1)", prepared_funct)
         prepared_funct = re.sub(r"random_int\((.*)\)", r"utils.random_int(\1)", prepared_funct)
         prepared_funct = re.sub(r"date\((.*)\)", r"utils.date(\1)", prepared_funct)
