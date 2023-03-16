@@ -8,7 +8,8 @@ import uuid
 from datetime import date, datetime, timedelta
 
 from mimeo.config import MimeoConfig
-from mimeo.exceptions import InvalidMimeoUtil, NotAllowedInstantiation
+from mimeo.exceptions import (InvalidMimeoUtil, InvalidSpecialFieldValue,
+                              NotAllowedInstantiation, NotASpecialField)
 
 
 class GeneratorUtils:
@@ -32,6 +33,7 @@ class GeneratorUtils:
         self.__id = 0
         self.__curr_iter = 0
         self.__keys = []
+        self.__special_fields = {}
 
     def reset(self) -> None:
         self.__id = 0
@@ -39,6 +41,7 @@ class GeneratorUtils:
     def setup_iteration(self, curr_iter: int) -> None:
         self.__curr_iter = curr_iter
         self.__keys.append(str(uuid.uuid4()))
+        self.__special_fields = {}
 
     def auto_increment(self, pattern="{:05d}") -> str:
         try:
@@ -55,6 +58,20 @@ class GeneratorUtils:
 
     def key(self) -> str:
         return self.__keys[-1]
+
+    def provide(self, field_name: str, field_value) -> str:
+        if not GeneratorUtils.is_special_field(field_name):
+            raise NotASpecialField(f"Provided field [{field_name}] is not a special one (use {'{:NAME:}'})!")
+        if isinstance(field_value, dict) or isinstance(field_value, list):
+            raise InvalidSpecialFieldValue(f"Provided field value [{field_value}] is invalid (use any atomic value)!")
+
+        self.__special_fields[field_name] = field_value
+        return field_name[2:][:-2]
+
+    def inject(self, field_name: str):
+        if field_name not in self.__special_fields:
+            raise NotASpecialField(f"There's no such a special field [{field_name[2:][:-2]}]!")
+        return self.__special_fields.get(field_name)
 
     @staticmethod
     def get_key(context: str, iteration: int = 0) -> str:

@@ -32,3 +32,11 @@ class NotAllowedInstantiation(Exception):
 
 class InvalidMimeoUtil(Exception):
     pass
+
+
+class NotASpecialField(Exception):
+    pass
+
+
+class InvalidSpecialFieldValue(Exception):
+    pass

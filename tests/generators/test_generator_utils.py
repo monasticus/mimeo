@@ -3,7 +3,8 @@ from datetime import date, datetime, timedelta
 import pytest
 
 from mimeo.config import MimeoConfig
-from mimeo.exceptions import NotAllowedInstantiation
+from mimeo.exceptions import (InvalidSpecialFieldValue,
+                              NotAllowedInstantiation, NotASpecialField)
 from mimeo.generators import GeneratorUtils
 
 
@@ -468,6 +469,56 @@ def test_is_special_field_false():
     assert not GeneratorUtils.is_special_field("{:Some Field:}")
 
 
+def test_provide_not_special_field(default_generator_utils):
+    with pytest.raises(NotASpecialField) as err:
+        default_generator_utils.provide("{SomeField}", "custom-value")
+
+    assert err.value.args[0] == "Provided field [{SomeField}] is not a special one (use {:NAME:})!"
+
+
+def test_provide_invalid_special_field_value(default_generator_utils):
+    with pytest.raises(InvalidSpecialFieldValue) as err:
+        default_generator_utils.provide("{:SomeField:}", {})
+
+    assert err.value.args[0] == "Provided field value [{}] is invalid (use any atomic value)!"
+
+    with pytest.raises(InvalidSpecialFieldValue) as err:
+        default_generator_utils.provide("{:SomeField:}", [])
+
+    assert err.value.args[0] == "Provided field value [[]] is invalid (use any atomic value)!"
+
+
+def test_inject_not_special_field(default_generator_utils):
+    with pytest.raises(NotASpecialField) as err:
+        default_generator_utils.inject("{:SomeNotSpecialField:}")
+
+    assert err.value.args[0] == "There's no such a special field [SomeNotSpecialField]!"
+
+
+def test_provide_and_inject_str(default_generator_utils):
+    field_name = default_generator_utils.provide("{:SomeField:}", "custom-value")
+    assert field_name == "SomeField"
+
+    field_value = default_generator_utils.inject("{:SomeField:}")
+    assert field_value == "custom-value"
+
+
+def test_provide_and_inject_int(default_generator_utils):
+    field_name = default_generator_utils.provide("{:SomeField:}", 1)
+    assert field_name == "SomeField"
+
+    field_value = default_generator_utils.inject("{:SomeField:}")
+    assert field_value == 1
+
+
+def test_provide_and_inject_bool(default_generator_utils):
+    field_name = default_generator_utils.provide("{:SomeField:}", True)
+    assert field_name == "SomeField"
+
+    field_value = default_generator_utils.inject("{:SomeField:}")
+    assert field_value is True
+
+
 def test_not_allowed_functions():
     to_render = "{setup(MimeoConfig({'_templates_':[]}))}"
     value = GeneratorUtils.render_value("SomeEntity", to_render)
@@ -486,6 +537,14 @@ def test_not_allowed_functions():
     assert value == to_render
 
     to_render = "{is_special_field()}"
+    value = GeneratorUtils.render_value("SomeEntity", to_render)
+    assert value == to_render
+
+    to_render = "{provide()}"
+    value = GeneratorUtils.render_value("SomeEntity", to_render)
+    assert value == to_render
+
+    to_render = "{inject()}"
     value = GeneratorUtils.render_value("SomeEntity", to_render)
     assert value == to_render
 
