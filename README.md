@@ -126,19 +126,63 @@ Mimeo exposes several functions for data generation that will make it more usefu
 
 Mimeo configuration is defined in a JSON file using internal settings and data templates.
 
-| Key                             |  Level   |      Required      | Supported values |    Default     | Description                                                              |
-|:--------------------------------|:--------:|:------------------:|:----------------:|:--------------:|--------------------------------------------------------------------------|
-| `output_format`                 |  Config  |        :x:         |      `xml`       |     `xml`      | Defines output data format                                               |
-| `output_details`                |  Config  |        :x:         |      object      |      ---       | Defines output details on how it will be consumed                        |
-| `output_details/direction`      |  Config  |        :x:         |  `file`, `raw`   |     `file`     | Defines how output will be consumed                                      |
-| `output_details/directory_path` |  Config  |        :x:         |      string      | `mimeo-output` | For `file` direction - defines an output directory                       |
-| `output_details/file_name`      |  Config  |        :x:         |      string      | `mimeo-output` | For `file` direction - defines an output file name                       |
-| `indent`                        |  Config  |        :x:         |     integer      |     `null`     | Defines indent applied in output data                                    |
-| `xml_declaration`               |  Config  |        :x:         |     boolean      |    `false`     | Indicates whether an xml declaration should be added to output data      |
-| `_templates_`                   |  Config  | :heavy_check_mark: |      array       |      ---       | Stores templates for data generation                                     |
-| `count`                         | Template | :heavy_check_mark: |     integer      |      ---       | Indicates number of copies                                               |
-| `model`                         | Template | :heavy_check_mark: |      object      |      ---       | Defines data template to be copied                                       |
-| `attributes`                    |  Model   |        :x:         |      object      |      ---       | Defines attributes applied on the root node (mostly used for namespaces) |
+| Key                             |  Level   |      Required      | Supported values |    Default     | Description                                                                  |
+|:--------------------------------|:--------:|:------------------:|:----------------:|:--------------:|------------------------------------------------------------------------------|
+| `output_format`                 |  Config  |        :x:         |      `xml`       |     `xml`      | Defines output data format                                                   |
+| `output_details`                |  Config  |        :x:         |      object      |      ---       | Defines output details on how it will be consumed                            |
+| `output_details/direction`      |  Config  |        :x:         |  `file`, `raw`   |     `file`     | Defines how output will be consumed                                          |
+| `output_details/directory_path` |  Config  |        :x:         |      string      | `mimeo-output` | For `file` direction - defines an output directory                           |
+| `output_details/file_name`      |  Config  |        :x:         |      string      | `mimeo-output` | For `file` direction - defines an output file name                           |
+| `indent`                        |  Config  |        :x:         |     integer      |     `null`     | Defines indent applied in output data                                        |
+| `vars`                          |  Config  |        :x:         |      object      |      ---       | Defines variables to be used in a Mimeo Template (read more in next section) |
+| `xml_declaration`               |  Config  |        :x:         |     boolean      |    `false`     | Indicates whether an xml declaration should be added to output data          |
+| `_templates_`                   |  Config  | :heavy_check_mark: |      array       |      ---       | Stores templates for data generation                                         |
+| `count`                         | Template | :heavy_check_mark: |     integer      |      ---       | Indicates number of copies                                                   |
+| `model`                         | Template | :heavy_check_mark: |      object      |      ---       | Defines data template to be copied                                           |
+| `attributes`                    |  Model   |        :x:         |      object      |      ---       | Defines attributes applied on the root node (mostly used for namespaces)     |
+
+#### Mimeo Vars
+
+Mimeo allows you to define a list of variables.
+You can use them in your Mimeo Config by wrapping them in curly brackets [`{VARIABLE}`].
+
+There are only 2 rules for variable names:
+- Variable name can include upper-cased letters \[`A-Z`\], underscore \[`_`\] and digits \{`0-9`\} only
+- Variable name must start with a letter
+
+Variable can be defined with:
+- any atomic value
+- any other variable defined
+- any Mimeo Util
+
+Example:
+```json
+{
+        "vars": {
+            "CUSTOM_VAR_1": "custom-value-1",
+            "CUSTOM_VAR_2": 1,
+            "CUSTOM_VAR_3": true,
+            "CUSTOM_VAR_4": "{CUSTOM_VAR_2}",
+            "CUSTOM_VAR_5": "{auto_increment('{}')}"
+        },
+        "_templates_": [
+            {
+                "count": 5,
+                "model": {
+                    "SomeEntity": {
+                        "ChildNode1": "{CUSTOM_VAR_1}",
+                        "ChildNode2": "{CUSTOM_VAR_2}",
+                        "ChildNode3": "{CUSTOM_VAR_3}",
+                        "ChildNode4": "{CUSTOM_VAR_4}",
+                        "ChildNode5": "{CUSTOM_VAR_5}",
+                        "ChildNode6": "{CUSTOM_VAR_6}",
+                        "ChildNode7": "{CUSTOM_VAR_7}"
+                    }
+                }
+            }
+        ]
+    }
+```
 
 ### Mimeo CLI
 
