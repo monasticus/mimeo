@@ -3,7 +3,7 @@ from datetime import date, datetime, timedelta
 import pytest
 
 from mimeo.config import MimeoConfig
-from mimeo.exceptions import InvalidMimeoUtil, NotAllowedInstantiation
+from mimeo.exceptions import NotAllowedInstantiation
 from mimeo.generators import GeneratorUtils
 
 
@@ -25,7 +25,7 @@ def setup(default_generator_utils):
     yield
 
 
-def test_generator_utils_direct_instantiation():
+def test_direct_instantiation():
     with pytest.raises(NotAllowedInstantiation) as err:
         GeneratorUtils("some_hardcoded_key")
 
@@ -33,13 +33,38 @@ def test_generator_utils_direct_instantiation():
                                 "Please use GeneratorUtils.get_for_context(context)"
 
 
-def test_generator_utils_instantiation_for_context():
+def test_render_value_str_value(default_context):
+    value = GeneratorUtils.render_value(default_context, "str-value")
+    assert value == "str-value"
+
+
+def test_render_value_int_value(default_context):
+    value = GeneratorUtils.render_value(default_context, 1)
+    assert value == "1"
+
+
+def test_render_value_bool_value(default_context):
+    value = GeneratorUtils.render_value(default_context, True)
+    assert value == "true"
+
+
+def test_render_value_value_imitating_python_code(default_context):
+    value = GeneratorUtils.render_value(default_context, "{'str-value'.upper()}")
+    assert value == "{'str-value'.upper()}"
+
+
+def test_render_value_value_imitating_python_code2(default_context):
+    value = GeneratorUtils.render_value(default_context, "{print()}")
+    assert value == "{print()}"
+
+
+def test_instantiation_for_context():
     generator_utils1 = GeneratorUtils.get_for_context("SomeEntity")
     generator_utils2 = GeneratorUtils.get_for_context("SomeEntity")
     assert generator_utils1 is generator_utils2
 
 
-def test_generator_utils_random_str(default_context, default_generator_utils):
+def test_random_str(default_context, default_generator_utils):
     random_str = default_generator_utils.random_str()
     assert isinstance(random_str, str)
     assert len(random_str) == 20
@@ -49,7 +74,7 @@ def test_generator_utils_random_str(default_context, default_generator_utils):
     assert len(random_str) == 20
 
 
-def test_generator_utils_random_str_with_customized_length(default_context, default_generator_utils):
+def test_random_str_with_customized_length(default_context, default_generator_utils):
     random_str = default_generator_utils.random_str(3)
     assert isinstance(random_str, str)
     assert len(random_str) == 3
@@ -59,7 +84,7 @@ def test_generator_utils_random_str_with_customized_length(default_context, defa
     assert len(random_str) == 3
 
 
-def test_generator_utils_random_int(default_context, default_generator_utils):
+def test_random_int(default_context, default_generator_utils):
     for _ in range(100):
         random_int = default_generator_utils.random_int()
         assert isinstance(random_int, int)
@@ -72,7 +97,7 @@ def test_generator_utils_random_int(default_context, default_generator_utils):
         assert int(random_int) < 100
 
 
-def test_generator_utils_random_int_with_customized_length(default_context, default_generator_utils):
+def test_random_int_with_customized_length(default_context, default_generator_utils):
     for _ in range(100):
         random_int = default_generator_utils.random_int(10)
         assert isinstance(random_int, int)
@@ -85,21 +110,21 @@ def test_generator_utils_random_int_with_customized_length(default_context, defa
         assert int(random_int) < 10
 
 
-def test_generator_utils_auto_increment(default_context, default_generator_utils):
+def test_auto_increment(default_context, default_generator_utils):
     identifier = default_generator_utils.auto_increment()
     assert identifier == "00001"
     identifier = default_generator_utils.auto_increment()
     assert identifier == "00002"
 
 
-def test_generator_utils_auto_increment_render_value(default_context, default_generator_utils):
+def test_auto_increment_render_value(default_context, default_generator_utils):
     identifier = GeneratorUtils.render_value(default_context, "{auto_increment()}")
     assert identifier == "00001"
     identifier = GeneratorUtils.render_value(default_context, "{auto_increment()}")
     assert identifier == "00002"
 
 
-def test_generator_utils_auto_increment_with_customized_format(default_context, default_generator_utils):
+def test_auto_increment_with_customized_format(default_context, default_generator_utils):
     identifier = default_generator_utils.auto_increment("{}")
     assert identifier == "1"
     identifier = default_generator_utils.auto_increment("MYID/{}")
@@ -108,7 +133,7 @@ def test_generator_utils_auto_increment_with_customized_format(default_context, 
     assert identifier == "MYID_0000000003"
 
 
-def test_generator_utils_auto_increment_with_customized_format_render_value(default_context, default_generator_utils):
+def test_auto_increment_with_customized_format_render_value(default_context, default_generator_utils):
     identifier = GeneratorUtils.render_value(default_context, "{auto_increment('{}')}")
     assert identifier == "1"
     identifier = GeneratorUtils.render_value(default_context, "{auto_increment('MYID/{}')}")
@@ -117,7 +142,7 @@ def test_generator_utils_auto_increment_with_customized_format_render_value(defa
     assert identifier == "MYID_0000000003"
 
 
-def test_generator_utils_auto_increment_for_different_context():
+def test_auto_increment_for_different_context():
     generator_utils1 = GeneratorUtils.get_for_context("SomeEntity1")
     identifier = generator_utils1.auto_increment()
     assert identifier == "00001"
@@ -131,7 +156,7 @@ def test_generator_utils_auto_increment_for_different_context():
     assert identifier == "00002"
 
 
-def test_generator_utils_curr_iter(default_context, default_generator_utils):
+def test_curr_iter(default_context, default_generator_utils):
     default_generator_utils.setup_iteration(1)
     curr_iter = default_generator_utils.curr_iter()
     assert curr_iter == 1
@@ -141,7 +166,7 @@ def test_generator_utils_curr_iter(default_context, default_generator_utils):
     assert (curr_iter) == 2
 
 
-def test_generator_utils_curr_iter_render_value(default_context, default_generator_utils):
+def test_curr_iter_render_value(default_context, default_generator_utils):
     default_generator_utils.setup_iteration(1)
     curr_iter = GeneratorUtils.render_value(default_context, "{curr_iter()}")
     assert curr_iter == "1"
@@ -151,7 +176,7 @@ def test_generator_utils_curr_iter_render_value(default_context, default_generat
     assert curr_iter == "2"
 
 
-def test_generator_utils_curr_iter_from_different_context():
+def test_curr_iter_from_different_context():
     generator_utils1 = GeneratorUtils.get_for_context("SomeEntity1")
     generator_utils1.setup_iteration(1)
     curr_iter = generator_utils1.curr_iter()
@@ -169,7 +194,7 @@ def test_generator_utils_curr_iter_from_different_context():
     assert curr_iter == 2
 
 
-def test_generator_utils_key_in_several_iterations(default_context, default_generator_utils):
+def test_key_in_several_iterations(default_context, default_generator_utils):
     default_generator_utils.setup_iteration(1)
     key1_1 = default_generator_utils.key()
     key1_2 = default_generator_utils.key()
@@ -190,7 +215,7 @@ def test_generator_utils_key_in_several_iterations(default_context, default_gene
     assert key3_1 != key1_1
 
 
-def test_generator_utils_key_in_several_iterations_render_value(default_context, default_generator_utils):
+def test_key_in_several_iterations_render_value(default_context, default_generator_utils):
     default_generator_utils.setup_iteration(1)
     key1_1 = GeneratorUtils.render_value(default_context, "{key()}")
     key1_2 = GeneratorUtils.render_value(default_context, "{key()}")
@@ -211,7 +236,7 @@ def test_generator_utils_key_in_several_iterations_render_value(default_context,
     assert key3_1 != key1_1
 
 
-def test_generator_utils_key_in_several_contexts():
+def test_key_in_several_contexts():
     generator_utils1 = GeneratorUtils.get_for_context("SomeEntity1")
     generator_utils2 = GeneratorUtils.get_for_context("SomeEntity2")
     generator_utils3 = GeneratorUtils.get_for_context("SomeEntity3")
@@ -235,7 +260,7 @@ def test_generator_utils_key_in_several_contexts():
     assert key3_1 != key1_1
 
 
-def test_generator_utils_get_key():
+def test_get_key():
     generator_utils1 = GeneratorUtils.get_for_context("SomeEntity1")
     generator_utils2 = GeneratorUtils.get_for_context("SomeEntity2")
     generator_utils1.setup_iteration(1)
@@ -245,7 +270,7 @@ def test_generator_utils_get_key():
     assert key == key_outside_context
 
 
-def test_generator_utils_get_key_render_value(default_context, default_generator_utils):
+def test_get_key_render_value(default_context, default_generator_utils):
     generator_utils1 = GeneratorUtils.get_for_context("SomeEntity1")
     generator_utils2 = GeneratorUtils.get_for_context("SomeEntity2")
     generator_utils1.setup_iteration(1)
@@ -255,7 +280,7 @@ def test_generator_utils_get_key_render_value(default_context, default_generator
     assert key == key_outside_context
 
 
-def test_generator_utils_get_key_with_customized_iteration():
+def test_get_key_with_customized_iteration():
     generator_utils1 = GeneratorUtils.get_for_context("CustomizedIndex1")
     generator_utils2 = GeneratorUtils.get_for_context("CustomizedIndex2")
     generator_utils1.setup_iteration(1)
@@ -267,7 +292,7 @@ def test_generator_utils_get_key_with_customized_iteration():
     assert key == key_outside_context
 
 
-def test_generator_utils_get_key_with_customized_iteration_render_value():
+def test_get_key_with_customized_iteration_render_value():
     generator_utils1 = GeneratorUtils.get_for_context("CustomizedIndexEval1")
     generator_utils2 = GeneratorUtils.get_for_context("CustomizedIndexEval2")
     generator_utils1.setup_iteration(1)
@@ -279,7 +304,7 @@ def test_generator_utils_get_key_with_customized_iteration_render_value():
     assert key == key_outside_context
 
 
-def test_generator_utils_reset(default_generator_utils):
+def test_reset(default_generator_utils):
     identifier = default_generator_utils.auto_increment()
     assert identifier == "00001"
     identifier = default_generator_utils.auto_increment()
@@ -291,7 +316,7 @@ def test_generator_utils_reset(default_generator_utils):
     assert identifier == "00001"
 
 
-def test_generator_utils_date(default_context, default_generator_utils):
+def test_date(default_context, default_generator_utils):
     date_value = default_generator_utils.date()
     assert date_value == date.today().strftime("%Y-%m-%d")
 
@@ -299,7 +324,7 @@ def test_generator_utils_date(default_context, default_generator_utils):
     assert date_value == date.today().strftime("%Y-%m-%d")
 
 
-def test_generator_utils_date_with_customized_positive_days_delta(default_context, default_generator_utils):
+def test_date_with_customized_positive_days_delta(default_context, default_generator_utils):
     expected_date_value = date.today() + timedelta(5)
 
     date_value = default_generator_utils.date(5)
@@ -309,7 +334,7 @@ def test_generator_utils_date_with_customized_positive_days_delta(default_contex
     assert date_value == expected_date_value.strftime("%Y-%m-%d")
 
 
-def test_generator_utils_date_with_customized_negative_days_delta(default_context, default_generator_utils):
+def test_date_with_customized_negative_days_delta(default_context, default_generator_utils):
     expected_date_value = date.today() + timedelta(days=-5)
 
     date_value = default_generator_utils.date(-5)
@@ -319,7 +344,7 @@ def test_generator_utils_date_with_customized_negative_days_delta(default_contex
     assert date_value == expected_date_value.strftime("%Y-%m-%d")
 
 
-def test_generator_utils_date_time(default_context, default_generator_utils):
+def test_date_time(default_context, default_generator_utils):
     date_time_value = default_generator_utils.date_time()
     assert date_time_value == datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
 
@@ -327,7 +352,7 @@ def test_generator_utils_date_time(default_context, default_generator_utils):
     assert date_time_value == datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
 
 
-def test_generator_utils_date_time_with_timedelta(default_context, default_generator_utils):
+def test_date_time_with_timedelta(default_context, default_generator_utils):
     expected_date_time_value = datetime.now() + timedelta(days=1, hours=2, minutes=-3, seconds=5)
 
     date_time_value = default_generator_utils.date_time(1, 2, -3, 5)
@@ -337,7 +362,7 @@ def test_generator_utils_date_time_with_timedelta(default_context, default_gener
     assert date_time_value == expected_date_time_value.strftime("%Y-%m-%dT%H:%M:%S")
 
 
-def test_generator_utils_vars_str():
+def test_vars_str():
     config = MimeoConfig({
         "vars": {
             "CUSTOM_VAR_1": "custom-value-1"
@@ -349,7 +374,7 @@ def test_generator_utils_vars_str():
     assert value == "custom-value-1"
 
 
-def test_generator_utils_vars_int():
+def test_vars_int():
     config = MimeoConfig({
         "vars": {
             "CUSTOM_VAR_1": 1
@@ -361,7 +386,7 @@ def test_generator_utils_vars_int():
     assert value == "1"
 
 
-def test_generator_utils_vars_bool():
+def test_vars_bool():
     config = MimeoConfig({
         "vars": {
             "CUSTOM_VAR_1": True
@@ -373,7 +398,7 @@ def test_generator_utils_vars_bool():
     assert value == "true"
 
 
-def test_generator_utils_vars_pointing_to_var():
+def test_vars_pointing_to_var():
     config = MimeoConfig({
         "vars": {
             "CUSTOM_VAR_1": "custom-value-1",
@@ -386,7 +411,7 @@ def test_generator_utils_vars_pointing_to_var():
     assert value == "custom-value-1"
 
 
-def test_generator_utils_vars_pointing_to_non_existing_var():
+def test_vars_pointing_to_non_existing_var():
     config = MimeoConfig({
         "vars": {
             "CUSTOM_VAR_1": "{NON_EXISTING_VAR}"
@@ -398,7 +423,7 @@ def test_generator_utils_vars_pointing_to_non_existing_var():
     assert value == "{NON_EXISTING_VAR}"
 
 
-def test_generator_utils_vars_pointing_to_funct():
+def test_vars_pointing_to_funct():
     config = MimeoConfig({
         "vars": {
             "CUSTOM_VAR_1": "{auto_increment('{}')}"
@@ -410,7 +435,7 @@ def test_generator_utils_vars_pointing_to_funct():
     assert value == "1"
 
 
-def test_generator_utils_vars_pointing_to_invalid_funct():
+def test_vars_pointing_to_invalid_funct():
     config = MimeoConfig({
         "vars": {
             "CUSTOM_VAR_1": "{auto_increment(1)}"
@@ -422,7 +447,7 @@ def test_generator_utils_vars_pointing_to_invalid_funct():
     assert value == "{auto_increment(1)}"
 
 
-def test_generator_utils_not_allowed_functions():
+def test_not_allowed_functions():
     to_render = "{setup(MimeoConfig({'_templates_':[]}))}"
     value = GeneratorUtils.render_value("SomeEntity", to_render)
     assert value == to_render

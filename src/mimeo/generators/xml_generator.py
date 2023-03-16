@@ -59,7 +59,7 @@ class XMLGenerator(Generator):
                     grand_child_data = child[grand_child_tag]
                     self.__to_xml(element, grand_child_tag, grand_child_data)
             else:
-                element.text = XMLGenerator._get_value(element_value, self.__current_template)
+                element.text = GeneratorUtils.render_value(self.__current_template.model.root_name, element_value)
 
             if parent is None:
                 return element

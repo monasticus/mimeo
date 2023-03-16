@@ -30,7 +30,3 @@ class Generator(metaclass=ABCMeta):
     @abstractmethod
     def stringify(self, data, mimeo_config) -> str:
         raise NotImplementedError
-
-    @staticmethod
-    def _get_value(literal_value, template):
-        return GeneratorUtils.render_value(template.model.root_name, literal_value)
