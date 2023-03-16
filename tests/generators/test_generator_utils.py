@@ -126,39 +126,39 @@ def test_generator_utils_auto_increment_for_different_context():
 def test_generator_utils_curr_iter(default_context, default_generator_utils):
     default_generator_utils.setup_iteration(1)
     curr_iter = default_generator_utils.curr_iter()
-    assert curr_iter == "1"
+    assert curr_iter == 1
 
     default_generator_utils.setup_iteration(2)
     curr_iter = default_generator_utils.curr_iter()
-    assert curr_iter == "2"
+    assert curr_iter == 2
 
 
 def test_generator_utils_curr_iter_eval(default_context, default_generator_utils):
     default_generator_utils.setup_iteration(1)
     curr_iter = GeneratorUtils.eval(default_context, "curr_iter()")
-    assert curr_iter == "1"
+    assert curr_iter == 1
 
     default_generator_utils.setup_iteration(2)
     curr_iter = GeneratorUtils.eval(default_context, "curr_iter()")
-    assert curr_iter == "2"
+    assert curr_iter == 2
 
 
 def test_generator_utils_curr_iter_from_different_context():
     generator_utils1 = GeneratorUtils.get_for_context("SomeEntity1")
     generator_utils1.setup_iteration(1)
     curr_iter = generator_utils1.curr_iter()
-    assert curr_iter == "1"
+    assert curr_iter == 1
     generator_utils1.setup_iteration(2)
     curr_iter = generator_utils1.curr_iter()
-    assert curr_iter == "2"
+    assert curr_iter == 2
 
     generator_utils2 = GeneratorUtils.get_for_context("SomeEntity2")
     generator_utils2.setup_iteration(5)
     curr_iter = generator_utils2.curr_iter()
-    assert curr_iter == "5"
+    assert curr_iter == 5
 
     curr_iter = generator_utils2.curr_iter("SomeEntity1")
-    assert curr_iter == "2"
+    assert curr_iter == 2
 
 
 def test_generator_utils_key_in_several_iterations(default_context, default_generator_utils):
