@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 import datetime
 import random
 import re
@@ -7,7 +8,7 @@ import uuid
 from datetime import date, datetime, timedelta
 
 from mimeo.config import MimeoConfig
-from mimeo.exceptions import NotAllowedInstantiation, InvalidMimeoUtil
+from mimeo.exceptions import InvalidMimeoUtil, NotAllowedInstantiation
 
 
 class GeneratorUtils:

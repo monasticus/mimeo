@@ -1,9 +1,9 @@
 import re
 
 from mimeo.exceptions import (IncorrectMimeoConfig, IncorrectMimeoModel,
-                              IncorrectMimeoTemplate,
-                              UnsupportedOutputDirection,
-                              UnsupportedOutputFormat, InvalidIndent, InvalidVars)
+                              IncorrectMimeoTemplate, InvalidIndent,
+                              InvalidVars, UnsupportedOutputDirection,
+                              UnsupportedOutputFormat)
 
 
 class MimeoConfig:

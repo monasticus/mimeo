@@ -1,7 +1,8 @@
-import pytest
 from datetime import date, datetime, timedelta
 
-from mimeo.exceptions import NotAllowedInstantiation, InvalidMimeoUtil
+import pytest
+
+from mimeo.exceptions import InvalidMimeoUtil, NotAllowedInstantiation
 from mimeo.generators import GeneratorUtils
 
 
