@@ -6,6 +6,7 @@ import string
 import uuid
 from datetime import date, datetime, timedelta
 
+from mimeo.config import MimeoConfig
 from mimeo.exceptions import NotAllowedInstantiation, InvalidMimeoUtil
 
 
@@ -13,6 +14,11 @@ class GeneratorUtils:
 
     __CREATE_KEY = object()
     __INSTANCES = {}
+    __VARS = {}
+
+    @classmethod
+    def setup(cls, mimeo_config: MimeoConfig) -> None:
+        cls.__VARS = mimeo_config.vars
 
     @classmethod
     def get_for_context(cls, context: str) -> GeneratorUtils:

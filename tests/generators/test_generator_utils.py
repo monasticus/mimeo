@@ -337,6 +337,11 @@ def test_generator_utils_date_time_with_timedelta(default_context, default_gener
 
 def test_generator_utils_not_allowed_functions():
     with pytest.raises(InvalidMimeoUtil) as err:
+        GeneratorUtils.eval("SomeEntity", "setup(MimeoConfig({'_templates_':[]}))")
+
+    assert err.value.args[0] == "Provided function [setup(MimeoConfig({'_templates_':[]}))] is invalid!"
+
+    with pytest.raises(InvalidMimeoUtil) as err:
         GeneratorUtils.eval("SomeEntity", "reset()")
 
     assert err.value.args[0] == "Provided function [reset()] is invalid!"
