@@ -140,11 +140,11 @@ def test_parsing_config_with_templates_object():
                                 "{'_templates_': {'count': 5, 'model': {'SomeEntity': {'ChildNode': 'value'}}}}"
 
 
-def test_parsing_config_with_invalid_vars():
+def test_parsing_config_with_invalid_vars_forbidden_character():
     config = {
         "vars": {
             "CUSTOM_KEY1": "value1",
-            "CuSTOM_KEY1": "value2"
+            "CuSTOM_KEY2": "value2"
         },
         "_templates_": [
             {
@@ -161,8 +161,33 @@ def test_parsing_config_with_invalid_vars():
     with pytest.raises(InvalidVars) as err:
         MimeoConfig(config)
 
-    assert err.value.args[0] == "Provided var [CuSTOM_KEY1] includes forbidden characters " \
-                                "(you can use upper-cased letters, underscore and digits)!"
+    assert err.value.args[0] == "Provided var [CuSTOM_KEY2] is invalid " \
+                                "(you can use upper-cased name with underscore and digits, starting with a letter)!"
+
+
+def test_parsing_config_with_invalid_vars_starting_with_digit():
+    config = {
+        "vars": {
+            "CUSTOM_KEY1": "value1",
+            "2CUSTOM_KEY": "value2"
+        },
+        "_templates_": [
+            {
+                "count": 5,
+                "model": {
+                    "SomeEntity": {
+                        "ChildNode": "value"
+                    }
+                }
+            }
+        ]
+    }
+
+    with pytest.raises(InvalidVars) as err:
+        MimeoConfig(config)
+
+    assert err.value.args[0] == "Provided var [2CUSTOM_KEY] is invalid " \
+                                "(you can use upper-cased name with underscore and digits, starting with a letter)!"
 
 
 def test_parsing_config_invalid_vars_not_being_object():

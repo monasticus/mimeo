@@ -53,9 +53,9 @@ class MimeoConfig:
         if not isinstance(variables, dict):
             raise InvalidVars(f"vars property does not store an object: {variables}")
         for var in variables:
-            if not re.match(r"^[A-Z_0-9]+$", var):
-                raise InvalidVars(f"Provided var [{var}] includes forbidden characters "
-                                  "(you can use upper-cased letters, underscore and digits)!")
+            if not re.match(r"^[A-Z][A-Z_0-9]*$", var):
+                raise InvalidVars(f"Provided var [{var}] is invalid "
+                                  "(you can use upper-cased name with underscore and digits, starting with a letter)!")
         return variables
 
 
