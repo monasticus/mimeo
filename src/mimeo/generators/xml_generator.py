@@ -9,6 +9,7 @@ from mimeo.generators import Generator, GeneratorUtils
 class XMLGenerator(Generator):
 
     def __init__(self, mimeo_config: MimeoConfig):
+        super().__init__(mimeo_config)
         self.__indent = mimeo_config.indent
         self.__xml_declaration = mimeo_config.xml_declaration
         self.__current_template = None
