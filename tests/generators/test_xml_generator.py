@@ -12,11 +12,6 @@ def setup():
     yield
 
 
-def get_generator_for_config(config_dict: dict):
-    config = MimeoConfig(config_dict)
-    return XMLGenerator(config)
-
-
 def test_generate_single_template_model_without_attributes():
     config = MimeoConfig({
         "output_format": "xml",
@@ -184,6 +179,89 @@ def test_generate_single_template_bool_value():
         assert child.tag == "ChildNode"
         assert child.attrib == {}
         assert child.text == "true"
+        assert len(list(child)) == 0  # number of children
+
+        count += 1
+
+    assert count == 5
+
+
+def test_generate_single_template_using_variables():
+    config = MimeoConfig({
+        "output_format": "xml",
+        "vars": {
+            "CUSTOM_VAR_1": "custom-value-1",
+            "CUSTOM_VAR_2": 1,
+            "CUSTOM_VAR_3": True,
+            "CUSTOM_VAR_4": "{CUSTOM_VAR_2}",
+            "CUSTOM_VAR_5": "{NON_EXISTING_VAR}",
+            "CUSTOM_VAR_6": "{auto_increment('{}')}",
+            "CUSTOM_VAR_7": "{auto_increment(1)}"
+        },
+        "_templates_": [
+            {
+                "count": 5,
+                "model": {
+                    "SomeEntity": {
+                        "ChildNode1": "{CUSTOM_VAR_1}",
+                        "ChildNode2": "{CUSTOM_VAR_2}",
+                        "ChildNode3": "{CUSTOM_VAR_3}",
+                        "ChildNode4": "{CUSTOM_VAR_4}",
+                        "ChildNode5": "{CUSTOM_VAR_5}",
+                        "ChildNode6": "{CUSTOM_VAR_6}",
+                        "ChildNode7": "{CUSTOM_VAR_7}"
+                    }
+                }
+            }
+        ]
+    })
+    generator = XMLGenerator(config)
+    count = 0
+    for index, data in enumerate(generator.generate(config.templates)):
+        assert data.tag == "SomeEntity"
+        assert data.attrib == {}
+        assert len(list(data)) == 7  # number of children
+
+        child = data.find("ChildNode1")
+        assert child.tag == "ChildNode1"
+        assert child.attrib == {}
+        assert child.text == "custom-value-1"
+        assert len(list(child)) == 0  # number of children
+
+        child = data.find("ChildNode2")
+        assert child.tag == "ChildNode2"
+        assert child.attrib == {}
+        assert child.text == "1"
+        assert len(list(child)) == 0  # number of children
+
+        child = data.find("ChildNode3")
+        assert child.tag == "ChildNode3"
+        assert child.attrib == {}
+        assert child.text == "true"
+        assert len(list(child)) == 0  # number of children
+
+        child = data.find("ChildNode4")
+        assert child.tag == "ChildNode4"
+        assert child.attrib == {}
+        assert child.text == "1"
+        assert len(list(child)) == 0  # number of children
+
+        child = data.find("ChildNode5")
+        assert child.tag == "ChildNode5"
+        assert child.attrib == {}
+        assert child.text == "{NON_EXISTING_VAR}"
+        assert len(list(child)) == 0  # number of children
+
+        child = data.find("ChildNode6")
+        assert child.tag == "ChildNode6"
+        assert child.attrib == {}
+        assert child.text == str(index+1)
+        assert len(list(child)) == 0  # number of children
+
+        child = data.find("ChildNode7")
+        assert child.tag == "ChildNode7"
+        assert child.attrib == {}
+        assert child.text == "{auto_increment(1)}"
         assert len(list(child)) == 0  # number of children
 
         count += 1

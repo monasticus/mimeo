@@ -41,8 +41,12 @@ class GeneratorUtils:
         self.__keys.append(str(uuid.uuid4()))
 
     def auto_increment(self, pattern="{:05d}") -> str:
-        self.__id += 1
-        return pattern.format(self.__id)
+        try:
+            self.__id += 1
+            return pattern.format(self.__id)
+        except AttributeError as err:
+            self.__id -= 1
+            raise err
 
     def curr_iter(self, context: str = None) -> int:
         if context is not None:
@@ -78,7 +82,39 @@ class GeneratorUtils:
         return time_value.strftime("%Y-%m-%dT%H:%M:%S")
 
     @staticmethod
-    def eval(context: str, funct: str):
+    def render_value(context: str, value):
+        value_str = str(value)
+        if isinstance(value, bool):
+            return value_str.lower()
+
+        pattern = re.compile("^{(.+)}$")
+        if pattern.match(value_str):
+            try:
+                match = next(pattern.finditer(value_str))
+                mimeo_util = match.group(1)
+                if GeneratorUtils.__is_var(mimeo_util):
+                    rendered_value = GeneratorUtils.__render_var(context, mimeo_util)
+                else:
+                    rendered_value = GeneratorUtils.__eval_funct(context, mimeo_util)
+                return str(rendered_value)
+            except InvalidMimeoUtil:
+                pass
+        return value_str
+
+    @staticmethod
+    def __is_var(mimeo_util: str) -> bool:
+        return bool(re.match(r"^[A-Z_0-9]+$", mimeo_util))
+
+    @staticmethod
+    def __render_var(context: str, mimeo_util: str):
+        value = GeneratorUtils.__VARS.get(mimeo_util)
+        if value is not None:
+            return GeneratorUtils.render_value(context, value)
+        else:
+            raise InvalidMimeoUtil(f"Provided variable [{mimeo_util}] is not defined!")
+
+    @staticmethod
+    def __eval_funct(context: str, funct: str):
         utils = GeneratorUtils.get_for_context(context)
         prepared_funct = funct
         prepared_funct = re.sub(r"auto_increment\((.*)\)", r"utils.auto_increment(\1)", prepared_funct)
