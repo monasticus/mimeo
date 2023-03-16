@@ -174,9 +174,7 @@ Example:
                         "ChildNode2": "{CUSTOM_VAR_2}",
                         "ChildNode3": "{CUSTOM_VAR_3}",
                         "ChildNode4": "{CUSTOM_VAR_4}",
-                        "ChildNode5": "{CUSTOM_VAR_5}",
-                        "ChildNode6": "{CUSTOM_VAR_6}",
-                        "ChildNode7": "{CUSTOM_VAR_7}"
+                        "ChildNode5": "{CUSTOM_VAR_5}"
                     }
                 }
             }
