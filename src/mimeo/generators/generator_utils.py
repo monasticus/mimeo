@@ -46,8 +46,8 @@ class GeneratorUtils:
         return self.__keys[-1]
 
     @staticmethod
-    def get_key(context: str, index: int = -1) -> str:
-        return GeneratorUtils.get_for_context(context).__keys[index]
+    def get_key(context: str, iteration: int = 0) -> str:
+        return GeneratorUtils.get_for_context(context).__keys[iteration - 1]
 
     @staticmethod
     def random_str(length=20) -> str:

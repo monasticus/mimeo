@@ -558,7 +558,7 @@ def test_generate_template_using_auto_increment_util_in_two_templates():
     generator = XMLGenerator(config)
     count = 0
     for index, data in enumerate(generator.generate(config.templates)):
-        expected_increment = index+1 if index < 5 else index-5 + 1  # from 6th item it is the second template
+        expected_increment = index + 1 if index < 5 else index - 5 + 1  # from 6th item it is the second template
         assert data.tag == "SomeEntity"
         assert data.attrib == {}
         assert len(list(data)) == 1  # number of children
@@ -591,7 +591,7 @@ def test_generate_template_using_curr_iter_util():
     generator = XMLGenerator(config)
     count = 0
     for index, data in enumerate(generator.generate(config.templates)):
-        curr_iter = index+1
+        curr_iter = index + 1
         assert data.tag == "SomeEntity"
         assert data.attrib == {}
         assert len(list(data)) == 1  # number of children
@@ -607,7 +607,7 @@ def test_generate_template_using_curr_iter_util():
     assert count == 5
 
 
-def test_generate_template_using_curr_iter_util():
+def test_generate_template_using_curr_iter_util_in_two_templates():
     config = MimeoConfig({
         "output_format": "xml",
         "_templates_": [
@@ -632,7 +632,7 @@ def test_generate_template_using_curr_iter_util():
     generator = XMLGenerator(config)
     count = 0
     for index, data in enumerate(generator.generate(config.templates)):
-        curr_iter = index+1 if index < 5 else index-5 + 1  # from 6th item it is the second template
+        curr_iter = index + 1 if index < 5 else index - 5 + 1  # from 6th item it is the second template
         print(generator.stringify(data, config))
         assert data.tag == "SomeEntity"
         assert data.attrib == {}
@@ -678,7 +678,7 @@ def test_generate_templates_using_curr_iter_util_in_separated_contexts():
     generator = XMLGenerator(config)
     count = 0
     for index, data in enumerate(generator.generate(config.templates)):
-        curr_iter = index+1
+        curr_iter = index + 1
         assert data.tag == "SomeEntity"
         assert data.attrib == {}
         assert len(list(data)) == 2  # number of children
@@ -696,7 +696,7 @@ def test_generate_templates_using_curr_iter_util_in_separated_contexts():
 
         nodes = multiples_nodes_node.findall("Node")
         for nested_index, node in enumerate(nodes):
-            nested_curr_iter = nested_index+1
+            nested_curr_iter = nested_index + 1
             assert node.tag == "Node"
             assert node.attrib == {}
             assert len(list(node)) == 1  # number of children
@@ -741,7 +741,7 @@ def test_generate_templates_using_curr_iter_util_in_separated_contexts_indicatin
     generator = XMLGenerator(config)
     count = 0
     for index, data in enumerate(generator.generate(config.templates)):
-        curr_iter = index+1
+        curr_iter = index + 1
         assert data.tag == "SomeEntity"
         assert data.attrib == {}
         assert len(list(data)) == 2  # number of children
@@ -794,7 +794,7 @@ def test_generate_template_using_curr_iter_and_auto_increment_utils():
     generator = XMLGenerator(config)
     count = 0
     for index, data in enumerate(generator.generate(config.templates)):
-        curr_iter = index+1
+        curr_iter = index + 1
         assert data.tag == "SomeEntity"
         assert data.attrib == {}
         assert len(list(data)) == 4  # number of children
@@ -814,15 +814,236 @@ def test_generate_template_using_curr_iter_and_auto_increment_utils():
         child = data.find("ChildNode3")
         assert child.tag == "ChildNode3"
         assert child.attrib == {}
-        assert child.text == str(curr_iter*2 - 1)  # 1, 3, 5, 7, 9
+        assert child.text == str(curr_iter * 2 - 1)  # 1, 3, 5, 7, 9
         assert len(list(child)) == 0  # number of children
 
         child = data.find("ChildNode4")
         assert child.tag == "ChildNode4"
         assert child.attrib == {}
-        assert child.text == str(curr_iter*2)  # 2, 4, 6, 8, 10
+        assert child.text == str(curr_iter * 2)  # 2, 4, 6, 8, 10
         assert len(list(child)) == 0  # number of children
 
         count += 1
 
     assert count == 5
+
+
+def test_generate_template_using_key_util():
+    config = MimeoConfig({
+        "output_format": "xml",
+        "_templates_": [
+            {
+                "count": 5,
+                "model": {
+                    "SomeEntity": {
+                        "ChildNode1": "{key()}",
+                        "ChildNode2": "{key()}",
+                        "ChildNode3": "{key()}",
+                    }
+                }
+            }
+        ]
+    })
+    generator = XMLGenerator(config)
+    count = 0
+    keys = []
+    for index, data in enumerate(generator.generate(config.templates)):
+        assert data.tag == "SomeEntity"
+        assert data.attrib == {}
+        assert len(list(data)) == 3  # number of children
+
+        child = data.find("ChildNode1")
+        key1 = child.text
+        assert child.tag == "ChildNode1"
+        assert child.attrib == {}
+        assert len(list(child)) == 0  # number of children
+
+        child = data.find("ChildNode2")
+        key2 = child.text
+        assert child.tag == "ChildNode2"
+        assert child.attrib == {}
+        assert len(list(child)) == 0  # number of children
+
+        child = data.find("ChildNode3")
+        key3 = child.text
+        assert child.tag == "ChildNode3"
+        assert child.attrib == {}
+        assert len(list(child)) == 0  # number of children
+
+        assert key1 == key2
+        assert key2 == key3
+        keys.append(key1)
+
+        count += 1
+
+    assert count == 5
+    assert len(set(keys)) == len(keys)
+
+
+def test_generate_template_using_key_util_in_separated_contexts():
+    config = MimeoConfig({
+        "output_format": "xml",
+        "_templates_": [
+            {
+                "count": 5,
+                "model": {
+                    "SomeEntity": {
+                        "ChildNode1": "{key()}",
+                        "_templates_": [
+                            {
+                                "count": 1,
+                                "model": {
+                                    "NewContextNode": {
+                                        "GrandChild": "{key()}"
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+        ]
+    })
+    generator = XMLGenerator(config)
+    count = 0
+    for index, data in enumerate(generator.generate(config.templates)):
+        assert data.tag == "SomeEntity"
+        assert data.attrib == {}
+        assert len(list(data)) == 2  # number of children
+
+        child = data.find("ChildNode1")
+        key1 = child.text
+        assert child.tag == "ChildNode1"
+        assert child.attrib == {}
+        assert len(list(child)) == 0  # number of children
+
+        new_context_node = data.find("NewContextNode")
+        assert new_context_node.tag == "NewContextNode"
+        assert new_context_node.attrib == {}
+        assert len(list(new_context_node)) == 1  # number of children
+
+        grand_child = new_context_node.find("GrandChild")
+        key2 = grand_child.text
+        assert grand_child.tag == "GrandChild"
+        assert grand_child.attrib == {}
+        assert len(list(grand_child)) == 0  # number of children
+
+        assert key1 != key2
+
+        count += 1
+
+    assert count == 5
+
+
+def test_generate_template_using_get_key_util():
+    config = MimeoConfig({
+        "output_format": "xml",
+        "_templates_": [
+            {
+                "count": 5,
+                "model": {
+                    "SomeEntity": {
+                        "ChildNode1": "{key()}",
+                        "_templates_": [
+                            {
+                                "count": 1,
+                                "model": {
+                                    "NewContextNode": {
+                                        "GrandChild": "{get_key('SomeEntity')}"
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+        ]
+    })
+    generator = XMLGenerator(config)
+    count = 0
+    for index, data in enumerate(generator.generate(config.templates)):
+        assert data.tag == "SomeEntity"
+        assert data.attrib == {}
+        assert len(list(data)) == 2  # number of children
+
+        child = data.find("ChildNode1")
+        key1 = child.text
+        assert child.tag == "ChildNode1"
+        assert child.attrib == {}
+        assert len(list(child)) == 0  # number of children
+
+        new_context_node = data.find("NewContextNode")
+        assert new_context_node.tag == "NewContextNode"
+        assert new_context_node.attrib == {}
+        assert len(list(new_context_node)) == 1  # number of children
+
+        grand_child = new_context_node.find("GrandChild")
+        key2 = grand_child.text
+        assert grand_child.tag == "GrandChild"
+        assert grand_child.attrib == {}
+        assert len(list(grand_child)) == 0  # number of children
+
+        assert key1 == key2
+
+        count += 1
+
+    assert count == 5
+
+
+def test_generate_template_using_get_key_util_in_two_templates_with_customized_iteration():
+    config = MimeoConfig({
+        "output_format": "xml",
+        "_templates_": [
+            {
+                "count": 5,
+                "model": {
+                    "CustomIteration1": {
+                        "ChildNode1": "{key()}"
+                    }
+                }
+            },
+            {
+                "count": 5,
+                "model": {
+                    "CustomIteration2": {
+                        "ChildNode1": "{get_key('CustomIteration1', curr_iter())}"
+                    }
+                }
+            }
+        ]
+    })
+    generator = XMLGenerator(config)
+    data = [data for data in generator.generate(config.templates)]
+    some_entity_data = data[:5]
+    some_other_entity_data = data[5:]
+
+    assert len(data) == 10
+    assert len(some_entity_data) == 5
+    assert len(some_other_entity_data) == 5
+
+    some_entity_keys = []
+    some_other_entity_keys = []
+    for data in some_entity_data:
+        assert data.tag == "CustomIteration1"
+        assert data.attrib == {}
+        assert len(list(data)) == 1  # number of children
+
+        child = data.find("ChildNode1")
+        assert child.tag == "ChildNode1"
+        assert child.attrib == {}
+        assert len(list(child)) == 0  # number of children
+        some_entity_keys.append(child.text)
+
+    for data in some_other_entity_data:
+        assert data.tag == "CustomIteration2"
+        assert data.attrib == {}
+        assert len(list(data)) == 1  # number of children
+
+        child = data.find("ChildNode1")
+        assert child.tag == "ChildNode1"
+        assert child.attrib == {}
+        assert len(list(child)) == 0  # number of children
+        some_other_entity_keys.append(child.text)
+
+    for i in range(5):
+        assert some_entity_keys[i] == some_other_entity_keys[i]

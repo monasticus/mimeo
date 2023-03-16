@@ -247,26 +247,26 @@ def test_generator_utils_get_key_eval(default_context, default_generator_utils):
     assert key == key_outside_context
 
 
-def test_generator_utils_get_key_with_customized_index():
+def test_generator_utils_get_key_with_customized_iteration():
     generator_utils1 = GeneratorUtils.get_for_context("CustomizedIndex1")
     generator_utils2 = GeneratorUtils.get_for_context("CustomizedIndex2")
     generator_utils1.setup_iteration(1)
     generator_utils1.setup_iteration(2)
     key = generator_utils1.key()
     generator_utils1.setup_iteration(3)
-    key_outside_context = generator_utils2.get_key("CustomizedIndex1", 1)
+    key_outside_context = generator_utils2.get_key("CustomizedIndex1", 2)
 
     assert key == key_outside_context
 
 
-def test_generator_utils_get_key_with_customized_index_eval():
+def test_generator_utils_get_key_with_customized_iteration_eval():
     generator_utils1 = GeneratorUtils.get_for_context("CustomizedIndexEval1")
     generator_utils2 = GeneratorUtils.get_for_context("CustomizedIndexEval2")
     generator_utils1.setup_iteration(1)
     generator_utils1.setup_iteration(2)
     key = generator_utils1.key()
     generator_utils1.setup_iteration(3)
-    key_outside_context = GeneratorUtils.eval("CustomizedIndexEval2", "get_key('CustomizedIndexEval1', 1)")
+    key_outside_context = GeneratorUtils.eval("CustomizedIndexEval2", "get_key('CustomizedIndexEval1', 2)")
 
     assert key == key_outside_context
 

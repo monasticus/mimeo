@@ -38,7 +38,8 @@ class Generator(metaclass=ABCMeta):
             try:
                 match = next(pattern.finditer(literal_value))
                 funct = match.group(1)
-                return GeneratorUtils.eval(template.model.root_name, funct)
+                value = GeneratorUtils.eval(template.model.root_name, funct)
+                return str(value)
             except InvalidMimeoUtil:
                 pass
 
