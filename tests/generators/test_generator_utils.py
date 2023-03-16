@@ -58,23 +58,29 @@ def test_generator_utils_random_str_with_customized_length(default_context, defa
 
 
 def test_generator_utils_random_int(default_context, default_generator_utils):
-    random_int = default_generator_utils.random_int()
-    assert isinstance(random_int, str)
-    assert len(random_int) == 1
+    for _ in range(100):
+        random_int = default_generator_utils.random_int()
+        assert isinstance(random_int, int)
+        assert random_int >= 0
+        assert random_int < 100
 
-    random_int = GeneratorUtils.eval(default_context, "random_int()")
-    assert isinstance(random_int, str)
-    assert len(random_int) == 1
+        random_int = GeneratorUtils.eval(default_context, "random_int()")
+        assert isinstance(random_int, int)
+        assert random_int >= 0
+        assert random_int < 100
 
 
 def test_generator_utils_random_int_with_customized_length(default_context, default_generator_utils):
-    random_int = default_generator_utils.random_int(10)
-    assert isinstance(random_int, str)
-    assert len(random_int) == 10
+    for _ in range(100):
+        random_int = default_generator_utils.random_int(10)
+        assert isinstance(random_int, int)
+        assert random_int >= 0
+        assert random_int < 10
 
-    random_int = GeneratorUtils.eval(default_context, "random_int(10)")
-    assert isinstance(random_int, str)
-    assert len(random_int) == 10
+        random_int = GeneratorUtils.eval(default_context, "random_int(10)")
+        assert isinstance(random_int, int)
+        assert random_int >= 0
+        assert random_int < 10
 
 
 def test_generator_utils_auto_increment(default_context, default_generator_utils):

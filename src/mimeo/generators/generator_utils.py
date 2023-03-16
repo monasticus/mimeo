@@ -54,8 +54,8 @@ class GeneratorUtils:
         return "".join(random.choice(string.ascii_letters) for _ in range(length))
 
     @staticmethod
-    def random_int(length=1) -> str:
-        return "".join(random.choice(string.digits) for _ in range(length))
+    def random_int(limit: int = 100) -> int:
+        return random.randrange(limit)
 
     @staticmethod
     def date(days_delta=0) -> str:

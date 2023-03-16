@@ -115,7 +115,7 @@ Mimeo exposes several functions for data generation that will make it more usefu
 <SomeEntity>
     <id>00002</id>
     <randomstring>ceaPUqARUkFukZIPeuqO</randomstring>
-    <randomint>2</randomint>
+    <randomint>99</randomint>
 </SomeEntity>
 ```
 
@@ -169,8 +169,8 @@ You can use several predefined functions to generate data by using them within c
 | `get_key(<MODEL_NAME>, <ITERATION>)`                                       | `get_key('SomeEntity')`         | Retrieves a key from a specific context, optionally using position (by default it takes the last)     |
 | `random_str()`                                                             |                                 | Generates a random string value of the default length: 20 characters                                  |
 | `random_str(<LENGTH>)`                                                     | `random_str(2)`                 | Generates a random string value of the customized length                                              |
-| `random_int()`                                                             |                                 | Generates a random integer value of the default length: 1 digit                                       |
-| `random_int(<LENGTH>)`                                                     | `random_int(5)`                 | Generates a random integer value of the customized length                                             |
+| `random_int()`                                                             |                                 | Generates a random integer value within the default range: 0-99                                       |
+| `random_int(<LIMIT>)`                                                      | `random_int(10)`                | Generates a random integer value within the custom range: 0-<LIMIT>                                   |
 | `date()`                                                                   |                                 | Generates a today's date in format YYYY-MM-DD                                                         |
 | `date(<DAYS_DELTA>)`                                                       | `date(-1)`                      | Generates a date with customized days in format YYYY-MM-DD                                            |
 | `date_time()`                                                              |                                 | Generates a current date time in format YYYY-MM-DD'T'HH:mm:SS                                         |
