@@ -82,6 +82,10 @@ class GeneratorUtils:
         return time_value.strftime("%Y-%m-%dT%H:%M:%S")
 
     @staticmethod
+    def is_special_field(field: str) -> bool:
+        return bool(re.match(r"^{:[-_a-zA-Z0-9]+:}$", field))
+
+    @staticmethod
     def render_value(context: str, value):
         value_str = str(value)
         if isinstance(value, bool):

@@ -447,6 +447,27 @@ def test_vars_pointing_to_invalid_funct():
     assert value == "{auto_increment(1)}"
 
 
+def test_is_special_field_true():
+    assert GeneratorUtils.is_special_field("{:SomeChild:}")
+    assert GeneratorUtils.is_special_field("{:Some_Child:}")
+    assert GeneratorUtils.is_special_field("{:Some-Child:}")
+    assert GeneratorUtils.is_special_field("{:SomeChild1:}")
+
+
+def test_is_special_field_false():
+    assert not GeneratorUtils.is_special_field(":SomeField:}")
+    assert not GeneratorUtils.is_special_field("{:SomeField:")
+    assert not GeneratorUtils.is_special_field("{SomeField:}")
+    assert not GeneratorUtils.is_special_field("{:SomeField}")
+    assert not GeneratorUtils.is_special_field("SomeField:}")
+    assert not GeneratorUtils.is_special_field("{:SomeField")
+    assert not GeneratorUtils.is_special_field("{SomeField}")
+    assert not GeneratorUtils.is_special_field(":SomeField:")
+    assert not GeneratorUtils.is_special_field("SomeField")
+    assert not GeneratorUtils.is_special_field("{::}")
+    assert not GeneratorUtils.is_special_field("{:Some Field:}")
+
+
 def test_not_allowed_functions():
     to_render = "{setup(MimeoConfig({'_templates_':[]}))}"
     value = GeneratorUtils.render_value("SomeEntity", to_render)
@@ -461,6 +482,10 @@ def test_not_allowed_functions():
     assert value == to_render
 
     to_render = "{render_value(auto_increment())}"
+    value = GeneratorUtils.render_value("SomeEntity", to_render)
+    assert value == to_render
+
+    to_render = "{is_special_field()}"
     value = GeneratorUtils.render_value("SomeEntity", to_render)
     assert value == to_render
 
