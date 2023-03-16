@@ -190,6 +190,29 @@ def test_parsing_config_with_invalid_vars_starting_with_digit():
                                 "(you can use upper-cased name with underscore and digits, starting with a letter)!"
 
 
+def test_parsing_config_with_invalid_vars_using_non_atomic_value():
+    config = {
+        "vars": {
+            "CUSTOM_KEY1": {}
+        },
+        "_templates_": [
+            {
+                "count": 5,
+                "model": {
+                    "SomeEntity": {
+                        "ChildNode": "value"
+                    }
+                }
+            }
+        ]
+    }
+
+    with pytest.raises(InvalidVars) as err:
+        MimeoConfig(config)
+
+    assert err.value.args[0] == "Provided var [CUSTOM_KEY1] is invalid (you can use ony atomic values)!"
+
+
 def test_parsing_config_invalid_vars_not_being_object():
     config = {
         "vars": [

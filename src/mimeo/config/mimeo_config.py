@@ -52,10 +52,12 @@ class MimeoConfig:
         variables = config.get(MimeoConfig.VARS_KEY, {})
         if not isinstance(variables, dict):
             raise InvalidVars(f"vars property does not store an object: {variables}")
-        for var in variables:
+        for var, val in variables.items():
             if not re.match(r"^[A-Z][A-Z_0-9]*$", var):
                 raise InvalidVars(f"Provided var [{var}] is invalid "
                                   "(you can use upper-cased name with underscore and digits, starting with a letter)!")
+            if isinstance(val, list) or isinstance(val, dict):
+                raise InvalidVars(f"Provided var [{var}] is invalid (you can use ony atomic values)!")
         return variables
 
 
