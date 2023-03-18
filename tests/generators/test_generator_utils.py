@@ -507,24 +507,21 @@ def test_inject_not_special_field(default_generator_utils):
 
 
 def test_provide_and_inject_str(default_generator_utils):
-    field_name = default_generator_utils.provide("{:SomeField:}", "custom-value")
-    assert field_name == "SomeField"
+    default_generator_utils.provide("{:SomeField:}", "custom-value")
 
     field_value = default_generator_utils.inject("{:SomeField:}")
     assert field_value == "custom-value"
 
 
 def test_provide_and_inject_int(default_generator_utils):
-    field_name = default_generator_utils.provide("{:SomeField:}", 1)
-    assert field_name == "SomeField"
+    default_generator_utils.provide("{:SomeField:}", 1)
 
     field_value = default_generator_utils.inject("{:SomeField:}")
     assert field_value == 1
 
 
 def test_provide_and_inject_bool(default_generator_utils):
-    field_name = default_generator_utils.provide("{:SomeField:}", True)
-    assert field_name == "SomeField"
+    default_generator_utils.provide("{:SomeField:}", True)
 
     field_value = default_generator_utils.inject("{:SomeField:}")
     assert field_value is True

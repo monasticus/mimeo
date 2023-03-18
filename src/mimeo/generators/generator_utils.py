@@ -59,14 +59,13 @@ class GeneratorUtils:
     def key(self) -> str:
         return self.__keys[-1]
 
-    def provide(self, field_name: str, field_value) -> str:
+    def provide(self, field_name: str, field_value) -> None:
         if not GeneratorUtils.is_special_field(field_name):
             raise NotASpecialField(f"Provided field [{field_name}] is not a special one (use {'{:NAME:}'})!")
         if isinstance(field_value, dict) or isinstance(field_value, list):
             raise InvalidSpecialFieldValue(f"Provided field value [{field_value}] is invalid (use any atomic value)!")
 
         self.__special_fields[field_name] = field_value
-        return GeneratorUtils.get_special_field_name(field_name)
 
     def inject(self, field_name: str):
         if field_name not in self.__special_fields:
@@ -114,6 +113,8 @@ class GeneratorUtils:
         value_str = str(value)
         if isinstance(value, bool):
             return value_str.lower()
+        elif GeneratorUtils.is_special_field(value_str):
+            return GeneratorUtils.get_for_context(context).inject(value_str)
 
         pattern = re.compile("^{(.+)}$")
         if pattern.match(value_str):

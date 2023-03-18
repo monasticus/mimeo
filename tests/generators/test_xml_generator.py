@@ -1125,3 +1125,42 @@ def test_generate_template_using_get_key_util_in_two_templates_with_customized_i
 
     for i in range(5):
         assert some_entity_keys[i] == some_other_entity_keys[i]
+
+
+def test_generate_template_using_special_fields():
+    config = MimeoConfig({
+        "output_format": "xml",
+        "_templates_": [
+            {
+                "count": 5,
+                "model": {
+                    "SomeEntity": {
+                        "{:ChildNode1:}": "value-1",
+                        "ChildNode2": "{:ChildNode1:}"
+                    }
+                }
+            }
+        ]
+    })
+    generator = XMLGenerator(config)
+    count = 0
+    for index, data in enumerate(generator.generate(config.templates)):
+        assert data.tag == "SomeEntity"
+        assert data.attrib == {}
+        assert len(list(data)) == 2  # number of children
+
+        child = data.find("ChildNode1")
+        assert child.tag == "ChildNode1"
+        assert child.attrib == {}
+        assert child.text == "value-1"
+        assert len(list(child)) == 0  # number of children
+
+        child = data.find("ChildNode2")
+        assert child.tag == "ChildNode2"
+        assert child.attrib == {}
+        assert child.text == "value-1"
+        assert len(list(child)) == 0  # number of children
+
+        count += 1
+
+    assert count == 5

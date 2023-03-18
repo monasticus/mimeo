@@ -20,7 +20,7 @@ class XMLGenerator(Generator):
             utils = GeneratorUtils.get_for_context(template.model.root_name)
             utils.reset()
             for i in iter(range(template.count)):
-                utils.setup_iteration(i+1)
+                utils.setup_iteration(i + 1)
                 yield self.__to_xml(parent,
                                     template.model.root_name,
                                     template.model.root_data,
@@ -49,7 +49,13 @@ class XMLGenerator(Generator):
                 pass
             self.__current_template = curr_template
         else:
-            element = ElemTree.Element(element_tag, attrib=attributes) if parent is None else ElemTree.SubElement(parent, element_tag, attrib=attributes)
+            is_special_field = GeneratorUtils.is_special_field(element_tag)
+            if is_special_field:
+                special_field = element_tag
+                element_tag = GeneratorUtils.get_special_field_name(element_tag)
+
+            element = ElemTree.Element(element_tag, attrib=attributes) if parent is None else ElemTree.SubElement(
+                parent, element_tag, attrib=attributes)
             if isinstance(element_value, dict):
                 for child_tag, child_value in element_value.items():
                     self.__to_xml(element, child_tag, child_value)
@@ -60,6 +66,9 @@ class XMLGenerator(Generator):
                     self.__to_xml(element, grand_child_tag, grand_child_data)
             else:
                 element.text = GeneratorUtils.render_value(self.__current_template.model.root_name, element_value)
+                if is_special_field:
+                    utils = GeneratorUtils.get_for_context(self.__current_template.model.root_name)
+                    utils.provide(special_field, element.text)
 
             if parent is None:
                 return element
