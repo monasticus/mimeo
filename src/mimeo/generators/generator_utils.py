@@ -66,7 +66,7 @@ class GeneratorUtils:
             raise InvalidSpecialFieldValue(f"Provided field value [{field_value}] is invalid (use any atomic value)!")
 
         self.__special_fields[field_name] = field_value
-        return field_name[2:][:-2]
+        return GeneratorUtils.get_special_field_name(field_name)
 
     def inject(self, field_name: str):
         if field_name not in self.__special_fields:
@@ -99,8 +99,15 @@ class GeneratorUtils:
         return time_value.strftime("%Y-%m-%dT%H:%M:%S")
 
     @staticmethod
-    def is_special_field(field: str) -> bool:
-        return bool(re.match(r"^{:[-_a-zA-Z0-9]+:}$", field))
+    def get_special_field_name(field_name: str) -> str:
+        if not GeneratorUtils.is_special_field(field_name):
+            raise NotASpecialField(f"Provided field [{field_name}] is not a special one (use {'{:NAME:}'})!")
+
+        return field_name[2:][:-2]
+
+    @staticmethod
+    def is_special_field(field_name: str) -> bool:
+        return bool(re.match(r"^{:[-_a-zA-Z0-9]+:}$", field_name))
 
     @staticmethod
     def render_value(context: str, value):

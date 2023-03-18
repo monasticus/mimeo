@@ -469,6 +469,17 @@ def test_is_special_field_false():
     assert not GeneratorUtils.is_special_field("{:Some Field:}")
 
 
+def test_get_special_field_name():
+    assert GeneratorUtils.get_special_field_name("{:SomeField:}") == "SomeField"
+
+
+def test_get_special_field_name_when_invalid():
+    with pytest.raises(NotASpecialField) as err:
+        GeneratorUtils.get_special_field_name("{:SomeField}")
+
+    assert err.value.args[0] == "Provided field [{:SomeField}] is not a special one (use {:NAME:})!"
+
+
 def test_provide_not_special_field(default_generator_utils):
     with pytest.raises(NotASpecialField) as err:
         default_generator_utils.provide("{SomeField}", "custom-value")
@@ -537,6 +548,10 @@ def test_not_allowed_functions():
     assert value == to_render
 
     to_render = "{is_special_field()}"
+    value = GeneratorUtils.render_value("SomeEntity", to_render)
+    assert value == to_render
+
+    to_render = "{get_special_field_name()}"
     value = GeneratorUtils.render_value("SomeEntity", to_render)
     assert value == to_render
 
