@@ -1164,3 +1164,89 @@ def test_generate_template_using_special_fields():
         count += 1
 
     assert count == 5
+
+
+def test_generate_template_using_special_fields_recursive():
+    config = MimeoConfig({
+        "output_format": "xml",
+        "_templates_": [
+            {
+                "count": 5,
+                "model": {
+                    "SomeEntity": {
+                        "{:ChildNode1:}": "value-1",
+                        "{:ChildNode2:}": "{:ChildNode1:}",
+                        "ChildNode3": "{:ChildNode2:}"
+                    }
+                }
+            }
+        ]
+    })
+    generator = XMLGenerator(config)
+    count = 0
+    for index, data in enumerate(generator.generate(config.templates)):
+        assert data.tag == "SomeEntity"
+        assert data.attrib == {}
+        assert len(list(data)) == 3  # number of children
+
+        child = data.find("ChildNode1")
+        assert child.tag == "ChildNode1"
+        assert child.attrib == {}
+        assert child.text == "value-1"
+        assert len(list(child)) == 0  # number of children
+
+        child = data.find("ChildNode2")
+        assert child.tag == "ChildNode2"
+        assert child.attrib == {}
+        assert child.text == "value-1"
+        assert len(list(child)) == 0  # number of children
+
+        child = data.find("ChildNode3")
+        assert child.tag == "ChildNode3"
+        assert child.attrib == {}
+        assert child.text == "value-1"
+        assert len(list(child)) == 0  # number of children
+
+        count += 1
+
+    assert count == 5
+
+
+def test_generate_template_using_special_fields_in_template_context():
+    config = MimeoConfig({
+        "output_format": "xml",
+        "_templates_": [
+            {
+                "count": 5,
+                "model": {
+                    "SomeEntity": {
+                        "{:ChildNode1:}": "{curr_iter()}",
+                        "ChildNode2": "{:ChildNode1:}"
+                    }
+                }
+            }
+        ]
+    })
+    generator = XMLGenerator(config)
+    count = 0
+    for index, data in enumerate(generator.generate(config.templates)):
+        curr_iter = index + 1
+        assert data.tag == "SomeEntity"
+        assert data.attrib == {}
+        assert len(list(data)) == 2  # number of children
+
+        child = data.find("ChildNode1")
+        assert child.tag == "ChildNode1"
+        assert child.attrib == {}
+        assert child.text == str(curr_iter)
+        assert len(list(child)) == 0  # number of children
+
+        child = data.find("ChildNode2")
+        assert child.tag == "ChildNode2"
+        assert child.attrib == {}
+        assert child.text == str(curr_iter)
+        assert len(list(child)) == 0  # number of children
+
+        count += 1
+
+    assert count == 5
