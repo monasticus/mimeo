@@ -158,28 +158,53 @@ Variable can be defined with:
 Example:
 ```json
 {
-        "vars": {
-            "CUSTOM_VAR_1": "custom-value-1",
-            "CUSTOM_VAR_2": 1,
-            "CUSTOM_VAR_3": true,
-            "CUSTOM_VAR_4": "{CUSTOM_VAR_2}",
-            "CUSTOM_VAR_5": "{auto_increment('{}')}"
-        },
-        "_templates_": [
-            {
-                "count": 5,
-                "model": {
-                    "SomeEntity": {
-                        "ChildNode1": "{CUSTOM_VAR_1}",
-                        "ChildNode2": "{CUSTOM_VAR_2}",
-                        "ChildNode3": "{CUSTOM_VAR_3}",
-                        "ChildNode4": "{CUSTOM_VAR_4}",
-                        "ChildNode5": "{CUSTOM_VAR_5}"
-                    }
-                }
-            }
-        ]
+  "vars": {
+    "CUSTOM_VAR_1": "custom-value-1",
+    "CUSTOM_VAR_2": 1,
+    "CUSTOM_VAR_3": true,
+    "CUSTOM_VAR_4": "{CUSTOM_VAR_2}",
+    "CUSTOM_VAR_5": "{auto_increment('{}')}"
+  },
+  "_templates_": [
+    {
+      "count": 5,
+      "model": {
+        "SomeEntity": {
+          "ChildNode1": "{CUSTOM_VAR_1}",
+          "ChildNode2": "{CUSTOM_VAR_2}",
+          "ChildNode3": "{CUSTOM_VAR_3}",
+          "ChildNode4": "{CUSTOM_VAR_4}",
+          "ChildNode5": "{CUSTOM_VAR_5}"
+        }
+      }
     }
+  ]
+}
+```
+
+#### Mimeo Special Fields
+
+In Mimeo Template you can use so-called _special fields_.
+Every field in a template can be stored in memory (_provided_) and used later as a value of other fields (_injected_).
+To provide and inject a special field use curly brackets and colons: [`{:SomeField:}`].
+You provide a field when you use this format in a field name (JSON property name),
+and inject by applying it in a field value.
+
+Example
+```json
+{
+  "_templates_": [
+    {
+      "count": 5,
+      "model": {
+        "SomeEntity": {
+          "{:ChildNode1:}": "custom-value",
+          "ChildNode2": "{:ChildNode1:}"
+        }
+      }
+    }
+  ]
+}
 ```
 
 ### Mimeo CLI
