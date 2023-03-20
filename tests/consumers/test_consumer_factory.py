@@ -51,6 +51,8 @@ def test_get_consumer_for_http_direction():
             "host": "localhost",
             "port": 8080,
             "endpoint": "/document",
+            "username": "admin",
+            "password": "admin"
         },
         "_templates_": [
             {

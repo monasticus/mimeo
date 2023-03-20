@@ -6,6 +6,10 @@ class UnsupportedOutputDirection(Exception):
     pass
 
 
+class UnsupportedAuthMethod(Exception):
+    pass
+
+
 class MissingRequiredProperty(Exception):
     pass
 

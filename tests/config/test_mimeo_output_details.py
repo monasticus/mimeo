@@ -1,7 +1,7 @@
 import pytest
 
 from mimeo.config.mimeo_config import MimeoOutputDetails
-from mimeo.exceptions import (MissingRequiredProperty,
+from mimeo.exceptions import (MissingRequiredProperty, UnsupportedAuthMethod,
                               UnsupportedOutputDirection)
 
 
@@ -15,19 +15,30 @@ def test_parsing_output_details_stdout():
     assert mimeo_output_details.directory_path is None
     assert mimeo_output_details.file_name_tmplt is None
     assert mimeo_output_details.method is None
+    assert mimeo_output_details.auth is None
     assert mimeo_output_details.protocol is None
     assert mimeo_output_details.host is None
     assert mimeo_output_details.port is None
     assert mimeo_output_details.endpoint is None
+    assert mimeo_output_details.username is None
+    assert mimeo_output_details.password is None
     assert mimeo_output_details.directory_path is None
     assert mimeo_output_details.file_name_tmplt is None
 
 
-def test_parsing_output_details_stdout_with_file_customization():
+def test_parsing_output_details_stdout_with_other_directions_customization():
     output_details = {
         "direction": "stdout",
         "directory_path": "out",
-        "file_name": "out-file"
+        "file_name": "out-file",
+        "method": "PUT",
+        "protocol": "https",
+        "host": "localhost",
+        "port": 8080,
+        "endpoint": "/document",
+        "auth": "digest",
+        "username": "admin",
+        "password": "admin"
     }
 
     mimeo_output_details = MimeoOutputDetails("xml", output_details)
@@ -35,10 +46,13 @@ def test_parsing_output_details_stdout_with_file_customization():
     assert mimeo_output_details.directory_path is None
     assert mimeo_output_details.file_name_tmplt is None
     assert mimeo_output_details.method is None
+    assert mimeo_output_details.auth is None
     assert mimeo_output_details.protocol is None
     assert mimeo_output_details.host is None
     assert mimeo_output_details.port is None
     assert mimeo_output_details.endpoint is None
+    assert mimeo_output_details.username is None
+    assert mimeo_output_details.password is None
 
 
 def test_parsing_output_details_file_default():
@@ -51,10 +65,13 @@ def test_parsing_output_details_file_default():
     assert mimeo_output_details.directory_path == "mimeo-output"
     assert mimeo_output_details.file_name_tmplt == "mimeo-output-{}.xml"
     assert mimeo_output_details.method is None
+    assert mimeo_output_details.auth is None
     assert mimeo_output_details.protocol is None
     assert mimeo_output_details.host is None
     assert mimeo_output_details.port is None
     assert mimeo_output_details.endpoint is None
+    assert mimeo_output_details.username is None
+    assert mimeo_output_details.password is None
 
 
 def test_parsing_output_details_file_customized():
@@ -75,15 +92,20 @@ def test_parsing_output_details_http_default():
         "direction": "http",
         "host": "localhost",
         "endpoint": "/document",
+        "username": "admin",
+        "password": "admin"
     }
 
     mimeo_output_details = MimeoOutputDetails("xml", output_details)
     assert mimeo_output_details.direction == "http"
     assert mimeo_output_details.method == "POST"
+    assert mimeo_output_details.auth == "basic"
     assert mimeo_output_details.protocol == "http"
     assert mimeo_output_details.host == "localhost"
     assert mimeo_output_details.port is None
     assert mimeo_output_details.endpoint == "/document"
+    assert mimeo_output_details.username == "admin"
+    assert mimeo_output_details.password == "admin"
     assert mimeo_output_details.directory_path is None
     assert mimeo_output_details.file_name_tmplt is None
 
@@ -96,15 +118,21 @@ def test_parsing_output_details_http_customized():
         "host": "localhost",
         "port": 8080,
         "endpoint": "/document",
+        "auth": "digest",
+        "username": "admin",
+        "password": "admin"
     }
 
     mimeo_output_details = MimeoOutputDetails("xml", output_details)
     assert mimeo_output_details.direction == "http"
     assert mimeo_output_details.method == "PUT"
+    assert mimeo_output_details.auth == "digest"
     assert mimeo_output_details.protocol == "https"
     assert mimeo_output_details.host == "localhost"
     assert mimeo_output_details.port == 8080
     assert mimeo_output_details.endpoint == "/document"
+    assert mimeo_output_details.username == "admin"
+    assert mimeo_output_details.password == "admin"
     assert mimeo_output_details.directory_path is None
     assert mimeo_output_details.file_name_tmplt is None
 
@@ -120,10 +148,28 @@ def test_parsing_output_details_unsupported_direction():
     assert err.value.args[0] == "Provided direction [unsupported_direction] is not supported!"
 
 
+def test_parsing_output_details_unsupported_auth_method():
+    output_details = {
+        "direction": "http",
+        "host": "localhost",
+        "endpoint": "/documents",
+        "auth": "unsupported_auth",
+        "username": "admin",
+        "password": "admin"
+    }
+
+    with pytest.raises(UnsupportedAuthMethod) as err:
+        MimeoOutputDetails("xml", output_details)
+
+    assert err.value.args[0] == "Provided auth [unsupported_auth] is not supported!"
+
+
 def test_parsing_output_details_missing_required_field():
     output_details = {
         "direction": "http",
-        "host": "localhost"
+        "host": "localhost",
+        "username": "admin",
+        "password": "admin"
     }
 
     with pytest.raises(MissingRequiredProperty) as err:
@@ -140,4 +186,4 @@ def test_parsing_output_details_missing_required_fields():
     with pytest.raises(MissingRequiredProperty) as err:
         MimeoOutputDetails("xml", output_details)
 
-    assert err.value.args[0] == "Missing required fields is HTTP output details: host, endpoint"
+    assert err.value.args[0] == "Missing required fields is HTTP output details: host, endpoint, username, password"

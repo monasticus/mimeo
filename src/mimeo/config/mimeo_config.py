@@ -3,6 +3,7 @@ import re
 from mimeo.exceptions import (IncorrectMimeoConfig, IncorrectMimeoModel,
                               IncorrectMimeoTemplate, InvalidIndent,
                               InvalidVars, MissingRequiredProperty,
+                              UnsupportedAuthMethod,
                               UnsupportedOutputDirection,
                               UnsupportedOutputFormat)
 
@@ -19,6 +20,9 @@ class MimeoConfig:
     OUTPUT_DETAILS_HOST = "host"
     OUTPUT_DETAILS_PORT = "port"
     OUTPUT_DETAILS_ENDPOINT = "endpoint"
+    OUTPUT_DETAILS_AUTH = "auth"
+    OUTPUT_DETAILS_USERNAME = "username"
+    OUTPUT_DETAILS_PASSWORD = "password"
     XML_DECLARATION_KEY = "xml_declaration"
     INDENT_KEY = "indent"
     VARS_KEY = "vars"
@@ -83,9 +87,15 @@ class MimeoOutputDetails:
     STD_OUT_DIRECTION = "stdout"
     HTTP_DIRECTION = "http"
 
+    AUTH_BASIC = "basic"
+    AUTH_DIGEST = "digest"
+
     SUPPORTED_OUTPUT_DIRECTIONS = (STD_OUT_DIRECTION, FILE_DIRECTION, HTTP_DIRECTION)
+    SUPPORTED_AUTH_METHODS = (AUTH_BASIC, AUTH_DIGEST)
     REQUIRED_HTTP_DETAILS = (MimeoConfig.OUTPUT_DETAILS_HOST,
-                             MimeoConfig.OUTPUT_DETAILS_ENDPOINT)
+                             MimeoConfig.OUTPUT_DETAILS_ENDPOINT,
+                             MimeoConfig.OUTPUT_DETAILS_USERNAME,
+                             MimeoConfig.OUTPUT_DETAILS_PASSWORD)
 
     def __init__(self, output_format: str, output_details: dict):
         self.direction = MimeoOutputDetails.__get_direction(output_details)
@@ -97,6 +107,9 @@ class MimeoOutputDetails:
         self.host = MimeoOutputDetails.__get_host(self.direction, output_details)
         self.port = MimeoOutputDetails.__get_port(self.direction, output_details)
         self.endpoint = MimeoOutputDetails.__get_endpoint(self.direction, output_details)
+        self.auth = MimeoOutputDetails.__get_auth(self.direction, output_details)
+        self.username = MimeoOutputDetails.__get_username(self.direction, output_details)
+        self.password = MimeoOutputDetails.__get_password(self.direction, output_details)
 
     @staticmethod
     def __get_direction(output_details):
@@ -152,6 +165,25 @@ class MimeoOutputDetails:
     def __get_endpoint(direction: str, output_details: dict):
         if direction == MimeoOutputDetails.HTTP_DIRECTION:
             return output_details.get(MimeoConfig.OUTPUT_DETAILS_ENDPOINT)
+
+    @staticmethod
+    def __get_auth(direction: str, output_details: dict):
+        if direction == MimeoOutputDetails.HTTP_DIRECTION:
+            auth =  output_details.get(MimeoConfig.OUTPUT_DETAILS_AUTH, "basic")
+            if auth in MimeoOutputDetails.SUPPORTED_AUTH_METHODS:
+                return auth
+            else:
+                raise UnsupportedAuthMethod(f"Provided auth [{auth}] is not supported!")
+
+    @staticmethod
+    def __get_username(direction: str, output_details: dict):
+        if direction == MimeoOutputDetails.HTTP_DIRECTION:
+            return output_details.get(MimeoConfig.OUTPUT_DETAILS_USERNAME)
+
+    @staticmethod
+    def __get_password(direction: str, output_details: dict):
+        if direction == MimeoOutputDetails.HTTP_DIRECTION:
+            return output_details.get(MimeoConfig.OUTPUT_DETAILS_PASSWORD)
 
 
 class MimeoTemplate:
