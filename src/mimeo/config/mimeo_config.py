@@ -3,7 +3,7 @@ import re
 from mimeo.exceptions import (IncorrectMimeoConfig, IncorrectMimeoModel,
                               IncorrectMimeoTemplate, InvalidIndent,
                               InvalidVars, UnsupportedOutputDirection,
-                              UnsupportedOutputFormat)
+                              UnsupportedOutputFormat, MissingRequiredProperty)
 
 
 class MimeoConfig:
@@ -13,6 +13,11 @@ class MimeoConfig:
     OUTPUT_DETAILS_DIRECTION_KEY = "direction"
     OUTPUT_DETAILS_DIRECTORY_PATH_KEY = "directory_path"
     OUTPUT_DETAILS_FILE_NAME_KEY = "file_name"
+    OUTPUT_DETAILS_METHOD = "method"
+    OUTPUT_DETAILS_PROTOCOL = "protocol"
+    OUTPUT_DETAILS_HOST = "host"
+    OUTPUT_DETAILS_PORT = "port"
+    OUTPUT_DETAILS_ENDPOINT = "endpoint"
     XML_DECLARATION_KEY = "xml_declaration"
     INDENT_KEY = "indent"
     VARS_KEY = "vars"
@@ -75,13 +80,23 @@ class MimeoOutputDetails:
 
     FILE_DIRECTION = "file"
     STD_OUT_DIRECTION = "stdout"
+    HTTP_DIRECTION = "http"
 
-    SUPPORTED_OUTPUT_DIRECTIONS = (STD_OUT_DIRECTION, FILE_DIRECTION)
+    SUPPORTED_OUTPUT_DIRECTIONS = (STD_OUT_DIRECTION, FILE_DIRECTION, HTTP_DIRECTION)
+    REQUIRED_HTTP_DETAILS = (MimeoConfig.OUTPUT_DETAILS_HOST,
+                             MimeoConfig.OUTPUT_DETAILS_PORT,
+                             MimeoConfig.OUTPUT_DETAILS_ENDPOINT)
 
     def __init__(self, output_format: str, output_details: dict):
         self.direction = MimeoOutputDetails.__get_direction(output_details)
+        MimeoOutputDetails.__validate_output_details(self.direction, output_details)
         self.directory_path = MimeoOutputDetails.__get_directory_path(self.direction, output_details)
         self.file_name_tmplt = MimeoOutputDetails.__get_file_name_tmplt(self.direction, output_details, output_format)
+        self.method = MimeoOutputDetails.__get_method(self.direction, output_details)
+        self.protocol = MimeoOutputDetails.__get_protocol(self.direction, output_details)
+        self.host = MimeoOutputDetails.__get_host(self.direction, output_details)
+        self.port = MimeoOutputDetails.__get_port(self.direction, output_details)
+        self.endpoint = MimeoOutputDetails.__get_endpoint(self.direction, output_details)
 
     @staticmethod
     def __get_direction(output_details):
@@ -90,6 +105,17 @@ class MimeoOutputDetails:
             return direction
         else:
             raise UnsupportedOutputDirection(f"Provided direction [{direction}] is not supported!")
+
+    @staticmethod
+    def __validate_output_details(direction: str, output_details: dict):
+        if direction == MimeoOutputDetails.HTTP_DIRECTION:
+            missing_details = []
+            for detail in MimeoOutputDetails.REQUIRED_HTTP_DETAILS:
+                if detail not in output_details:
+                    missing_details.append(detail)
+            if len(missing_details) > 0:
+                missing_details_str = ', '.join(missing_details)
+                raise MissingRequiredProperty(f"Missing required fields is HTTP output details: {missing_details_str}")
 
     @staticmethod
     def __get_directory_path(direction: str, output_details: dict):
@@ -101,6 +127,31 @@ class MimeoOutputDetails:
         if direction == MimeoOutputDetails.FILE_DIRECTION:
             file_name = output_details.get(MimeoConfig.OUTPUT_DETAILS_FILE_NAME_KEY, "mimeo-output")
             return f"{file_name}-{'{}'}.{output_format}"
+
+    @staticmethod
+    def __get_method(direction: str, output_details: dict):
+        if direction == MimeoOutputDetails.HTTP_DIRECTION:
+            return output_details.get(MimeoConfig.OUTPUT_DETAILS_METHOD, "POST")
+
+    @staticmethod
+    def __get_protocol(direction: str, output_details: dict):
+        if direction == MimeoOutputDetails.HTTP_DIRECTION:
+            return output_details.get(MimeoConfig.OUTPUT_DETAILS_PROTOCOL, "http")
+
+    @staticmethod
+    def __get_host(direction: str, output_details: dict):
+        if direction == MimeoOutputDetails.HTTP_DIRECTION:
+            return output_details.get(MimeoConfig.OUTPUT_DETAILS_HOST)
+
+    @staticmethod
+    def __get_port(direction: str, output_details: dict):
+        if direction == MimeoOutputDetails.HTTP_DIRECTION:
+            return output_details.get(MimeoConfig.OUTPUT_DETAILS_PORT)
+
+    @staticmethod
+    def __get_endpoint(direction: str, output_details: dict):
+        if direction == MimeoOutputDetails.HTTP_DIRECTION:
+            return output_details.get(MimeoConfig.OUTPUT_DETAILS_ENDPOINT)
 
 
 class MimeoTemplate:
