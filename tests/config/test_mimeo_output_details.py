@@ -2,7 +2,8 @@ import pytest
 
 from mimeo.config.mimeo_config import MimeoOutputDetails
 from mimeo.exceptions import (MissingRequiredProperty, UnsupportedAuthMethod,
-                              UnsupportedOutputDirection)
+                              UnsupportedOutputDirection,
+                              UnsupportedRequestMethod)
 
 
 def test_parsing_output_details_stdout():
@@ -162,6 +163,22 @@ def test_parsing_output_details_unsupported_auth_method():
         MimeoOutputDetails("xml", output_details)
 
     assert err.value.args[0] == "Provided auth [unsupported_auth] is not supported!"
+
+
+def test_parsing_output_details_unsupported_request_method():
+    output_details = {
+        "direction": "http",
+        "method": "unsupported_request_method",
+        "host": "localhost",
+        "endpoint": "/documents",
+        "username": "admin",
+        "password": "admin"
+    }
+
+    with pytest.raises(UnsupportedRequestMethod) as err:
+        MimeoOutputDetails("xml", output_details)
+
+    assert err.value.args[0] == "Provided request method [unsupported_request_method] is not supported!"
 
 
 def test_parsing_output_details_missing_required_field():

@@ -10,6 +10,10 @@ class UnsupportedAuthMethod(Exception):
     pass
 
 
+class UnsupportedRequestMethod(Exception):
+    pass
+
+
 class MissingRequiredProperty(Exception):
     pass
 

@@ -5,7 +5,8 @@ from mimeo.exceptions import (IncorrectMimeoConfig, IncorrectMimeoModel,
                               InvalidVars, MissingRequiredProperty,
                               UnsupportedAuthMethod,
                               UnsupportedOutputDirection,
-                              UnsupportedOutputFormat)
+                              UnsupportedOutputFormat,
+                              UnsupportedRequestMethod)
 
 
 class MimeoConfig:
@@ -87,10 +88,14 @@ class MimeoOutputDetails:
     STD_OUT_DIRECTION = "stdout"
     HTTP_DIRECTION = "http"
 
+    REQUEST_POST = "POST"
+    REQUEST_PUT = "PUT"
+
     AUTH_BASIC = "basic"
     AUTH_DIGEST = "digest"
 
     SUPPORTED_OUTPUT_DIRECTIONS = (STD_OUT_DIRECTION, FILE_DIRECTION, HTTP_DIRECTION)
+    SUPPORTED_REQUEST_METHODS = (REQUEST_POST, REQUEST_PUT)
     SUPPORTED_AUTH_METHODS = (AUTH_BASIC, AUTH_DIGEST)
     REQUIRED_HTTP_DETAILS = (MimeoConfig.OUTPUT_DETAILS_HOST,
                              MimeoConfig.OUTPUT_DETAILS_ENDPOINT,
@@ -144,7 +149,11 @@ class MimeoOutputDetails:
     @staticmethod
     def __get_method(direction: str, output_details: dict):
         if direction == MimeoOutputDetails.HTTP_DIRECTION:
-            return output_details.get(MimeoConfig.OUTPUT_DETAILS_METHOD, "POST")
+            method = output_details.get(MimeoConfig.OUTPUT_DETAILS_METHOD, "POST")
+            if method in MimeoOutputDetails.SUPPORTED_REQUEST_METHODS:
+                return method
+            else:
+                raise UnsupportedRequestMethod(f"Provided request method [{method}] is not supported!")
 
     @staticmethod
     def __get_protocol(direction: str, output_details: dict):

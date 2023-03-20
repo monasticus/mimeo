@@ -1,4 +1,4 @@
-from requests import Session, Response
+from requests import Response, Session
 from requests.auth import HTTPBasicAuth, HTTPDigestAuth
 
 from mimeo.config.mimeo_config import MimeoOutputDetails
