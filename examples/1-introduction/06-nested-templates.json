@@ -1,0 +1,36 @@
+{
+  "_templates_": [
+    {
+      "count": 30,
+      "model": {
+        "SomeEntity": {
+          "ChildNode1": 1,
+          "_templates_": [
+            {
+              "count": 3,
+              "model": {
+                "SomeDirectChild": {
+                  "SomeGrandChild1": "value-1",
+                  "SomeGrandChild2": true
+                }
+              }
+            }
+          ],
+          "SomeChildren": {
+            "_templates_": [
+              {
+                "count": 5,
+                "model": {
+                  "SomeChildInArray": {
+                    "SomeGrandChildInArray1": "value-1",
+                    "SomeGrandChildInArray2": true
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

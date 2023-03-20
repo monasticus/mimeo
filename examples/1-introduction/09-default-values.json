@@ -1,0 +1,22 @@
+{
+  "output_format": "xml",
+  "output_details": {
+    "direction": "file",
+    "directory_path": "mimeo-output",
+    "file_name": "mimeo-output"
+  },
+  "xml_declaration": false,
+  "indent": 0,
+  "_templates_": [
+    {
+      "count": 30,
+      "model": {
+        "SomeEntity": {
+          "id": 1,
+          "ChildNode2": "value-2",
+          "ChildNode3": true
+        }
+      }
+    }
+  ]
+}

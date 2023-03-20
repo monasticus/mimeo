@@ -1,0 +1,24 @@
+{
+  "_templates_": [
+    {
+      "count": 30,
+      "model": {
+        "SomeEntity": {
+          "ChildNode1": 1,
+          "ChildNode2": "value-2",
+          "ChildNode3": true
+        }
+      }
+    },
+    {
+      "count": 5,
+      "model": {
+        "SomeEntity2": {
+          "ChildNode1": 1.0,
+          "ChildNode2": "VALUE",
+          "ChildNode3": false
+        }
+      }
+    }
+  ]
+}

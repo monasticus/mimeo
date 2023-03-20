@@ -1,0 +1,28 @@
+{
+  "_templates_": [
+    {
+      "count": 30,
+      "model": {
+        "SomeEntity": {
+          "ChildNode1": {
+            "GrandChild1-1": "value-1-1"
+          },
+          "ChildNode2": [
+            {
+              "GrandChild": {
+                "GrandGrandChild1": "value-1-1",
+                "GrandGrandChild2": "value-2-1"
+              }
+            },
+            {
+              "GrandChild": {
+                "GrandGrandChild1": "value-1-2",
+                "GrandGrandChild2": "value-2-2"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

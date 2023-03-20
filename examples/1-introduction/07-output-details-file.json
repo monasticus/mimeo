@@ -1,0 +1,20 @@
+{
+  "output_format": "xml",
+  "output_details": {
+    "direction": "file",
+    "directory_path": "output",
+    "file_name": "output"
+  },
+  "_templates_": [
+    {
+      "count": 30,
+      "model": {
+        "SomeEntity": {
+          "ChildNode1": 1,
+          "ChildNode2": "value-2",
+          "ChildNode3": true
+        }
+      }
+    }
+  ]
+}
