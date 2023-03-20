@@ -1,0 +1,13 @@
+{
+  "_templates_": [
+    {
+      "count": 30,
+      "model": {
+        "SomeEntity": {
+          "{:ChildNode1:}": "custom-value",
+          "ChildNode2": "{:ChildNode1:}"
+        }
+      }
+    }
+  ]
+}

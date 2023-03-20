@@ -1,0 +1,23 @@
+{
+  "vars": {
+    "CUSTOM_VAR_1": "custom-value-1",
+    "CUSTOM_VAR_2": 1,
+    "CUSTOM_VAR_3": true,
+    "CUSTOM_VAR_4": "{CUSTOM_VAR_2}",
+    "CUSTOM_VAR_5": "{auto_increment('{}')}"
+  },
+  "_templates_": [
+    {
+      "count": 30,
+      "model": {
+        "SomeEntity": {
+          "ChildNode1": "{CUSTOM_VAR_1}",
+          "ChildNode2": "{CUSTOM_VAR_2}",
+          "ChildNode3": "{CUSTOM_VAR_3}",
+          "ChildNode4": "{CUSTOM_VAR_4}",
+          "ChildNode5": "{CUSTOM_VAR_5}"
+        }
+      }
+    }
+  ]
+}
