@@ -1,0 +1,23 @@
+{
+  "output_format": "xml",
+  "output_details": {
+    "direction": "http",
+    "host": "localhost",
+    "port": 8080,
+    "endpoint": "/document",
+    "username": "admin",
+    "password": "admin"
+  },
+  "_templates_": [
+    {
+      "count": 30,
+      "model": {
+        "SomeEntity": {
+          "ChildNode1": 1,
+          "ChildNode2": "value-2",
+          "ChildNode3": true
+        }
+      }
+    }
+  ]
+}
