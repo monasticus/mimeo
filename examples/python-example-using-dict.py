@@ -3,8 +3,19 @@
 from mimeo import Mimeograph
 from mimeo.config import MimeoConfig
 
-with open(config_path) as config_file:
-    config = json.load(config_file)
+config = {
+  "_templates_": [
+    {
+      "count": 30,
+      "model": {
+        "SomeEntity": {
+          "ChildNode1": 1,
+          "ChildNode2": "value-2",
+          "ChildNode3": True
+        }
+      }
+    }
+  ]
+}
 mimeo_config = MimeoConfig(config)
 Mimeograph(mimeo_config).produce()
-Mimeograph("examples/config-5.json").produce()
