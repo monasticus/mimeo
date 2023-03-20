@@ -1,7 +1,8 @@
 import pytest
 
 from mimeo.config import MimeoConfig
-from mimeo.consumers import ConsumerFactory, FileConsumer, RawConsumer
+from mimeo.consumers import (ConsumerFactory, FileConsumer, HttpConsumer,
+                             RawConsumer)
 from mimeo.exceptions import UnsupportedOutputDirection
 
 
@@ -41,6 +42,28 @@ def test_get_consumer_for_stdout_direction():
     mimeo_config = MimeoConfig(config)
     generator = ConsumerFactory.get_consumer(mimeo_config)
     assert isinstance(generator, RawConsumer)
+
+
+def test_get_consumer_for_http_direction():
+    config = {
+        "output_details": {
+            "direction": "http",
+            "host": "localhost",
+            "port": 8080,
+            "endpoint": "/document",
+        },
+        "_templates_": [
+            {
+                "count": 5,
+                "model": {
+                    "SomeEntity": {}
+                }
+            }
+        ]
+    }
+    mimeo_config = MimeoConfig(config)
+    generator = ConsumerFactory.get_consumer(mimeo_config)
+    assert isinstance(generator, HttpConsumer)
 
 
 def test_get_consumer_for_unsupported_format():
