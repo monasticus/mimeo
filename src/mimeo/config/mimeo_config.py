@@ -85,7 +85,6 @@ class MimeoOutputDetails:
 
     SUPPORTED_OUTPUT_DIRECTIONS = (STD_OUT_DIRECTION, FILE_DIRECTION, HTTP_DIRECTION)
     REQUIRED_HTTP_DETAILS = (MimeoConfig.OUTPUT_DETAILS_HOST,
-                             MimeoConfig.OUTPUT_DETAILS_PORT,
                              MimeoConfig.OUTPUT_DETAILS_ENDPOINT)
 
     def __init__(self, output_format: str, output_details: dict):

@@ -74,7 +74,6 @@ def test_parsing_output_details_http_default():
     output_details = {
         "direction": "http",
         "host": "localhost",
-        "port": 8080,
         "endpoint": "/document",
     }
 
@@ -83,7 +82,7 @@ def test_parsing_output_details_http_default():
     assert mimeo_output_details.method == "POST"
     assert mimeo_output_details.protocol == "http"
     assert mimeo_output_details.host == "localhost"
-    assert mimeo_output_details.port == 8080
+    assert mimeo_output_details.port is None
     assert mimeo_output_details.endpoint == "/document"
     assert mimeo_output_details.directory_path is None
     assert mimeo_output_details.file_name_tmplt is None
@@ -124,8 +123,7 @@ def test_parsing_output_details_unsupported_direction():
 def test_parsing_output_details_missing_required_field():
     output_details = {
         "direction": "http",
-        "host": "localhost",
-        "port": 8080
+        "host": "localhost"
     }
 
     with pytest.raises(MissingRequiredProperty) as err:
@@ -142,4 +140,4 @@ def test_parsing_output_details_missing_required_fields():
     with pytest.raises(MissingRequiredProperty) as err:
         MimeoOutputDetails("xml", output_details)
 
-    assert err.value.args[0] == "Missing required fields is HTTP output details: host, port, endpoint"
+    assert err.value.args[0] == "Missing required fields is HTTP output details: host, endpoint"
