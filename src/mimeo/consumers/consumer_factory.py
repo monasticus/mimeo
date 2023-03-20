@@ -17,6 +17,6 @@ class ConsumerFactory:
         elif direction == ConsumerFactory.FILE_DIRECTION:
             return FileConsumer(mimeo_config.output_details)
         elif direction == ConsumerFactory.HTTP_DIRECTION:
-            return HttpConsumer()
+            return HttpConsumer(mimeo_config.output_details)
         else:
             raise UnsupportedOutputDirection(f"Provided direction [{direction}] is not supported!")

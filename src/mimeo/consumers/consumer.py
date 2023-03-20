@@ -10,5 +10,5 @@ class Consumer(metaclass=ABCMeta):
                 NotImplemented)
 
     @abstractmethod
-    def consume(self, data: str) -> None:
+    def consume(self, data: str):
         raise NotImplementedError

@@ -1,4 +1,6 @@
 requests
 bumpver
 pytest
+pytest-cov
+responses
 isort
