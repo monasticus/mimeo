@@ -1,0 +1,13 @@
+{
+  "_templates_": [
+    {
+      "count": 30,
+      "model": {
+        "SomeEntity": {
+          "Yesterday": "{date(-1)}",
+          "Tomorrow": "{date(1)}"
+        }
+      }
+    }
+  ]
+}

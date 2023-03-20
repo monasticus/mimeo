@@ -1,0 +1,25 @@
+{
+  "_templates_": [
+    {
+      "count": 30,
+      "model": {
+        "SomeEntity": {
+          "ID": "{key()}",
+          "Children": {
+            "_templates_": [
+              {
+                "count": 5,
+                "model": {
+                  "SomeChild": {
+                    "ID": "{key()}",
+                    "Parent": "{get_key('SomeEntity')}"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

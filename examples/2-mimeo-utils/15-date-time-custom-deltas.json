@@ -1,0 +1,18 @@
+{
+  "_templates_": [
+    {
+      "count": 30,
+      "model": {
+        "SomeEntity": {
+          "TomorrowAtTheSameTime": "{date_time(1)}",
+          "TomorrowThreeHoursLater": "{date_time(1, 3)}",
+          "TomorrowThreeHoursLaterTwentyMinutesAgo": "{date_time(1, 3,-20)}",
+          "TomorrowThreeHoursLaterTwentyMinutesAgoTwoSecondsLater": "{date_time(1, 3,-20, 2)}",
+          "OneHourAgo": "{date_time(0, -1)}",
+          "OneMinuteAgo": "{date_time(0, 0, -1)}",
+          "OneSecondAgo": "{date_time(0, 0, 0, -1)}"
+        }
+      }
+    }
+  ]
+}

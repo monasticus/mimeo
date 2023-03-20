@@ -1,0 +1,30 @@
+{
+  "_templates_": [
+    {
+      "count": 30,
+      "model": {
+        "SomeEntity": {
+          "ID": "{key()}"
+        }
+      }
+    },
+    {
+      "count": 30,
+      "model": {
+        "SomeOtherEntity1": {
+          "ID": "{key()}",
+          "SomeEntity": "{get_key('SomeEntity', 3)}"
+        }
+      }
+    },
+    {
+      "count": 30,
+      "model": {
+        "SomeOtherEntity2": {
+          "ID": "{key()}",
+          "SomeEntity": "{get_key('SomeEntity', curr_iter())}"
+        }
+      }
+    }
+  ]
+}
