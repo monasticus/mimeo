@@ -2,7 +2,7 @@ import json
 import shutil
 import sys
 from glob import glob
-from os import path, remove, listdir, rmdir
+from os import listdir, path, remove, rmdir
 from pathlib import Path
 
 import pytest
