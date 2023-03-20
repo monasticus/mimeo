@@ -1,12 +1,31 @@
 import json
 import shutil
 import sys
-from os import path
+from glob import glob
+from os import path, remove, listdir, rmdir
 from pathlib import Path
 
 import pytest
 
 import mimeo.__main__ as MimeoCLI
+
+
+@pytest.fixture(autouse=True)
+def minimum_config():
+    return {
+        "_templates_": [
+            {
+                "count": 10,
+                "model": {
+                    "SomeEntity": {
+                        "ChildNode1": 1,
+                        "ChildNode2": "value-2",
+                        "ChildNode3": True
+                    }
+                }
+            }
+        ]
+    }
 
 
 @pytest.fixture(autouse=True)
@@ -36,20 +55,26 @@ def default_config():
 
 
 @pytest.fixture(autouse=True)
-def setup_and_teardown(default_config):
+def setup_and_teardown(default_config, minimum_config):
     # Setup
     Path("test_mimeo_cli-dir").mkdir(parents=True, exist_ok=True)
-    with open("test_mimeo_cli-dir/config-1.json", "w") as file:
+    with open("test_mimeo_cli-dir/default-config.json", "w") as file:
         json.dump(default_config, file)
+    with open("test_mimeo_cli-dir/minimum-config.json", "w") as file:
+        json.dump(minimum_config, file)
 
     yield
 
     # Teardown
     shutil.rmtree("test_mimeo_cli-dir")
+    for filename in glob("mimeo-output/customized-output-file*"):
+        remove(filename)
+    if path.exists("mimeo-output") and not listdir("mimeo-output"):
+        rmdir("mimeo-output")
 
 
 def test_basic_use():
-    sys.argv = ["mimeo", "test_mimeo_cli-dir/config-1.json"]
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/default-config.json"]
 
     assert not path.exists("test_mimeo_cli-dir/output")
 
@@ -70,7 +95,7 @@ def test_basic_use():
 
 
 def test_custom_short_xml_declaration_false():
-    sys.argv = ["mimeo", "test_mimeo_cli-dir/config-1.json", "-x", "false"]
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/default-config.json", "-x", "false"]
 
     assert not path.exists("test_mimeo_cli-dir/output")
 
@@ -90,7 +115,7 @@ def test_custom_short_xml_declaration_false():
 
 
 def test_custom_short_xml_declaration_true():
-    sys.argv = ["mimeo", "test_mimeo_cli-dir/config-1.json", "-x", "true"]
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/default-config.json", "-x", "true"]
 
     assert not path.exists("test_mimeo_cli-dir/output")
 
@@ -111,7 +136,7 @@ def test_custom_short_xml_declaration_true():
 
 
 def test_custom_long_xml_declaration_false():
-    sys.argv = ["mimeo", "test_mimeo_cli-dir/config-1.json", "--xml-declaration", "false"]
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/default-config.json", "--xml-declaration", "false"]
 
     assert not path.exists("test_mimeo_cli-dir/output")
 
@@ -131,7 +156,7 @@ def test_custom_long_xml_declaration_false():
 
 
 def test_custom_long_xml_declaration_true():
-    sys.argv = ["mimeo", "test_mimeo_cli-dir/config-1.json", "--xml-declaration", "true"]
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/default-config.json", "--xml-declaration", "true"]
 
     assert not path.exists("test_mimeo_cli-dir/output")
 
@@ -152,7 +177,7 @@ def test_custom_long_xml_declaration_true():
 
 
 def test_custom_short_indent_non_zero():
-    sys.argv = ["mimeo", "test_mimeo_cli-dir/config-1.json", "-i", "2"]
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/default-config.json", "-i", "2"]
 
     assert not path.exists("test_mimeo_cli-dir/output")
 
@@ -173,7 +198,7 @@ def test_custom_short_indent_non_zero():
 
 
 def test_custom_short_indent_zero():
-    sys.argv = ["mimeo", "test_mimeo_cli-dir/config-1.json", "-i", "0"]
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/default-config.json", "-i", "0"]
 
     assert not path.exists("test_mimeo_cli-dir/output")
 
@@ -194,7 +219,7 @@ def test_custom_short_indent_zero():
 
 
 def test_custom_long_indent_non_zero():
-    sys.argv = ["mimeo", "test_mimeo_cli-dir/config-1.json", "--indent", "2"]
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/default-config.json", "--indent", "2"]
 
     assert not path.exists("test_mimeo_cli-dir/output")
 
@@ -215,7 +240,7 @@ def test_custom_long_indent_non_zero():
 
 
 def test_custom_long_indent_zero():
-    sys.argv = ["mimeo", "test_mimeo_cli-dir/config-1.json", "--indent", "0"]
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/default-config.json", "--indent", "0"]
 
     assert not path.exists("test_mimeo_cli-dir/output")
 
@@ -236,7 +261,7 @@ def test_custom_long_indent_zero():
 
 
 def test_custom_short_output_direction():
-    sys.argv = ["mimeo", "test_mimeo_cli-dir/config-1.json", "-o", "stdout"]
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/default-config.json", "-o", "stdout"]
 
     assert not path.exists("test_mimeo_cli-dir/output")
 
@@ -246,7 +271,7 @@ def test_custom_short_output_direction():
 
 
 def test_custom_long_output_direction():
-    sys.argv = ["mimeo", "test_mimeo_cli-dir/config-1.json", "--output", "stdout"]
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/default-config.json", "--output", "stdout"]
 
     assert not path.exists("test_mimeo_cli-dir/output")
 
@@ -255,8 +280,17 @@ def test_custom_long_output_direction():
     assert not path.exists("test_mimeo_cli-dir/output")
 
 
+def test_custom_output_direction_does_not_throw_error_when_output_details_does_not_exist():
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/minimum-config.json", "-o", "stdout"]
+
+    try:
+        MimeoCLI.main()
+    except KeyError:
+        assert False
+
+
 def test_custom_short_output_directory_path():
-    sys.argv = ["mimeo", "test_mimeo_cli-dir/config-1.json", "-d", "test_mimeo_cli-dir/customized-output"]
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/default-config.json", "-d", "test_mimeo_cli-dir/customized-output"]
 
     assert not path.exists("test_mimeo_cli-dir/output")
     assert not path.exists("test_mimeo_cli-dir/customized-output")
@@ -279,7 +313,7 @@ def test_custom_short_output_directory_path():
 
 
 def test_custom_long_output_directory_path():
-    sys.argv = ["mimeo", "test_mimeo_cli-dir/config-1.json", "--directory", "test_mimeo_cli-dir/customized-output"]
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/default-config.json", "--directory", "test_mimeo_cli-dir/customized-output"]
 
     assert not path.exists("test_mimeo_cli-dir/output")
     assert not path.exists("test_mimeo_cli-dir/customized-output")
@@ -301,8 +335,17 @@ def test_custom_long_output_directory_path():
             assert file_content.readline() == '</SomeEntity>\n'
 
 
+def test_custom_output_directory_path_does_not_throw_error_when_output_details_does_not_exist():
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/minimum-config.json", "-d", "test_mimeo_cli-dir/customized-output"]
+
+    try:
+        MimeoCLI.main()
+    except KeyError:
+        assert False
+
+
 def test_custom_short_output_file_name():
-    sys.argv = ["mimeo", "test_mimeo_cli-dir/config-1.json", "-f", "customized-output-file"]
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/default-config.json", "-f", "customized-output-file"]
 
     assert not path.exists("test_mimeo_cli-dir/output")
 
@@ -324,7 +367,7 @@ def test_custom_short_output_file_name():
 
 
 def test_custom_long_output_file_name():
-    sys.argv = ["mimeo", "test_mimeo_cli-dir/config-1.json", "--file", "customized-output-file"]
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/default-config.json", "--file", "customized-output-file"]
 
     assert not path.exists("test_mimeo_cli-dir/output")
 
@@ -343,3 +386,12 @@ def test_custom_long_output_file_name():
             assert file_content.readline() == '    <ChildNode2>value-2</ChildNode2>\n'
             assert file_content.readline() == '    <ChildNode3>true</ChildNode3>\n'
             assert file_content.readline() == '</SomeEntity>\n'
+
+
+def test_custom_output_file_name_does_not_throw_error_when_output_details_does_not_exist():
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/minimum-config.json", "-f", "customized-output-file"]
+
+    try:
+        MimeoCLI.main()
+    except KeyError:
+        assert False

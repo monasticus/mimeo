@@ -60,7 +60,6 @@ class MimeoConfig:
                 raise InvalidVars(f"Provided var [{var}] is invalid (you can use ony atomic values)!")
         return variables
 
-
     @staticmethod
     def __get_templates(config):
         templates = config.get(MimeoConfig.TEMPLATES_KEY)

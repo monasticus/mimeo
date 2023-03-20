@@ -70,12 +70,19 @@ def get_config(config_path, args):
         if args.indent is not None:
             config[MimeoConfig.INDENT_KEY] = args.indent
         if args.output is not None:
-            config[MimeoConfig.OUTPUT_DETAILS_KEY][MimeoConfig.OUTPUT_DETAILS_DIRECTION_KEY] = args.output
+            customize_output_details(config, MimeoConfig.OUTPUT_DETAILS_DIRECTION_KEY, args.output)
         if args.directory is not None:
-            config[MimeoConfig.OUTPUT_DETAILS_KEY][MimeoConfig.OUTPUT_DETAILS_DIRECTORY_PATH_KEY] = args.directory
+            customize_output_details(config, MimeoConfig.OUTPUT_DETAILS_DIRECTORY_PATH_KEY, args.directory)
         if args.file is not None:
-            config[MimeoConfig.OUTPUT_DETAILS_KEY][MimeoConfig.OUTPUT_DETAILS_FILE_NAME_KEY] = args.file
+            customize_output_details(config, MimeoConfig.OUTPUT_DETAILS_FILE_NAME_KEY, args.file)
     return MimeoConfig(config)
+
+
+def customize_output_details(config, key, value):
+    if config.get(MimeoConfig.OUTPUT_DETAILS_KEY) is None:
+        config[MimeoConfig.OUTPUT_DETAILS_KEY] = {}
+
+    config[MimeoConfig.OUTPUT_DETAILS_KEY][key] = value
 
 
 if __name__ == '__main__':
