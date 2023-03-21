@@ -24,7 +24,7 @@ keywords = ["mimeograph", "mimeo", "generate", "generator"]
 dependencies = [
     "requests",
 ]
-requires-python = ">=3.5"
+requires-python = ">=3.7"
 
 [project.optional-dependencies]
 dev = ["bumpver", "build", "twine", "isort", "pytest", "pytest-cov", "responses"]
