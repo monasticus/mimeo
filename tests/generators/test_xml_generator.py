@@ -1166,6 +1166,80 @@ def test_generate_template_using_special_fields():
     assert count == 5
 
 
+def test_generate_template_using_special_fields_as_partial_values():
+    config = MimeoConfig({
+        "output_format": "xml",
+        "_templates_": [
+            {
+                "count": 5,
+                "model": {
+                    "SomeEntity": {
+                        "{:ChildNode1:}": "value-1",
+                        "{:ChildNode2:}": "value-2",
+                        "ChildNode3": "{:ChildNode1:}-2",
+                        "ChildNode4": "3-{:ChildNode1:}-3",
+                        "ChildNode5": "4-{:ChildNode1:}",
+                        "ChildNode6": "{:ChildNode1:}-{:ChildNode1:}",
+                        "ChildNode7": "{:ChildNode1:}-{:ChildNode2:}"
+                    }
+                }
+            }
+        ]
+    })
+    generator = XMLGenerator(config)
+    count = 0
+    for index, data in enumerate(generator.generate(config.templates)):
+        assert data.tag == "SomeEntity"
+        assert data.attrib == {}
+        assert len(list(data)) == 7  # number of children
+
+        child = data.find("ChildNode1")
+        assert child.tag == "ChildNode1"
+        assert child.attrib == {}
+        assert child.text == "value-1"
+        assert len(list(child)) == 0  # number of children
+
+        child = data.find("ChildNode2")
+        assert child.tag == "ChildNode2"
+        assert child.attrib == {}
+        assert child.text == "value-2"
+        assert len(list(child)) == 0  # number of children
+
+        child = data.find("ChildNode3")
+        assert child.tag == "ChildNode3"
+        assert child.attrib == {}
+        assert child.text == "value-1-2"
+        assert len(list(child)) == 0  # number of children
+
+        child = data.find("ChildNode4")
+        assert child.tag == "ChildNode4"
+        assert child.attrib == {}
+        assert child.text == "3-value-1-3"
+        assert len(list(child)) == 0  # number of children
+
+        child = data.find("ChildNode5")
+        assert child.tag == "ChildNode5"
+        assert child.attrib == {}
+        assert child.text == "4-value-1"
+        assert len(list(child)) == 0  # number of children
+
+        child = data.find("ChildNode6")
+        assert child.tag == "ChildNode6"
+        assert child.attrib == {}
+        assert child.text == "value-1-value-1"
+        assert len(list(child)) == 0  # number of children
+
+        child = data.find("ChildNode7")
+        assert child.tag == "ChildNode7"
+        assert child.attrib == {}
+        assert child.text == "value-1-value-2"
+        assert len(list(child)) == 0  # number of children
+
+        count += 1
+
+    assert count == 5
+
+
 def test_generate_template_using_special_fields_using_namespace():
     config = MimeoConfig({
         "output_format": "xml",

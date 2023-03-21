@@ -448,6 +448,67 @@ def test_vars_pointing_to_invalid_funct():
     assert value == "{auto_increment(1)}"
 
 
+def test_vars_as_partial_values_single_beginning():
+    config = MimeoConfig({
+        "vars": {
+            "URI_PREFIX": "/data",
+        },
+        "_templates_": []
+    })
+    GeneratorUtils.setup(config)
+    value = GeneratorUtils.render_value("SomeEntity", "{URI_PREFIX}/1.xml")
+    assert value == "/data/1.xml"
+
+
+def test_vars_as_partial_values_single_middle():
+    config = MimeoConfig({
+        "vars": {
+            "FILE_NAME": "/1",
+        },
+        "_templates_": []
+    })
+    GeneratorUtils.setup(config)
+    value = GeneratorUtils.render_value("SomeEntity", "/data{FILE_NAME}.xml")
+    assert value == "/data/1.xml"
+
+
+def test_vars_as_partial_values_single_end():
+    config = MimeoConfig({
+        "vars": {
+            "URI_SUFFIX": ".xml"
+        },
+        "_templates_": []
+    })
+    GeneratorUtils.setup(config)
+    value = GeneratorUtils.render_value("SomeEntity", "/data/1{URI_SUFFIX}")
+    assert value == "/data/1.xml"
+
+
+def test_vars_as_partial_values_repeated():
+    config = MimeoConfig({
+        "vars": {
+            "FILE_NAME": "/1",
+        },
+        "_templates_": []
+    })
+    GeneratorUtils.setup(config)
+    value = GeneratorUtils.render_value("SomeEntity", "/data{FILE_NAME}{FILE_NAME}.xml")
+    assert value == "/data/1/1.xml"
+
+
+def test_vars_as_partial_values_multiple():
+    config = MimeoConfig({
+        "vars": {
+            "URI_PREFIX": "/data",
+            "URI_SUFFIX": ".xml"
+        },
+        "_templates_": []
+    })
+    GeneratorUtils.setup(config)
+    value = GeneratorUtils.render_value("SomeEntity", "{URI_PREFIX}/1{URI_SUFFIX}")
+    assert value == "/data/1.xml"
+
+
 def test_is_special_field_true():
     assert GeneratorUtils.is_special_field("{:SomeChild:}")
     assert GeneratorUtils.is_special_field("{:Some_Child:}")
