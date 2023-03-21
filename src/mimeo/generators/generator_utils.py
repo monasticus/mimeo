@@ -106,7 +106,7 @@ class GeneratorUtils:
 
     @staticmethod
     def is_special_field(field_name: str) -> bool:
-        return bool(re.match(r"^{:[-_a-zA-Z0-9]+:}$", field_name))
+        return bool(re.match(r"^{:([a-zA-Z]+:)?[-_a-zA-Z0-9]+:}$", field_name))
 
     @staticmethod
     def render_value(context: str, value):

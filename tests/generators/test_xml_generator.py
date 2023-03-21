@@ -1166,6 +1166,50 @@ def test_generate_template_using_special_fields():
     assert count == 5
 
 
+def test_generate_template_using_special_fields_using_namespace():
+    config = MimeoConfig({
+        "output_format": "xml",
+        "_templates_": [
+            {
+                "count": 5,
+                "model": {
+                    "attributes": {
+                        "xmlns:ns": "http://mimeo.arch.com/prefixed-namespace"
+                    },
+                    "ns:SomeEntity": {
+                        "{:ns:ChildNode1:}": "value-1",
+                        "ns:ChildNode2": "{:ns:ChildNode1:}"
+                    }
+                }
+            }
+        ]
+    })
+    generator = XMLGenerator(config)
+    count = 0
+    for index, data in enumerate(generator.generate(config.templates)):
+        assert data.tag == "ns:SomeEntity"
+        assert data.attrib == {
+            "xmlns:ns": "http://mimeo.arch.com/prefixed-namespace"
+        }
+        assert len(list(data)) == 2  # number of children
+
+        child = data.find("ns:ChildNode1")
+        assert child.tag == "ns:ChildNode1"
+        assert child.attrib == {}
+        assert child.text == "value-1"
+        assert len(list(child)) == 0  # number of children
+
+        child = data.find("ns:ChildNode2")
+        assert child.tag == "ns:ChildNode2"
+        assert child.attrib == {}
+        assert child.text == "value-1"
+        assert len(list(child)) == 0  # number of children
+
+        count += 1
+
+    assert count == 5
+
+
 def test_generate_template_using_special_fields_recursive():
     config = MimeoConfig({
         "output_format": "xml",

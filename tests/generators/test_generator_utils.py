@@ -453,6 +453,7 @@ def test_is_special_field_true():
     assert GeneratorUtils.is_special_field("{:Some_Child:}")
     assert GeneratorUtils.is_special_field("{:Some-Child:}")
     assert GeneratorUtils.is_special_field("{:SomeChild1:}")
+    assert GeneratorUtils.is_special_field("{:ns:SomeChild1:}")
 
 
 def test_is_special_field_false():
@@ -467,10 +468,15 @@ def test_is_special_field_false():
     assert not GeneratorUtils.is_special_field("SomeField")
     assert not GeneratorUtils.is_special_field("{::}")
     assert not GeneratorUtils.is_special_field("{:Some Field:}")
+    assert not GeneratorUtils.is_special_field("{:_:SomeField:}")
 
 
 def test_get_special_field_name():
     assert GeneratorUtils.get_special_field_name("{:SomeField:}") == "SomeField"
+
+
+def test_get_special_field_name_using_namespace():
+    assert GeneratorUtils.get_special_field_name("{:ns:SomeField:}") == "ns:SomeField"
 
 
 def test_get_special_field_name_when_invalid():
