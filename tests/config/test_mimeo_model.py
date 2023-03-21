@@ -7,7 +7,7 @@ from mimeo.exceptions import IncorrectMimeoModel
 def test_parsing_model_with_attributes():
     model = {
         "attributes": {
-          "xmlns": "http://data-generator.arch.com/default-namespace"
+          "xmlns": "http://mimeo.arch.com/default-namespace"
         },
         "SomeEntity": {
             "ChildNode": "value"
@@ -16,7 +16,7 @@ def test_parsing_model_with_attributes():
 
     mimeo_model = MimeoModel(model)
     assert mimeo_model.attributes == {
-        "xmlns": "http://data-generator.arch.com/default-namespace"
+        "xmlns": "http://mimeo.arch.com/default-namespace"
     }
     assert mimeo_model.root_name == "SomeEntity"
     assert mimeo_model.root_data == {
@@ -42,7 +42,7 @@ def test_parsing_model_without_attributes():
 def test_parsing_model_without_root():
     model = {
         "attributes": {
-          "xmlns": "http://data-generator.arch.com/default-namespace"
+          "xmlns": "http://mimeo.arch.com/default-namespace"
         }
     }
 
@@ -50,7 +50,7 @@ def test_parsing_model_without_root():
         MimeoModel(model)
 
     assert err.value.args[0] == "No root data in Mimeo Model: " \
-                                "{'attributes': {'xmlns': 'http://data-generator.arch.com/default-namespace'}}"
+                                "{'attributes': {'xmlns': 'http://mimeo.arch.com/default-namespace'}}"
 
 
 def test_parsing_model_with_multiple_roots():

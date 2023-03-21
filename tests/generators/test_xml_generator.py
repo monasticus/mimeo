@@ -44,7 +44,7 @@ def test_generate_single_template_model_with_attributes():
                 "count": 5,
                 "model": {
                     "attributes": {
-                        "xmlns": "http://data-generator.arch.com/default-namespace"
+                        "xmlns": "http://mimeo.arch.com/default-namespace"
                     },
                     "SomeEntity": {}
                 }
@@ -55,7 +55,7 @@ def test_generate_single_template_model_with_attributes():
     count = 0
     for data in generator.generate(config.templates):
         assert data.tag == "SomeEntity"
-        assert data.attrib == {"xmlns": "http://data-generator.arch.com/default-namespace"}
+        assert data.attrib == {"xmlns": "http://mimeo.arch.com/default-namespace"}
         assert len(list(data)) == 0  # number of children
 
         count += 1
@@ -71,7 +71,7 @@ def test_generate_single_template_model_with_prefixed_ns():
                 "count": 5,
                 "model": {
                     "attributes": {
-                        "xmlns:pn": "http://data-generator.arch.com/prefixed-namespace"
+                        "xmlns:pn": "http://mimeo.arch.com/prefixed-namespace"
                     },
                     "pn:SomeEntity": {}
                 }
@@ -82,7 +82,7 @@ def test_generate_single_template_model_with_prefixed_ns():
     count = 0
     for data in generator.generate(config.templates):
         assert data.tag == "pn:SomeEntity"
-        assert data.attrib == {"xmlns:pn": "http://data-generator.arch.com/prefixed-namespace"}
+        assert data.attrib == {"xmlns:pn": "http://mimeo.arch.com/prefixed-namespace"}
         assert len(list(data)) == 0  # number of children
 
         count += 1
@@ -468,8 +468,8 @@ def test_stringify_with_indent_and_xml_declaration():
                 "count": 1,
                 "model": {
                     "attributes": {
-                        "xmlns": "http://data-generator.arch.com/default-namespace",
-                        "xmlns:pn": "http://data-generator.arch.com/prefixed-namespace"
+                        "xmlns": "http://mimeo.arch.com/default-namespace",
+                        "xmlns:pn": "http://mimeo.arch.com/prefixed-namespace"
                     },
                     "SomeEntity": {
                         "pn:ChildNode": "value"
@@ -483,8 +483,8 @@ def test_stringify_with_indent_and_xml_declaration():
         data_str = generator.stringify(data, config)
         assert data_str == ('<?xml version="1.0" encoding="utf-8"?>\n'
                             '<SomeEntity'
-                            ' xmlns="http://data-generator.arch.com/default-namespace"'
-                            ' xmlns:pn="http://data-generator.arch.com/prefixed-namespace">\n'
+                            ' xmlns="http://mimeo.arch.com/default-namespace"'
+                            ' xmlns:pn="http://mimeo.arch.com/prefixed-namespace">\n'
                             '    <pn:ChildNode>value</pn:ChildNode>\n'
                             '</SomeEntity>\n')
 
@@ -499,8 +499,8 @@ def test_stringify_with_indent_and_without_xml_declaration():
                 "count": 1,
                 "model": {
                     "attributes": {
-                        "xmlns": "http://data-generator.arch.com/default-namespace",
-                        "xmlns:pn": "http://data-generator.arch.com/prefixed-namespace"
+                        "xmlns": "http://mimeo.arch.com/default-namespace",
+                        "xmlns:pn": "http://mimeo.arch.com/prefixed-namespace"
                     },
                     "SomeEntity": {
                         "pn:ChildNode": "value"
@@ -513,8 +513,8 @@ def test_stringify_with_indent_and_without_xml_declaration():
     for data in generator.generate(config.templates):
         data_str = generator.stringify(data, config)
         assert data_str == ('<SomeEntity'
-                            ' xmlns="http://data-generator.arch.com/default-namespace"'
-                            ' xmlns:pn="http://data-generator.arch.com/prefixed-namespace">\n'
+                            ' xmlns="http://mimeo.arch.com/default-namespace"'
+                            ' xmlns:pn="http://mimeo.arch.com/prefixed-namespace">\n'
                             '    <pn:ChildNode>value</pn:ChildNode>\n'
                             '</SomeEntity>\n')
 
@@ -528,8 +528,8 @@ def test_stringify_without_indent_and_with_xml_declaration():
                 "count": 1,
                 "model": {
                     "attributes": {
-                        "xmlns": "http://data-generator.arch.com/default-namespace",
-                        "xmlns:pn": "http://data-generator.arch.com/prefixed-namespace"
+                        "xmlns": "http://mimeo.arch.com/default-namespace",
+                        "xmlns:pn": "http://mimeo.arch.com/prefixed-namespace"
                     },
                     "SomeEntity": {
                         "pn:ChildNode": "value"
@@ -544,8 +544,8 @@ def test_stringify_without_indent_and_with_xml_declaration():
         # Notice no new line at the end of string chunks
         assert data_str == ("<?xml version='1.0' encoding='utf-8'?>\n"
                             '<SomeEntity'
-                            ' xmlns="http://data-generator.arch.com/default-namespace"'
-                            ' xmlns:pn="http://data-generator.arch.com/prefixed-namespace">'
+                            ' xmlns="http://mimeo.arch.com/default-namespace"'
+                            ' xmlns:pn="http://mimeo.arch.com/prefixed-namespace">'
                             '<pn:ChildNode>value</pn:ChildNode>'
                             '</SomeEntity>')
 
@@ -558,8 +558,8 @@ def test_stringify_without_indent_and_xml_declaration():
                 "count": 1,
                 "model": {
                     "attributes": {
-                        "xmlns": "http://data-generator.arch.com/default-namespace",
-                        "xmlns:pn": "http://data-generator.arch.com/prefixed-namespace"
+                        "xmlns": "http://mimeo.arch.com/default-namespace",
+                        "xmlns:pn": "http://mimeo.arch.com/prefixed-namespace"
                     },
                     "SomeEntity": {
                         "pn:ChildNode": "value"
@@ -573,8 +573,8 @@ def test_stringify_without_indent_and_xml_declaration():
         data_str = generator.stringify(data, config)
         # Notice no new line at the end of string chunks
         assert data_str == ('<SomeEntity'
-                            ' xmlns="http://data-generator.arch.com/default-namespace"'
-                            ' xmlns:pn="http://data-generator.arch.com/prefixed-namespace">'
+                            ' xmlns="http://mimeo.arch.com/default-namespace"'
+                            ' xmlns:pn="http://mimeo.arch.com/prefixed-namespace">'
                             '<pn:ChildNode>value</pn:ChildNode>'
                             '</SomeEntity>')
 
