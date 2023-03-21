@@ -113,26 +113,31 @@ class GeneratorUtils:
         value_str = str(value)
         if isinstance(value, bool):
             return value_str.lower()
-        elif GeneratorUtils.is_special_field(value_str):
-            return GeneratorUtils.get_for_context(context).inject(value_str)
 
-        pattern = re.compile("^{(.+)}$")
-        if pattern.match(value_str):
-            try:
-                match = next(pattern.finditer(value_str))
+        special_fields_pattern = re.compile(".*({:([a-zA-Z]+:)?[-_a-zA-Z0-9]+:})")
+        vars_pattern = re.compile(".*({[A-Z_0-9]+})")
+        funct_pattern = re.compile("^{(.+)}$")
+        try:
+            if special_fields_pattern.match(value_str):
+                match = next(special_fields_pattern.finditer(value_str))
                 mimeo_util = match.group(1)
-                if GeneratorUtils.__is_var(mimeo_util):
-                    rendered_value = GeneratorUtils.__render_var(context, mimeo_util)
-                else:
-                    rendered_value = GeneratorUtils.__eval_funct(context, mimeo_util)
+                rendered_value = GeneratorUtils.get_for_context(context).inject(mimeo_util)
+                final_rendered_value = value_str.replace(mimeo_util, str(rendered_value))
+                return GeneratorUtils.render_value(context, final_rendered_value)
+            elif vars_pattern.match(value_str):
+                match = next(vars_pattern.finditer(value_str))
+                mimeo_util = match.group(1)
+                rendered_value = GeneratorUtils.__render_var(context, mimeo_util[1:][:-1])
+                final_rendered_value = value_str.replace(mimeo_util, str(rendered_value))
+                return GeneratorUtils.render_value(context, final_rendered_value)
+            elif funct_pattern.match(value_str):
+                match = next(funct_pattern.finditer(value_str))
+                mimeo_util = match.group(1)
+                rendered_value = GeneratorUtils.__eval_funct(context, mimeo_util)
                 return str(rendered_value)
-            except InvalidMimeoUtil:
-                pass
+        except InvalidMimeoUtil:
+            pass
         return value_str
-
-    @staticmethod
-    def __is_var(mimeo_util: str) -> bool:
-        return bool(re.match(r"^[A-Z_0-9]+$", mimeo_util))
 
     @staticmethod
     def __render_var(context: str, mimeo_util: str):

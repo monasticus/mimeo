@@ -163,6 +163,8 @@ Variable can be defined with:
 - any other variable defined
 - any Mimeo Util
 
+You can use Mimeo Vars as partial values (unless they are defined as Mimeo Utils).
+
 Example:
 ```json
 {
@@ -182,7 +184,8 @@ Example:
           "ChildNode2": "{CUSTOM_VAR_2}",
           "ChildNode3": "{CUSTOM_VAR_3}",
           "ChildNode4": "{CUSTOM_VAR_4}",
-          "ChildNode5": "{CUSTOM_VAR_5}"
+          "ChildNode5": "{CUSTOM_VAR_5}",
+          "ChildNode6": "{CUSTOM_VAR_1}-with-suffix"
         }
       }
     }
@@ -196,7 +199,8 @@ In Mimeo Template you can use so-called _special fields_.
 Every field in a template can be stored in memory (_provided_) and used later as a value of other fields (_injected_).
 To provide and inject a special field use curly brackets and colons: [`{:SomeField:}`].
 You provide a field when you use this format in a field name (JSON property name),
-and inject by applying it in a field value.
+and inject by applying it in a field value.  
+They can be injected as partial values, similarly to Mimeo Vars.
 
 Example
 ```json
@@ -207,7 +211,8 @@ Example
       "model": {
         "SomeEntity": {
           "{:ChildNode1:}": "custom-value",
-          "ChildNode2": "{:ChildNode1:}"
+          "ChildNode2": "{:ChildNode1:}",
+          "ChildNode3": "{:ChildNode1:}-with-suffix"
         }
       }
     }
