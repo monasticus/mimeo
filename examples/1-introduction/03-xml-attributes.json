@@ -4,8 +4,8 @@
       "count": 30,
       "model": {
         "attributes": {
-          "xmlns": "http://data-generator.arch.com/default-namespace",
-          "xmlns:pn": "http://data-generator.arch.com/prefixed-namespace"
+          "xmlns": "http://mimeo.arch.com/default-namespace",
+          "xmlns:pn": "http://mimeo.arch.com/prefixed-namespace"
         },
         "SomeEntity": {
           "pn:ChildNode1": 1,

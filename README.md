@@ -29,8 +29,8 @@ Prepare Mimeo Configuration first
       "count": 30,
       "model": {
         "attributes": {
-          "xmlns": "http://data-generator.arch.com/default-namespace",
-          "xmlns:pn": "http://data-generator.arch.com/prefixed-namespace"
+          "xmlns": "http://mimeo.arch.com/default-namespace",
+          "xmlns:pn": "http://mimeo.arch.com/prefixed-namespace"
         },
         "SomeEntity": {
           "ChildNode1": 1,
@@ -69,7 +69,7 @@ The Mimeo Configuration above will produce 2 files:
 
 ```xml
 <!-- mimeo-output/mimeo-output-1.xml-->
-<SomeEntity xmlns="http://data-generator.arch.com/default-namespace" xmlns:pn="http://data-generator.arch.com/prefixed-namespace">
+<SomeEntity xmlns="http://mimeo.arch.com/default-namespace" xmlns:pn="http://mimeo.arch.com/prefixed-namespace">
     <ChildNode1>1</ChildNode1>
     <ChildNode2>value-2</ChildNode2>
     <ChildNode3>true</ChildNode3>
@@ -77,7 +77,7 @@ The Mimeo Configuration above will produce 2 files:
 ```
 ```xml
 <!-- mimeo-output/mimeo-output-2.xml-->
-<SomeEntity xmlns="http://data-generator.arch.com/default-namespace" xmlns:pn="http://data-generator.arch.com/prefixed-namespace">
+<SomeEntity xmlns="http://mimeo.arch.com/default-namespace" xmlns:pn="http://mimeo.arch.com/prefixed-namespace">
     <ChildNode1>1</ChildNode1>
     <ChildNode2>value-2</ChildNode2>
     <ChildNode3>true</ChildNode3>
