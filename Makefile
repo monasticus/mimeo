@@ -5,13 +5,7 @@ imports:
 	isort .
 
 test:
-	pytest tests/
+	pytest --cov=src tests/
 
-bump_major:
-	bumpver update --major
-
-bump_minor:
-	bumpver update --minor
-
-bump_patch:
-	bumpver update --patch
+get_data:
+	python scripts/get_cities_and_countries_data.py

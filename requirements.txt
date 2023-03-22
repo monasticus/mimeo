@@ -1,6 +1,7 @@
 requests
 bumpver
+isort
+pandas
 pytest
 pytest-cov
 responses
-isort
