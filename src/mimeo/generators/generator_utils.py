@@ -85,6 +85,12 @@ class GeneratorUtils:
         return random.randrange(limit)
 
     @staticmethod
+    def random(items: list = None):
+        items = items if items is not None else []
+        length = len(items)
+        return "" if length == 0 else items[random.randrange(0, len(items))]
+
+    @staticmethod
     def date(days_delta=0) -> str:
         date_value = date.today() if days_delta == 0 else date.today() + timedelta(days=days_delta)
         return date_value.strftime("%Y-%m-%d")
@@ -134,7 +140,10 @@ class GeneratorUtils:
                 match = next(funct_pattern.finditer(value_str))
                 mimeo_util = match.group(1)
                 rendered_value = GeneratorUtils.__eval_funct(context, mimeo_util)
-                return str(rendered_value)
+                rendered_value_str = str(rendered_value)
+                if isinstance(rendered_value, bool):
+                    return rendered_value_str.lower()
+                return rendered_value_str
         except InvalidMimeoUtil:
             pass
         return value_str
@@ -159,6 +168,7 @@ class GeneratorUtils:
             prepared_funct = re.sub(r"key\((.*)\)", r"utils.key(\1)", prepared_funct)
         prepared_funct = re.sub(r"random_str\((.*)\)", r"utils.random_str(\1)", prepared_funct)
         prepared_funct = re.sub(r"random_int\((.*)\)", r"utils.random_int(\1)", prepared_funct)
+        prepared_funct = re.sub(r"random\((.*)\)", r"utils.random(\1)", prepared_funct)
         prepared_funct = re.sub(r"date\((.*)\)", r"utils.date(\1)", prepared_funct)
         prepared_funct = re.sub(r"date_time\((.*)\)", r"utils.date_time(\1)", prepared_funct)
         if prepared_funct.startswith("utils"):
