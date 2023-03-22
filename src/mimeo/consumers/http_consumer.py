@@ -17,10 +17,11 @@ class HttpConsumer(Consumer):
 
     def consume(self, data: str) -> Response:
         with Session() as sess:
-            if self.method == "POST":
-                return sess.post(self.url, auth=self.__auth, data=data)
-            elif self.method == "PUT":
-                return sess.put(self.url, auth=self.__auth, data=data)
+            return sess.request(self.method,
+                                self.url,
+                                auth=self.__auth,
+                                data=data,
+                                headers={"Content-Type": "application/xml"})
 
     @staticmethod
     def __build_url(output_details: MimeoOutputDetails):
