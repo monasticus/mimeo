@@ -91,7 +91,7 @@ def test_random_int(default_context, default_generator_utils):
         assert isinstance(random_int, int)
         assert random_int >= 0
         assert random_int < 100
-
+    for _ in range(100):
         random_int = GeneratorUtils.render_value(default_context, "{random_int()}")
         assert isinstance(random_int, str)
         assert int(random_int) >= 0
@@ -104,11 +104,34 @@ def test_random_int_with_customized_length(default_context, default_generator_ut
         assert isinstance(random_int, int)
         assert random_int >= 0
         assert random_int < 10
-
+    for _ in range(100):
         random_int = GeneratorUtils.render_value(default_context, "{random_int(10)}")
         assert isinstance(random_int, str)
         assert int(random_int) >= 0
         assert int(random_int) < 10
+
+
+def test_random(default_context, default_generator_utils):
+    items = ['a', 1, True]
+    for _ in range(100):
+        random = default_generator_utils.random(items)
+        assert random in items
+    for _ in range(100):
+        random = GeneratorUtils.render_value(default_context, "{random(['a', 1, True])}")
+        assert random in ['a', '1', 'true']
+
+
+def test_random_with_empty_items(default_context, default_generator_utils):
+    random = default_generator_utils.random([])
+    assert random == ""
+
+    random = GeneratorUtils.render_value(default_context, "{random([])}")
+    assert random == ""
+
+
+def test_random_render_value_with_no_items(default_context, default_generator_utils):
+    random = GeneratorUtils.render_value(default_context, "{random()}")
+    assert random == ""
 
 
 def test_auto_increment(default_context, default_generator_utils):
