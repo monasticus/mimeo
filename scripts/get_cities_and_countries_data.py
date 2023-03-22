@@ -1,8 +1,9 @@
 import os
 import zipfile
 from pathlib import Path
-from requests import Session
+
 import pandas
+from requests import Session
 
 
 def main():
