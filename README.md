@@ -268,3 +268,8 @@ MIT
 
 - [@TomaszAniolowski](https://www.github.com/TomaszAniolowski)
 
+
+## Acknowledgements
+
+ - [SimpleMaps.com](https://simplemaps.com/data/world-cities) (Cities & countries data)
+
