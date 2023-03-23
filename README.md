@@ -126,28 +126,29 @@ Mimeo exposes several functions for data generation that will make it more usefu
 
 Mimeo configuration is defined in a JSON file using internal settings and data templates.
 
-| Key                             |  Level   |      Required      |     Supported values     |    Default     | Description                                                                  |
-|:--------------------------------|:--------:|:------------------:|:------------------------:|:--------------:|------------------------------------------------------------------------------|
-| `output_format`                 |  Config  |        :x:         |          `xml`           |     `xml`      | Defines output data format                                                   |
-| `output_details`                |  Config  |        :x:         |          object          |      ---       | Defines output details on how it will be consumed                            |
-| `output_details/direction`      |  Config  |        :x:         | `file`, `stdout`, `http` |     `file`     | Defines how output will be consumed                                          |
-| `output_details/directory_path` |  Config  |        :x:         |          string          | `mimeo-output` | For `file` direction - defines an output directory                           |
-| `output_details/file_name`      |  Config  |        :x:         |          string          | `mimeo-output` | For `file` direction - defines an output file name                           |
-| `output_details/method`         |  Config  |        :x:         |      `POST`, `PUT`       |     `POST`     | For `http` direction - defines a request method                              |
-| `output_details/protocol`       |  Config  |        :x:         |     `http`, `https`      |     `http`     | For `http` direction - defines a url protocol                                |
-| `output_details/host`           |  Config  | :heavy_check_mark: |          string          |      ---       | For `http` direction - defines a url host                                    |
-| `output_details/port`           |  Config  |        :x:         |         integer          |     `null`     | For `http` direction - defines a url port (can be empty)                     |
-| `output_details/endpoint`       |  Config  | :heavy_check_mark: |          string          |      ---       | For `http` direction - defines a url endpoint                                |
-| `output_details/auth`           |  Config  |        :x:         |    `basic`, `digest`     |    `basic`     | For `http` direction - defines a auth method                                 |
-| `output_details/username`       |  Config  | :heavy_check_mark: |          string          |      ---       | For `http` direction - defines a username                                    |
-| `output_details/password`       |  Config  | :heavy_check_mark: |          string          |      ---       | For `http` direction - defines a password                                    |
-| `indent`                        |  Config  |        :x:         |         integer          |     `null`     | Defines indent applied in output data                                        |
-| `vars`                          |  Config  |        :x:         |          object          |      ---       | Defines variables to be used in a Mimeo Template (read more in next section) |
-| `xml_declaration`               |  Config  |        :x:         |         boolean          |    `false`     | Indicates whether an xml declaration should be added to output data          |
-| `_templates_`                   |  Config  | :heavy_check_mark: |          array           |      ---       | Stores templates for data generation                                         |
-| `count`                         | Template | :heavy_check_mark: |         integer          |      ---       | Indicates number of copies                                                   |
-| `model`                         | Template | :heavy_check_mark: |          object          |      ---       | Defines data template to be copied                                           |
-| `attributes`                    |  Model   |        :x:         |          object          |      ---       | Defines attributes applied on the root node (mostly used for namespaces)     |
+| Key                             |  Level   |      Required      |     Supported values     |    Default     | Description                                                                                                                                             |
+|:--------------------------------|:--------:|:------------------:|:------------------------:|:--------------:|---------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `output_format`                 |  Config  |        :x:         |          `xml`           |     `xml`      | Defines output data format                                                                                                                              |
+| `output_details`                |  Config  |        :x:         |          object          |      ---       | Defines output details on how it will be consumed                                                                                                       |
+| `output_details/direction`      |  Config  |        :x:         | `file`, `stdout`, `http` |     `file`     | Defines how output will be consumed                                                                                                                     |
+| `output_details/directory_path` |  Config  |        :x:         |          string          | `mimeo-output` | For `file` direction - defines an output directory                                                                                                      |
+| `output_details/file_name`      |  Config  |        :x:         |          string          | `mimeo-output` | For `file` direction - defines an output file name                                                                                                      |
+| `output_details/method`         |  Config  |        :x:         |      `POST`, `PUT`       |     `POST`     | For `http` direction - defines a request method                                                                                                         |
+| `output_details/protocol`       |  Config  |        :x:         |     `http`, `https`      |     `http`     | For `http` direction - defines a url protocol                                                                                                           |
+| `output_details/host`           |  Config  | :heavy_check_mark: |          string          |      ---       | For `http` direction - defines a url host                                                                                                               |
+| `output_details/port`           |  Config  |        :x:         |         integer          |     `null`     | For `http` direction - defines a url port (can be empty)                                                                                                |
+| `output_details/endpoint`       |  Config  | :heavy_check_mark: |          string          |      ---       | For `http` direction - defines a url endpoint                                                                                                           |
+| `output_details/auth`           |  Config  |        :x:         |    `basic`, `digest`     |    `basic`     | For `http` direction - defines a auth method                                                                                                            |
+| `output_details/username`       |  Config  | :heavy_check_mark: |          string          |      ---       | For `http` direction - defines a username                                                                                                               |
+| `output_details/password`       |  Config  | :heavy_check_mark: |          string          |      ---       | For `http` direction - defines a password                                                                                                               |
+| `indent`                        |  Config  |        :x:         |         integer          |     `null`     | Defines indent applied in output data                                                                                                                   |
+| `vars`                          |  Config  |        :x:         |          object          |      ---       | Defines variables to be used in a Mimeo Template (read more in next section)                                                                            |
+| `xml_declaration`               |  Config  |        :x:         |         boolean          |    `false`     | Indicates whether an xml declaration should be added to output data                                                                                     |
+| `_templates_`                   |  Config  | :heavy_check_mark: |          array           |      ---       | Stores templates for data generation                                                                                                                    |
+| `count`                         | Template | :heavy_check_mark: |         integer          |      ---       | Indicates number of copies                                                                                                                              |
+| `model`                         | Template | :heavy_check_mark: |          object          |      ---       | Defines data template to be copied                                                                                                                      |
+| `attributes`                    |  Model   |        :x:         |          object          |      ---       | Defines attributes applied on the root node (mostly used for namespaces)                                                                                |
+| `context`                       |  Model   |        :x:         |          object          |      ---       | Defines a context name that is internally used e.g. using `curr_iter()` and `get_key()` mimeo utils (by default model name is used as the context name) |
 
 #### Mimeo Vars
 
@@ -239,24 +240,24 @@ You can use several predefined functions to generate data by using them within c
 <id>{auto_increment()}</id>
 ```
 
-| Function                                                                   | Example                         | Data                                                                                                  |
-|:---------------------------------------------------------------------------|:--------------------------------|:------------------------------------------------------------------------------------------------------|
-| `auto_increment()`                                                         |                                 | Generates next integer in context of a model (in nested templates it will use a separated context)    |
-| `auto_increment(<STRING_PATTERN>)`                                         | `auto_increment('MYID{:010d}')` | Same as `auto_increment()` but the integer is used in a string pattern provided                       |
-| `curr_iter()`                                                              |                                 | Generates a value of the current iteration in a Mimeo Template context                                |
-| `curr_iter(<MODEL_NAME>)`                                                  | `curr_iter('SomeEntity')`       | Generates a value of the current iteration in a specific Mimeo Model context                          |
-| `key()`                                                                    |                                 | Generates a key unique across all Mimeo Models and being the same within a single Mimeo Model context |
-| `get_key(<MODEL_NAME>)`                                                    | `get_key('SomeEntity')`         | Retrieves the last key from a specific context                                                        |
-| `get_key(<MODEL_NAME>, <ITERATION>)`                                       | `get_key('SomeEntity', 5)`      | Retrieves a key from a specific context and from a specific iteration                                 |
-| `random_str()`                                                             |                                 | Generates a random string value of the default length: 20 characters                                  |
-| `random_str(<LENGTH>)`                                                     | `random_str(2)`                 | Generates a random string value of the customized length                                              |
-| `random_int()`                                                             |                                 | Generates a random integer value within the default range: 0-99                                       |
-| `random_int(<LIMIT>)`                                                      | `random_int(10)`                | Generates a random integer value within the custom range: 0-<LIMIT>                                   |
-| `random(<ITEMS>)`                                                          | `random(['value', 1, True])`    | Generates a random value from <ITEMS> provided                                                        |
-| `date()`                                                                   |                                 | Generates a today's date in format YYYY-MM-DD                                                         |
-| `date(<DAYS_DELTA>)`                                                       | `date(-1)`                      | Generates a date with customized days in format YYYY-MM-DD                                            |
-| `date_time()`                                                              |                                 | Generates a current date time in format YYYY-MM-DD'T'HH:mm:SS                                         |
-| `date_time(<DAYS_DELTA>, <HOURS_DELTA>, <MINUTES_DELTA>, <SECONDS_DELTA>)` | `date(hours=5, minutes=-3)`     | Generates a date time with customized time in format YYYY-MM-DD'T'HH:mm:SS                            |
+| Function                                                                   | Example                         | Data                                                                                                                       |
+|:---------------------------------------------------------------------------|:--------------------------------|:---------------------------------------------------------------------------------------------------------------------------|
+| `auto_increment()`                                                         |                                 | Generates next integer in context of a model (in nested templates it will use a separated context)                         |
+| `auto_increment(<STRING_PATTERN>)`                                         | `auto_increment('MYID{:010d}')` | Same as `auto_increment()` but the integer is used in a string pattern provided                                            |
+| `curr_iter()`                                                              |                                 | Generates a value of the current iteration in a Mimeo Template context                                                     |
+| `curr_iter(<CONTEXT_NAME>)`                                                | `curr_iter('SomeEntity')`       | Generates a value of the current iteration in a specific Mimeo Model context (model name when `context` is not configured) |
+| `key()`                                                                    |                                 | Generates a key unique across all Mimeo Models and being the same within a single Mimeo Model context                      |
+| `get_key(<CONTEXT_NAME>)`                                                  | `get_key('SomeEntity')`         | Retrieves the last key from a specific context  (model name when `context` is not configured)                              |
+| `get_key(<CONTEXT_NAME>, <ITERATION>)`                                     | `get_key('SomeEntity', 5)`      | Retrieves a key from a specific context (model name when `context` is not configured) and from a specific iteration        |
+| `random_str()`                                                             |                                 | Generates a random string value of the default length: 20 characters                                                       |
+| `random_str(<LENGTH>)`                                                     | `random_str(2)`                 | Generates a random string value of the customized length                                                                   |
+| `random_int()`                                                             |                                 | Generates a random integer value within the default range: 0-99                                                            |
+| `random_int(<LIMIT>)`                                                      | `random_int(10)`                | Generates a random integer value within the custom range: 0-<LIMIT>                                                        |
+| `random(<ITEMS>)`                                                          | `random(['value', 1, True])`    | Generates a random value from <ITEMS> provided                                                                             |
+| `date()`                                                                   |                                 | Generates a today's date in format YYYY-MM-DD                                                                              |
+| `date(<DAYS_DELTA>)`                                                       | `date(-1)`                      | Generates a date with customized days in format YYYY-MM-DD                                                                 |
+| `date_time()`                                                              |                                 | Generates a current date time in format YYYY-MM-DD'T'HH:mm:SS                                                              |
+| `date_time(<DAYS_DELTA>, <HOURS_DELTA>, <MINUTES_DELTA>, <SECONDS_DELTA>)` | `date(hours=5, minutes=-3)`     | Generates a date time with customized time in format YYYY-MM-DD'T'HH:mm:SS                                                 |
 
 
 ## License

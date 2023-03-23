@@ -17,7 +17,7 @@ class XMLGenerator(Generator):
     def generate(self, templates: Union[list, Iterator[MimeoTemplate]], parent: ElemTree.Element = None) -> Iterator[ElemTree.Element]:
         for template in templates:
             self.__current_template = template
-            utils = GeneratorUtils.get_for_context(template.model.root_name)
+            utils = GeneratorUtils.get_for_context(template.model.context_name)
             utils.reset()
             for i in iter(range(template.count)):
                 utils.setup_iteration(i + 1)
@@ -65,9 +65,9 @@ class XMLGenerator(Generator):
                     grand_child_data = child[grand_child_tag]
                     self.__to_xml(element, grand_child_tag, grand_child_data)
             else:
-                element.text = GeneratorUtils.render_value(self.__current_template.model.root_name, element_value)
+                element.text = GeneratorUtils.render_value(self.__current_template.model.context_name, element_value)
                 if is_special_field:
-                    utils = GeneratorUtils.get_for_context(self.__current_template.model.root_name)
+                    utils = GeneratorUtils.get_for_context(self.__current_template.model.context_name)
                     utils.provide(special_field, element.text)
 
             if parent is None:
