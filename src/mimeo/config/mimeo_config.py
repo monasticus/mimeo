@@ -30,7 +30,8 @@ class MimeoConfig:
     TEMPLATES_KEY = "_templates_"
     TEMPLATES_COUNT_KEY = "count"
     TEMPLATES_MODEL_KEY = "model"
-    TEMPLATES_MODEL_ATTRIBUTES_KEY = "attributes"
+    MODEL_ATTRIBUTES_KEY = "attributes"
+    MODEL_CONTEXT_KEY = "context"
 
     SUPPORTED_OUTPUT_FORMATS = ("xml",)
 
@@ -213,13 +214,14 @@ class MimeoTemplate:
 class MimeoModel:
 
     def __init__(self, model: dict):
-        self.attributes = model.get(MimeoConfig.TEMPLATES_MODEL_ATTRIBUTES_KEY, {})
+        self.attributes = model.get(MimeoConfig.MODEL_ATTRIBUTES_KEY, {})
         self.root_name = MimeoModel.__get_root_name(model)
         self.root_data = model.get(self.root_name)
+        self.context_name = MimeoModel.__get_context_name(model, self.root_name)
 
     @staticmethod
-    def __get_root_name(model):
-        model_keys = [key for key in filter(MimeoModel.__is_not_attributes_key, iter(model))]
+    def __get_root_name(model: dict) -> str:
+        model_keys = [key for key in filter(MimeoModel.__is_not_metadata_key, iter(model))]
         if len(model_keys) == 1:
             return model_keys[0]
         if len(model_keys) == 0:
@@ -228,5 +230,13 @@ class MimeoModel:
             raise IncorrectMimeoModel(f"Multiple root data in Mimeo Model: {model}")
 
     @staticmethod
-    def __is_not_attributes_key(dict_key):
-        return dict_key != MimeoConfig.TEMPLATES_MODEL_ATTRIBUTES_KEY
+    def __is_not_metadata_key(dict_key: str) -> bool:
+        return dict_key not in [MimeoConfig.MODEL_ATTRIBUTES_KEY, MimeoConfig.MODEL_CONTEXT_KEY]
+
+    @staticmethod
+    def __get_context_name(model: dict, root_name: str) -> str:
+        context_name = model.get(MimeoConfig.MODEL_CONTEXT_KEY, root_name)
+        if isinstance(context_name, str):
+            return context_name
+        else:
+            raise IncorrectMimeoModel(f"Invalid context name in Mimeo Model (not a string value): {model}")
