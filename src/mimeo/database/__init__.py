@@ -1,2 +1,2 @@
 from .cities import CitiesDB, City
-from .countries import Country
+from .countries import CountriesDB, Country
