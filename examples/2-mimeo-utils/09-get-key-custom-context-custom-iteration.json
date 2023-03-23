@@ -1,0 +1,33 @@
+{
+  "_templates_": [
+    {
+      "count": 30,
+      "model": {
+        "context": "SomeEntity_1",
+        "SomeEntity": {
+          "ID": "{key()}"
+        }
+      }
+    },
+    {
+      "count": 30,
+      "model": {
+        "context": "SomeEntity_2",
+        "SomeEntity": {
+          "ID": "{key()}",
+          "SomeEntity": "{get_key('SomeEntity_1', 3)}"
+        }
+      }
+    },
+    {
+      "count": 30,
+      "model": {
+        "context": "SomeEntity_3",
+        "SomeEntity": {
+          "ID": "{key()}",
+          "SomeEntity": "{get_key('SomeEntity_1', curr_iter())}"
+        }
+      }
+    }
+  ]
+}
