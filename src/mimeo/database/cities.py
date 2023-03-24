@@ -41,7 +41,11 @@ class CitiesDB:
         return list(filter(lambda city: city.country == country, cities))
 
     @classmethod
-    def __get_cities(cls) -> pandas.DataFrame:
+    def get_cities(cls) -> list:
+        return cls.__get_cities().copy()
+
+    @classmethod
+    def __get_cities(cls) -> list:
         if cls.__CITIES is None:
             cls.__CITIES = [City(row.ID, row.CITY, row.CITY_ASCII, row.COUNTRY)
                             for row in cls.__get_cities_df().itertuples()]

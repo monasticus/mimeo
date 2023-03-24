@@ -1,6 +1,17 @@
 from mimeo.database import CitiesDB, CountriesDB, MimeoDB
 
 
+def test_get_cities():
+    mimeo_db = MimeoDB()
+    cities_from_cities_db = CitiesDB.get_cities()
+    cities_from_mimeo_db = mimeo_db.get_cities()
+    mimeo_db_count = len(cities_from_mimeo_db)
+    assert mimeo_db_count > 0
+    assert mimeo_db_count == len(cities_from_cities_db)
+    for i in range(mimeo_db_count):
+        assert cities_from_mimeo_db[i] is cities_from_cities_db[i]
+
+
 def test_get_city_at():
     mimeo_db = MimeoDB()
     cities_db = CitiesDB()

@@ -7,6 +7,9 @@ class MimeoDB:
         self.__cities_db = CitiesDB()
         self.__countries_db = CountriesDB()
 
+    def get_cities(self) -> list:
+        return self.__cities_db.get_cities()
+
     def get_city_at(self, index: int) -> City:
         return self.__cities_db.get_city_at(index)
 

@@ -4,6 +4,17 @@ from mimeo.database import CitiesDB
 from mimeo.database.exc import InvalidIndex
 
 
+def test_get_cities():
+    cities = CitiesDB.get_cities()
+    assert len(cities) == 42905
+
+    cities.pop(0)
+    assert len(cities) == 42904
+
+    cities = CitiesDB.get_cities()
+    assert len(cities) == 42905
+
+
 def test_get_city_at():
     with open("src/resources/cities.csv", "r") as cities:
         headers = next(cities)
