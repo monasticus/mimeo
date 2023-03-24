@@ -38,7 +38,6 @@ class GeneratorUtils:
         self.__keys = []
         self.__special_fields = {}
         self.__cities_indexes = {}
-        self.__cities = set()
 
     def reset(self) -> None:
         self.__id = 0
@@ -71,11 +70,10 @@ class GeneratorUtils:
             self.__initialize_cities_indexes("_ALL_", MimeoDB.NUM_OF_CITIES)
 
             if len(self.__cities_indexes["_ALL_"]) == 0:
-                raise OutOfStock(f"No more unique values, database contain only {len(self.__cities)} cities.")
+                raise OutOfStock(f"No more unique values, database contain only {MimeoDB.NUM_OF_CITIES} cities.")
             else:
                 index = self.__cities_indexes["_ALL_"].pop()
                 city = self.__MIMEO_DB.get_city_at(index)
-                self.__cities.add(city)
                 return city.name_ascii
 
     def city_of(self, country: str, allow_duplicates: bool = False) -> str:
@@ -91,7 +89,6 @@ class GeneratorUtils:
             else:
                 index = self.__cities_indexes[country].pop()
                 city = country_cities[index]
-                self.__cities.add(city)
                 return city.name_ascii
 
     def provide(self, field_name: str, field_value) -> None:
