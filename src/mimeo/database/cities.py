@@ -29,6 +29,7 @@ class CitiesDB:
     __CITIES_DB = "src/resources/cities.csv"
     __CITIES_DF = None
     __CITIES = None
+    __COUNTRY_CITIES = {}
 
     def get_city_at(self, index: int) -> City:
         cities = self.__get_cities()
@@ -38,12 +39,18 @@ class CitiesDB:
             raise InvalidIndex(f"Provided index [{index}] is out or the range: 0-{CitiesDB.NUM_OF_RECORDS-1}!")
 
     def get_cities_of(self, country: str) -> list:
-        cities = self.__get_cities()
-        return list(filter(lambda city: city.country == country, cities))
+        return self.__get_country_cities(country).copy()
 
     @classmethod
     def get_cities(cls) -> list:
         return cls.__get_cities().copy()
+
+    @classmethod
+    def __get_country_cities(cls, country: str) -> list:
+        if country not in cls.__COUNTRY_CITIES:
+            cities = cls.__get_cities()
+            cls.__COUNTRY_CITIES[country] = list(filter(lambda city: city.country == country, cities))
+        return cls.__COUNTRY_CITIES[country]
 
     @classmethod
     def __get_cities(cls) -> list:
