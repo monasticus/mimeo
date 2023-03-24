@@ -6,13 +6,13 @@ from mimeo.database.exc import InvalidIndex
 
 def test_get_cities():
     cities = CitiesDB.get_cities()
-    assert len(cities) == 42905
+    assert len(cities) == CitiesDB.NUM_OF_RECORDS
 
     cities.pop(0)
-    assert len(cities) == 42904
+    assert len(cities) == CitiesDB.NUM_OF_RECORDS - 1
 
     cities = CitiesDB.get_cities()
-    assert len(cities) == 42905
+    assert len(cities) == CitiesDB.NUM_OF_RECORDS
 
 
 def test_get_city_at():

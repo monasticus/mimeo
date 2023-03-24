@@ -25,6 +25,7 @@ class City:
 
 class CitiesDB:
 
+    NUM_OF_RECORDS = 42905
     __CITIES_DB = "src/resources/cities.csv"
     __CITIES_DF = None
     __CITIES = None
@@ -34,7 +35,7 @@ class CitiesDB:
         try:
             return cities[index]
         except IndexError:
-            raise InvalidIndex(f"Provided index [{index}] is out or the range: 0-{len(cities)-1}!")
+            raise InvalidIndex(f"Provided index [{index}] is out or the range: 0-{CitiesDB.NUM_OF_RECORDS-1}!")
 
     def get_cities_of(self, country: str) -> list:
         cities = self.__get_cities()

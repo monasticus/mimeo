@@ -3,9 +3,11 @@ from datetime import date, datetime, timedelta
 import pytest
 
 from mimeo.config import MimeoConfig
-from mimeo.exceptions import (InvalidSpecialFieldValue,
-                              NotAllowedInstantiation, NotASpecialField)
+from mimeo.database import MimeoDB
 from mimeo.generators import GeneratorUtils
+from mimeo.generators.exc import (InvalidSpecialFieldValue,
+                                  NotAllowedInstantiation, NotASpecialField,
+                                  OutOfStock)
 
 
 @pytest.fixture
@@ -653,3 +655,39 @@ def test_not_allowed_functions():
     to_render = "{key('non-existing-parameter')}"
     value = GeneratorUtils.render_value("SomeEntity", to_render)
     assert value == to_render
+
+
+def test_city(default_context, default_generator_utils):
+    mimeo_db = MimeoDB()
+    cities = [city.name_ascii for city in iter(mimeo_db.get_cities())]
+
+    city1 = default_generator_utils.city()
+    assert city1 in cities
+
+    city2 = GeneratorUtils.render_value(default_context, "{city()}")
+    assert city2 in cities
+
+
+def test_city_allow_duplicates(default_context, default_generator_utils):
+    mimeo_db = MimeoDB()
+    cities = [city.name_ascii for city in iter(mimeo_db.get_cities())]
+
+    city1 = default_generator_utils.city(True)
+    assert city1 in cities
+
+    city2 = GeneratorUtils.render_value(default_context, "{city(True)}")
+    assert city2 in cities
+
+
+def test_city_out_of_stock():
+    utils = GeneratorUtils.get_for_context("SeparatedContext")
+    mimeo_db = MimeoDB()
+    for _ in range(len(mimeo_db.get_cities())):
+        utils.city()
+
+    with pytest.raises(OutOfStock) as err:
+        utils.city()
+
+    assert err.value.args[0] == "No more unique values, database contain only 42905 cities."
+
+

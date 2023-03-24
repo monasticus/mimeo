@@ -3,6 +3,8 @@ from mimeo.database import CitiesDB, City, CountriesDB, Country
 
 class MimeoDB:
 
+    NUM_OF_CITIES = CitiesDB.NUM_OF_RECORDS
+
     def __init__(self):
         self.__cities_db = CitiesDB()
         self.__countries_db = CountriesDB()
