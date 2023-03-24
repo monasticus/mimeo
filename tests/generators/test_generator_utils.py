@@ -680,7 +680,7 @@ def test_city_allow_duplicates(default_context, default_generator_utils):
 
 
 def test_city_out_of_stock():
-    utils = GeneratorUtils.get_for_context("SeparatedContext")
+    utils = GeneratorUtils.get_for_context("SeparatedContextForCity")
     mimeo_db = MimeoDB()
     for _ in range(len(mimeo_db.get_cities())):
         utils.city()
@@ -691,3 +691,35 @@ def test_city_out_of_stock():
     assert err.value.args[0] == "No more unique values, database contain only 42905 cities."
 
 
+def test_city_of(default_context, default_generator_utils):
+    mimeo_db = MimeoDB()
+    gbr_cities = [city.name_ascii for city in mimeo_db.get_cities_of('GBR')]
+
+    city1 = default_generator_utils.city_of('GBR')
+    assert city1 in gbr_cities
+
+    city2 = GeneratorUtils.render_value(default_context, "{city_of('GBR')}")
+    assert city2 in gbr_cities
+
+
+def test_city_of_allow_duplicates(default_context, default_generator_utils):
+    mimeo_db = MimeoDB()
+    gbr_cities = [city.name_ascii for city in mimeo_db.get_cities_of('GBR')]
+
+    city1 = default_generator_utils.city_of('GBR', True)
+    assert city1 in gbr_cities
+
+    city2 = GeneratorUtils.render_value(default_context, "{city_of('GBR', True)}")
+    assert city2 in gbr_cities
+
+
+def test_city_of_out_of_stock():
+    utils = GeneratorUtils.get_for_context("SeparatedContextForCityOf")
+    mimeo_db = MimeoDB()
+    for _ in range(len(mimeo_db.get_cities_of('GBR'))):
+        utils.city_of('GBR')
+
+    with pytest.raises(OutOfStock) as err:
+        utils.city_of('GBR')
+
+    assert err.value.args[0] == "No more unique values, database contain only 858 cities of GBR."
