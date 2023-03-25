@@ -9,9 +9,10 @@ from datetime import date, datetime, timedelta
 
 from mimeo.config import MimeoConfig
 from mimeo.database import MimeoDB
-from mimeo.generators.exc import (InvalidMimeoUtil, InvalidSpecialFieldValue,
+from mimeo.generators.exc import (CountryNotFound, InvalidMimeoUtil,
+                                  InvalidSpecialFieldValue,
                                   NotAllowedInstantiation, NotASpecialField,
-                                  OutOfStock, CountryNotFound)
+                                  OutOfStock)
 
 
 class GeneratorUtils:

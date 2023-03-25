@@ -5,9 +5,9 @@ import pytest
 from mimeo.config import MimeoConfig
 from mimeo.database import MimeoDB
 from mimeo.generators import GeneratorUtils
-from mimeo.generators.exc import (InvalidSpecialFieldValue,
+from mimeo.generators.exc import (CountryNotFound, InvalidSpecialFieldValue,
                                   NotAllowedInstantiation, NotASpecialField,
-                                  OutOfStock, CountryNotFound)
+                                  OutOfStock)
 
 
 @pytest.fixture
