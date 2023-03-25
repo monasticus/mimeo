@@ -4,6 +4,7 @@ from mimeo.database import CitiesDB, City, CountriesDB, Country
 class MimeoDB:
 
     NUM_OF_CITIES = CitiesDB.NUM_OF_RECORDS
+    NUM_OF_COUNTRIES = CountriesDB.NUM_OF_RECORDS
 
     def __init__(self):
         self.__cities_db = CitiesDB()
@@ -17,6 +18,9 @@ class MimeoDB:
 
     def get_cities_of(self, country: str) -> list:
         return self.__cities_db.get_cities_of(country)
+
+    def get_countries(self) -> list:
+        return self.__countries_db.get_countries()
 
     def get_country_at(self, index: int) -> Country:
         return self.__countries_db.get_country_at(index)

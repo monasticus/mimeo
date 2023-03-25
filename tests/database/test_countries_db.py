@@ -4,6 +4,17 @@ from mimeo.database import CountriesDB
 from mimeo.database.exc import InvalidIndex
 
 
+def test_get_countries():
+    countries = CountriesDB.get_countries()
+    assert len(countries) == CountriesDB.NUM_OF_RECORDS
+
+    countries.pop(0)
+    assert len(countries) == CountriesDB.NUM_OF_RECORDS - 1
+
+    countries = CountriesDB.get_countries()
+    assert len(countries) == CountriesDB.NUM_OF_RECORDS
+
+
 def test_get_country_at():
     with open("src/resources/countries.csv", "r") as countries:
         headers = next(countries)

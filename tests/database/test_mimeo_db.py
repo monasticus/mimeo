@@ -38,6 +38,17 @@ def test_get_city_of():
         assert cities_from_mimeo_db[i] is cities_from_cities_db[i]
 
 
+def test_get_countries():
+    mimeo_db = MimeoDB()
+    countries_from_countries_db = CountriesDB.get_countries()
+    countries_from_mimeo_db = mimeo_db.get_countries()
+    mimeo_db_count = len(countries_from_mimeo_db)
+    assert mimeo_db_count > 0
+    assert mimeo_db_count == len(countries_from_countries_db)
+    for i in range(mimeo_db_count):
+        assert countries_from_mimeo_db[i] is countries_from_countries_db[i]
+
+
 def test_get_country_at():
     mimeo_db = MimeoDB()
     countries_db = CountriesDB()
