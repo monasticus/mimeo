@@ -62,6 +62,13 @@ def test_get_city_of_using_country_name():
         assert cities_from_mimeo_db[i] is cities_from_cities_db[i]
 
 
+def test_get_city_of_non_existing_country():
+    mimeo_db = MimeoDB()
+    cities = mimeo_db.get_cities_of('NEC')
+
+    assert len(cities) == 0
+
+
 def test_get_countries():
     mimeo_db = MimeoDB()
     countries_from_countries_db = CountriesDB.get_countries()
