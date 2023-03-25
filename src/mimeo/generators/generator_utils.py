@@ -11,7 +11,7 @@ from mimeo.config import MimeoConfig
 from mimeo.database import MimeoDB
 from mimeo.generators.exc import (InvalidMimeoUtil, InvalidSpecialFieldValue,
                                   NotAllowedInstantiation, NotASpecialField,
-                                  OutOfStock)
+                                  OutOfStock, CountryNotFound)
 
 
 class GeneratorUtils:
@@ -79,7 +79,9 @@ class GeneratorUtils:
     def city_of(self, country: str, allow_duplicates: bool = False) -> str:
         country_cities = self.__MIMEO_DB.get_cities_of(country)
         country_cities_count = len(country_cities)
-        if allow_duplicates:
+        if country_cities_count == 0:
+            raise CountryNotFound(f"Mimeo database does not contain any cities of provided country [{country}].")
+        elif allow_duplicates:
             return country_cities[self.random_int(country_cities_count)].name_ascii
         else:
             self.__initialize_cities_indexes(country, country_cities_count)

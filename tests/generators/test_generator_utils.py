@@ -7,7 +7,7 @@ from mimeo.database import MimeoDB
 from mimeo.generators import GeneratorUtils
 from mimeo.generators.exc import (InvalidSpecialFieldValue,
                                   NotAllowedInstantiation, NotASpecialField,
-                                  OutOfStock)
+                                  OutOfStock, CountryNotFound)
 
 
 @pytest.fixture
@@ -689,6 +689,30 @@ def test_city_out_of_stock():
         utils.city()
 
     assert err.value.args[0] == "No more unique values, database contain only 42905 cities."
+
+
+def test_city_of_non_existing_country(default_context, default_generator_utils):
+    with pytest.raises(CountryNotFound) as err:
+        default_generator_utils.city_of('NEC')
+
+    assert err.value.args[0] == "Mimeo database does not contain any cities of provided country [NEC]."
+
+    with pytest.raises(CountryNotFound) as err:
+        GeneratorUtils.render_value(default_context, "{city_of('NEC')}")
+
+    assert err.value.args[0] == "Mimeo database does not contain any cities of provided country [NEC]."
+
+
+def test_city_of_non_existing_country_allow_duplicates(default_context, default_generator_utils):
+    with pytest.raises(CountryNotFound) as err:
+        default_generator_utils.city_of('NEC', True)
+
+    assert err.value.args[0] == "Mimeo database does not contain any cities of provided country [NEC]."
+
+    with pytest.raises(CountryNotFound) as err:
+        GeneratorUtils.render_value(default_context, "{city_of('NEC', True)}")
+
+    assert err.value.args[0] == "Mimeo database does not contain any cities of provided country [NEC]."
 
 
 def test_city_of_out_of_stock():
