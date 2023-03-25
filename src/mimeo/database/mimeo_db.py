@@ -17,7 +17,8 @@ class MimeoDB:
         return self.__cities_db.get_city_at(index)
 
     def get_cities_of(self, country: str) -> list:
-        return self.__cities_db.get_cities_of(country)
+        country = next(filter(lambda c: country in [c.iso_3, c.iso_2, c.name], self.get_countries()))
+        return self.__cities_db.get_cities_of(country.iso_3)
 
     def get_countries(self) -> list:
         return self.__countries_db.get_countries()

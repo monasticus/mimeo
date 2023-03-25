@@ -26,11 +26,35 @@ def test_get_city_at():
     assert city_from_mimeo_db is city_from_cities_db
 
 
-def test_get_city_of():
+def test_get_city_of_using_country_iso3():
     mimeo_db = MimeoDB()
     cities_db = CitiesDB()
     cities_from_cities_db = cities_db.get_cities_of('GBR')
     cities_from_mimeo_db = mimeo_db.get_cities_of('GBR')
+    mimeo_db_count = len(cities_from_mimeo_db)
+    assert mimeo_db_count > 0
+    assert mimeo_db_count == len(cities_from_cities_db)
+    for i in range(mimeo_db_count):
+        assert cities_from_mimeo_db[i] is cities_from_cities_db[i]
+
+
+def test_get_city_of_using_country_iso2():
+    mimeo_db = MimeoDB()
+    cities_db = CitiesDB()
+    cities_from_cities_db = cities_db.get_cities_of('GBR')
+    cities_from_mimeo_db = mimeo_db.get_cities_of('GB')
+    mimeo_db_count = len(cities_from_mimeo_db)
+    assert mimeo_db_count > 0
+    assert mimeo_db_count == len(cities_from_cities_db)
+    for i in range(mimeo_db_count):
+        assert cities_from_mimeo_db[i] is cities_from_cities_db[i]
+
+
+def test_get_city_of_using_country_name():
+    mimeo_db = MimeoDB()
+    cities_db = CitiesDB()
+    cities_from_cities_db = cities_db.get_cities_of('GBR')
+    cities_from_mimeo_db = mimeo_db.get_cities_of('United Kingdom')
     mimeo_db_count = len(cities_from_mimeo_db)
     assert mimeo_db_count > 0
     assert mimeo_db_count == len(cities_from_cities_db)

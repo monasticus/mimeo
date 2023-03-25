@@ -38,19 +38,19 @@ class CitiesDB:
         except IndexError:
             raise InvalidIndex(f"Provided index [{index}] is out or the range: 0-{CitiesDB.NUM_OF_RECORDS-1}!")
 
-    def get_cities_of(self, country: str) -> list:
-        return self.__get_country_cities(country).copy()
+    def get_cities_of(self, country_iso3: str) -> list:
+        return self.__get_country_cities(country_iso3).copy()
 
     @classmethod
     def get_cities(cls) -> list:
         return cls.__get_cities().copy()
 
     @classmethod
-    def __get_country_cities(cls, country: str) -> list:
-        if country not in cls.__COUNTRY_CITIES:
+    def __get_country_cities(cls, country_iso3: str) -> list:
+        if country_iso3 not in cls.__COUNTRY_CITIES:
             cities = cls.__get_cities()
-            cls.__COUNTRY_CITIES[country] = list(filter(lambda city: city.country == country, cities))
-        return cls.__COUNTRY_CITIES[country]
+            cls.__COUNTRY_CITIES[country_iso3] = list(filter(lambda city: city.country == country_iso3, cities))
+        return cls.__COUNTRY_CITIES[country_iso3]
 
     @classmethod
     def __get_cities(cls) -> list:
