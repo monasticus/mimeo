@@ -1,6 +1,17 @@
 from mimeo.database import CitiesDB, CountriesDB, MimeoDB
 
 
+def test_get_cities():
+    mimeo_db = MimeoDB()
+    cities_from_cities_db = CitiesDB.get_cities()
+    cities_from_mimeo_db = mimeo_db.get_cities()
+    mimeo_db_count = len(cities_from_mimeo_db)
+    assert mimeo_db_count > 0
+    assert mimeo_db_count == len(cities_from_cities_db)
+    for i in range(mimeo_db_count):
+        assert cities_from_mimeo_db[i] is cities_from_cities_db[i]
+
+
 def test_get_city_at():
     mimeo_db = MimeoDB()
     cities_db = CitiesDB()
@@ -15,7 +26,7 @@ def test_get_city_at():
     assert city_from_mimeo_db is city_from_cities_db
 
 
-def test_get_city_of():
+def test_get_city_of_using_country_iso3():
     mimeo_db = MimeoDB()
     cities_db = CitiesDB()
     cities_from_cities_db = cities_db.get_cities_of('GBR')
@@ -25,6 +36,48 @@ def test_get_city_of():
     assert mimeo_db_count == len(cities_from_cities_db)
     for i in range(mimeo_db_count):
         assert cities_from_mimeo_db[i] is cities_from_cities_db[i]
+
+
+def test_get_city_of_using_country_iso2():
+    mimeo_db = MimeoDB()
+    cities_db = CitiesDB()
+    cities_from_cities_db = cities_db.get_cities_of('GBR')
+    cities_from_mimeo_db = mimeo_db.get_cities_of('GB')
+    mimeo_db_count = len(cities_from_mimeo_db)
+    assert mimeo_db_count > 0
+    assert mimeo_db_count == len(cities_from_cities_db)
+    for i in range(mimeo_db_count):
+        assert cities_from_mimeo_db[i] is cities_from_cities_db[i]
+
+
+def test_get_city_of_using_country_name():
+    mimeo_db = MimeoDB()
+    cities_db = CitiesDB()
+    cities_from_cities_db = cities_db.get_cities_of('GBR')
+    cities_from_mimeo_db = mimeo_db.get_cities_of('United Kingdom')
+    mimeo_db_count = len(cities_from_mimeo_db)
+    assert mimeo_db_count > 0
+    assert mimeo_db_count == len(cities_from_cities_db)
+    for i in range(mimeo_db_count):
+        assert cities_from_mimeo_db[i] is cities_from_cities_db[i]
+
+
+def test_get_city_of_non_existing_country():
+    mimeo_db = MimeoDB()
+    cities = mimeo_db.get_cities_of('NEC')
+
+    assert len(cities) == 0
+
+
+def test_get_countries():
+    mimeo_db = MimeoDB()
+    countries_from_countries_db = CountriesDB.get_countries()
+    countries_from_mimeo_db = mimeo_db.get_countries()
+    mimeo_db_count = len(countries_from_mimeo_db)
+    assert mimeo_db_count > 0
+    assert mimeo_db_count == len(countries_from_countries_db)
+    for i in range(mimeo_db_count):
+        assert countries_from_mimeo_db[i] is countries_from_countries_db[i]
 
 
 def test_get_country_at():

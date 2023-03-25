@@ -258,6 +258,10 @@ You can use several predefined functions to generate data by using them within c
 | `date(<DAYS_DELTA>)`                                                       | `date(-1)`                      | Generates a date with customized days in format YYYY-MM-DD                                                                 |
 | `date_time()`                                                              |                                 | Generates a current date time in format YYYY-MM-DD'T'HH:mm:SS                                                              |
 | `date_time(<DAYS_DELTA>, <HOURS_DELTA>, <MINUTES_DELTA>, <SECONDS_DELTA>)` | `date(hours=5, minutes=-3)`     | Generates a date time with customized time in format YYYY-MM-DD'T'HH:mm:SS                                                 |
+| `city()`                                                                   | `city()`                        | Generates a city name                                                                                                      |
+| `city(<ALLOW_DUPLICATES>)`                                                 | `city(True)`                    | Generates a city name allowing for duplicates within a context                                                             |
+| `city_of(<COUNTRY>)`                                                       | `city('GBR')`                   | Generates a city name of a specific country (name, iso3 or iso2)                                                           |
+| `city_of(<COUNTRY>, <ALLOW_DUPLICATES>)`                                   | `city('United Kingdom', True)`  | Generates a city name of a specific country (name, iso3 or iso2) allowing for duplicates within a context                  |
 
 
 ## License

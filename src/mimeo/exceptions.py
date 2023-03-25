@@ -36,19 +36,3 @@ class IncorrectMimeoTemplate(Exception):
 
 class IncorrectMimeoConfig(Exception):
     pass
-
-
-class NotAllowedInstantiation(Exception):
-    pass
-
-
-class InvalidMimeoUtil(Exception):
-    pass
-
-
-class NotASpecialField(Exception):
-    pass
-
-
-class InvalidSpecialFieldValue(Exception):
-    pass

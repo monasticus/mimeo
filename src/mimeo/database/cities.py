@@ -25,23 +25,35 @@ class City:
 
 class CitiesDB:
 
+    NUM_OF_RECORDS = 42905
     __CITIES_DB = "src/resources/cities.csv"
     __CITIES_DF = None
     __CITIES = None
+    __COUNTRY_CITIES = {}
 
     def get_city_at(self, index: int) -> City:
         cities = self.__get_cities()
         try:
             return cities[index]
         except IndexError:
-            raise InvalidIndex(f"Provided index [{index}] is out or the range: 0-{len(cities)-1}!")
+            raise InvalidIndex(f"Provided index [{index}] is out or the range: 0-{CitiesDB.NUM_OF_RECORDS-1}!")
 
-    def get_cities_of(self, country: str) -> list:
-        cities = self.__get_cities()
-        return list(filter(lambda city: city.country == country, cities))
+    def get_cities_of(self, country_iso3: str) -> list:
+        return self.__get_country_cities(country_iso3).copy()
 
     @classmethod
-    def __get_cities(cls) -> pandas.DataFrame:
+    def get_cities(cls) -> list:
+        return cls.__get_cities().copy()
+
+    @classmethod
+    def __get_country_cities(cls, country_iso3: str) -> list:
+        if country_iso3 not in cls.__COUNTRY_CITIES:
+            cities = cls.__get_cities()
+            cls.__COUNTRY_CITIES[country_iso3] = list(filter(lambda city: city.country == country_iso3, cities))
+        return cls.__COUNTRY_CITIES[country_iso3]
+
+    @classmethod
+    def __get_cities(cls) -> list:
         if cls.__CITIES is None:
             cls.__CITIES = [City(row.ID, row.CITY, row.CITY_ASCII, row.COUNTRY)
                             for row in cls.__get_cities_df().itertuples()]

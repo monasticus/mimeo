@@ -23,6 +23,7 @@ class Country:
 
 class CountriesDB:
 
+    NUM_OF_RECORDS = 239
     __COUNTRIES_DB = "src/resources/countries.csv"
     __COUNTRIES_DF = None
     __COUNTRIES = None
@@ -47,7 +48,11 @@ class CountriesDB:
         return next(filter(lambda country: country.name == name, countries), None)
 
     @classmethod
-    def __get_countries(cls) -> pandas.DataFrame:
+    def get_countries(cls) -> list:
+        return cls.__get_countries().copy()
+
+    @classmethod
+    def __get_countries(cls) -> list:
         if cls.__COUNTRIES is None:
             cls.__COUNTRIES = [Country(row.ISO_3, row.ISO_2, row.NAME)
                                for row in cls.__get_countries_df().itertuples()]

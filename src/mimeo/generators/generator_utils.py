@@ -8,13 +8,17 @@ import uuid
 from datetime import date, datetime, timedelta
 
 from mimeo.config import MimeoConfig
-from mimeo.exceptions import (InvalidMimeoUtil, InvalidSpecialFieldValue,
-                              NotAllowedInstantiation, NotASpecialField)
+from mimeo.database import MimeoDB
+from mimeo.generators.exc import (CountryNotFound, InvalidMimeoUtil,
+                                  InvalidSpecialFieldValue,
+                                  NotAllowedInstantiation, NotASpecialField,
+                                  OutOfStock)
 
 
 class GeneratorUtils:
 
     __CREATE_KEY = object()
+    __MIMEO_DB = MimeoDB()
     __INSTANCES = {}
     __VARS = {}
 
@@ -34,6 +38,7 @@ class GeneratorUtils:
         self.__curr_iter = 0
         self.__keys = []
         self.__special_fields = {}
+        self.__cities_indexes = {}
 
     def reset(self) -> None:
         self.__id = 0
@@ -59,6 +64,36 @@ class GeneratorUtils:
     def key(self) -> str:
         return self.__keys[-1]
 
+    def city(self, allow_duplicates: bool = False) -> str:
+        if allow_duplicates:
+            return self.__MIMEO_DB.get_city_at(self.random_int(MimeoDB.NUM_OF_CITIES)).name_ascii
+        else:
+            self.__initialize_cities_indexes("_ALL_", MimeoDB.NUM_OF_CITIES)
+
+            if len(self.__cities_indexes["_ALL_"]) == 0:
+                raise OutOfStock(f"No more unique values, database contain only {MimeoDB.NUM_OF_CITIES} cities.")
+            else:
+                index = self.__cities_indexes["_ALL_"].pop()
+                city = self.__MIMEO_DB.get_city_at(index)
+                return city.name_ascii
+
+    def city_of(self, country: str, allow_duplicates: bool = False) -> str:
+        country_cities = self.__MIMEO_DB.get_cities_of(country)
+        country_cities_count = len(country_cities)
+        if country_cities_count == 0:
+            raise CountryNotFound(f"Mimeo database does not contain any cities of provided country [{country}].")
+        elif allow_duplicates:
+            return country_cities[self.random_int(country_cities_count)].name_ascii
+        else:
+            self.__initialize_cities_indexes(country, country_cities_count)
+
+            if len(self.__cities_indexes[country]) == 0:
+                raise OutOfStock(f"No more unique values, database contain only {country_cities_count} cities of {country}.")
+            else:
+                index = self.__cities_indexes[country].pop()
+                city = country_cities[index]
+                return city.name_ascii
+
     def provide(self, field_name: str, field_value) -> None:
         if not GeneratorUtils.is_special_field(field_name):
             raise NotASpecialField(f"Provided field [{field_name}] is not a special one (use {'{:NAME:}'})!")
@@ -71,6 +106,10 @@ class GeneratorUtils:
         if field_name not in self.__special_fields:
             raise NotASpecialField(f"There's no such a special field [{field_name[2:][:-2]}]!")
         return self.__special_fields.get(field_name)
+
+    def __initialize_cities_indexes(self, key: str, number_of_entries: int):
+        if key not in self.__cities_indexes:
+            self.__cities_indexes[key] = random.sample(range(number_of_entries), number_of_entries)
 
     @staticmethod
     def get_key(context: str, iteration: int = 0) -> str:
@@ -171,6 +210,8 @@ class GeneratorUtils:
         prepared_funct = re.sub(r"random\((.*)\)", r"utils.random(\1)", prepared_funct)
         prepared_funct = re.sub(r"date\((.*)\)", r"utils.date(\1)", prepared_funct)
         prepared_funct = re.sub(r"date_time\((.*)\)", r"utils.date_time(\1)", prepared_funct)
+        prepared_funct = re.sub(r"city\((.*)\)", r"utils.city(\1)", prepared_funct)
+        prepared_funct = re.sub(r"city_of\((.*)\)", r"utils.city_of(\1)", prepared_funct)
         if prepared_funct.startswith("utils"):
             try:
                 return eval(prepared_funct)

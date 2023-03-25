@@ -3,9 +3,11 @@ from datetime import date, datetime, timedelta
 import pytest
 
 from mimeo.config import MimeoConfig
-from mimeo.exceptions import (InvalidSpecialFieldValue,
-                              NotAllowedInstantiation, NotASpecialField)
+from mimeo.database import MimeoDB
 from mimeo.generators import GeneratorUtils
+from mimeo.generators.exc import (CountryNotFound, InvalidSpecialFieldValue,
+                                  NotAllowedInstantiation, NotASpecialField,
+                                  OutOfStock)
 
 
 @pytest.fixture
@@ -653,3 +655,139 @@ def test_not_allowed_functions():
     to_render = "{key('non-existing-parameter')}"
     value = GeneratorUtils.render_value("SomeEntity", to_render)
     assert value == to_render
+
+
+def test_city(default_context, default_generator_utils):
+    mimeo_db = MimeoDB()
+    cities = [city.name_ascii for city in iter(mimeo_db.get_cities())]
+
+    city1 = default_generator_utils.city()
+    assert city1 in cities
+
+    city2 = GeneratorUtils.render_value(default_context, "{city()}")
+    assert city2 in cities
+
+
+def test_city_allow_duplicates(default_context, default_generator_utils):
+    mimeo_db = MimeoDB()
+    cities = [city.name_ascii for city in iter(mimeo_db.get_cities())]
+
+    city1 = default_generator_utils.city(True)
+    assert city1 in cities
+
+    city2 = GeneratorUtils.render_value(default_context, "{city(True)}")
+    assert city2 in cities
+
+
+def test_city_out_of_stock():
+    utils = GeneratorUtils.get_for_context("SeparatedContextForCity")
+    mimeo_db = MimeoDB()
+    for _ in range(len(mimeo_db.get_cities())):
+        utils.city()
+
+    with pytest.raises(OutOfStock) as err:
+        utils.city()
+
+    assert err.value.args[0] == "No more unique values, database contain only 42905 cities."
+
+
+def test_city_of_non_existing_country(default_context, default_generator_utils):
+    with pytest.raises(CountryNotFound) as err:
+        default_generator_utils.city_of('NEC')
+
+    assert err.value.args[0] == "Mimeo database does not contain any cities of provided country [NEC]."
+
+    with pytest.raises(CountryNotFound) as err:
+        GeneratorUtils.render_value(default_context, "{city_of('NEC')}")
+
+    assert err.value.args[0] == "Mimeo database does not contain any cities of provided country [NEC]."
+
+
+def test_city_of_non_existing_country_allow_duplicates(default_context, default_generator_utils):
+    with pytest.raises(CountryNotFound) as err:
+        default_generator_utils.city_of('NEC', True)
+
+    assert err.value.args[0] == "Mimeo database does not contain any cities of provided country [NEC]."
+
+    with pytest.raises(CountryNotFound) as err:
+        GeneratorUtils.render_value(default_context, "{city_of('NEC', True)}")
+
+    assert err.value.args[0] == "Mimeo database does not contain any cities of provided country [NEC]."
+
+
+def test_city_of_out_of_stock():
+    utils = GeneratorUtils.get_for_context("SeparatedContextForCityOf")
+    mimeo_db = MimeoDB()
+    for _ in range(len(mimeo_db.get_cities_of('GBR'))):
+        utils.city_of('GBR')
+
+    with pytest.raises(OutOfStock) as err:
+        utils.city_of('GBR')
+
+    assert err.value.args[0] == "No more unique values, database contain only 858 cities of GBR."
+
+
+def test_city_of_using_country_iso_3(default_context, default_generator_utils):
+    mimeo_db = MimeoDB()
+    gbr_cities = [city.name_ascii for city in mimeo_db.get_cities_of('GBR')]
+
+    city1 = default_generator_utils.city_of('GBR')
+    assert city1 in gbr_cities
+
+    city2 = GeneratorUtils.render_value(default_context, "{city_of('GBR')}")
+    assert city2 in gbr_cities
+
+
+def test_city_of_using_country_iso_3_allow_duplicates(default_context, default_generator_utils):
+    mimeo_db = MimeoDB()
+    gbr_cities = [city.name_ascii for city in mimeo_db.get_cities_of('GBR')]
+
+    city1 = default_generator_utils.city_of('GBR', True)
+    assert city1 in gbr_cities
+
+    city2 = GeneratorUtils.render_value(default_context, "{city_of('GBR', True)}")
+    assert city2 in gbr_cities
+
+
+def test_city_of_using_country_iso_2(default_context, default_generator_utils):
+    mimeo_db = MimeoDB()
+    gbr_cities = [city.name_ascii for city in mimeo_db.get_cities_of('GB')]
+
+    city1 = default_generator_utils.city_of('GB')
+    assert city1 in gbr_cities
+
+    city2 = GeneratorUtils.render_value(default_context, "{city_of('GB')}")
+    assert city2 in gbr_cities
+
+
+def test_city_of_using_country_iso_2_allow_duplicates(default_context, default_generator_utils):
+    mimeo_db = MimeoDB()
+    gbr_cities = [city.name_ascii for city in mimeo_db.get_cities_of('GB')]
+
+    city1 = default_generator_utils.city_of('GB', True)
+    assert city1 in gbr_cities
+
+    city2 = GeneratorUtils.render_value(default_context, "{city_of('GB', True)}")
+    assert city2 in gbr_cities
+
+
+def test_city_of_using_country_name(default_context, default_generator_utils):
+    mimeo_db = MimeoDB()
+    gbr_cities = [city.name_ascii for city in mimeo_db.get_cities_of('United Kingdom')]
+
+    city1 = default_generator_utils.city_of('United Kingdom')
+    assert city1 in gbr_cities
+
+    city2 = GeneratorUtils.render_value(default_context, "{city_of('United Kingdom')}")
+    assert city2 in gbr_cities
+
+
+def test_city_of_using_country_name_allow_duplicates(default_context, default_generator_utils):
+    mimeo_db = MimeoDB()
+    gbr_cities = [city.name_ascii for city in mimeo_db.get_cities_of('United Kingdom')]
+
+    city1 = default_generator_utils.city_of('United Kingdom', True)
+    assert city1 in gbr_cities
+
+    city2 = GeneratorUtils.render_value(default_context, "{city_of('United Kingdom', True)}")
+    assert city2 in gbr_cities
