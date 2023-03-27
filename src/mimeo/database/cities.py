@@ -1,5 +1,11 @@
+try:
+    import importlib.resources as pkg_resources
+except ImportError:
+    import importlib_resources as pkg_resources
+
 import pandas
 
+from mimeo import resources as data
 from mimeo.database.exc import InvalidIndex
 
 
@@ -26,7 +32,7 @@ class City:
 class CitiesDB:
 
     NUM_OF_RECORDS = 42905
-    __CITIES_DB = "src/resources/cities.csv"
+    __CITIES_DB = "cities.csv"
     __CITIES_DF = None
     __CITIES = None
     __COUNTRY_CITIES = {}
@@ -62,5 +68,5 @@ class CitiesDB:
     @classmethod
     def __get_cities_df(cls) -> pandas.DataFrame:
         if cls.__CITIES_DF is None:
-            cls.__CITIES_DF = pandas.read_csv(cls.__CITIES_DB)
+            cls.__CITIES_DF = pandas.read_csv(pkg_resources.open_text(data, CitiesDB.__CITIES_DB))
         return cls.__CITIES_DF

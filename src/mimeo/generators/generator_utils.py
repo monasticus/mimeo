@@ -8,7 +8,7 @@ import uuid
 from datetime import date, datetime, timedelta
 
 from mimeo.config import MimeoConfig
-from mimeo.database import MimeoDB, Country
+from mimeo.database import Country, MimeoDB
 from mimeo.generators.exc import (CountryNotFound, InvalidMimeoUtil,
                                   InvalidSpecialFieldValue,
                                   NotAllowedInstantiation, NotASpecialField,

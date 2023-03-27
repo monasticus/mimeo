@@ -1,1 +1,1 @@
-include src/resources/*
+include src/mimeo/resources/*.csv
