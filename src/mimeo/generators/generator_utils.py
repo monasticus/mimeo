@@ -101,6 +101,9 @@ class GeneratorUtils:
     def country_iso3(self, allow_duplicates: bool = False, country: str = None) -> str:
         return self.__get_country(allow_duplicates, country).iso_3
 
+    def country_iso2(self, allow_duplicates: bool = False, country: str = None) -> str:
+        return self.__get_country(allow_duplicates, country).iso_2
+
     def provide(self, field_name: str, field_value) -> None:
         if not GeneratorUtils.is_special_field(field_name):
             raise NotASpecialField(f"Provided field [{field_name}] is not a special one (use {'{:NAME:}'})!")
@@ -245,6 +248,7 @@ class GeneratorUtils:
         prepared_funct = re.sub(r"city_of\((.*)\)", r"utils.city_of(\1)", prepared_funct)
         prepared_funct = re.sub(r"country\((.*)\)", r"utils.country(\1)", prepared_funct)
         prepared_funct = re.sub(r"country_iso3\((.*)\)", r"utils.country_iso3(\1)", prepared_funct)
+        prepared_funct = re.sub(r"country_iso2\((.*)\)", r"utils.country_iso2(\1)", prepared_funct)
         if prepared_funct.startswith("utils"):
             try:
                 return eval(prepared_funct)
