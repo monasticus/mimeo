@@ -853,3 +853,65 @@ def test_country_for_non_existing_country(default_context, default_generator_uti
         GeneratorUtils.render_value(default_context, "{country(False, 'NEC')}")
 
     assert err.value.args[0] == "Mimeo database does not contain such a country [NEC]."
+
+
+def test_country_iso3(default_context, default_generator_utils):
+    mimeo_db = MimeoDB()
+    countries = [country.iso_3 for country in iter(mimeo_db.get_countries())]
+
+    country1 = default_generator_utils.country_iso3()
+    assert country1 in countries
+
+    country2 = GeneratorUtils.render_value(default_context, "{country_iso3()}")
+    assert country2 in countries
+
+
+def test_country_iso3_allow_duplicates(default_context, default_generator_utils):
+    mimeo_db = MimeoDB()
+    countries = [country.iso_3 for country in iter(mimeo_db.get_countries())]
+
+    country1 = default_generator_utils.country_iso3(True)
+    assert country1 in countries
+
+    country2 = GeneratorUtils.render_value(default_context, "{country_iso3(True)}")
+    assert country2 in countries
+
+
+def test_country_iso3_out_of_stock():
+    utils = GeneratorUtils.get_for_context("SeparatedContextForCountryIso3")
+    mimeo_db = MimeoDB()
+    for _ in range(len(mimeo_db.get_countries())):
+        utils.country_iso3()
+
+    with pytest.raises(OutOfStock) as err:
+        utils.country_iso3()
+
+    assert err.value.args[0] == "No more unique values, database contain only 239 countries."
+
+
+def test_country_iso3_for_country_name(default_context, default_generator_utils):
+    country = default_generator_utils.country_iso3(False, "United Kingdom")
+    assert country == "GBR"
+
+    country = GeneratorUtils.render_value(default_context, "{country_iso3(False, 'United Kingdom')}")
+    assert country == "GBR"
+
+
+def test_country_iso3_for_country_iso2(default_context, default_generator_utils):
+    country = default_generator_utils.country_iso3(True, "GB")
+    assert country == "GBR"
+
+    country = GeneratorUtils.render_value(default_context, "{country_iso3(True, 'GB')}")
+    assert country == "GBR"
+
+
+def test_country_iso3_for_non_existing_country(default_context, default_generator_utils):
+    with pytest.raises(CountryNotFound) as err:
+        default_generator_utils.country_iso3(False, "NEC")
+
+    assert err.value.args[0] == "Mimeo database does not contain such a country [NEC]."
+
+    with pytest.raises(CountryNotFound) as err:
+        GeneratorUtils.render_value(default_context, "{country_iso3(False, 'NEC')}")
+
+    assert err.value.args[0] == "Mimeo database does not contain such a country [NEC]."

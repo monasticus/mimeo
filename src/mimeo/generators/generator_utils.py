@@ -8,7 +8,7 @@ import uuid
 from datetime import date, datetime, timedelta
 
 from mimeo.config import MimeoConfig
-from mimeo.database import MimeoDB
+from mimeo.database import MimeoDB, Country
 from mimeo.generators.exc import (CountryNotFound, InvalidMimeoUtil,
                                   InvalidSpecialFieldValue,
                                   NotAllowedInstantiation, NotASpecialField,
@@ -96,24 +96,10 @@ class GeneratorUtils:
                 return city.name_ascii
 
     def country(self, allow_duplicates: bool = False, country: str = None) -> str:
-        if country is not None:
-            countries = self.__MIMEO_DB.get_countries()
-            country_found = next(filter(lambda c: c.iso_3 == country or c.iso_2 == country, countries), None)
-            if country_found is not None:
-                return country_found.name
-            else:
-                raise CountryNotFound(f"Mimeo database does not contain such a country [{country}].")
-        elif allow_duplicates:
-            return self.__MIMEO_DB.get_country_at(self.random_int(MimeoDB.NUM_OF_COUNTRIES)).name
-        else:
-            self.__initialize_countries_indexes("_ALL_", MimeoDB.NUM_OF_COUNTRIES)
+        return self.__get_country(allow_duplicates, country).name
 
-            if len(self.__countries_indexes["_ALL_"]) == 0:
-                raise OutOfStock(f"No more unique values, database contain only {MimeoDB.NUM_OF_COUNTRIES} countries.")
-            else:
-                index = self.__countries_indexes["_ALL_"].pop()
-                country = self.__MIMEO_DB.get_country_at(index)
-                return country.name
+    def country_iso3(self, allow_duplicates: bool = False, country: str = None) -> str:
+        return self.__get_country(allow_duplicates, country).iso_3
 
     def provide(self, field_name: str, field_value) -> None:
         if not GeneratorUtils.is_special_field(field_name):
@@ -127,6 +113,26 @@ class GeneratorUtils:
         if field_name not in self.__special_fields:
             raise NotASpecialField(f"There's no such a special field [{field_name[2:][:-2]}]!")
         return self.__special_fields.get(field_name)
+
+    def __get_country(self, allow_duplicates: bool = False, country: str = None) -> Country:
+        if country is not None:
+            countries = self.__MIMEO_DB.get_countries()
+            country_found = next(filter(lambda c: c.name == country or c.iso_3 == country or c.iso_2 == country, countries), None)
+            if country_found is not None:
+                return country_found
+            else:
+                raise CountryNotFound(f"Mimeo database does not contain such a country [{country}].")
+        elif allow_duplicates:
+            return self.__MIMEO_DB.get_country_at(self.random_int(MimeoDB.NUM_OF_COUNTRIES))
+        else:
+            self.__initialize_countries_indexes("_ALL_", MimeoDB.NUM_OF_COUNTRIES)
+
+            if len(self.__countries_indexes["_ALL_"]) == 0:
+                raise OutOfStock(f"No more unique values, database contain only {MimeoDB.NUM_OF_COUNTRIES} countries.")
+            else:
+                index = self.__countries_indexes["_ALL_"].pop()
+                country = self.__MIMEO_DB.get_country_at(index)
+                return country
 
     def __initialize_cities_indexes(self, key: str, number_of_entries: int):
         if key not in self.__cities_indexes:
@@ -238,6 +244,7 @@ class GeneratorUtils:
         prepared_funct = re.sub(r"city\((.*)\)", r"utils.city(\1)", prepared_funct)
         prepared_funct = re.sub(r"city_of\((.*)\)", r"utils.city_of(\1)", prepared_funct)
         prepared_funct = re.sub(r"country\((.*)\)", r"utils.country(\1)", prepared_funct)
+        prepared_funct = re.sub(r"country_iso3\((.*)\)", r"utils.country_iso3(\1)", prepared_funct)
         if prepared_funct.startswith("utils"):
             try:
                 return eval(prepared_funct)
