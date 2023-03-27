@@ -1,0 +1,13 @@
+{
+  "_templates_": [
+    {
+      "count": 30,
+      "model": {
+        "SomeEntity": {
+          "CountryForName": "{country_iso2(False, 'United Kingdom')}",
+          "CountryForIso3": "{country_iso2(False, 'GBR')}"
+        }
+      }
+    }
+  ]
+}
