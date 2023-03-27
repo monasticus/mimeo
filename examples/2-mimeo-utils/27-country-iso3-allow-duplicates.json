@@ -1,0 +1,12 @@
+{
+  "_templates_": [
+    {
+      "count": 30,
+      "model": {
+        "SomeEntity": {
+          "Country": "{country_iso3(True)}"
+        }
+      }
+    }
+  ]
+}
