@@ -15,7 +15,7 @@ class MimeoArgumentParser(ArgumentParser):
             "-v",
             "--version",
             action="version",
-            version="%(prog)s v2.5.0")
+            version="%(prog)s v2.5.1")
         self.add_argument(
             "paths",
             nargs="+",
