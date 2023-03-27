@@ -1,4 +1,5 @@
 import os
+import unicodedata
 import zipfile
 from pathlib import Path
 
@@ -10,7 +11,7 @@ def main():
     source_url = "https://simplemaps.com/static/data/world-cities/basic/simplemaps_worldcities_basicv1.75.zip"
     zip_path = download_zip(source_url)
 
-    extract_path = "src/resources"
+    extract_path = "src/mimeo/resources"
     resource_file = "worldcities.csv"
     extract_data(zip_path, extract_path, [resource_file])
 
@@ -101,9 +102,14 @@ def create_countries_data(source_df: pandas.DataFrame, data_dir: str):
         .rename(columns=columns_mapping)
         .loc[:, columns_order]
         .sort_values(sort_column))
+    countries_df["NAME"] = countries_df["NAME"].apply(ascii_encoding)
 
     countries_file_name = "countries.csv"
     countries_df.to_csv(f"{data_dir}/{countries_file_name}", index=False)
+
+
+def ascii_encoding(value: str):
+    return unicodedata.normalize('NFKD', value).encode('ascii', 'ignore').decode()
 
 
 def remove_file_safely(file_path: str):
