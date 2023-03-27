@@ -39,6 +39,7 @@ class GeneratorUtils:
         self.__keys = []
         self.__special_fields = {}
         self.__cities_indexes = {}
+        self.__countries_indexes = {}
 
     def reset(self) -> None:
         self.__id = 0
@@ -94,6 +95,19 @@ class GeneratorUtils:
                 city = country_cities[index]
                 return city.name_ascii
 
+    def country(self, allow_duplicates: bool = False) -> str:
+        if allow_duplicates:
+            return self.__MIMEO_DB.get_country_at(self.random_int(MimeoDB.NUM_OF_COUNTRIES)).name
+        else:
+            self.__initialize_countries_indexes("_ALL_", MimeoDB.NUM_OF_COUNTRIES)
+
+            if len(self.__countries_indexes["_ALL_"]) == 0:
+                raise OutOfStock(f"No more unique values, database contain only {MimeoDB.NUM_OF_COUNTRIES} countries.")
+            else:
+                index = self.__countries_indexes["_ALL_"].pop()
+                country = self.__MIMEO_DB.get_country_at(index)
+                return country.name
+
     def provide(self, field_name: str, field_value) -> None:
         if not GeneratorUtils.is_special_field(field_name):
             raise NotASpecialField(f"Provided field [{field_name}] is not a special one (use {'{:NAME:}'})!")
@@ -110,6 +124,10 @@ class GeneratorUtils:
     def __initialize_cities_indexes(self, key: str, number_of_entries: int):
         if key not in self.__cities_indexes:
             self.__cities_indexes[key] = random.sample(range(number_of_entries), number_of_entries)
+
+    def __initialize_countries_indexes(self, key: str, number_of_entries: int):
+        if key not in self.__countries_indexes:
+            self.__countries_indexes[key] = random.sample(range(number_of_entries), number_of_entries)
 
     @staticmethod
     def get_key(context: str, iteration: int = 0) -> str:
@@ -212,6 +230,7 @@ class GeneratorUtils:
         prepared_funct = re.sub(r"date_time\((.*)\)", r"utils.date_time(\1)", prepared_funct)
         prepared_funct = re.sub(r"city\((.*)\)", r"utils.city(\1)", prepared_funct)
         prepared_funct = re.sub(r"city_of\((.*)\)", r"utils.city_of(\1)", prepared_funct)
+        prepared_funct = re.sub(r"country\((.*)\)", r"utils.country(\1)", prepared_funct)
         if prepared_funct.startswith("utils"):
             try:
                 return eval(prepared_funct)

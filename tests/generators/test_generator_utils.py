@@ -791,3 +791,37 @@ def test_city_of_using_country_name_allow_duplicates(default_context, default_ge
 
     city2 = GeneratorUtils.render_value(default_context, "{city_of('United Kingdom', True)}")
     assert city2 in gbr_cities
+
+
+def test_country(default_context, default_generator_utils):
+    mimeo_db = MimeoDB()
+    countries = [country.name for country in iter(mimeo_db.get_countries())]
+
+    country1 = default_generator_utils.country()
+    assert country1 in countries
+
+    country2 = GeneratorUtils.render_value(default_context, "{country()}")
+    assert country2 in countries
+
+
+def test_country_allow_duplicates(default_context, default_generator_utils):
+    mimeo_db = MimeoDB()
+    countries = [country.name for country in iter(mimeo_db.get_countries())]
+
+    country1 = default_generator_utils.country(True)
+    assert country1 in countries
+
+    country2 = GeneratorUtils.render_value(default_context, "{country(True)}")
+    assert country2 in countries
+
+
+def test_country_out_of_stock():
+    utils = GeneratorUtils.get_for_context("SeparatedContextForCountry")
+    mimeo_db = MimeoDB()
+    for _ in range(len(mimeo_db.get_countries())):
+        utils.country()
+
+    with pytest.raises(OutOfStock) as err:
+        utils.country()
+
+    assert err.value.args[0] == "No more unique values, database contain only 239 countries."
