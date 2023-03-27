@@ -825,3 +825,31 @@ def test_country_out_of_stock():
         utils.country()
 
     assert err.value.args[0] == "No more unique values, database contain only 239 countries."
+
+
+def test_country_for_country_iso3(default_context, default_generator_utils):
+    country = default_generator_utils.country(False, "GBR")
+    assert country == "United Kingdom"
+
+    country = GeneratorUtils.render_value(default_context, "{country(False, 'GBR')}")
+    assert country == "United Kingdom"
+
+
+def test_country_for_country_iso2(default_context, default_generator_utils):
+    country = default_generator_utils.country(True, "GB")
+    assert country == "United Kingdom"
+
+    country = GeneratorUtils.render_value(default_context, "{country(True, 'GB')}")
+    assert country == "United Kingdom"
+
+
+def test_country_for_non_existing_country(default_context, default_generator_utils):
+    with pytest.raises(CountryNotFound) as err:
+        default_generator_utils.country(False, "NEC")
+
+    assert err.value.args[0] == "Mimeo database does not contain such a country [NEC]."
+
+    with pytest.raises(CountryNotFound) as err:
+        GeneratorUtils.render_value(default_context, "{country(False, 'NEC')}")
+
+    assert err.value.args[0] == "Mimeo database does not contain such a country [NEC]."

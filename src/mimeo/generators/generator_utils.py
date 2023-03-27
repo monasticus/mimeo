@@ -95,8 +95,15 @@ class GeneratorUtils:
                 city = country_cities[index]
                 return city.name_ascii
 
-    def country(self, allow_duplicates: bool = False) -> str:
-        if allow_duplicates:
+    def country(self, allow_duplicates: bool = False, country: str = None) -> str:
+        if country is not None:
+            countries = self.__MIMEO_DB.get_countries()
+            country_found = next(filter(lambda c: c.iso_3 == country or c.iso_2 == country, countries), None)
+            if country_found is not None:
+                return country_found.name
+            else:
+                raise CountryNotFound(f"Mimeo database does not contain such a country [{country}].")
+        elif allow_duplicates:
             return self.__MIMEO_DB.get_country_at(self.random_int(MimeoDB.NUM_OF_COUNTRIES)).name
         else:
             self.__initialize_countries_indexes("_ALL_", MimeoDB.NUM_OF_COUNTRIES)
