@@ -60,10 +60,16 @@ class XMLGenerator(Generator):
                 for child_tag, child_value in element_value.items():
                     self.__to_xml(element, child_tag, child_value)
             elif isinstance(element_value, list):
-                for child in element_value:
-                    grand_child_tag = next(iter(child))
-                    grand_child_data = child[grand_child_tag]
-                    self.__to_xml(element, grand_child_tag, grand_child_data)
+                has_only_atomic_values = all(not isinstance(child, (list, dict)) for child in element_value)
+                if has_only_atomic_values:
+                    parent.remove(element)
+                    for child in element_value:
+                        self.__to_xml(parent, element_tag, child)
+                else:
+                    for child in element_value:
+                        grand_child_tag = next(iter(child))
+                        grand_child_data = child[grand_child_tag]
+                        self.__to_xml(element, grand_child_tag, grand_child_data)
             else:
                 element.text = GeneratorUtils.render_value(self.__current_template.model.context_name, element_value)
                 if is_special_field:
