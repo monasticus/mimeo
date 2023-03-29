@@ -6,6 +6,25 @@ from mimeo.exceptions import (MissingRequiredProperty, UnsupportedAuthMethod,
                               UnsupportedRequestMethod)
 
 
+def test_str():
+    output_details = {
+        "direction": "stdout",
+        "directory_path": "out",
+        "file_name": "out-file",
+        "method": "PUT",
+        "protocol": "https",
+        "host": "localhost",
+        "port": 8080,
+        "endpoint": "/document",
+        "auth": "digest",
+        "username": "admin",
+        "password": "admin"
+    }
+
+    mimeo_output_details = MimeoOutputDetails("xml", output_details)
+    assert str(mimeo_output_details) == str(output_details)
+
+
 def test_parsing_output_details_stdout():
     output_details = {
         "direction": "stdout"

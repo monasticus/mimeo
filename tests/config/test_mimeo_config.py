@@ -5,6 +5,33 @@ from mimeo.exceptions import (IncorrectMimeoConfig, InvalidIndent, InvalidVars,
                               UnsupportedOutputFormat)
 
 
+def test_str():
+    config = {
+        "output_format": "xml",
+        "output_details": {
+            "direction": "stdout"
+        },
+        "xml_declaration": True,
+        "indent": 4,
+        "vars": {
+            "CUSTOM_KEY1": "custom value"
+        },
+        "_templates_": [
+            {
+                "count": 5,
+                "model": {
+                    "SomeEntity": {
+                        "ChildNode": "value"
+                    }
+                }
+            }
+        ]
+    }
+
+    mimeo_config = MimeoConfig(config)
+    assert str(mimeo_config) == str(config)
+
+
 def test_parsing_config():
     config = {
         "output_format": "xml",
