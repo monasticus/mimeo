@@ -23,7 +23,8 @@ classifiers = [
 keywords = ["mimeograph", "mimeo", "generate", "generator"]
 dependencies = [
     "requests",
-    "pandas"
+    "pandas",
+    "pyyaml"
 ]
 requires-python = ">=3.7"
 
