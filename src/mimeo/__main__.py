@@ -8,11 +8,13 @@ import logging.config
 from argparse import ArgumentParser
 
 import yaml
+from haggis.logs import add_logging_level
 
 from mimeo import Mimeograph
 from mimeo import resources as data
 from mimeo.config import MimeoConfig
 
+add_logging_level("FINE", logging.DEBUG - 1)
 with pkg_resources.open_text(data, "logging.yaml") as config_file:
     config = yaml.safe_load(config_file.read())
     logging.config.dictConfig(config)
@@ -35,10 +37,6 @@ class MimeoArgumentParser(ArgumentParser):
             nargs="+",
             type=str,
             help="take paths to Mimeo Configurations")
-        self.add_argument(
-            "--debug",
-            action="store_true",
-            help="enable DEBUG mode")
 
         mimeo_config_args = self.add_argument_group("Mimeo Configuration arguments")
         mimeo_config_args.add_argument(
@@ -71,12 +69,31 @@ class MimeoArgumentParser(ArgumentParser):
             metavar="FILE_NAME",
             help="overwrite the output_details/file_name property")
 
+        logging_args = self.add_argument_group("Logging arguments")
+        logging_args_excl = logging_args.add_mutually_exclusive_group()
+        logging_args_excl.add_argument(
+            "--silent",
+            action="store_true",
+            help="disable INFO logs")
+        logging_args_excl.add_argument(
+            "--debug",
+            action="store_true",
+            help="enable DEBUG mode")
+        logging_args_excl.add_argument(
+            "--fine",
+            action="store_true",
+            help="enable FINE mode")
+
 
 def main():
     mimeo_parser = MimeoArgumentParser()
     args = mimeo_parser.parse_args()
-    if args.debug:
+    if args.silent:
+        logger.setLevel(logging.WARNING)
+    elif args.debug:
         logger.setLevel(logging.DEBUG)
+    elif args.fine:
+        logger.setLevel(logging.FINE)
 
     logger.info("Starting Mimeo job")
     for path in args.paths:
@@ -89,8 +106,11 @@ def get_config(config_path, args):
     with open(config_path) as config_file:
         config = json.load(config_file)
         if args.xml_declaration is not None:
-            config[MimeoConfig.XML_DECLARATION_KEY] = args.xml_declaration.lower() == "true"
+            xml_declaration = args.xml_declaration.lower() == "true"
+            logger.fine(f"Overwriting xml_declaration to [{xml_declaration}]")
+            config[MimeoConfig.XML_DECLARATION_KEY] = xml_declaration
         if args.indent is not None:
+            logger.fine(f"Overwriting indent to [{args.indent}]")
             config[MimeoConfig.INDENT_KEY] = args.indent
         if args.output is not None:
             customize_output_details(config, MimeoConfig.OUTPUT_DETAILS_DIRECTION_KEY, args.output)
@@ -98,15 +118,16 @@ def get_config(config_path, args):
             customize_output_details(config, MimeoConfig.OUTPUT_DETAILS_DIRECTORY_PATH_KEY, args.directory)
         if args.file is not None:
             customize_output_details(config, MimeoConfig.OUTPUT_DETAILS_FILE_NAME_KEY, args.file)
-    logger.debug(f"Mimeo Config:")
-    logger.debug(f"[{config}]")
-    return MimeoConfig(config)
+    mimeo_config = MimeoConfig(config)
+    logger.debug(f"Mimeo Config: {mimeo_config}")
+    return mimeo_config
 
 
 def customize_output_details(config, key, value):
     if config.get(MimeoConfig.OUTPUT_DETAILS_KEY) is None:
         config[MimeoConfig.OUTPUT_DETAILS_KEY] = {}
 
+    logger.fine(f"Overwriting output details' {key} to [{value}]")
     config[MimeoConfig.OUTPUT_DETAILS_KEY][key] = value
 
 

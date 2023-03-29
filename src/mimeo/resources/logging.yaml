@@ -1,37 +1,37 @@
 version: 1
 
 formatters:
-  info:
-    format: '[%(name)s] %(levelname)s: %(message)s'
-  debug:
-    format: '[%(name)s %(module)s.%(funcName)s:%(lineno)d] %(levelname)s: %(message)s'
+  regular:
+    format: '[%(name)s] %(levelname)s - %(message)s'
+  detailed:
+    format: '[%(name)s %(module)s:%(lineno)d] %(levelname)-5s - %(message)s'
 
 filters:
-  infoFilter:
-    (): mimeo.logging.InfoFilter
-  debugFilter:
-    (): mimeo.logging.DebugFilter
+  regularFilter:
+    (): mimeo.logging.RegularFilter
+  detailedFilter:
+    (): mimeo.logging.DetailedFilter
 
 handlers:
-  info:
+  regular:
     class: logging.StreamHandler
     level: INFO
-    formatter: info
-    filters: [infoFilter]
+    formatter: regular
+    filters: [regularFilter]
     stream: ext://sys.stdout
-  debug:
+  detailed:
     class: logging.StreamHandler
-    level: DEBUG
-    formatter: debug
-    filters: [debugFilter]
+    level: 0
+    formatter: detailed
+    filters: [detailedFilter]
     stream: ext://sys.stdout
 
 loggers:
   mimeo:
     level: INFO
-    handlers: [info, debug]
+    handlers: [regular, detailed]
     propagate: no
 
 root:
   level: WARNING
-  handlers: [info]
+  handlers: [regular]

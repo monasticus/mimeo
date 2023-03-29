@@ -1,1 +1,1 @@
-from .filters import DebugFilter, InfoFilter
+from .filters import DetailedFilter, RegularFilter

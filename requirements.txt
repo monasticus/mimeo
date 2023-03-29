@@ -1,6 +1,7 @@
 requests
 pandas
 pyyaml
+haggis
 bumpver
 isort
 pytest
