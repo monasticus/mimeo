@@ -2,9 +2,9 @@ version: 1
 
 formatters:
   regular:
-    format: '[%(name)s] %(levelname)s - %(message)s'
+    format: '[mimeo] %(levelname)s - %(message)s'
   detailed:
-    format: '[%(name)s %(module)s:%(lineno)d] %(levelname)-5s - %(message)s'
+    format: '[mimeo] [%(filename)s:%(lineno)d] %(levelname)-5s - %(message)s'
 
 filters:
   regularFilter:

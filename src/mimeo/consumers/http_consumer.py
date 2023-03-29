@@ -1,8 +1,12 @@
+import logging
+
 from requests import Response, Session
 from requests.auth import HTTPBasicAuth, HTTPDigestAuth
 
 from mimeo.config.mimeo_config import MimeoOutputDetails
 from mimeo.consumers import Consumer
+
+logger = logging.getLogger(__name__)
 
 
 class HttpConsumer(Consumer):
@@ -16,7 +20,9 @@ class HttpConsumer(Consumer):
             self.__auth = HTTPDigestAuth(output_details.username, output_details.password)
 
     def consume(self, data: str) -> Response:
+        logger.fine(f"Consuming data [{data}]")
         with Session() as sess:
+            logger.info(f"Sending request {self.method} {self.url}")
             return sess.request(self.method,
                                 self.url,
                                 auth=self.__auth,

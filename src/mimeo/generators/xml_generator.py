@@ -1,9 +1,12 @@
+import logging
 import xml.etree.ElementTree as ElemTree
 from typing import Iterator, Union
 from xml.dom import minidom
 
 from mimeo.config.mimeo_config import MimeoConfig, MimeoTemplate
 from mimeo.generators import Generator, GeneratorUtils
+
+logger = logging.getLogger(__name__)
 
 
 class XMLGenerator(Generator):
@@ -16,6 +19,7 @@ class XMLGenerator(Generator):
 
     def generate(self, templates: Union[list, Iterator[MimeoTemplate]], parent: ElemTree.Element = None) -> Iterator[ElemTree.Element]:
         for template in templates:
+            logger.debug(f"Reading template [{template}]")
             self.__current_template = template
             utils = GeneratorUtils.get_for_context(template.model.context_name)
             utils.reset()
@@ -41,6 +45,11 @@ class XMLGenerator(Generator):
                 return xml_minidom.childNodes[0].toprettyxml(indent=" " * self.__indent, encoding="utf-8").decode('ascii')
 
     def __to_xml(self, parent, element_tag, element_value, attributes: dict = None):
+        logger.fine(f"Rendering element - "
+                    f"parent [{parent if parent is None else parent.tag}], "
+                    f"element_tag [{element_tag}], "
+                    f"element_value [{element_value}], "
+                    f"attributes [{attributes}]")
         attributes = attributes if attributes is not None else {}
         if element_tag == MimeoConfig.TEMPLATES_KEY:
             templates = (MimeoTemplate(template) for template in element_value)
@@ -75,6 +84,7 @@ class XMLGenerator(Generator):
                 if is_special_field:
                     utils = GeneratorUtils.get_for_context(self.__current_template.model.context_name)
                     utils.provide(special_field, element.text)
+                logger.fine(f"Rendered value [{element.text}]")
 
             if parent is None:
                 return element
