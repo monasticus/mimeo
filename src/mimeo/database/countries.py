@@ -1,11 +1,6 @@
-try:
-    import importlib.resources as pkg_resources
-except ImportError:
-    import importlib_resources as pkg_resources
-
 import pandas
 
-from mimeo import resources as data
+from mimeo import utils
 from mimeo.database.exc import InvalidIndex
 
 
@@ -67,5 +62,5 @@ class CountriesDB:
     @classmethod
     def __get_countries_df(cls) -> pandas.DataFrame:
         if cls.__COUNTRIES_DF is None:
-            cls.__COUNTRIES_DF = pandas.read_csv(pkg_resources.open_text(data, CountriesDB.__COUNTRIES_DB))
+            cls.__COUNTRIES_DF = pandas.read_csv(utils.get_resource(CountriesDB.__COUNTRIES_DB))
         return cls.__COUNTRIES_DF

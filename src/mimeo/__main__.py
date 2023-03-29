@@ -1,5 +1,5 @@
 import json
-import logging.config
+import logging
 from argparse import ArgumentParser
 
 from mimeo import Mimeograph

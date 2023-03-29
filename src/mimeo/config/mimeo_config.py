@@ -7,7 +7,6 @@ from mimeo.exceptions import (IncorrectMimeoConfig, IncorrectMimeoModel,
                               UnsupportedOutputDirection,
                               UnsupportedOutputFormat,
                               UnsupportedRequestMethod)
-
 from mimeo.logging import setup_logging
 
 setup_logging()
