@@ -7,9 +7,21 @@ from mimeo.exceptions import (IncorrectMimeoConfig, IncorrectMimeoModel,
                               UnsupportedOutputDirection,
                               UnsupportedOutputFormat,
                               UnsupportedRequestMethod)
+from mimeo.logging import setup_logging
+
+setup_logging()
 
 
-class MimeoConfig:
+class MimeoDTO:
+
+    def __init__(self, source: dict):
+        self.__source = source
+
+    def __str__(self):
+        return str(self.__source)
+
+
+class MimeoConfig(MimeoDTO):
 
     OUTPUT_FORMAT_KEY = "output_format"
     OUTPUT_DETAILS_KEY = "output_details"
@@ -36,6 +48,7 @@ class MimeoConfig:
     SUPPORTED_OUTPUT_FORMATS = ("xml",)
 
     def __init__(self, config: dict):
+        super().__init__(config)
         self.output_format = MimeoConfig.__get_output_format(config)
         self.output_details = MimeoOutputDetails(self.output_format, config.get(self.OUTPUT_DETAILS_KEY, {}))
         self.xml_declaration = config.get(self.XML_DECLARATION_KEY, False)
@@ -83,7 +96,7 @@ class MimeoConfig:
             return (MimeoTemplate(template) for template in config.get(MimeoConfig.TEMPLATES_KEY))
 
 
-class MimeoOutputDetails:
+class MimeoOutputDetails(MimeoDTO):
 
     FILE_DIRECTION = "file"
     STD_OUT_DIRECTION = "stdout"
@@ -104,6 +117,7 @@ class MimeoOutputDetails:
                              MimeoConfig.OUTPUT_DETAILS_PASSWORD)
 
     def __init__(self, output_format: str, output_details: dict):
+        super().__init__(output_details)
         self.direction = MimeoOutputDetails.__get_direction(output_details)
         MimeoOutputDetails.__validate_output_details(self.direction, output_details)
         self.directory_path = MimeoOutputDetails.__get_directory_path(self.direction, output_details)
@@ -196,9 +210,10 @@ class MimeoOutputDetails:
             return output_details.get(MimeoConfig.OUTPUT_DETAILS_PASSWORD)
 
 
-class MimeoTemplate:
+class MimeoTemplate(MimeoDTO):
 
     def __init__(self, template: dict):
+        super().__init__(template)
         MimeoTemplate.__validate_template(template)
         self.count = template.get(MimeoConfig.TEMPLATES_COUNT_KEY)
         self.model = MimeoModel(template.get(MimeoConfig.TEMPLATES_MODEL_KEY))
@@ -211,9 +226,10 @@ class MimeoTemplate:
             raise IncorrectMimeoTemplate(f"No model data in the Mimeo Template: {template}")
 
 
-class MimeoModel:
+class MimeoModel(MimeoDTO):
 
     def __init__(self, model: dict):
+        super().__init__(model)
         self.attributes = model.get(MimeoConfig.MODEL_ATTRIBUTES_KEY, {})
         self.root_name = MimeoModel.__get_root_name(model)
         self.root_data = model.get(self.root_name)

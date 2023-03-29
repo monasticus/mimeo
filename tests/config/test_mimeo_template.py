@@ -4,6 +4,20 @@ from mimeo.config.mimeo_config import MimeoTemplate
 from mimeo.exceptions import IncorrectMimeoTemplate
 
 
+def test_str():
+    template = {
+      "count": 30,
+      "model": {
+        "SomeEntity": {
+          "ChildNode": "value"
+        }
+      }
+    }
+
+    mimeo_template = MimeoTemplate(template)
+    assert str(mimeo_template) == str(template)
+
+
 def test_parsing_template():
     template = {
       "count": 30,

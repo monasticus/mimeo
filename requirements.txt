@@ -1,7 +1,9 @@
 requests
+pandas
+pyyaml
+haggis
 bumpver
 isort
-pandas
 pytest
 pytest-cov
 responses

@@ -36,3 +36,6 @@ class IncorrectMimeoTemplate(Exception):
 
 class IncorrectMimeoConfig(Exception):
     pass
+
+class ResourceNotFound(Exception):
+    pass

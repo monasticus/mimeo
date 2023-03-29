@@ -4,6 +4,21 @@ from mimeo.config.mimeo_config import MimeoModel
 from mimeo.exceptions import IncorrectMimeoModel
 
 
+def test_str():
+    model = {
+        "attributes": {
+          "xmlns": "http://mimeo.arch.com/default-namespace"
+        },
+        "context": "My Context",
+        "SomeEntity": {
+            "ChildNode": "value"
+        }
+    }
+
+    mimeo_model = MimeoModel(model)
+    assert str(mimeo_model) == str(model)
+
+
 def test_parsing_model_with_attributes():
     model = {
         "attributes": {

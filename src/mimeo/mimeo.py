@@ -1,5 +1,3 @@
-import json
-
 from mimeo.config.mimeo_config import MimeoConfig
 from mimeo.consumers import ConsumerFactory
 from mimeo.generators import GeneratorFactory
