@@ -2,7 +2,7 @@ version: 1
 
 formatters:
   info:
-    format: '%(message)s'
+    format: '[%(name)s] %(levelname)s: %(message)s'
   debug:
     format: '[%(name)s %(module)s.%(funcName)s:%(lineno)d] %(levelname)s: %(message)s'
 
@@ -28,7 +28,7 @@ handlers:
 
 loggers:
   mimeo:
-    level: DEBUG
+    level: INFO
     handlers: [info, debug]
     propagate: no
 
