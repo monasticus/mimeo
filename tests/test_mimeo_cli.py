@@ -1,4 +1,5 @@
 import json
+import logging
 import shutil
 import sys
 from glob import glob
@@ -395,3 +396,12 @@ def test_custom_output_file_name_does_not_throw_error_when_output_details_does_n
         MimeoCLI.main()
     except KeyError:
         assert False
+
+
+def test_debug_mode():
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/default-config.json", "--debug"]
+    logger = logging.getLogger("mimeo")
+
+    MimeoCLI.main()
+
+    assert logger.getEffectiveLevel() == logging.DEBUG

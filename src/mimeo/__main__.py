@@ -1,8 +1,22 @@
+try:
+    import importlib.resources as pkg_resources
+except ImportError:
+    import importlib_resources as pkg_resources
+
 import json
+import logging.config
 from argparse import ArgumentParser
 
+import yaml
+
 from mimeo import Mimeograph
+from mimeo import resources as data
 from mimeo.config import MimeoConfig
+
+with pkg_resources.open_text(data, "logging.yaml") as config_file:
+    config = yaml.safe_load(config_file.read())
+    logging.config.dictConfig(config)
+logger = logging.getLogger("mimeo")
 
 
 class MimeoArgumentParser(ArgumentParser):
@@ -21,6 +35,10 @@ class MimeoArgumentParser(ArgumentParser):
             nargs="+",
             type=str,
             help="take paths to Mimeo Configurations")
+        self.add_argument(
+            "--debug",
+            action="store_true",
+            help="enable DEBUG mode")
 
         mimeo_config_args = self.add_argument_group("Mimeo Configuration arguments")
         mimeo_config_args.add_argument(
@@ -57,7 +75,12 @@ class MimeoArgumentParser(ArgumentParser):
 def main():
     mimeo_parser = MimeoArgumentParser()
     args = mimeo_parser.parse_args()
+    if args.debug:
+        logger.setLevel(logging.DEBUG)
+
+    logger.info("Starting Mimeo job")
     for path in args.paths:
+        logger.info(f"Data generation from Mimeo Config: {path}")
         mimeo_config = get_config(path, args)
         Mimeograph(mimeo_config).produce()
 
@@ -75,6 +98,8 @@ def get_config(config_path, args):
             customize_output_details(config, MimeoConfig.OUTPUT_DETAILS_DIRECTORY_PATH_KEY, args.directory)
         if args.file is not None:
             customize_output_details(config, MimeoConfig.OUTPUT_DETAILS_FILE_NAME_KEY, args.file)
+    logger.debug(f"Mimeo Config:")
+    logger.debug(f"[{config}]")
     return MimeoConfig(config)
 
 

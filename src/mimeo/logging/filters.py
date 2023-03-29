@@ -1,4 +1,4 @@
-from logging import Filter, LogRecord, INFO, DEBUG
+from logging import DEBUG, INFO, Filter, LogRecord
 
 
 class InfoFilter(Filter):
