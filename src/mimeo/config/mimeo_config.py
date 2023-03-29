@@ -8,6 +8,10 @@ from mimeo.exceptions import (IncorrectMimeoConfig, IncorrectMimeoModel,
                               UnsupportedOutputFormat,
                               UnsupportedRequestMethod)
 
+from mimeo.logging import setup_logging
+
+setup_logging()
+
 
 class MimeoDTO:
 
