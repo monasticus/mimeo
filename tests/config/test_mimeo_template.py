@@ -30,7 +30,6 @@ def test_parsing_template():
 
     mimeo_template = MimeoTemplate(template)
     assert mimeo_template.count == 30
-    assert mimeo_template.model.attributes == {}
     assert mimeo_template.model.root_name == "SomeEntity"
     assert mimeo_template.model.root_data == {
         "ChildNode": "value"

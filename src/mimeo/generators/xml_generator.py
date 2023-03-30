@@ -27,8 +27,7 @@ class XMLGenerator(Generator):
                 utils.setup_iteration(i + 1)
                 yield self.__to_xml(parent,
                                     template.model.root_name,
-                                    template.model.root_data,
-                                    template.model.attributes)
+                                    template.model.root_data)
 
     def stringify(self, root, mimeo_config):
         if self.__indent is None or self.__indent == 0:
@@ -66,8 +65,18 @@ class XMLGenerator(Generator):
             element = ElemTree.Element(element_tag, attrib=attributes) if parent is None else ElemTree.SubElement(
                 parent, element_tag, attrib=attributes)
             if isinstance(element_value, dict):
-                for child_tag, child_value in element_value.items():
-                    self.__to_xml(element, child_tag, child_value)
+                if MimeoConfig.MODEL_ATTRIBUTES_KEY in element_value:
+                    element_value_copy = dict(element_value)
+                    attrs = element_value_copy.pop(MimeoConfig.MODEL_ATTRIBUTES_KEY)
+                    value = element_value_copy.get(MimeoConfig.MODEL_VALUE_KEY, element_value_copy)
+                    if parent is not None:
+                        parent.remove(element)
+                        self.__to_xml(parent, element_tag, value, attrs)
+                    else:
+                        return self.__to_xml(parent, element_tag, value, attrs)
+                else:
+                    for child_tag, child_value in element_value.items():
+                        self.__to_xml(element, child_tag, child_value)
             elif isinstance(element_value, list):
                 has_only_atomic_values = all(not isinstance(child, (list, dict)) for child in element_value)
                 if has_only_atomic_values:

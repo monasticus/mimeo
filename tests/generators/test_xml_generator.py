@@ -43,10 +43,11 @@ def test_generate_single_template_model_with_attributes():
             {
                 "count": 5,
                 "model": {
-                    "attributes": {
-                        "xmlns": "http://mimeo.arch.com/default-namespace"
-                    },
-                    "SomeEntity": {}
+                    "SomeEntity": {
+                        "_attrs": {
+                            "xmlns": "http://mimeo.arch.com/default-namespace"
+                        }
+                    }
                 }
             }
         ]
@@ -70,10 +71,11 @@ def test_generate_single_template_model_with_prefixed_ns():
             {
                 "count": 5,
                 "model": {
-                    "attributes": {
-                        "xmlns:pn": "http://mimeo.arch.com/prefixed-namespace"
-                    },
-                    "pn:SomeEntity": {}
+                    "pn:SomeEntity": {
+                        "_attrs": {
+                            "xmlns:pn": "http://mimeo.arch.com/prefixed-namespace"
+                        }
+                    }
                 }
             }
         ]
@@ -88,6 +90,121 @@ def test_generate_single_template_model_with_prefixed_ns():
         count += 1
 
     assert count == 5
+
+
+def test_generate_single_template_model_with_attributes_in_atomic_child():
+    config = MimeoConfig({
+        "output_format": "xml",
+        "_templates_": [
+            {
+                "count": 5,
+                "model": {
+                    "SomeEntity": {
+                        "pn:ChildNode": {
+                            "_attrs": {
+                                "xmlns:pn": "http://mimeo.arch.com/prefixed-namespace"
+                            },
+                            "_value": "string-value"
+                        }
+                    }
+                }
+            }
+        ]
+    })
+    generator = XMLGenerator(config)
+    count = 0
+    for data in generator.generate(config.templates):
+        assert data.tag == "SomeEntity"
+        assert data.attrib == {}
+        assert len(list(data)) == 1  # number of children
+
+        child = data.find("pn:ChildNode")
+        assert child.tag == "pn:ChildNode"
+        assert child.attrib == {"xmlns:pn": "http://mimeo.arch.com/prefixed-namespace"}
+        assert child.text == "string-value"
+        assert len(list(child)) == 0  # number of children
+
+        count += 1
+
+    assert count == 5
+
+
+def test_generate_single_template_model_with_attributes_in_complex_child():
+    config = MimeoConfig({
+        "output_format": "xml",
+        "_templates_": [
+            {
+                "count": 5,
+                "model": {
+                    "SomeEntity": {
+                        "pn:ChildNode": {
+                            "_attrs": {
+                                "xmlns:pn": "http://mimeo.arch.com/prefixed-namespace"
+                            },
+                            "pn:GrandChild": "string-value"
+                        }
+                    }
+                }
+            }
+        ]
+    })
+    generator = XMLGenerator(config)
+    count = 0
+    for data in generator.generate(config.templates):
+        assert data.tag == "SomeEntity"
+        assert data.attrib == {}
+        assert len(list(data)) == 1  # number of children
+
+        child = data.find("pn:ChildNode")
+        assert child.tag == "pn:ChildNode"
+        assert child.attrib == {"xmlns:pn": "http://mimeo.arch.com/prefixed-namespace"}
+        assert len(list(child)) == 1  # number of children
+
+        grand_child = child.find("pn:GrandChild")
+        assert grand_child.tag == "pn:GrandChild"
+        assert grand_child.attrib == {}
+        assert grand_child.text == "string-value"
+        assert len(list(grand_child)) == 0  # number of children
+
+        count += 1
+
+    assert count == 5
+
+
+def test_generate_single_template_model_with_attributes_in_child_mixed():
+    config = MimeoConfig({
+        "output_format": "xml",
+        "_templates_": [
+            {
+                "count": 5,
+                "model": {
+                    "SomeEntity": {
+                        "ChildNode": {
+                            "_attrs": {
+                                "xmlns:pn": "http://mimeo.arch.com/prefixed-namespace"
+                            },
+                            "_value": "string-value",
+                            "GrandChild": "string-value"  # will be ignored
+                        }
+                    }
+                }
+            }
+        ]
+    })
+    generator = XMLGenerator(config)
+    count = 0
+    for data in generator.generate(config.templates):
+        assert data.tag == "SomeEntity"
+        assert data.attrib == {}
+        assert len(list(data)) == 1  # number of children
+
+        child = data.find("ChildNode")
+        assert child.tag == "ChildNode"
+        assert child.attrib == {"xmlns:pn": "http://mimeo.arch.com/prefixed-namespace"}
+        assert child.text == "string-value"
+        assert len(list(child)) == 0  # number of children
+
+        count += 1
 
 
 def test_generate_single_template_str_value():
@@ -515,11 +632,11 @@ def test_stringify_with_indent_and_xml_declaration():
             {
                 "count": 1,
                 "model": {
-                    "attributes": {
-                        "xmlns": "http://mimeo.arch.com/default-namespace",
-                        "xmlns:pn": "http://mimeo.arch.com/prefixed-namespace"
-                    },
                     "SomeEntity": {
+                        "_attrs": {
+                            "xmlns": "http://mimeo.arch.com/default-namespace",
+                            "xmlns:pn": "http://mimeo.arch.com/prefixed-namespace"
+                        },
                         "pn:ChildNode": "value"
                     }
                 }
@@ -546,11 +663,11 @@ def test_stringify_with_indent_and_without_xml_declaration():
             {
                 "count": 1,
                 "model": {
-                    "attributes": {
-                        "xmlns": "http://mimeo.arch.com/default-namespace",
-                        "xmlns:pn": "http://mimeo.arch.com/prefixed-namespace"
-                    },
                     "SomeEntity": {
+                        "_attrs": {
+                            "xmlns": "http://mimeo.arch.com/default-namespace",
+                            "xmlns:pn": "http://mimeo.arch.com/prefixed-namespace"
+                        },
                         "pn:ChildNode": "value"
                     }
                 }
@@ -575,11 +692,11 @@ def test_stringify_without_indent_and_with_xml_declaration():
             {
                 "count": 1,
                 "model": {
-                    "attributes": {
-                        "xmlns": "http://mimeo.arch.com/default-namespace",
-                        "xmlns:pn": "http://mimeo.arch.com/prefixed-namespace"
-                    },
                     "SomeEntity": {
+                        "_attrs": {
+                            "xmlns": "http://mimeo.arch.com/default-namespace",
+                            "xmlns:pn": "http://mimeo.arch.com/prefixed-namespace"
+                        },
                         "pn:ChildNode": "value"
                     }
                 }
@@ -605,11 +722,11 @@ def test_stringify_without_indent_and_xml_declaration():
             {
                 "count": 1,
                 "model": {
-                    "attributes": {
-                        "xmlns": "http://mimeo.arch.com/default-namespace",
-                        "xmlns:pn": "http://mimeo.arch.com/prefixed-namespace"
-                    },
                     "SomeEntity": {
+                        "_attrs": {
+                            "xmlns": "http://mimeo.arch.com/default-namespace",
+                            "xmlns:pn": "http://mimeo.arch.com/prefixed-namespace"
+                        },
                         "pn:ChildNode": "value"
                     }
                 }
@@ -1415,10 +1532,10 @@ def test_generate_template_using_special_fields_using_namespace():
             {
                 "count": 5,
                 "model": {
-                    "attributes": {
-                        "xmlns:ns": "http://mimeo.arch.com/prefixed-namespace"
-                    },
                     "ns:SomeEntity": {
+                        "_attrs": {
+                            "xmlns:ns": "http://mimeo.arch.com/prefixed-namespace"
+                        },
                         "{:ns:ChildNode1:}": "value-1",
                         "ns:ChildNode2": "{:ns:ChildNode1:}"
                     }

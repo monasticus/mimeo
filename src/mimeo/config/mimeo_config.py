@@ -42,8 +42,9 @@ class MimeoConfig(MimeoDTO):
     TEMPLATES_KEY = "_templates_"
     TEMPLATES_COUNT_KEY = "count"
     TEMPLATES_MODEL_KEY = "model"
-    MODEL_ATTRIBUTES_KEY = "attributes"
     MODEL_CONTEXT_KEY = "context"
+    MODEL_ATTRIBUTES_KEY = "_attrs"
+    MODEL_VALUE_KEY = "_value"
 
     SUPPORTED_OUTPUT_FORMATS = ("xml",)
 
@@ -230,7 +231,6 @@ class MimeoModel(MimeoDTO):
 
     def __init__(self, model: dict):
         super().__init__(model)
-        self.attributes = model.get(MimeoConfig.MODEL_ATTRIBUTES_KEY, {})
         self.root_name = MimeoModel.__get_root_name(model)
         self.root_data = model.get(self.root_name)
         self.context_name = MimeoModel.__get_context_name(model, self.root_name)
@@ -247,7 +247,7 @@ class MimeoModel(MimeoDTO):
 
     @staticmethod
     def __is_not_metadata_key(dict_key: str) -> bool:
-        return dict_key not in [MimeoConfig.MODEL_ATTRIBUTES_KEY, MimeoConfig.MODEL_CONTEXT_KEY]
+        return dict_key not in [MimeoConfig.MODEL_CONTEXT_KEY]
 
     @staticmethod
     def __get_context_name(model: dict, root_name: str) -> str:
