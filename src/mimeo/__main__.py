@@ -78,11 +78,11 @@ def main():
     mimeo_parser = MimeoArgumentParser()
     args = mimeo_parser.parse_args()
     if args.silent:
-        logger.setLevel(logging.WARNING)
+        logging.getLogger("mimeo").setLevel(logging.WARNING)
     elif args.debug:
-        logger.setLevel(logging.DEBUG)
+        logging.getLogger("mimeo").setLevel(logging.DEBUG)
     elif args.fine:
-        logger.setLevel(logging.FINE)
+        logging.getLogger("mimeo").setLevel(logging.FINE)
 
     logger.info("Starting Mimeo job")
     for path in args.paths:
