@@ -27,8 +27,7 @@ class XMLGenerator(Generator):
                 utils.setup_iteration(i + 1)
                 yield self.__to_xml(parent,
                                     template.model.root_name,
-                                    template.model.root_data,
-                                    template.model.attributes)
+                                    template.model.root_data)
 
     def stringify(self, root, mimeo_config):
         if self.__indent is None or self.__indent == 0:
@@ -66,12 +65,15 @@ class XMLGenerator(Generator):
             element = ElemTree.Element(element_tag, attrib=attributes) if parent is None else ElemTree.SubElement(
                 parent, element_tag, attrib=attributes)
             if isinstance(element_value, dict):
-                if "_attrs" in element_value:
-                    parent.remove(element)
+                if MimeoConfig.MODEL_ATTRIBUTES_KEY in element_value:
                     element_value_copy = dict(element_value)
-                    attrs = element_value_copy.pop("_attrs")
-                    value = element_value_copy.get("_value", element_value_copy)
-                    self.__to_xml(parent, element_tag, value, attrs)
+                    attrs = element_value_copy.pop(MimeoConfig.MODEL_ATTRIBUTES_KEY)
+                    value = element_value_copy.get(MimeoConfig.MODEL_VALUE_KEY, element_value_copy)
+                    if parent is not None:
+                        parent.remove(element)
+                        self.__to_xml(parent, element_tag, value, attrs)
+                    else:
+                        return self.__to_xml(parent, element_tag, value, attrs)
                 else:
                     for child_tag, child_value in element_value.items():
                         self.__to_xml(element, child_tag, child_value)

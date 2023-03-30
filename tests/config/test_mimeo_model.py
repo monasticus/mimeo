@@ -6,9 +6,6 @@ from mimeo.exceptions import IncorrectMimeoModel
 
 def test_str():
     model = {
-        "attributes": {
-          "xmlns": "http://mimeo.arch.com/default-namespace"
-        },
         "context": "My Context",
         "SomeEntity": {
             "ChildNode": "value"
@@ -17,27 +14,6 @@ def test_str():
 
     mimeo_model = MimeoModel(model)
     assert str(mimeo_model) == str(model)
-
-
-def test_parsing_model_with_attributes():
-    model = {
-        "attributes": {
-          "xmlns": "http://mimeo.arch.com/default-namespace"
-        },
-        "SomeEntity": {
-            "ChildNode": "value"
-        }
-    }
-
-    mimeo_model = MimeoModel(model)
-    assert mimeo_model.attributes == {
-        "xmlns": "http://mimeo.arch.com/default-namespace"
-    }
-    assert mimeo_model.context_name == "SomeEntity"
-    assert mimeo_model.root_name == "SomeEntity"
-    assert mimeo_model.root_data == {
-        "ChildNode": "value"
-    }
 
 
 def test_parsing_model_with_context_name():
@@ -49,29 +25,6 @@ def test_parsing_model_with_context_name():
     }
 
     mimeo_model = MimeoModel(model)
-    assert mimeo_model.attributes == {}
-    assert mimeo_model.context_name == "My Context"
-    assert mimeo_model.root_name == "SomeEntity"
-    assert mimeo_model.root_data == {
-        "ChildNode": "value"
-    }
-
-
-def test_parsing_model_with_attributes_and_context_name():
-    model = {
-        "attributes": {
-          "xmlns": "http://mimeo.arch.com/default-namespace"
-        },
-        "context": "My Context",
-        "SomeEntity": {
-            "ChildNode": "value"
-        }
-    }
-
-    mimeo_model = MimeoModel(model)
-    assert mimeo_model.attributes == {
-        "xmlns": "http://mimeo.arch.com/default-namespace"
-    }
     assert mimeo_model.context_name == "My Context"
     assert mimeo_model.root_name == "SomeEntity"
     assert mimeo_model.root_data == {
@@ -87,7 +40,6 @@ def test_parsing_raw_model():
     }
 
     mimeo_model = MimeoModel(model)
-    assert mimeo_model.attributes == {}
     assert mimeo_model.context_name == "SomeEntity"
     assert mimeo_model.root_name == "SomeEntity"
     assert mimeo_model.root_data == {
@@ -97,16 +49,14 @@ def test_parsing_raw_model():
 
 def test_parsing_model_without_root():
     model = {
-        "attributes": {
-          "xmlns": "http://mimeo.arch.com/default-namespace"
-        }
+        "context": "My Context"
     }
 
     with pytest.raises(IncorrectMimeoModel) as err:
         MimeoModel(model)
 
     assert err.value.args[0] == "No root data in Mimeo Model: " \
-                                "{'attributes': {'xmlns': 'http://mimeo.arch.com/default-namespace'}}"
+                                "{'context': 'My Context'}"
 
 
 def test_parsing_model_with_multiple_roots():
