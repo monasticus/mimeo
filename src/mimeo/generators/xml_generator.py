@@ -66,8 +66,15 @@ class XMLGenerator(Generator):
             element = ElemTree.Element(element_tag, attrib=attributes) if parent is None else ElemTree.SubElement(
                 parent, element_tag, attrib=attributes)
             if isinstance(element_value, dict):
-                for child_tag, child_value in element_value.items():
-                    self.__to_xml(element, child_tag, child_value)
+                if "_attrs" in element_value:
+                    parent.remove(element)
+                    element_value_copy = dict(element_value)
+                    attrs = element_value_copy.pop("_attrs")
+                    value = element_value_copy.get("_value", element_value_copy)
+                    self.__to_xml(parent, element_tag, value, attrs)
+                else:
+                    for child_tag, child_value in element_value.items():
+                        self.__to_xml(element, child_tag, child_value)
             elif isinstance(element_value, list):
                 has_only_atomic_values = all(not isinstance(child, (list, dict)) for child in element_value)
                 if has_only_atomic_values:

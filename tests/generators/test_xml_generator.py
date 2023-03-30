@@ -90,6 +90,121 @@ def test_generate_single_template_model_with_prefixed_ns():
     assert count == 5
 
 
+def test_generate_single_template_model_with_attributes_in_atomic_child():
+    config = MimeoConfig({
+        "output_format": "xml",
+        "_templates_": [
+            {
+                "count": 5,
+                "model": {
+                    "SomeEntity": {
+                        "pn:ChildNode": {
+                            "_attrs": {
+                                "xmlns:pn": "http://mimeo.arch.com/prefixed-namespace"
+                            },
+                            "_value": "string-value"
+                        }
+                    }
+                }
+            }
+        ]
+    })
+    generator = XMLGenerator(config)
+    count = 0
+    for data in generator.generate(config.templates):
+        assert data.tag == "SomeEntity"
+        assert data.attrib == {}
+        assert len(list(data)) == 1  # number of children
+
+        child = data.find("pn:ChildNode")
+        assert child.tag == "pn:ChildNode"
+        assert child.attrib == {"xmlns:pn": "http://mimeo.arch.com/prefixed-namespace"}
+        assert child.text == "string-value"
+        assert len(list(child)) == 0  # number of children
+
+        count += 1
+
+    assert count == 5
+
+
+def test_generate_single_template_model_with_attributes_in_complex_child():
+    config = MimeoConfig({
+        "output_format": "xml",
+        "_templates_": [
+            {
+                "count": 5,
+                "model": {
+                    "SomeEntity": {
+                        "pn:ChildNode": {
+                            "_attrs": {
+                                "xmlns:pn": "http://mimeo.arch.com/prefixed-namespace"
+                            },
+                            "pn:GrandChild": "string-value"
+                        }
+                    }
+                }
+            }
+        ]
+    })
+    generator = XMLGenerator(config)
+    count = 0
+    for data in generator.generate(config.templates):
+        assert data.tag == "SomeEntity"
+        assert data.attrib == {}
+        assert len(list(data)) == 1  # number of children
+
+        child = data.find("pn:ChildNode")
+        assert child.tag == "pn:ChildNode"
+        assert child.attrib == {"xmlns:pn": "http://mimeo.arch.com/prefixed-namespace"}
+        assert len(list(child)) == 1  # number of children
+
+        grand_child = child.find("pn:GrandChild")
+        assert grand_child.tag == "pn:GrandChild"
+        assert grand_child.attrib == {}
+        assert grand_child.text == "string-value"
+        assert len(list(grand_child)) == 0  # number of children
+
+        count += 1
+
+    assert count == 5
+
+
+def test_generate_single_template_model_with_attributes_in_child_mixed():
+    config = MimeoConfig({
+        "output_format": "xml",
+        "_templates_": [
+            {
+                "count": 5,
+                "model": {
+                    "SomeEntity": {
+                        "ChildNode": {
+                            "_attrs": {
+                                "xmlns:pn": "http://mimeo.arch.com/prefixed-namespace"
+                            },
+                            "_value": "string-value",
+                            "GrandChild": "string-value"  # will be ignored
+                        }
+                    }
+                }
+            }
+        ]
+    })
+    generator = XMLGenerator(config)
+    count = 0
+    for data in generator.generate(config.templates):
+        assert data.tag == "SomeEntity"
+        assert data.attrib == {}
+        assert len(list(data)) == 1  # number of children
+
+        child = data.find("ChildNode")
+        assert child.tag == "ChildNode"
+        assert child.attrib == {"xmlns:pn": "http://mimeo.arch.com/prefixed-namespace"}
+        assert child.text == "string-value"
+        assert len(list(child)) == 0  # number of children
+
+        count += 1
+
+
 def test_generate_single_template_str_value():
     config = MimeoConfig({
         "output_format": "xml",
