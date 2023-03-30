@@ -1,1 +1,2 @@
 include src/mimeo/resources/*.csv
+include src/mimeo/resources/*.yaml
