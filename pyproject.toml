@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "mimeograph"
-version = "0.1.0"
+version = "0.1.1"
 description = "Generate data based on a simple template"
 readme = "README.md"
 authors = [{ name = "T.A. Programming Svcs.", email = "tomasz.maciej.aniolowski@gmail.com" }]
@@ -36,7 +36,7 @@ dev = ["bumpver", "build", "twine", "isort", "pytest", "pytest-cov", "responses"
 mimeo = "mimeo.__main__:main"
 
 [tool.bumpver]
-current_version = "0.1.0"
+current_version = "0.1.1"
 version_pattern = "MAJOR.MINOR.PATCH"
 commit_message  = "Bump version {old_version} to {new_version}"
 commit          = true
