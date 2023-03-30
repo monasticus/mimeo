@@ -3,14 +3,43 @@
     {
       "count": 30,
       "model": {
-        "attributes": {
-          "xmlns": "http://mimeo.arch.com/default-namespace",
-          "xmlns:pn": "http://mimeo.arch.com/prefixed-namespace"
-        },
-        "SomeEntity": {
+        "SomeEntityWithChildrenNodes": {
+          "_attrs": {
+            "xmlns": "http://mimeo.arch.com/default-namespace",
+            "xmlns:pn": "http://mimeo.arch.com/prefixed-namespace"
+          },
           "pn:ChildNode1": 1,
           "pn:ChildNode2": "value-2",
           "pn:ChildNode3": true
+        },
+        "SomeEntityWithAtomicValue": {
+          "_attrs": {
+            "xmlns": "http://mimeo.arch.com/default-namespace"
+          },
+          "_value": "atomic-value"
+        },
+        "SomeEntityWithChildrenNodesInArray": {
+          "_attrs": {
+            "xmlns": "http://mimeo.arch.com/default-namespace",
+            "xmlns:pn": "http://mimeo.arch.com/prefixed-namespace"
+          },
+          "_value": [
+            {
+              "pn:ChildNode" : {
+                "pn:GrandChildNode": 1
+              }
+            },
+            {
+              "pn:ChildNode" : {
+                "pn:GrandChildNode": "value-2"
+              }
+            },
+            {
+              "pn:ChildNode" : {
+                "pn:GrandChildNode": true
+              }
+            }
+          ]
         }
       }
     }
