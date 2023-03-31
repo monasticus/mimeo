@@ -225,13 +225,21 @@ Example
 
 When using Mimeo command line tool you can overwrite Mimeo Configuration properties:
 
-| Short option | Long option       | Description                                            |
-|:------------:|:------------------|:-------------------------------------------------------|
-|      -x      | --xml-declaration | overwrite the `xml_declaration` property               |
-|      -i      | --indent          | overwrite the `indent` property                        |
-|      -o      | --output          | overwrite the `output_details/direction` property      |
-|      -d      | --directory       | overwrite the `output_details/directory_path` property |
-|      -f      | --file            | overwrite the `output_details/file_name` property      |
+| Short option | Long option         | Description                                            |
+|:------------:|:--------------------|:-------------------------------------------------------|
+|     `-x`     | `--xml-declaration` | overwrite the `xml_declaration` property               |
+|     `-i`     | `--indent`          | overwrite the `indent` property                        |
+|     `-o`     | `--output`          | overwrite the `output_details/direction` property      |
+|     `-d`     | `--directory`       | overwrite the `output_details/directory_path` property |
+|     `-f`     | `--file`            | overwrite the `output_details/file_name` property      |
+|     `-H`     | `--http-host`       | overwrite the `output_details/host` property           |
+|     `-p`     | `--http-port`       | overwrite the `output_details/port` property           |
+|     `-E`     | `--http-endpoint`   | overwrite the `output_details/endpoint` property       |
+|     `-U`     | `--http-user`       | overwrite the `output_details/username` property       |
+|     `-P`     | `--http-password`   | overwrite the `output_details/password` property       |
+|              | `--http-method`     | overwrite the `output_details/method` property         |
+|              | `--http-protocol`   | overwrite the `output_details/protocol` property       |
+|              | `--http-auth`       | overwrite the `output_details/auth` property           |
 
 ### Mimeo Utils
 

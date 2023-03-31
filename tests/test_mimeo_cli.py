@@ -494,7 +494,7 @@ def test_custom_output_http_port_does_not_throw_key_error_when_output_details_do
 
 @responses.activate
 def test_custom_short_output_http_endpoint():
-    sys.argv = ["mimeo", "test_mimeo_cli-dir/http-config.json", "-e", "/v2/document"]
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/http-config.json", "-E", "/v2/document"]
 
     responses.add(responses.POST, "http://localhost:8080/v2/document", json={"success": True}, status=HTTPStatus.OK)
     MimeoCLI.main()
@@ -511,7 +511,7 @@ def test_custom_long_output_http_endpoint():
 
 
 def test_custom_output_http_endpoint_does_not_throw_key_error_when_output_details_does_not_exist():
-    sys.argv = ["mimeo", "test_mimeo_cli-dir/minimum-config.json", "-o", "http", "-e", "/v2/document"]
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/minimum-config.json", "-o", "http", "-E", "/v2/document"]
 
     try:
         MimeoCLI.main()

@@ -67,13 +67,13 @@ class MimeoArgumentParser(ArgumentParser):
             "-p",
             "--http-port",
             type=str,
-            metavar="HOST",
+            metavar="PORT",
             help="overwrite the output_details/port property")
         mimeo_config_args.add_argument(
-            "-e",
+            "-E",
             "--http-endpoint",
             type=str,
-            metavar="HOST",
+            metavar="ENDPOINT",
             help="overwrite the output_details/endpoint property")
         mimeo_config_args.add_argument(
             "-U",
