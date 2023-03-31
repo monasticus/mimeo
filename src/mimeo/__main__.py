@@ -69,6 +69,12 @@ class MimeoArgumentParser(ArgumentParser):
             type=str,
             metavar="PROTOCOL",
             help="overwrite the output_details/protocol property")
+        mimeo_config_args.add_argument(
+            "-H",
+            "--http-host",
+            type=str,
+            metavar="HOST",
+            help="overwrite the output_details/host property")
 
         logging_args = self.add_argument_group("Logging arguments")
         logging_args_excl = logging_args.add_mutually_exclusive_group()
@@ -123,6 +129,8 @@ def get_config(config_path, args):
             customize_output_details(config, MimeoConfig.OUTPUT_DETAILS_METHOD, args.http_method)
         if args.http_protocol is not None:
             customize_output_details(config, MimeoConfig.OUTPUT_DETAILS_PROTOCOL, args.http_protocol)
+        if args.http_host is not None:
+            customize_output_details(config, MimeoConfig.OUTPUT_DETAILS_HOST, args.http_host)
     mimeo_config = MimeoConfig(config)
     logger.debug(f"Mimeo Config: {mimeo_config}")
     return mimeo_config

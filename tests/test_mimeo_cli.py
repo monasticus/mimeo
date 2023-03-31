@@ -11,6 +11,7 @@ import pytest
 import responses
 
 import mimeo.__main__ as MimeoCLI
+from mimeo.exceptions import MissingRequiredProperty
 
 
 @pytest.fixture(autouse=True)
@@ -314,7 +315,7 @@ def test_custom_long_output_direction():
     assert not path.exists("test_mimeo_cli-dir/output")
 
 
-def test_custom_output_direction_does_not_throw_error_when_output_details_does_not_exist():
+def test_custom_output_direction_does_not_throw_key_error_when_output_details_does_not_exist():
     sys.argv = ["mimeo", "test_mimeo_cli-dir/minimum-config.json", "-o", "stdout"]
 
     try:
@@ -369,7 +370,7 @@ def test_custom_long_output_directory_path():
             assert file_content.readline() == '</SomeEntity>\n'
 
 
-def test_custom_output_directory_path_does_not_throw_error_when_output_details_does_not_exist():
+def test_custom_output_directory_path_does_not_throw_key_error_when_output_details_does_not_exist():
     sys.argv = ["mimeo", "test_mimeo_cli-dir/minimum-config.json", "-d", "test_mimeo_cli-dir/customized-output"]
 
     try:
@@ -422,7 +423,7 @@ def test_custom_long_output_file_name():
             assert file_content.readline() == '</SomeEntity>\n'
 
 
-def test_custom_output_file_name_does_not_throw_error_when_output_details_does_not_exist():
+def test_custom_output_file_name_does_not_throw_key_error_when_output_details_does_not_exist():
     sys.argv = ["mimeo", "test_mimeo_cli-dir/minimum-config.json", "-f", "customized-output-file"]
 
     try:
@@ -453,11 +454,13 @@ def test_custom_long_output_http_method():
         assert False
 
 
-def test_custom_output_http_method_does_not_throw_error_when_output_details_does_not_exist():
-    sys.argv = ["mimeo", "test_mimeo_cli-dir/minimum-config.json", "-m", "PUT"]
+def test_custom_output_http_method_does_not_throw_key_error_when_output_details_does_not_exist():
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/minimum-config.json", "-o", "http", "-m", "PUT"]
 
     try:
         MimeoCLI.main()
+    except MissingRequiredProperty:
+        assert True
     except KeyError:
         assert False
 
@@ -484,11 +487,46 @@ def test_custom_long_output_http_protocol():
         assert False
 
 
-def test_custom_output_http_protocol_does_not_throw_error_when_output_details_does_not_exist():
-    sys.argv = ["mimeo", "test_mimeo_cli-dir/minimum-config.json", "-p", "https"]
+def test_custom_output_http_protocol_does_not_throw_key_error_when_output_details_does_not_exist():
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/minimum-config.json", "-o", "http", "-p", "https"]
 
     try:
         MimeoCLI.main()
+    except MissingRequiredProperty:
+        assert True
+    except KeyError:
+        assert False
+
+
+@responses.activate
+def test_custom_short_output_http_host():
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/http-config.json", "-H", "198.168.1.1"]
+
+    try:
+        responses.add(responses.POST, "http://198.168.1.1:8080/document", json={"success": True}, status=HTTPStatus.OK)
+        MimeoCLI.main()
+    except ConnectionError:
+        assert False
+
+
+@responses.activate
+def test_custom_long_output_http_host():
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/http-config.json", "--http-host", "198.168.1.1"]
+
+    try:
+        responses.add(responses.POST, "http://198.168.1.1:8080/document", json={"success": True}, status=HTTPStatus.OK)
+        MimeoCLI.main()
+    except ConnectionError:
+        assert False
+
+
+def test_custom_output_http_host_does_not_throw_key_error_when_output_details_does_not_exist():
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/minimum-config.json", "-o", "http", "-H", "198.168.1.1"]
+
+    try:
+        MimeoCLI.main()
+    except MissingRequiredProperty:
+        assert True
     except KeyError:
         assert False
 
