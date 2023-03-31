@@ -462,6 +462,37 @@ def test_custom_output_http_method_does_not_throw_error_when_output_details_does
         assert False
 
 
+@responses.activate
+def test_custom_short_output_http_protocol():
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/http-config.json", "-p", "https"]
+
+    try:
+        responses.add(responses.POST, "https://localhost:8080/document", json={"success": True}, status=HTTPStatus.OK)
+        MimeoCLI.main()
+    except ConnectionError:
+        assert False
+
+
+@responses.activate
+def test_custom_long_output_http_protocol():
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/http-config.json", "--http-protocol", "https"]
+
+    try:
+        responses.add(responses.POST, "https://localhost:8080/document", json={"success": True}, status=HTTPStatus.OK)
+        MimeoCLI.main()
+    except ConnectionError:
+        assert False
+
+
+def test_custom_output_http_protocol_does_not_throw_error_when_output_details_does_not_exist():
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/minimum-config.json", "-p", "https"]
+
+    try:
+        MimeoCLI.main()
+    except KeyError:
+        assert False
+
+
 def test_logging_mode_default():
     sys.argv = ["mimeo", "test_mimeo_cli-dir/default-config.json"]
     logger = logging.getLogger("mimeo")
