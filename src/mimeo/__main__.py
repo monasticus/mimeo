@@ -91,11 +91,17 @@ class MimeoArgumentParser(ArgumentParser):
             metavar="HOST",
             help="overwrite the output_details/endpoint property")
         mimeo_config_args.add_argument(
-            "-u",
+            "-U",
             "--http-user",
             type=str,
             metavar="USERNAME",
             help="overwrite the output_details/username property")
+        mimeo_config_args.add_argument(
+            "-P",
+            "--http-password",
+            type=str,
+            metavar="PASSWORD",
+            help="overwrite the output_details/password property")
 
         logging_args = self.add_argument_group("Logging arguments")
         logging_args_excl = logging_args.add_mutually_exclusive_group()
@@ -160,6 +166,8 @@ def get_config(config_path, args):
             customize_output_details(config, MimeoConfig.OUTPUT_DETAILS_ENDPOINT, args.http_endpoint)
         if args.http_user is not None:
             customize_output_details(config, MimeoConfig.OUTPUT_DETAILS_USERNAME, args.http_user)
+        if args.http_password is not None:
+            customize_output_details(config, MimeoConfig.OUTPUT_DETAILS_PASSWORD, args.http_password)
     mimeo_config = MimeoConfig(config)
     logger.debug(f"Mimeo Config: {mimeo_config}")
     return mimeo_config

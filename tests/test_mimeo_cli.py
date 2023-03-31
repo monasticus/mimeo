@@ -589,7 +589,7 @@ def test_custom_output_http_endpoint_does_not_throw_key_error_when_output_detail
 
 @responses.activate
 def test_custom_short_output_http_username():
-    sys.argv = ["mimeo", "test_mimeo_cli-dir/http-config.json", "--http-auth", "basic", "-u", "custom-user"]
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/http-config.json", "--http-auth", "basic", "-U", "custom-user"]
 
     responses.add(
         responses.POST,
@@ -618,7 +618,50 @@ def test_custom_long_output_http_username():
 
 
 def test_custom_output_http_username_does_not_throw_key_error_when_output_details_does_not_exist():
-    sys.argv = ["mimeo", "test_mimeo_cli-dir/minimum-config.json", "-o", "http", "-u", "custom-user"]
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/minimum-config.json", "-o", "http", "-U", "custom-user"]
+
+    try:
+        MimeoCLI.main()
+    except MissingRequiredProperty:
+        assert True
+    except KeyError:
+        assert False
+
+
+@responses.activate
+def test_custom_short_output_http_password():
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/http-config.json", "--http-auth", "basic", "-P", "custom-password"]
+
+    responses.add(
+        responses.POST,
+        "http://localhost:8080/document",
+        json={"success": True},
+        status=HTTPStatus.OK,
+        match=[matchers.header_matcher({'Authorization': _generate_authorization("admin", "custom-password")})]
+    )
+    MimeoCLI.main()
+    # would throw a ConnectionError when any request call doesn't match registered mocks
+
+
+@responses.activate
+def test_custom_long_output_http_password():
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/http-config.json",
+                "--http-auth", "basic",
+                "--http-password", "custom-password"]
+
+    responses.add(
+        responses.POST,
+        "http://localhost:8080/document",
+        json={"success": True},
+        status=HTTPStatus.OK,
+        match=[matchers.header_matcher({'Authorization': _generate_authorization("admin", "custom-password")})]
+    )
+    MimeoCLI.main()
+    # would throw a ConnectionError when any request call doesn't match registered mocks
+
+
+def test_custom_output_http_password_does_not_throw_key_error_when_output_details_does_not_exist():
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/minimum-config.json", "-o", "http", "-P", "custom-password"]
 
     try:
         MimeoCLI.main()
