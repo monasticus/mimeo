@@ -2,6 +2,7 @@ import json
 import logging
 import shutil
 import sys
+from base64 import b64encode
 from glob import glob
 from http import HTTPStatus
 from os import listdir, path, remove, rmdir
@@ -482,7 +483,7 @@ def test_custom_long_output_http_auth():
         "http://localhost:8080/document",
         json={"success": True},
         status=HTTPStatus.OK,
-        match=[matchers.header_matcher({'Authorization': 'Basic YWRtaW46YWRtaW4='})]
+        match=[matchers.header_matcher({'Authorization': _generate_authorization("admin", "admin")})]
     )
     MimeoCLI.main()
     # would throw a ConnectionError when any request call doesn't match registered mocks
@@ -586,6 +587,47 @@ def test_custom_output_http_endpoint_does_not_throw_key_error_when_output_detail
         assert False
 
 
+@responses.activate
+def test_custom_short_output_http_username():
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/http-config.json", "--http-auth", "basic", "-u", "custom-user"]
+
+    responses.add(
+        responses.POST,
+        "http://localhost:8080/document",
+        json={"success": True},
+        status=HTTPStatus.OK,
+        match=[matchers.header_matcher({'Authorization': _generate_authorization("custom-user", "admin")})]
+    )
+    MimeoCLI.main()
+    # would throw a ConnectionError when any request call doesn't match registered mocks
+
+
+@responses.activate
+def test_custom_long_output_http_username():
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/http-config.json", "--http-auth", "basic", "--http-user", "custom-user"]
+
+    responses.add(
+        responses.POST,
+        "http://localhost:8080/document",
+        json={"success": True},
+        status=HTTPStatus.OK,
+        match=[matchers.header_matcher({'Authorization': _generate_authorization("custom-user", "admin")})]
+    )
+    MimeoCLI.main()
+    # would throw a ConnectionError when any request call doesn't match registered mocks
+
+
+def test_custom_output_http_username_does_not_throw_key_error_when_output_details_does_not_exist():
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/minimum-config.json", "-o", "http", "-u", "custom-user"]
+
+    try:
+        MimeoCLI.main()
+    except MissingRequiredProperty:
+        assert True
+    except KeyError:
+        assert False
+
+
 def test_logging_mode_default():
     sys.argv = ["mimeo", "test_mimeo_cli-dir/default-config.json"]
     logger = logging.getLogger("mimeo")
@@ -620,3 +662,8 @@ def test_logging_mode_fine():
     MimeoCLI.main()
 
     assert logger.getEffectiveLevel() == logging.FINE
+
+
+def _generate_authorization(username: str, password: str):
+    token = b64encode(f"{username}:{password}".encode('utf-8')).decode("ascii")
+    return f'Basic {token}'
