@@ -43,7 +43,7 @@ class MimeoArgumentParser(ArgumentParser):
             "-o",
             "--output",
             type=str,
-            choices=["file", "stdout"],
+            choices=["file", "stdout", "http"],
             help="overwrite the output_details/direction property")
         mimeo_config_args.add_argument(
             "-d",
@@ -57,6 +57,12 @@ class MimeoArgumentParser(ArgumentParser):
             type=str,
             metavar="FILE_NAME",
             help="overwrite the output_details/file_name property")
+        mimeo_config_args.add_argument(
+            "-m",
+            "--http-method",
+            type=str,
+            metavar="METHOD",
+            help="overwrite the output_details/method property")
 
         logging_args = self.add_argument_group("Logging arguments")
         logging_args_excl = logging_args.add_mutually_exclusive_group()
@@ -107,6 +113,8 @@ def get_config(config_path, args):
             customize_output_details(config, MimeoConfig.OUTPUT_DETAILS_DIRECTORY_PATH_KEY, args.directory)
         if args.file is not None:
             customize_output_details(config, MimeoConfig.OUTPUT_DETAILS_FILE_NAME_KEY, args.file)
+        if args.http_method is not None:
+            customize_output_details(config, MimeoConfig.OUTPUT_DETAILS_METHOD, args.http_method)
     mimeo_config = MimeoConfig(config)
     logger.debug(f"Mimeo Config: {mimeo_config}")
     return mimeo_config

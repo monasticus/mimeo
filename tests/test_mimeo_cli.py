@@ -3,10 +3,12 @@ import logging
 import shutil
 import sys
 from glob import glob
+from http import HTTPStatus
 from os import listdir, path, remove, rmdir
 from pathlib import Path
 
 import pytest
+import responses
 
 import mimeo.__main__ as MimeoCLI
 
@@ -56,13 +58,44 @@ def default_config():
 
 
 @pytest.fixture(autouse=True)
-def setup_and_teardown(default_config, minimum_config):
+def http_config():
+    return {
+        "output_details": {
+            "direction": "http",
+            "method": "POST",
+            "protocol": "http",
+            "host": "localhost",
+            "port": 8080,
+            "endpoint": "/document",
+            "auth": "basic",
+            "username": "admin",
+            "password": "admin"
+        },
+        "_templates_": [
+            {
+                "count": 1,
+                "model": {
+                    "SomeEntity": {
+                        "ChildNode1": 1,
+                        "ChildNode2": "value-2",
+                        "ChildNode3": True
+                    }
+                }
+            }
+        ]
+    }
+
+
+@pytest.fixture(autouse=True)
+def setup_and_teardown(minimum_config, default_config, http_config):
     # Setup
     Path("test_mimeo_cli-dir").mkdir(parents=True, exist_ok=True)
-    with open("test_mimeo_cli-dir/default-config.json", "w") as file:
-        json.dump(default_config, file)
     with open("test_mimeo_cli-dir/minimum-config.json", "w") as file:
         json.dump(minimum_config, file)
+    with open("test_mimeo_cli-dir/default-config.json", "w") as file:
+        json.dump(default_config, file)
+    with open("test_mimeo_cli-dir/http-config.json", "w") as file:
+        json.dump(http_config, file)
 
     yield
 
@@ -391,6 +424,37 @@ def test_custom_long_output_file_name():
 
 def test_custom_output_file_name_does_not_throw_error_when_output_details_does_not_exist():
     sys.argv = ["mimeo", "test_mimeo_cli-dir/minimum-config.json", "-f", "customized-output-file"]
+
+    try:
+        MimeoCLI.main()
+    except KeyError:
+        assert False
+
+
+@responses.activate
+def test_custom_short_output_http_method():
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/http-config.json", "-m", "PUT"]
+
+    try:
+        responses.add(responses.PUT, "http://localhost:8080/document", json={"success": True}, status=HTTPStatus.OK)
+        MimeoCLI.main()
+    except ConnectionError:
+        assert False
+
+
+@responses.activate
+def test_custom_long_output_http_method():
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/http-config.json", "--http-method", "PUT"]
+
+    try:
+        responses.add(responses.PUT, "http://localhost:8080/document", json={"success": True}, status=HTTPStatus.OK)
+        MimeoCLI.main()
+    except ConnectionError:
+        assert False
+
+
+def test_custom_output_http_method_does_not_throw_error_when_output_details_does_not_exist():
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/minimum-config.json", "-m", "PUT"]
 
     try:
         MimeoCLI.main()
