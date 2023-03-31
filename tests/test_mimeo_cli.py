@@ -435,72 +435,6 @@ def test_custom_output_file_name_does_not_throw_key_error_when_output_details_do
 
 
 @responses.activate
-def test_custom_long_output_http_method():
-    sys.argv = ["mimeo", "test_mimeo_cli-dir/http-config.json", "--http-method", "PUT"]
-
-    responses.add(responses.PUT, "http://localhost:8080/document", json={"success": True}, status=HTTPStatus.OK)
-    MimeoCLI.main()
-    # would throw a ConnectionError when any request call doesn't match registered mocks
-
-
-def test_custom_output_http_method_does_not_throw_key_error_when_output_details_does_not_exist():
-    sys.argv = ["mimeo", "test_mimeo_cli-dir/minimum-config.json", "-o", "http", "--http-method", "PUT"]
-
-    try:
-        MimeoCLI.main()
-    except MissingRequiredProperty:
-        assert True
-    except KeyError:
-        assert False
-
-
-@responses.activate
-def test_custom_long_output_http_protocol():
-    sys.argv = ["mimeo", "test_mimeo_cli-dir/http-config.json", "--http-protocol", "https"]
-
-    responses.add(responses.POST, "https://localhost:8080/document", json={"success": True}, status=HTTPStatus.OK)
-    MimeoCLI.main()
-    # would throw a ConnectionError when any request call doesn't match registered mocks
-
-
-def test_custom_output_http_protocol_does_not_throw_key_error_when_output_details_does_not_exist():
-    sys.argv = ["mimeo", "test_mimeo_cli-dir/minimum-config.json", "-o", "http", "--http-protocol", "https"]
-
-    try:
-        MimeoCLI.main()
-    except MissingRequiredProperty:
-        assert True
-    except KeyError:
-        assert False
-
-
-@responses.activate
-def test_custom_long_output_http_auth():
-    sys.argv = ["mimeo", "test_mimeo_cli-dir/http-config.json", "--http-auth", "basic"]
-
-    responses.add(
-        responses.POST,
-        "http://localhost:8080/document",
-        json={"success": True},
-        status=HTTPStatus.OK,
-        match=[matchers.header_matcher({'Authorization': _generate_authorization("admin", "admin")})]
-    )
-    MimeoCLI.main()
-    # would throw a ConnectionError when any request call doesn't match registered mocks
-
-
-def test_custom_output_http_auth_does_not_throw_key_error_when_output_details_does_not_exist():
-    sys.argv = ["mimeo", "test_mimeo_cli-dir/minimum-config.json", "-o", "http", "--http-auth", "basic"]
-
-    try:
-        MimeoCLI.main()
-    except MissingRequiredProperty:
-        assert True
-    except KeyError:
-        assert False
-
-
-@responses.activate
 def test_custom_short_output_http_host():
     sys.argv = ["mimeo", "test_mimeo_cli-dir/http-config.json", "-H", "198.168.1.1"]
 
@@ -662,6 +596,72 @@ def test_custom_long_output_http_password():
 
 def test_custom_output_http_password_does_not_throw_key_error_when_output_details_does_not_exist():
     sys.argv = ["mimeo", "test_mimeo_cli-dir/minimum-config.json", "-o", "http", "-P", "custom-password"]
+
+    try:
+        MimeoCLI.main()
+    except MissingRequiredProperty:
+        assert True
+    except KeyError:
+        assert False
+
+
+@responses.activate
+def test_custom_long_output_http_method():
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/http-config.json", "--http-method", "PUT"]
+
+    responses.add(responses.PUT, "http://localhost:8080/document", json={"success": True}, status=HTTPStatus.OK)
+    MimeoCLI.main()
+    # would throw a ConnectionError when any request call doesn't match registered mocks
+
+
+def test_custom_output_http_method_does_not_throw_key_error_when_output_details_does_not_exist():
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/minimum-config.json", "-o", "http", "--http-method", "PUT"]
+
+    try:
+        MimeoCLI.main()
+    except MissingRequiredProperty:
+        assert True
+    except KeyError:
+        assert False
+
+
+@responses.activate
+def test_custom_long_output_http_protocol():
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/http-config.json", "--http-protocol", "https"]
+
+    responses.add(responses.POST, "https://localhost:8080/document", json={"success": True}, status=HTTPStatus.OK)
+    MimeoCLI.main()
+    # would throw a ConnectionError when any request call doesn't match registered mocks
+
+
+def test_custom_output_http_protocol_does_not_throw_key_error_when_output_details_does_not_exist():
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/minimum-config.json", "-o", "http", "--http-protocol", "https"]
+
+    try:
+        MimeoCLI.main()
+    except MissingRequiredProperty:
+        assert True
+    except KeyError:
+        assert False
+
+
+@responses.activate
+def test_custom_long_output_http_auth():
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/http-config.json", "--http-auth", "basic"]
+
+    responses.add(
+        responses.POST,
+        "http://localhost:8080/document",
+        json={"success": True},
+        status=HTTPStatus.OK,
+        match=[matchers.header_matcher({'Authorization': _generate_authorization("admin", "admin")})]
+    )
+    MimeoCLI.main()
+    # would throw a ConnectionError when any request call doesn't match registered mocks
+
+
+def test_custom_output_http_auth_does_not_throw_key_error_when_output_details_does_not_exist():
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/minimum-config.json", "-o", "http", "--http-auth", "basic"]
 
     try:
         MimeoCLI.main()

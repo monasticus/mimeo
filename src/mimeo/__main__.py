@@ -58,21 +58,6 @@ class MimeoArgumentParser(ArgumentParser):
             metavar="FILE_NAME",
             help="overwrite the output_details/file_name property")
         mimeo_config_args.add_argument(
-            "--http-method",
-            type=str,
-            metavar="METHOD",
-            help="overwrite the output_details/method property")
-        mimeo_config_args.add_argument(
-            "--http-protocol",
-            type=str,
-            metavar="PROTOCOL",
-            help="overwrite the output_details/protocol property")
-        mimeo_config_args.add_argument(
-            "--http-auth",
-            type=str,
-            metavar="AUTH",
-            help="overwrite the output_details/auth property")
-        mimeo_config_args.add_argument(
             "-H",
             "--http-host",
             type=str,
@@ -102,6 +87,21 @@ class MimeoArgumentParser(ArgumentParser):
             type=str,
             metavar="PASSWORD",
             help="overwrite the output_details/password property")
+        mimeo_config_args.add_argument(
+            "--http-method",
+            type=str,
+            metavar="METHOD",
+            help="overwrite the output_details/method property")
+        mimeo_config_args.add_argument(
+            "--http-protocol",
+            type=str,
+            metavar="PROTOCOL",
+            help="overwrite the output_details/protocol property")
+        mimeo_config_args.add_argument(
+            "--http-auth",
+            type=str,
+            metavar="AUTH",
+            help="overwrite the output_details/auth property")
 
         logging_args = self.add_argument_group("Logging arguments")
         logging_args_excl = logging_args.add_mutually_exclusive_group()
