@@ -436,11 +436,9 @@ def test_custom_output_file_name_does_not_throw_key_error_when_output_details_do
 def test_custom_long_output_http_method():
     sys.argv = ["mimeo", "test_mimeo_cli-dir/http-config.json", "--http-method", "PUT"]
 
-    try:
-        responses.add(responses.PUT, "http://localhost:8080/document", json={"success": True}, status=HTTPStatus.OK)
-        MimeoCLI.main()
-    except ConnectionError:
-        assert False
+    responses.add(responses.PUT, "http://localhost:8080/document", json={"success": True}, status=HTTPStatus.OK)
+    MimeoCLI.main()
+    # would throw a ConnectionError when any request call doesn't match registered mocks
 
 
 def test_custom_output_http_method_does_not_throw_key_error_when_output_details_does_not_exist():
@@ -458,11 +456,9 @@ def test_custom_output_http_method_does_not_throw_key_error_when_output_details_
 def test_custom_long_output_http_protocol():
     sys.argv = ["mimeo", "test_mimeo_cli-dir/http-config.json", "--http-protocol", "https"]
 
-    try:
-        responses.add(responses.POST, "https://localhost:8080/document", json={"success": True}, status=HTTPStatus.OK)
-        MimeoCLI.main()
-    except ConnectionError:
-        assert False
+    responses.add(responses.POST, "https://localhost:8080/document", json={"success": True}, status=HTTPStatus.OK)
+    MimeoCLI.main()
+    # would throw a ConnectionError when any request call doesn't match registered mocks
 
 
 def test_custom_output_http_protocol_does_not_throw_key_error_when_output_details_does_not_exist():
@@ -480,22 +476,18 @@ def test_custom_output_http_protocol_does_not_throw_key_error_when_output_detail
 def test_custom_short_output_http_host():
     sys.argv = ["mimeo", "test_mimeo_cli-dir/http-config.json", "-H", "198.168.1.1"]
 
-    try:
-        responses.add(responses.POST, "http://198.168.1.1:8080/document", json={"success": True}, status=HTTPStatus.OK)
-        MimeoCLI.main()
-    except ConnectionError:
-        assert False
+    responses.add(responses.POST, "http://198.168.1.1:8080/document", json={"success": True}, status=HTTPStatus.OK)
+    MimeoCLI.main()
+    # would throw a ConnectionError when any request call doesn't match registered mocks
 
 
 @responses.activate
 def test_custom_long_output_http_host():
     sys.argv = ["mimeo", "test_mimeo_cli-dir/http-config.json", "--http-host", "198.168.1.1"]
 
-    try:
-        responses.add(responses.POST, "http://198.168.1.1:8080/document", json={"success": True}, status=HTTPStatus.OK)
-        MimeoCLI.main()
-    except ConnectionError:
-        assert False
+    responses.add(responses.POST, "http://198.168.1.1:8080/document", json={"success": True}, status=HTTPStatus.OK)
+    MimeoCLI.main()
+    # would throw a ConnectionError when any request call doesn't match registered mocks
 
 
 def test_custom_output_http_host_does_not_throw_key_error_when_output_details_does_not_exist():
@@ -513,26 +505,51 @@ def test_custom_output_http_host_does_not_throw_key_error_when_output_details_do
 def test_custom_short_output_http_port():
     sys.argv = ["mimeo", "test_mimeo_cli-dir/http-config.json", "-p", "8081"]
 
-    try:
-        responses.add(responses.POST, "http://localhost:8081/document", json={"success": True}, status=HTTPStatus.OK)
-        MimeoCLI.main()
-    except ConnectionError:
-        assert False
+    responses.add(responses.POST, "http://localhost:8081/document", json={"success": True}, status=HTTPStatus.OK)
+    MimeoCLI.main()
+    # would throw a ConnectionError when any request call doesn't match registered mocks
 
 
 @responses.activate
 def test_custom_long_output_http_port():
     sys.argv = ["mimeo", "test_mimeo_cli-dir/http-config.json", "--http-port", "8081"]
 
-    try:
-        responses.add(responses.POST, "http://localhost:8081/document", json={"success": True}, status=HTTPStatus.OK)
-        MimeoCLI.main()
-    except ConnectionError:
-        assert False
+    responses.add(responses.POST, "http://localhost:8081/document", json={"success": True}, status=HTTPStatus.OK)
+    MimeoCLI.main()
+    # would throw a ConnectionError when any request call doesn't match registered mocks
 
 
 def test_custom_output_http_port_does_not_throw_key_error_when_output_details_does_not_exist():
     sys.argv = ["mimeo", "test_mimeo_cli-dir/minimum-config.json", "-o", "http", "-p", "8081"]
+
+    try:
+        MimeoCLI.main()
+    except MissingRequiredProperty:
+        assert True
+    except KeyError:
+        assert False
+
+
+@responses.activate
+def test_custom_short_output_http_endpoint():
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/http-config.json", "-e", "/v2/document"]
+
+    responses.add(responses.POST, "http://localhost:8080/v2/document", json={"success": True}, status=HTTPStatus.OK)
+    MimeoCLI.main()
+    # would throw a ConnectionError when any request call doesn't match registered mocks
+
+
+@responses.activate
+def test_custom_long_output_http_endpoint():
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/http-config.json", "--http-endpoint", "/v2/document"]
+
+    responses.add(responses.POST, "http://localhost:8080/v2/document", json={"success": True}, status=HTTPStatus.OK)
+    MimeoCLI.main()
+    # would throw a ConnectionError when any request call doesn't match registered mocks
+
+
+def test_custom_output_http_endpoint_does_not_throw_key_error_when_output_details_does_not_exist():
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/minimum-config.json", "-o", "http", "-e", "/v2/document"]
 
     try:
         MimeoCLI.main()
