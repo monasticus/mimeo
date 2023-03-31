@@ -9,6 +9,7 @@ from pathlib import Path
 
 import pytest
 import responses
+from responses import matchers
 
 import mimeo.__main__ as MimeoCLI
 from mimeo.exceptions import MissingRequiredProperty
@@ -68,7 +69,7 @@ def http_config():
             "host": "localhost",
             "port": 8080,
             "endpoint": "/document",
-            "auth": "basic",
+            "auth": "digest",
             "username": "admin",
             "password": "admin"
         },
@@ -463,6 +464,32 @@ def test_custom_long_output_http_protocol():
 
 def test_custom_output_http_protocol_does_not_throw_key_error_when_output_details_does_not_exist():
     sys.argv = ["mimeo", "test_mimeo_cli-dir/minimum-config.json", "-o", "http", "--http-protocol", "https"]
+
+    try:
+        MimeoCLI.main()
+    except MissingRequiredProperty:
+        assert True
+    except KeyError:
+        assert False
+
+
+@responses.activate
+def test_custom_long_output_http_auth():
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/http-config.json", "--http-auth", "basic"]
+
+    responses.add(
+        responses.POST,
+        "http://localhost:8080/document",
+        json={"success": True},
+        status=HTTPStatus.OK,
+        match=[matchers.header_matcher({'Authorization': 'Basic YWRtaW46YWRtaW4='})]
+    )
+    MimeoCLI.main()
+    # would throw a ConnectionError when any request call doesn't match registered mocks
+
+
+def test_custom_output_http_auth_does_not_throw_key_error_when_output_details_does_not_exist():
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/minimum-config.json", "-o", "http", "--http-auth", "basic"]
 
     try:
         MimeoCLI.main()

@@ -68,6 +68,11 @@ class MimeoArgumentParser(ArgumentParser):
             metavar="PROTOCOL",
             help="overwrite the output_details/protocol property")
         mimeo_config_args.add_argument(
+            "--http-auth",
+            type=str,
+            metavar="AUTH",
+            help="overwrite the output_details/auth property")
+        mimeo_config_args.add_argument(
             "-H",
             "--http-host",
             type=str,
@@ -139,6 +144,8 @@ def get_config(config_path, args):
             customize_output_details(config, MimeoConfig.OUTPUT_DETAILS_METHOD, args.http_method)
         if args.http_protocol is not None:
             customize_output_details(config, MimeoConfig.OUTPUT_DETAILS_PROTOCOL, args.http_protocol)
+        if args.http_auth is not None:
+            customize_output_details(config, MimeoConfig.OUTPUT_DETAILS_AUTH, args.http_auth)
         if args.http_host is not None:
             customize_output_details(config, MimeoConfig.OUTPUT_DETAILS_HOST, args.http_host)
         if args.http_port is not None:
