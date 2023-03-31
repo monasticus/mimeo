@@ -147,7 +147,6 @@ Mimeo configuration is defined in a JSON file using internal settings and data t
 | `_templates_`                   |  Config  | :heavy_check_mark: |          array           |      ---       | Stores templates for data generation                                                                                                                    |
 | `count`                         | Template | :heavy_check_mark: |         integer          |      ---       | Indicates number of copies                                                                                                                              |
 | `model`                         | Template | :heavy_check_mark: |          object          |      ---       | Defines data template to be copied                                                                                                                      |
-| `attributes`                    |  Model   |        :x:         |          object          |      ---       | Defines attributes applied on the root node (mostly used for namespaces)                                                                                |
 | `context`                       |  Model   |        :x:         |          object          |      ---       | Defines a context name that is internally used e.g. using `curr_iter()` and `get_key()` mimeo utils (by default model name is used as the context name) |
 
 #### Mimeo Vars
