@@ -58,13 +58,11 @@ class MimeoArgumentParser(ArgumentParser):
             metavar="FILE_NAME",
             help="overwrite the output_details/file_name property")
         mimeo_config_args.add_argument(
-            "-m",
             "--http-method",
             type=str,
             metavar="METHOD",
             help="overwrite the output_details/method property")
         mimeo_config_args.add_argument(
-            "-p",
             "--http-protocol",
             type=str,
             metavar="PROTOCOL",
@@ -75,6 +73,12 @@ class MimeoArgumentParser(ArgumentParser):
             type=str,
             metavar="HOST",
             help="overwrite the output_details/host property")
+        mimeo_config_args.add_argument(
+            "-p",
+            "--http-port",
+            type=str,
+            metavar="HOST",
+            help="overwrite the output_details/port property")
 
         logging_args = self.add_argument_group("Logging arguments")
         logging_args_excl = logging_args.add_mutually_exclusive_group()
@@ -131,6 +135,8 @@ def get_config(config_path, args):
             customize_output_details(config, MimeoConfig.OUTPUT_DETAILS_PROTOCOL, args.http_protocol)
         if args.http_host is not None:
             customize_output_details(config, MimeoConfig.OUTPUT_DETAILS_HOST, args.http_host)
+        if args.http_port is not None:
+            customize_output_details(config, MimeoConfig.OUTPUT_DETAILS_PORT, args.http_port)
     mimeo_config = MimeoConfig(config)
     logger.debug(f"Mimeo Config: {mimeo_config}")
     return mimeo_config
