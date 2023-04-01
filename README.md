@@ -222,6 +222,8 @@ Example
 
 ### Mimeo CLI
 
+#### Mimeo Configuration arguments
+
 When using Mimeo command line tool you can overwrite Mimeo Configuration properties:
 
 | Short option | Long option         | Description                                            |
@@ -239,6 +241,14 @@ When using Mimeo command line tool you can overwrite Mimeo Configuration propert
 |              | `--http-method`     | overwrite the `output_details/method` property         |
 |              | `--http-protocol`   | overwrite the `output_details/protocol` property       |
 |              | `--http-auth`       | overwrite the `output_details/auth` property           |
+
+#### Logging arguments
+
+| Short option | Long option | Description       |
+|:------------:|:------------|:------------------|
+|              | `--silent`  | disable INFO logs |
+|              | `--debug`   | enable DEBUG mode |
+|              | `--fine`    | enable FINE mode  |
 
 ### Mimeo Utils
 
