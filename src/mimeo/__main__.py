@@ -4,10 +4,13 @@ from argparse import ArgumentParser
 
 from mimeo import Mimeograph
 from mimeo.config import MimeoConfig
+from mimeo.exceptions import EnvironmentNotFound
 from mimeo.logging import setup_logging
 
 setup_logging()
 logger = logging.getLogger(__name__)
+
+DEFAULT_ENVS_FILE_PATH = "mimeo.envs.json"
 
 
 class MimeoArgumentParser(ArgumentParser):
@@ -57,6 +60,12 @@ class MimeoArgumentParser(ArgumentParser):
             type=str,
             metavar="FILE_NAME",
             help="overwrite the output_details/file_name property")
+        mimeo_config_args.add_argument(
+            "-e",
+            "--http-env",
+            type=str,
+            metavar="ENVIRONMENT",
+            help="overwrite the output_details http properties using a mimeo environment configuration")
         mimeo_config_args.add_argument(
             "-H",
             "--http-host",
@@ -139,6 +148,8 @@ def main():
 def get_config(config_path, args):
     with open(config_path) as config_file:
         config = json.load(config_file)
+        if args.http_env is not None:
+            customize_output_details_with_env(config, DEFAULT_ENVS_FILE_PATH, args.http_env)
         if args.xml_declaration is not None:
             xml_declaration = args.xml_declaration.lower() == "true"
             logger.fine(f"Overwriting xml_declaration to [{xml_declaration}]")
@@ -171,6 +182,23 @@ def get_config(config_path, args):
     mimeo_config = MimeoConfig(config)
     logger.debug(f"Mimeo Config: {mimeo_config}")
     return mimeo_config
+
+
+def customize_output_details_with_env(config, envs_path, env):
+    with open(envs_path) as envs_file:
+        envs = json.load(envs_file)
+        if env in envs:
+            for prop in [MimeoConfig.OUTPUT_DETAILS_PROTOCOL,
+                         MimeoConfig.OUTPUT_DETAILS_HOST,
+                         MimeoConfig.OUTPUT_DETAILS_PORT,
+                         MimeoConfig.OUTPUT_DETAILS_AUTH,
+                         MimeoConfig.OUTPUT_DETAILS_USERNAME,
+                         MimeoConfig.OUTPUT_DETAILS_PASSWORD]:
+                prop_value = envs[env].get(prop)
+                if prop_value is not None:
+                    customize_output_details(config, prop, prop_value)
+        else:
+            raise EnvironmentNotFound(f"No such env [{env}] in environments file [{envs_path}]")
 
 
 def customize_output_details(config, key, value):
