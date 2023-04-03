@@ -37,5 +37,14 @@ class IncorrectMimeoTemplate(Exception):
 class IncorrectMimeoConfig(Exception):
     pass
 
+
 class ResourceNotFound(Exception):
+    pass
+
+
+class EnvironmentNotFound(Exception):
+    pass
+
+
+class EnvironmentsFileNotFound(Exception):
     pass

@@ -1,13 +1,17 @@
 import json
 import logging
 from argparse import ArgumentParser
+from os import path
 
 from mimeo import Mimeograph
 from mimeo.config import MimeoConfig
+from mimeo.exceptions import EnvironmentNotFound, EnvironmentsFileNotFound
 from mimeo.logging import setup_logging
 
 setup_logging()
 logger = logging.getLogger(__name__)
+
+DEFAULT_ENVS_FILE_PATH = "mimeo.envs.json"
 
 
 class MimeoArgumentParser(ArgumentParser):
@@ -102,6 +106,17 @@ class MimeoArgumentParser(ArgumentParser):
             type=str,
             metavar="AUTH",
             help="overwrite the output_details/auth property")
+        mimeo_config_args.add_argument(
+            "-e",
+            "--http-env",
+            type=str,
+            metavar="ENVIRONMENT",
+            help="overwrite the output_details http properties using a mimeo environment configuration")
+        mimeo_config_args.add_argument(
+            "--http-envs-file",
+            type=str,
+            metavar="PATH",
+            help=f"use a custom environments file (by default: {DEFAULT_ENVS_FILE_PATH})")
 
         logging_args = self.add_argument_group("Logging arguments")
         logging_args_excl = logging_args.add_mutually_exclusive_group()
@@ -139,6 +154,9 @@ def main():
 def get_config(config_path, args):
     with open(config_path) as config_file:
         config = json.load(config_file)
+        if args.http_env is not None:
+            envs_file = args.http_envs_file if args.http_envs_file is not None else DEFAULT_ENVS_FILE_PATH
+            customize_output_details_with_env(config, envs_file, args.http_env)
         if args.xml_declaration is not None:
             xml_declaration = args.xml_declaration.lower() == "true"
             logger.fine(f"Overwriting xml_declaration to [{xml_declaration}]")
@@ -171,6 +189,28 @@ def get_config(config_path, args):
     mimeo_config = MimeoConfig(config)
     logger.debug(f"Mimeo Config: {mimeo_config}")
     return mimeo_config
+
+
+def customize_output_details_with_env(config, envs_path, env_name):
+    if path.exists(envs_path):
+        with open(envs_path) as envs_file:
+            envs = json.load(envs_file)
+            if env_name in envs:
+                env = envs[env_name]
+                logger.debug(f"Using environment [{env_name}] from file [{envs_path}]: [{env}]")
+                for prop in [MimeoConfig.OUTPUT_DETAILS_PROTOCOL,
+                             MimeoConfig.OUTPUT_DETAILS_HOST,
+                             MimeoConfig.OUTPUT_DETAILS_PORT,
+                             MimeoConfig.OUTPUT_DETAILS_AUTH,
+                             MimeoConfig.OUTPUT_DETAILS_USERNAME,
+                             MimeoConfig.OUTPUT_DETAILS_PASSWORD]:
+                    prop_value = env.get(prop)
+                    if prop_value is not None:
+                        customize_output_details(config, prop, prop_value)
+            else:
+                raise EnvironmentNotFound(f"No such env [{env_name}] in environments file [{envs_path}]")
+    else:
+        raise EnvironmentsFileNotFound(f"Environments file not found [{envs_path}]")
 
 
 def customize_output_details(config, key, value):
