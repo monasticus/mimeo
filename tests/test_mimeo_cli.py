@@ -13,7 +13,8 @@ import responses
 from responses import matchers
 
 import mimeo.__main__ as MimeoCLI
-from mimeo.exceptions import EnvironmentNotFound, MissingRequiredProperty
+from mimeo.exceptions import (EnvironmentNotFound, EnvironmentsFileNotFound,
+                              MissingRequiredProperty)
 
 
 @pytest.fixture(autouse=True)
@@ -90,7 +91,7 @@ def http_config():
 
 
 @pytest.fixture(autouse=True)
-def http_envs():
+def http_default_envs():
     return {
         "default": {
             "protocol": "https",
@@ -104,7 +105,21 @@ def http_envs():
 
 
 @pytest.fixture(autouse=True)
-def setup_and_teardown(minimum_config, default_config, http_config, http_envs):
+def http_custom_envs():
+    return {
+        "custom": {
+            "protocol": "https",
+            "host": "11.111.11.111",
+            "port": 8000,
+            "auth": "basic",
+            "username": "custom-username",
+            "password": "custom-password"
+        }
+    }
+
+
+@pytest.fixture(autouse=True)
+def setup_and_teardown(minimum_config, default_config, http_config, http_default_envs, http_custom_envs):
     # Setup
     Path("test_mimeo_cli-dir").mkdir(parents=True, exist_ok=True)
     with open("test_mimeo_cli-dir/minimum-config.json", "w") as file:
@@ -114,13 +129,16 @@ def setup_and_teardown(minimum_config, default_config, http_config, http_envs):
     with open("test_mimeo_cli-dir/http-config.json", "w") as file:
         json.dump(http_config, file)
     with open("mimeo.envs.json", "w") as file:
-        json.dump(http_envs, file)
+        json.dump(http_default_envs, file)
+    with open("custom-mimeo-envs-file.json", "w") as file:
+        json.dump(http_custom_envs, file)
 
     yield
 
     # Teardown
     shutil.rmtree("test_mimeo_cli-dir")
     remove("mimeo.envs.json")
+    remove("custom-mimeo-envs-file.json")
     for filename in glob("mimeo-output/customized-output-file*"):
         remove(filename)
     if path.exists("mimeo-output") and not listdir("mimeo-output"):
@@ -716,6 +734,34 @@ def test_custom_long_env():
     )
     MimeoCLI.main()
     # would throw a ConnectionError when any request call doesn't match registered mocks
+
+
+@responses.activate
+def test_custom_env_file():
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/http-config.json",
+                "--http-envs-file", "custom-mimeo-envs-file.json",
+                "-e", "custom"]
+
+    responses.add(
+        responses.POST,
+        "https://11.111.11.111:8000/document",
+        json={"success": True},
+        status=HTTPStatus.OK,
+        match=[matchers.header_matcher({'Authorization': _generate_authorization("custom-username", "custom-password")})]
+    )
+    MimeoCLI.main()
+    # would throw a ConnectionError when any request call doesn't match registered mocks
+
+
+def test_custom_env_file_does_throw_error_when_file_does_not_exist():
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/http-config.json",
+                "--http-envs-file", "non-existing-environments-file.json",
+                "-e", "custom"]
+
+    with pytest.raises(EnvironmentsFileNotFound) as err:
+        MimeoCLI.main()
+
+    assert err.value.args[0] == "Environments file not found [non-existing-environments-file.json]"
 
 
 def test_custom_env_does_not_throw_key_error_when_output_details_does_not_exist():
