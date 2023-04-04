@@ -9,13 +9,13 @@ def test_date_time_raw():
 
 
 def test_date_time_parametrized_default():
-    date_time_value = MimeoUtilRenderer.render_parametrized({"name": "date_time"})
+    date_time_value = MimeoUtilRenderer.render_parametrized({"_name": "date_time"})
     assert date_time_value == datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
 
 
 def test_date_time_parametrized_custom():
     date_time_value = MimeoUtilRenderer.render_parametrized({
-        "name": "date_time",
+        "_name": "date_time",
         "days_delta": 1,
         "hours_delta": 2,
         "minutes_delta": -3,

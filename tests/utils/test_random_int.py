@@ -11,7 +11,7 @@ def test_random_int_raw():
 
 def test_random_int_parametrized_default():
     for _ in range(100):
-        random_int = MimeoUtilRenderer.render_parametrized({"name": "random_int"})
+        random_int = MimeoUtilRenderer.render_parametrized({"_name": "random_int"})
         assert isinstance(random_int, int)
         assert random_int >= 0
         assert random_int < 100
@@ -19,7 +19,7 @@ def test_random_int_parametrized_default():
 
 def test_random_int_parametrized_custom():
     for _ in range(100):
-        random_int = MimeoUtilRenderer.render_parametrized({"name": "random_int", "limit": 10})
+        random_int = MimeoUtilRenderer.render_parametrized({"_name": "random_int", "limit": 10})
         assert isinstance(random_int, int)
         assert random_int >= 0
         assert random_int < 10

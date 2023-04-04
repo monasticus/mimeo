@@ -6,7 +6,7 @@ from mimeo.utils.mimeo_utils import MimeoUtil
 
 class MimeoUtilRenderer:
 
-    _MIMEO_UTIL_NAME = "name"
+    _MIMEO_UTIL_NAME = "_name"
     _MIMEO_UTILS = {
         RandomStringUtil.KEY: RandomStringUtil,
         RandomIntegerUtil.KEY: RandomIntegerUtil,
@@ -18,7 +18,7 @@ class MimeoUtilRenderer:
 
     @classmethod
     def render_raw(cls, mimeo_util_key: str):
-        return cls.render_parametrized({"name": mimeo_util_key})
+        return cls.render_parametrized({cls._MIMEO_UTIL_NAME: mimeo_util_key})
 
     @classmethod
     def render_parametrized(cls, mimeo_util_config: dict):

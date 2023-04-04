@@ -20,6 +20,6 @@ def test_no_such_mimeo_util_raw():
 
 def test_no_such_mimeo_util_parametrized():
     with pytest.raises(InvalidMimeoUtil) as err:
-        MimeoUtilRenderer.render_parametrized({"name": "non-existing-util"})
+        MimeoUtilRenderer.render_parametrized({"_name": "non-existing-util"})
 
     assert err.value.args[0] == "No such Mimeo Util [non-existing-util]!"
