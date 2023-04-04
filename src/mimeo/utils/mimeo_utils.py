@@ -26,3 +26,14 @@ class RandomStringUtil(MimeoUtil):
 
     def render(self):
         return "".join(random.choice(string.ascii_letters) for _ in range(self.__length))
+
+
+class RandomIntegerUtil(MimeoUtil):
+
+    KEY = "random_int"
+
+    def __init__(self, **kwargs):
+        self.__limit = kwargs.get("limit", 100)
+
+    def render(self):
+        return random.randrange(self.__limit)

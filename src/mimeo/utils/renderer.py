@@ -1,4 +1,4 @@
-from mimeo.utils import RandomStringUtil
+from mimeo.utils import RandomStringUtil, RandomIntegerUtil
 from mimeo.utils.exc import InvalidMimeoUtil
 
 
@@ -6,7 +6,8 @@ class MimeoUtilRenderer:
 
     __MIMEO_UTIL_NAME = "name"
     __MIMEO_UTILS = {
-        RandomStringUtil.KEY: RandomStringUtil
+        RandomStringUtil.KEY: RandomStringUtil,
+        RandomIntegerUtil.KEY: RandomIntegerUtil,
     }
 
     @classmethod
