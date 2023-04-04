@@ -1,0 +1,2 @@
+class InvalidMimeoUtil(Exception):
+    pass
