@@ -37,3 +37,15 @@ class RandomIntegerUtil(MimeoUtil):
 
     def render(self):
         return random.randrange(self.__limit)
+
+
+class RandomItemUtil(MimeoUtil):
+
+    KEY = "random_item"
+
+    def __init__(self, **kwargs):
+        self.__items = kwargs.get("items", [])
+
+    def render(self):
+        length = len(self.__items)
+        return "" if length == 0 else self.__items[random.randrange(0, length)]
