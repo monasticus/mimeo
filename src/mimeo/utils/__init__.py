@@ -1,2 +1,2 @@
-from .mimeo_utils import RandomStringUtil, RandomIntegerUtil, RandomItemUtil
+from .mimeo_utils import RandomIntegerUtil, RandomItemUtil, RandomStringUtil
 from .renderer import MimeoUtilRenderer
