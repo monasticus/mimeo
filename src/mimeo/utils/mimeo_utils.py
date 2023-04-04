@@ -1,7 +1,7 @@
 import random
 import string
 from abc import ABCMeta, abstractmethod
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
 
 
 class MimeoUtil(metaclass=ABCMeta):
@@ -62,3 +62,21 @@ class DateUtil(MimeoUtil):
     def render(self):
         date_value = date.today() if self.__days_delta == 0 else date.today() + timedelta(days=self.__days_delta)
         return date_value.strftime("%Y-%m-%d")
+
+
+class DateTimeUtil(MimeoUtil):
+
+    KEY = "date_time"
+
+    def __init__(self, **kwargs):
+        self.__days_delta = kwargs.get("days_delta", 0)
+        self.__hours_delta = kwargs.get("hours_delta", 0)
+        self.__minutes_delta = kwargs.get("minutes_delta", 0)
+        self.__seconds_delta = kwargs.get("seconds_delta", 0)
+
+    def render(self):
+        time_value = datetime.now() + timedelta(days=self.__days_delta,
+                                                hours=self.__hours_delta,
+                                                minutes=self.__minutes_delta,
+                                                seconds=self.__seconds_delta)
+        return time_value.strftime("%Y-%m-%dT%H:%M:%S")
