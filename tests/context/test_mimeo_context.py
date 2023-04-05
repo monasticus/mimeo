@@ -3,7 +3,7 @@ import pytest
 from mimeo.context import MimeoContext
 from mimeo.context.exc import (ContextIterationNotFound,
                                MinimumIdentifierReached, OutOfStock,
-                               UninitializedContextIteration)
+                               UninitializedContextIteration, CountryNotFound)
 from mimeo.database import MimeoDB
 
 
@@ -107,3 +107,47 @@ def test_next_country_index_out_of_stock():
     with pytest.raises(OutOfStock) as err:
         ctx.next_country_index()
     assert err.value.args[0] == "No more unique values, database contain only 239 countries."
+
+
+def test_next_city_index_default():
+    ctx = MimeoContext("SomeContext")
+    for _ in range(MimeoDB.NUM_OF_CITIES):
+        city_index = ctx.next_city_index()
+        assert city_index >= 0
+        assert city_index < MimeoDB.NUM_OF_CITIES
+
+
+def test_next_city_index_default_out_of_stock():
+    ctx = MimeoContext("SomeContext")
+    for _ in range(MimeoDB.NUM_OF_CITIES):
+        ctx.next_city_index()
+
+    with pytest.raises(OutOfStock) as err:
+        ctx.next_city_index()
+    assert err.value.args[0] == "No more unique values, database contain only 42905 cities."
+
+
+def test_next_city_index_custom_country():
+    mimeo_db = MimeoDB()
+    cities = [city.name_ascii for city in mimeo_db.get_cities_of("United Kingdom")]
+    cities_count = len(cities)
+
+    ctx = MimeoContext("SomeContext")
+    for _ in range(cities_count):
+        city_index = ctx.next_city_index("United Kingdom")
+        assert city_index >= 0
+        assert city_index < cities_count
+
+
+def test_next_city_index_custom_country_default_out_of_stock():
+    mimeo_db = MimeoDB()
+    cities = [city.name_ascii for city in mimeo_db.get_cities_of("United Kingdom")]
+    cities_count = len(cities)
+
+    ctx = MimeoContext("SomeContext")
+    for _ in range(cities_count):
+        ctx.next_city_index("United Kingdom")
+
+    with pytest.raises(OutOfStock) as err:
+        ctx.next_city_index("United Kingdom")
+    assert err.value.args[0] == "No more unique values, database contain only 858 cities of United Kingdom."
