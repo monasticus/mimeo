@@ -1,3 +1,3 @@
-from .mimeo_utils import (DateUtil, DateTimeUtil, RandomIntegerUtil, RandomItemUtil,
-                          RandomStringUtil)
+from .mimeo_utils import (DateTimeUtil, DateUtil, RandomIntegerUtil,
+                          RandomItemUtil, RandomStringUtil)
 from .renderer import MimeoUtilRenderer

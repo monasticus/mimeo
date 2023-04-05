@@ -1,7 +1,7 @@
 import random
 import string
 from abc import ABCMeta, abstractmethod
-from datetime import date, timedelta, datetime
+from datetime import date, datetime, timedelta
 
 
 class MimeoUtil(metaclass=ABCMeta):

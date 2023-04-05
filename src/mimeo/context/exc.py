@@ -1,0 +1,2 @@
+class MinimumIdentifierReached(Exception):
+    pass

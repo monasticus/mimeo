@@ -1,5 +1,5 @@
-from mimeo.utils import (DateUtil, DateTimeUtil, RandomIntegerUtil, RandomItemUtil,
-                         RandomStringUtil)
+from mimeo.utils import (DateTimeUtil, DateUtil, RandomIntegerUtil,
+                         RandomItemUtil, RandomStringUtil)
 from mimeo.utils.exc import InvalidMimeoUtil
 from mimeo.utils.mimeo_utils import MimeoUtil
 
