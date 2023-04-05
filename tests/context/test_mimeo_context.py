@@ -40,3 +40,22 @@ def test_prev_id_below_zero():
         ctx.prev_id()
 
     assert err.value.args[0] == "There's no previous ID!"
+
+
+def test_next_iteration():
+    ctx = MimeoContext()
+    assert ctx.next_iteration() == 1
+    assert ctx.next_iteration() == 2
+    assert ctx.next_iteration() == 3
+
+
+def test_curr_iteration():
+    ctx = MimeoContext()
+    ctx.next_iteration()
+    assert ctx.curr_iteration() == 1
+
+    ctx.next_iteration()
+    assert ctx.curr_iteration() == 2
+
+    ctx.next_iteration()
+    assert ctx.curr_iteration() == 3
