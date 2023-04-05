@@ -151,3 +151,12 @@ def test_next_city_index_custom_country_default_out_of_stock():
     with pytest.raises(OutOfStock) as err:
         ctx.next_city_index("United Kingdom")
     assert err.value.args[0] == "No more unique values, database contain only 858 cities of United Kingdom."
+
+
+def test_next_city_index_non_existing_country():
+    ctx = MimeoContext("SomeContext")
+    with pytest.raises(CountryNotFound) as err:
+        ctx.next_city_index("NEC")
+
+    assert err.value.args[0] == "Mimeo database does not contain any cities of provided country [NEC]."
+
