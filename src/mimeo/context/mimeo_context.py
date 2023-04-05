@@ -1,6 +1,6 @@
 import uuid
 
-from mimeo.context.exc import MinimumIdentifierReached
+from mimeo.context.exc import MinimumIdentifierReached, UninitializedIteration
 
 
 class MimeoIteration:
@@ -12,7 +12,8 @@ class MimeoIteration:
 
 class MimeoContext:
 
-    def __init__(self):
+    def __init__(self, name: str):
+        self.name = name
         self.__id = 0
         self.__iterations = []
 
@@ -37,4 +38,7 @@ class MimeoContext:
         return next_iteration
 
     def curr_iteration(self) -> MimeoIteration:
-        return self.__iterations[-1]
+        if len(self.__iterations) > 0:
+            return self.__iterations[-1]
+        else:
+            raise UninitializedIteration(f"No iteration has been initialized for the current context [{self.name}]")
