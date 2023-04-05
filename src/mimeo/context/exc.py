@@ -2,7 +2,11 @@ class MinimumIdentifierReached(Exception):
     pass
 
 
-class UninitializedIteration(Exception):
+class UninitializedContextIteration(Exception):
+    pass
+
+
+class ContextIterationNotFound(Exception):
     pass
 
 

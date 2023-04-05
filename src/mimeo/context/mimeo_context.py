@@ -1,5 +1,7 @@
 from mimeo.context import MimeoIteration
-from mimeo.context.exc import MinimumIdentifierReached, UninitializedIteration
+from mimeo.context.exc import (ContextIterationNotFound,
+                               MinimumIdentifierReached,
+                               UninitializedContextIteration)
 
 
 class MimeoContext:
@@ -33,4 +35,12 @@ class MimeoContext:
         if len(self.__iterations) > 0:
             return self.__iterations[-1]
         else:
-            raise UninitializedIteration(f"No iteration has been initialized for the current context [{self.name}]")
+            raise UninitializedContextIteration(f"No iteration has been initialized for the current context [{self.name}]")
+
+    def get_iteration(self, iteration_id: int) -> MimeoIteration:
+        iteration = next(filter(lambda i: i.id == iteration_id, self.__iterations), None)
+        if iteration is not None:
+            return iteration
+        else:
+            raise ContextIterationNotFound(f"No iteration with id [{iteration_id}] "
+                                           f"has been initialized for the current context [{self.name}]")
