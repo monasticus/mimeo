@@ -67,14 +67,3 @@ def test_curr_iteration_id_without_initialization():
         ctx.curr_iteration()
 
     assert err.value.args[0] == "No iteration has been initialized for the current context [SomeContext]"
-
-
-def test_iteration_key():
-    ctx = MimeoContext("SomeContext")
-    key1 = ctx.next_iteration().key
-    key2 = ctx.next_iteration().key
-    key3 = ctx.next_iteration().key
-
-    assert key1 != key2
-    assert key2 != key3
-    assert key3 != key1

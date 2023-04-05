@@ -1,13 +1,5 @@
-import uuid
-
+from mimeo.context import MimeoIteration
 from mimeo.context.exc import MinimumIdentifierReached, UninitializedIteration
-
-
-class MimeoIteration:
-
-    def __init__(self, identifier: int):
-        self.id = identifier
-        self.key = str(uuid.uuid4())
 
 
 class MimeoContext:
