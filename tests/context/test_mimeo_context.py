@@ -2,8 +2,9 @@ import pytest
 
 from mimeo.context import MimeoContext
 from mimeo.context.exc import (ContextIterationNotFound,
-                               MinimumIdentifierReached,
+                               MinimumIdentifierReached, OutOfStock,
                                UninitializedContextIteration)
+from mimeo.database import MimeoDB
 
 
 def test_next_id():
@@ -88,3 +89,21 @@ def test_get_iteration_id_without_initialization():
         ctx.get_iteration(1)
 
     assert err.value.args[0] == "No iteration with id [1] has been initialized for the current context [SomeContext]"
+
+
+def test_next_country_index():
+    ctx = MimeoContext("SomeContext")
+    for _ in range(MimeoDB.NUM_OF_COUNTRIES):
+        country_index = ctx.next_country_index()
+        assert country_index >= 0
+        assert country_index < MimeoDB.NUM_OF_COUNTRIES
+
+
+def test_next_country_index_out_of_stock():
+    ctx = MimeoContext("SomeContext")
+    for _ in range(MimeoDB.NUM_OF_COUNTRIES):
+        ctx.next_country_index()
+
+    with pytest.raises(OutOfStock) as err:
+        ctx.next_country_index()
+    assert err.value.args[0] == "No more unique values, database contain only 239 countries."

@@ -20,3 +20,7 @@ class InvalidSpecialFieldValue(Exception):
 
 class SpecialFieldNotFound(Exception):
     pass
+
+
+class OutOfStock(Exception):
+    pass
