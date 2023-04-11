@@ -1,9 +1,9 @@
 import pytest
 
 from mimeo.context import MimeoContext
-from mimeo.context.exc import (ContextIterationNotFound,
+from mimeo.context.exc import (ContextIterationNotFound, CountryNotFound,
                                MinimumIdentifierReached, OutOfStock,
-                               UninitializedContextIteration, CountryNotFound)
+                               UninitializedContextIteration)
 from mimeo.database import MimeoDB
 
 

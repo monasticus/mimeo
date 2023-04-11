@@ -3,6 +3,9 @@ import string
 from abc import ABCMeta, abstractmethod
 from datetime import date, datetime, timedelta
 
+from mimeo.context import MimeoContext
+from mimeo.context.annotations import mimeo_context
+
 
 class MimeoUtil(metaclass=ABCMeta):
 
@@ -80,3 +83,20 @@ class DateTimeUtil(MimeoUtil):
                                                 minutes=self.__minutes_delta,
                                                 seconds=self.__seconds_delta)
         return time_value.strftime("%Y-%m-%dT%H:%M:%S")
+
+
+class AutoIncrementUtil(MimeoUtil):
+
+    KEY = "auto_increment"
+
+    def __init__(self, **kwargs):
+        self.__pattern = kwargs.get("pattern", "{:05d}")
+
+    @mimeo_context
+    def render(self, context: MimeoContext = None):
+        try:
+            identifier = context.next_id()
+            return self.__pattern.format(identifier)
+        except AttributeError as err:
+            context.prev_id()
+            raise err
