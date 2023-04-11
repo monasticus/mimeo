@@ -1,5 +1,3 @@
-from datetime import date, timedelta
-
 import pytest
 
 from mimeo.config import MimeoConfig
