@@ -1,5 +1,6 @@
 import functools
 
+from mimeo.config.mimeo_config import MimeoTemplate
 from mimeo.context import MimeoContext, MimeoContextManager
 
 
@@ -13,6 +14,27 @@ def mimeo_context(func):
         return result
 
     return inject_context
+
+
+def mimeo_context_switch(func):
+    @functools.wraps(func)
+    def switch_context(*args, **kwargs):
+        context_mng = MimeoContextManager()
+        prev_context = context_mng.get_current_context()
+
+        if "template" in kwargs:
+            template = kwargs["template"]
+        else:
+            template = next(arg for arg in args if isinstance(arg, MimeoTemplate))
+        context_name = template.model.context_name
+        next_context = context_mng.get_context(context_name)
+        context_mng.set_current_context(next_context)
+        result = func(*args, **kwargs)
+
+        context_mng.set_current_context(prev_context)
+        return result
+
+    return switch_context
 
 
 def mimeo_next_iteration(func):
