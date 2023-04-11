@@ -5,8 +5,9 @@ from datetime import date, datetime, timedelta
 
 from mimeo.context import MimeoContext, MimeoContextManager
 from mimeo.context.annotations import mimeo_context
-from mimeo.database import MimeoDB
+from mimeo.database import Country, MimeoDB
 from mimeo.database.exc import CountryNotFound
+from mimeo.utils.exc import InvalidValue
 
 
 class MimeoUtil(metaclass=ABCMeta):
@@ -162,3 +163,48 @@ class CityUtil(MimeoUtil):
             city = country_cities[index]
 
         return city.name_ascii
+
+
+class CountryUtil(MimeoUtil):
+
+    KEY = "country"
+
+    __VALUE_NAME = "name"
+    __VALUE_ISO3 = "iso3"
+    __VALUE_ISO2 = "iso2"
+    __MIMEO_DB = MimeoDB()
+
+    def __init__(self, **kwargs):
+        self.__value = kwargs.get("value", self.__VALUE_NAME)
+        self.__allow_duplicates = kwargs.get("allow_duplicates", False)
+        self.__country = kwargs.get("country", None)
+
+    @mimeo_context
+    def render(self, context: MimeoContext = None):
+        if self.__value == self.__VALUE_NAME:
+            return self.__get_country(context).name
+        elif self.__value == self.__VALUE_ISO3:
+            return self.__get_country(context).iso_3
+        elif self.__value == self.__VALUE_ISO2:
+            return self.__get_country(context).iso_2
+        else:
+            raise InvalidValue(f"The `country` Mimeo Util does not support such value [{self.__value}]. "
+                               f"Supported values are: "
+                               f"{self.__VALUE_NAME} (default), {self.__VALUE_ISO3}, {self.__VALUE_ISO2}.")
+
+    def __get_country(self, context: MimeoContext) -> Country:
+        if self.__country is not None:
+            countries = self.__MIMEO_DB.get_countries()
+            country_found = next(filter(lambda c: self.__country in [c.name, c.iso_3, c.iso_2], countries), None)
+            if country_found is not None:
+                return country_found
+            else:
+                raise CountryNotFound(f"Mimeo database does not contain such a country [{self.__country}].")
+        else:
+            if self.__allow_duplicates:
+                index = random.randrange(MimeoDB.NUM_OF_COUNTRIES)
+            else:
+                index = context.next_country_index()
+
+            country = self.__MIMEO_DB.get_country_at(index)
+            return country
