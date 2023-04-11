@@ -3,7 +3,7 @@ import string
 from abc import ABCMeta, abstractmethod
 from datetime import date, datetime, timedelta
 
-from mimeo.context import MimeoContext
+from mimeo.context import MimeoContext, MimeoContextManager
 from mimeo.context.annotations import mimeo_context
 
 
@@ -100,3 +100,16 @@ class AutoIncrementUtil(MimeoUtil):
         except AttributeError as err:
             context.prev_id()
             raise err
+
+
+class CurrentIterationUtil(MimeoUtil):
+
+    KEY = "curr_iter"
+
+    def __init__(self, **kwargs):
+        self.__context_name = kwargs.get("context", None)
+
+    @mimeo_context
+    def render(self, context: MimeoContext = None):
+        context = context if self.__context_name is None else MimeoContextManager().get_context(self.__context_name)
+        return context.curr_iteration().id

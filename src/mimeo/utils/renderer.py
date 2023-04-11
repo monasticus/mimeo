@@ -1,7 +1,8 @@
-from mimeo.utils import (DateTimeUtil, DateUtil, RandomIntegerUtil,
-                         RandomItemUtil, RandomStringUtil)
+from mimeo.utils import (AutoIncrementUtil, CurrentIterationUtil, DateTimeUtil,
+                         DateUtil, RandomIntegerUtil, RandomItemUtil,
+                         RandomStringUtil)
 from mimeo.utils.exc import InvalidMimeoUtil
-from mimeo.utils.mimeo_utils import AutoIncrementUtil, MimeoUtil
+from mimeo.utils.mimeo_utils import MimeoUtil
 
 
 class MimeoUtilRenderer:
@@ -14,6 +15,7 @@ class MimeoUtilRenderer:
         DateUtil.KEY: DateUtil,
         DateTimeUtil.KEY: DateTimeUtil,
         AutoIncrementUtil.KEY: AutoIncrementUtil,
+        CurrentIterationUtil.KEY: CurrentIterationUtil,
     }
     _INSTANCES = {}
 
