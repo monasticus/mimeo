@@ -13,3 +13,13 @@ def mimeo_context(func):
         return result
 
     return inject_context
+
+
+def mimeo_next_iteration(func):
+    @functools.wraps(func)
+    def next_iteration(*args, **kwargs):
+        MimeoContextManager().get_current_context().next_iteration()
+        result = func(*args, **kwargs)
+        return result
+
+    return next_iteration
