@@ -5,6 +5,8 @@ from datetime import date, datetime, timedelta
 
 from mimeo.context import MimeoContext, MimeoContextManager
 from mimeo.context.annotations import mimeo_context
+from mimeo.database import MimeoDB
+from mimeo.database.exc import CountryNotFound
 
 
 class MimeoUtil(metaclass=ABCMeta):
@@ -128,3 +130,35 @@ class KeyUtil(MimeoUtil):
         context = context if self.__context_name is None else MimeoContextManager().get_context(self.__context_name)
         iteration = context.curr_iteration() if self.__iteration is None else context.get_iteration(self.__iteration)
         return iteration.key
+
+
+class CityUtil(MimeoUtil):
+
+    KEY = "city"
+    __MIMEO_DB = MimeoDB()
+
+    def __init__(self, **kwargs):
+        self.__allow_duplicates = kwargs.get("allow_duplicates", False)
+        self.__country = kwargs.get("country", None)
+
+    @mimeo_context
+    def render(self, context: MimeoContext = None):
+        if self.__country is None:
+            if self.__allow_duplicates:
+                index = random.randrange(MimeoDB.NUM_OF_CITIES)
+            else:
+                index = context.next_city_index()
+            city = self.__MIMEO_DB.get_city_at(index)
+        else:
+            country_cities = self.__MIMEO_DB.get_cities_of(self.__country)
+            country_cities_count = len(country_cities)
+            if country_cities_count == 0:
+                raise CountryNotFound(f"Mimeo database does not contain any cities of provided country [{self.__country}].")
+
+            if self.__allow_duplicates:
+                index = random.randrange(country_cities_count)
+            else:
+                index = context.next_city_index(self.__country)
+            city = country_cities[index]
+
+        return city.name_ascii

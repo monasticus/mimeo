@@ -1,10 +1,11 @@
 import random
 
 from mimeo.context import MimeoIteration
-from mimeo.context.exc import (ContextIterationNotFound, CountryNotFound,
-                               MinimumIdentifierReached, OutOfStock,
+from mimeo.context.exc import (ContextIterationNotFound,
+                               MinimumIdentifierReached,
                                UninitializedContextIteration)
 from mimeo.database import MimeoDB
+from mimeo.database.exc import CountryNotFound, OutOfStock
 
 
 class MimeoContext:
