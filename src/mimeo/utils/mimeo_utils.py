@@ -113,3 +113,18 @@ class CurrentIterationUtil(MimeoUtil):
     def render(self, context: MimeoContext = None):
         context = context if self.__context_name is None else MimeoContextManager().get_context(self.__context_name)
         return context.curr_iteration().id
+
+
+class KeyUtil(MimeoUtil):
+
+    KEY = "key"
+
+    def __init__(self, **kwargs):
+        self.__context_name = kwargs.get("context", None)
+        self.__iteration = kwargs.get("iteration", None)
+
+    @mimeo_context
+    def render(self, context: MimeoContext = None):
+        context = context if self.__context_name is None else MimeoContextManager().get_context(self.__context_name)
+        iteration = context.curr_iteration() if self.__iteration is None else context.get_iteration(self.__iteration)
+        return iteration.key

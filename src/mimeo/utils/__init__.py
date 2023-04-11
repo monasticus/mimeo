@@ -1,4 +1,4 @@
 from .mimeo_utils import (AutoIncrementUtil, CurrentIterationUtil,
-                          DateTimeUtil, DateUtil, RandomIntegerUtil,
-                          RandomItemUtil, RandomStringUtil)
+                          DateTimeUtil, DateUtil, KeyUtil, MimeoUtil,
+                          RandomIntegerUtil, RandomItemUtil, RandomStringUtil)
 from .renderer import MimeoUtilRenderer
