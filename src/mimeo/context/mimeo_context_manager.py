@@ -1,5 +1,6 @@
 from mimeo.config import MimeoConfig
 from mimeo.context import MimeoContext
+from mimeo.context.exc import VarNotFound
 from mimeo.meta import Alive, OnlyOneAlive
 
 
@@ -38,3 +39,10 @@ class MimeoContextManager(Alive, metaclass=OnlyOneAlive):
     def set_current_context(self, context: MimeoContext) -> None:
         super().assert_alive()
         self.__current_context = context
+
+    def get_var(self, variable_name: str):
+        value = self.__vars.get(variable_name)
+        if value is not None:
+            return value
+        else:
+            raise VarNotFound(f"Provided variable [{variable_name}] is not defined!")
