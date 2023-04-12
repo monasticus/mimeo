@@ -5,6 +5,7 @@ import responses
 
 from mimeo.config import MimeoConfig
 from mimeo.consumers import ConsumerFactory
+from mimeo.context import MimeoContextManager
 from mimeo.generators import GeneratorFactory
 
 
@@ -36,16 +37,17 @@ def test_consume_post():
 
     responses.add(responses.POST, consumer.url, json={"success": True}, status=HTTPStatus.OK)
 
-    generator = GeneratorFactory.get_generator(mimeo_config)
-    data = (generator.stringify(root, mimeo_config)
-            for root in generator.generate(mimeo_config.templates))
+    with MimeoContextManager(mimeo_config):
+        generator = GeneratorFactory.get_generator(mimeo_config)
+        data = (generator.stringify(root, mimeo_config)
+                for root in generator.generate(mimeo_config.templates))
 
-    for root in data:
-        resp = consumer.consume(root)
-        assert resp.request.method == "POST"
-        assert resp.request.body == root
-        assert resp.status_code == HTTPStatus.OK
-        assert resp.json() == {"success": True}
+        for root in data:
+            resp = consumer.consume(root)
+            assert resp.request.method == "POST"
+            assert resp.request.body == root
+            assert resp.status_code == HTTPStatus.OK
+            assert resp.json() == {"success": True}
 
 
 @responses.activate
@@ -78,16 +80,17 @@ def test_consume_put():
 
     responses.add(responses.PUT, consumer.url, json={"success": True}, status=HTTPStatus.OK)
 
-    generator = GeneratorFactory.get_generator(mimeo_config)
-    data = (generator.stringify(root, mimeo_config)
-            for root in generator.generate(mimeo_config.templates))
+    with MimeoContextManager(mimeo_config):
+        generator = GeneratorFactory.get_generator(mimeo_config)
+        data = (generator.stringify(root, mimeo_config)
+                for root in generator.generate(mimeo_config.templates))
 
-    for root in data:
-        resp = consumer.consume(root)
-        assert resp.request.method == "PUT"
-        assert resp.request.body == root
-        assert resp.status_code == HTTPStatus.OK
-        assert resp.json() == {"success": True}
+        for root in data:
+            resp = consumer.consume(root)
+            assert resp.request.method == "PUT"
+            assert resp.request.body == root
+            assert resp.status_code == HTTPStatus.OK
+            assert resp.json() == {"success": True}
 
 
 @responses.activate
@@ -117,14 +120,15 @@ def test_consume_without_port():
 
     responses.add(responses.POST, consumer.url, json={"success": True}, status=HTTPStatus.OK)
 
-    generator = GeneratorFactory.get_generator(mimeo_config)
-    data = (generator.stringify(root, mimeo_config)
-            for root in generator.generate(mimeo_config.templates))
+    with MimeoContextManager(mimeo_config):
+        generator = GeneratorFactory.get_generator(mimeo_config)
+        data = (generator.stringify(root, mimeo_config)
+                for root in generator.generate(mimeo_config.templates))
 
-    for root in data:
-        resp = consumer.consume(root)
-        assert resp.request.method == "POST"
-        assert resp.request.body == root
-        assert resp.status_code == HTTPStatus.OK
-        assert resp.json() == {"success": True}
+        for root in data:
+            resp = consumer.consume(root)
+            assert resp.request.method == "POST"
+            assert resp.request.body == root
+            assert resp.status_code == HTTPStatus.OK
+            assert resp.json() == {"success": True}
 
