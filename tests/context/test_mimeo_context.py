@@ -92,6 +92,18 @@ def test_get_iteration_id_without_initialization():
     assert err.value.args[0] == "No iteration with id [1] has been initialized for the current context [SomeContext]"
 
 
+def test_clear_iterations():
+    ctx = MimeoContext("SomeContext")
+    assert ctx.next_iteration().id == 1
+    assert ctx.next_iteration().id == 2
+    assert ctx.next_iteration().id == 3
+
+    ctx.clear_iterations()
+    assert ctx.next_iteration().id == 1
+    assert ctx.next_iteration().id == 2
+    assert ctx.next_iteration().id == 3
+
+
 def test_next_country_index():
     ctx = MimeoContext("SomeContext")
     for _ in range(MimeoDB.NUM_OF_COUNTRIES):

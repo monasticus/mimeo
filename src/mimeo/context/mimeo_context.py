@@ -55,6 +55,9 @@ class MimeoContext:
             raise ContextIterationNotFound(f"No iteration with id [{iteration_id}] "
                                            f"has been initialized for the current context [{self.name}]")
 
+    def clear_iterations(self) -> None:
+        self.__iterations = []
+
     def next_country_index(self):
         self.__initialize_countries_indexes()
 
