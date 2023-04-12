@@ -45,3 +45,13 @@ def mimeo_next_iteration(func):
         return result
 
     return next_iteration
+
+
+def mimeo_clear_iterations(func):
+    @functools.wraps(func)
+    def clear_iterations(*args, **kwargs):
+        MimeoContextManager().get_current_context().clear_iterations()
+        result = func(*args, **kwargs)
+        return result
+
+    return clear_iterations
