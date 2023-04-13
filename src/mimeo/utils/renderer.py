@@ -112,34 +112,10 @@ class MimeoRenderer:
     @classmethod
     def render(cls, value):
         try:
-            if cls.is_parametrized_mimeo_util(value):
-                mimeo_util = value[MimeoConfig.MODEL_MIMEO_UTIL_KEY]
-                mimeo_util = cls._prepare_parametrized_mimeo_util(mimeo_util)
-                rendered_value = UtilsRenderer.render_parametrized(mimeo_util)
-                return cls.render(rendered_value)
-            elif isinstance(value, str):
-                value_str = str(value)
-                if cls._SPECIAL_FIELDS_PATTERN.match(value_str):
-                    match = next(cls._SPECIAL_FIELDS_PATTERN.finditer(value_str))
-                    mimeo_util = match.group(1)
-                    rendered_value = SpecialFieldsRenderer.render(mimeo_util[2:][:-2])
-                    if isinstance(rendered_value, str):
-                        rendered_value = value_str.replace(mimeo_util, str(rendered_value))
-                    return cls.render(rendered_value)
-                elif cls._VARS_PATTERN.match(value_str):
-                    match = next(cls._VARS_PATTERN.finditer(value_str))
-                    mimeo_util = match.group(1)
-                    rendered_value = VarsRenderer.render(mimeo_util[1:][:-1])
-                    if cls.is_parametrized_mimeo_util(rendered_value):
-                        rendered_value = cls.render(rendered_value)
-                    elif isinstance(rendered_value, str):
-                        rendered_value = value_str.replace(mimeo_util, str(rendered_value))
-                    return cls.render(rendered_value)
-                elif cls.is_raw_mimeo_util(value_str):
-                    rendered_value = UtilsRenderer.render_raw(value_str[1:][:-1])
-                    return cls.render(rendered_value)
-                else:
-                    return value
+            if isinstance(value, str):
+                return cls._render_string_value(value)
+            elif cls.is_parametrized_mimeo_util(value):
+                return cls._render_parametrized_mimeo_util(value)
             else:
                 return value
         except (InvalidMimeoUtil, VarNotFound, InvalidValue) as err:
@@ -148,5 +124,48 @@ class MimeoRenderer:
             raise err
 
     @classmethod
-    def _prepare_parametrized_mimeo_util(cls, mimeo_util_config: dict) -> dict:
+    def _render_string_value(cls, value: str):
+        if cls._SPECIAL_FIELDS_PATTERN.match(value):
+            return cls._render_special_field(value)
+        elif cls._VARS_PATTERN.match(value):
+            return cls._render_var(value)
+        elif cls.is_raw_mimeo_util(value):
+            return cls._render_raw_mimeo_util(value)
+        else:
+            return value
+
+    @classmethod
+    def _render_special_field(cls, value):
+        match = next(cls._SPECIAL_FIELDS_PATTERN.finditer(value))
+        wrapped_special_field = match.group(1)
+        rendered_value = SpecialFieldsRenderer.render(wrapped_special_field[2:][:-2])
+        if isinstance(rendered_value, str):
+            rendered_value = value.replace(wrapped_special_field, str(rendered_value))
+        return cls.render(rendered_value)
+
+    @classmethod
+    def _render_var(cls, value):
+        match = next(cls._VARS_PATTERN.finditer(value))
+        wrapped_var = match.group(1)
+        rendered_value = VarsRenderer.render(wrapped_var[1:][:-1])
+        if cls.is_parametrized_mimeo_util(rendered_value):
+            rendered_value = cls._render_parametrized_mimeo_util(rendered_value)
+        elif isinstance(rendered_value, str):
+            rendered_value = value.replace(wrapped_var, str(rendered_value))
+        return cls.render(rendered_value)
+
+    @classmethod
+    def _render_raw_mimeo_util(cls, value):
+        rendered_value = UtilsRenderer.render_raw(value[1:][:-1])
+        return cls.render(rendered_value)
+
+    @classmethod
+    def _render_parametrized_mimeo_util(cls, value: dict):
+        mimeo_util = value[MimeoConfig.MODEL_MIMEO_UTIL_KEY]
+        mimeo_util = cls._render_mimeo_util_parameters(mimeo_util)
+        rendered_value = UtilsRenderer.render_parametrized(mimeo_util)
+        return cls.render(rendered_value)
+
+    @classmethod
+    def _render_mimeo_util_parameters(cls, mimeo_util_config: dict) -> dict:
         return {key: cls.render(value) for key, value in mimeo_util_config.items()}
