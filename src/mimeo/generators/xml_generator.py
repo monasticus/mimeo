@@ -68,7 +68,7 @@ class XMLGenerator(Generator):
 
             element = ElemTree.Element(element_tag, attrib=attributes) if parent is None else ElemTree.SubElement(
                 parent, element_tag, attrib=attributes)
-            if isinstance(element_value, dict) and MimeoConfig.MODEL_MIMEO_UTIL_KEY not in element_value:
+            if isinstance(element_value, dict) and not MimeoRenderer.is_parametrized_mimeo_util(element_value):
                 if MimeoConfig.MODEL_ATTRIBUTES_KEY in element_value:
                     element_value_copy = dict(element_value)
                     attrs = element_value_copy.pop(MimeoConfig.MODEL_ATTRIBUTES_KEY)

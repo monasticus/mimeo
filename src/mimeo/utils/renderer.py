@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 class UtilsRenderer:
 
     MIMEO_UTIL_NAME = "_name"
-    _MIMEO_UTILS = {
+    MIMEO_UTILS = {
         RandomStringUtil.KEY: RandomStringUtil,
         RandomIntegerUtil.KEY: RandomIntegerUtil,
         RandomItemUtil.KEY: RandomItemUtil,
@@ -41,21 +41,11 @@ class UtilsRenderer:
         return mimeo_util.render()
 
     @classmethod
-    def is_raw_mimeo_util(cls, value: str):
-        raw_mimeo_utils = cls._MIMEO_UTILS.keys()
-        raw_mimeo_utils_re = "^{(" + "|".join(raw_mimeo_utils) + ")}$"
-        return bool(re.match(raw_mimeo_utils_re, value))
-
-    @classmethod
-    def is_parametrized_mimeo_util(cls, value: dict):
-        return isinstance(value, dict) and len(value) == 1 and MimeoConfig.MODEL_MIMEO_UTIL_KEY in value
-
-    @classmethod
     def _get_mimeo_util(cls, mimeo_util_config: dict) -> MimeoUtil:
         mimeo_util_name = mimeo_util_config.get(MimeoConfig.MODEL_MIMEO_UTIL_NAME_KEY)
         if mimeo_util_name is None:
             raise InvalidMimeoUtil(f"Missing Mimeo Util name in configuration [{mimeo_util_config}]!")
-        elif mimeo_util_name not in cls._MIMEO_UTILS:
+        elif mimeo_util_name not in cls.MIMEO_UTILS:
             raise InvalidMimeoUtil(f"No such Mimeo Util [{mimeo_util_name}]!")
 
         mimeo_util_key = cls._generate_key(mimeo_util_config)
@@ -72,7 +62,7 @@ class UtilsRenderer:
 
     @classmethod
     def _instantiate_mimeo_util(cls, name: str, key: str, config: dict) -> MimeoUtil:
-        mimeo_util = cls._MIMEO_UTILS.get(name)(**config)
+        mimeo_util = cls.MIMEO_UTILS.get(name)(**config)
         cls._INSTANCES[key] = mimeo_util
         return mimeo_util
 
@@ -110,9 +100,19 @@ class MimeoRenderer:
         return bool(re.match(r"^{:([a-zA-Z]+:)?[-_a-zA-Z0-9]+:}$", field_name))
 
     @classmethod
+    def is_raw_mimeo_util(cls, value: str):
+        raw_mimeo_utils = UtilsRenderer.MIMEO_UTILS.keys()
+        raw_mimeo_utils_re = "^{(" + "|".join(raw_mimeo_utils) + ")}$"
+        return bool(re.match(raw_mimeo_utils_re, value))
+
+    @classmethod
+    def is_parametrized_mimeo_util(cls, value: dict):
+        return isinstance(value, dict) and len(value) == 1 and MimeoConfig.MODEL_MIMEO_UTIL_KEY in value
+
+    @classmethod
     def render(cls, value):
         try:
-            if UtilsRenderer.is_parametrized_mimeo_util(value):
+            if cls.is_parametrized_mimeo_util(value):
                 mimeo_util = value[MimeoConfig.MODEL_MIMEO_UTIL_KEY]
                 mimeo_util = cls._prepare_parametrized_mimeo_util(mimeo_util)
                 rendered_value = UtilsRenderer.render_parametrized(mimeo_util)
@@ -130,12 +130,12 @@ class MimeoRenderer:
                     match = next(cls._VARS_PATTERN.finditer(value_str))
                     mimeo_util = match.group(1)
                     rendered_value = VarsRenderer.render(mimeo_util[1:][:-1])
-                    if UtilsRenderer.is_parametrized_mimeo_util(rendered_value):
+                    if cls.is_parametrized_mimeo_util(rendered_value):
                         rendered_value = cls.render(rendered_value)
                     elif isinstance(rendered_value, str):
                         rendered_value = value_str.replace(mimeo_util, str(rendered_value))
                     return cls.render(rendered_value)
-                elif UtilsRenderer.is_raw_mimeo_util(value_str):
+                elif cls.is_raw_mimeo_util(value_str):
                     rendered_value = UtilsRenderer.render_raw(value_str[1:][:-1])
                     return cls.render(rendered_value)
                 else:

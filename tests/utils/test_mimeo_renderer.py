@@ -69,6 +69,45 @@ def test_get_special_field_name_when_invalid():
     assert err.value.args[0] == "Provided field [{:SomeField}] is not a special one (use {:NAME:})!"
 
 
+def test_is_raw_mimeo_util_true():
+    assert MimeoRenderer.is_raw_mimeo_util("{random_str}")
+    assert MimeoRenderer.is_raw_mimeo_util("{random_int}")
+    assert MimeoRenderer.is_raw_mimeo_util("{random_item}")
+    assert MimeoRenderer.is_raw_mimeo_util("{date}")
+    assert MimeoRenderer.is_raw_mimeo_util("{date_time}")
+    assert MimeoRenderer.is_raw_mimeo_util("{auto_increment}")
+    assert MimeoRenderer.is_raw_mimeo_util("{curr_iter}")
+    assert MimeoRenderer.is_raw_mimeo_util("{key}")
+    assert MimeoRenderer.is_raw_mimeo_util("{city}")
+    assert MimeoRenderer.is_raw_mimeo_util("{country}")
+
+
+def test_is_raw_mimeo_util_false():
+    assert not MimeoRenderer.is_raw_mimeo_util("random_str")
+    assert not MimeoRenderer.is_raw_mimeo_util("{random}")
+
+
+def test_is_parametrized_mimeo_util_true():
+    assert MimeoRenderer.is_parametrized_mimeo_util({
+        "_mimeo_util": {}
+    })
+
+
+def test_is_parametrized_mimeo_util_false():
+    assert not MimeoRenderer.is_parametrized_mimeo_util({
+        "_mimeo_util": {},
+        "key": "value"
+    })
+    assert not MimeoRenderer.is_parametrized_mimeo_util({
+        "_util": {}
+    })
+    assert not MimeoRenderer.is_parametrized_mimeo_util([
+        {
+            "_mimeo_util": {}
+        }
+    ])
+
+
 def test_render_value_str_value(default_config):
     with MimeoContextManager(default_config):
         value = MimeoRenderer.render("str-value")
