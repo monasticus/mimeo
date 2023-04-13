@@ -3,6 +3,7 @@ import pytest
 from mimeo.config import MimeoConfig
 from mimeo.context import MimeoContextManager
 from mimeo.utils import UtilsRenderer
+from mimeo.utils.exc import InvalidValue
 
 
 @pytest.fixture(autouse=True)
@@ -63,10 +64,11 @@ def test_auto_increment_parametrized_with_non_str_pattern(default_config):
         context = mimeo_manager.get_context("SomeEntity")
         mimeo_manager.set_current_context(context)
 
-        with pytest.raises(AttributeError) as err:
+        with pytest.raises(InvalidValue) as err:
             UtilsRenderer.render_parametrized({"_name": "auto_increment", "pattern": 1})
 
-        assert err.value.args[0] == "'int' object has no attribute 'format'"
+        assert err.value.args[0] == "The auto_increment Mimeo Util require a string value for the pattern parameter " \
+                                    "and was: [1]."
 
 
 def test_auto_increment_for_different_context(default_config):

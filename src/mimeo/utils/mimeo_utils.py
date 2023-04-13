@@ -100,9 +100,10 @@ class AutoIncrementUtil(MimeoUtil):
         try:
             identifier = context.next_id()
             return self.__pattern.format(identifier)
-        except AttributeError as err:
+        except AttributeError:
             context.prev_id()
-            raise err
+            raise InvalidValue(f"The {self.KEY} Mimeo Util require a string value for the pattern parameter "
+                               f"and was: [{self.__pattern}].")
 
 
 class CurrentIterationUtil(MimeoUtil):
