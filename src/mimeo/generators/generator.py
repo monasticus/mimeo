@@ -3,7 +3,6 @@ from abc import ABCMeta, abstractmethod
 from typing import Any, Iterator, Union
 
 from mimeo.config.mimeo_config import MimeoTemplate
-from mimeo.context import MimeoContextManager
 
 
 class Generator(metaclass=ABCMeta):
@@ -17,9 +16,6 @@ class Generator(metaclass=ABCMeta):
                 hasattr(subclass, 'stringify') and
                 callable(subclass.stringify) or
                 NotImplemented)
-
-    def __init__(self):
-        self._mimeo_manager = MimeoContextManager()
 
     @abstractmethod
     def generate(self,

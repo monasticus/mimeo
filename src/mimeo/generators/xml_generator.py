@@ -4,9 +4,10 @@ from typing import Iterator, List, Union
 from xml.dom import minidom
 
 from mimeo.config.mimeo_config import MimeoConfig, MimeoTemplate
+from mimeo.context import MimeoContext
 from mimeo.context.annotations import (mimeo_clear_iterations,
                                        mimeo_context_switch,
-                                       mimeo_next_iteration)
+                                       mimeo_next_iteration, mimeo_context)
 from mimeo.generators import Generator
 from mimeo.utils import MimeoRenderer
 
@@ -20,9 +21,10 @@ class XMLGenerator(Generator):
         self.__indent = mimeo_config.indent
         self.__xml_declaration = mimeo_config.xml_declaration
 
-    def generate(self, templates: Union[list, Iterator[MimeoTemplate]], parent: ElemTree.Element = None) -> Iterator[ElemTree.Element]:
+    @classmethod
+    def generate(cls, templates: Union[list, Iterator[MimeoTemplate]], parent: ElemTree.Element = None) -> Iterator[ElemTree.Element]:
         for template in templates:
-            for copy in self.__process_single_template(template, parent):
+            for copy in cls._process_single_template(template, parent):
                 yield copy
 
     def stringify(self, root, mimeo_config):
@@ -39,18 +41,22 @@ class XMLGenerator(Generator):
             else:
                 return xml_minidom.childNodes[0].toprettyxml(indent=" " * self.__indent, encoding="utf-8").decode('ascii')
 
+    @classmethod
     @mimeo_context_switch
     @mimeo_clear_iterations
-    def __process_single_template(self, template: MimeoTemplate, parent: ElemTree.Element = None) -> List[ElemTree.Element]:
+    def _process_single_template(cls, template: MimeoTemplate, parent: ElemTree.Element = None) -> List[ElemTree.Element]:
         logger.debug(f"Reading template [{template}]")
-        copies = [self.__process_single_copy(template, parent) for _ in iter(range(template.count))]
+        copies = [cls._process_single_copy(template, parent) for _ in iter(range(template.count))]
         return copies
 
+    @classmethod
     @mimeo_next_iteration
-    def __process_single_copy(self, template: MimeoTemplate, parent: ElemTree.Element = None):
-        return self.__to_xml(parent, template.model.root_name, template.model.root_data)
+    def _process_single_copy(cls, template: MimeoTemplate, parent: ElemTree.Element = None):
+        return cls._process_node(parent, template.model.root_name, template.model.root_data)
 
-    def __to_xml(self, parent, element_tag, element_value, attributes: dict = None):
+    @classmethod
+    @mimeo_context
+    def _process_node(cls, parent, element_tag, element_value, attributes: dict = None, context: MimeoContext = None):
         logger.fine(f"Rendering element - "
                     f"parent [{parent if parent is None else parent.tag}], "
                     f"element_tag [{element_tag}], "
@@ -59,15 +65,15 @@ class XMLGenerator(Generator):
         attributes = attributes if attributes is not None else {}
         if element_tag == MimeoConfig.TEMPLATES_KEY:
             templates = (MimeoTemplate(template) for template in element_value)
-            for _ in self.generate(templates, parent):
+            for _ in cls.generate(templates, parent):
                 pass
         else:
             is_special_field = MimeoRenderer.is_special_field(element_tag)
             if is_special_field:
                 element_tag = MimeoRenderer.get_special_field_name(element_tag)
 
-            element = ElemTree.Element(element_tag, attrib=attributes) if parent is None else ElemTree.SubElement(
-                parent, element_tag, attrib=attributes)
+            element = cls._create_xml_element(parent, element_tag, attributes)
+
             if isinstance(element_value, dict) and not MimeoRenderer.is_parametrized_mimeo_util(element_value):
                 if MimeoConfig.MODEL_ATTRIBUTES_KEY in element_value:
                     element_value_copy = dict(element_value)
@@ -75,27 +81,27 @@ class XMLGenerator(Generator):
                     value = element_value_copy.get(MimeoConfig.MODEL_VALUE_KEY, element_value_copy)
                     if parent is not None:
                         parent.remove(element)
-                        self.__to_xml(parent, element_tag, value, attrs)
+                        cls._process_node(parent, element_tag, value, attrs)
                     else:
-                        return self.__to_xml(parent, element_tag, value, attrs)
+                        return cls._process_node(parent, element_tag, value, attrs)
                 else:
                     for child_tag, child_value in element_value.items():
-                        self.__to_xml(element, child_tag, child_value)
+                        cls._process_node(element, child_tag, child_value)
             elif isinstance(element_value, list):
                 has_only_atomic_values = all(not isinstance(child, (list, dict)) for child in element_value)
                 if has_only_atomic_values:
                     parent.remove(element)
                     for child in element_value:
-                        self.__to_xml(parent, element_tag, child)
+                        cls._process_node(parent, element_tag, child)
                 else:
                     for child in element_value:
                         grand_child_tag = next(iter(child))
                         grand_child_data = child[grand_child_tag]
-                        self.__to_xml(element, grand_child_tag, grand_child_data)
+                        cls._process_node(element, grand_child_tag, grand_child_data)
             else:
                 value = MimeoRenderer.render(element_value)
                 if is_special_field:
-                    self._mimeo_manager.get_current_context().curr_iteration().add_special_field(element_tag,
+                    context.curr_iteration().add_special_field(element_tag,
                                                                                                  value)
 
                 value_str = str(value)
@@ -104,3 +110,10 @@ class XMLGenerator(Generator):
 
             if parent is None:
                 return element
+
+    @classmethod
+    def _create_xml_element(cls, parent, element_tag, attributes):
+        if parent is None:
+            return ElemTree.Element(element_tag, attrib=attributes)
+        else:
+            return ElemTree.SubElement(parent, element_tag, attrib=attributes)
