@@ -1,6 +1,7 @@
 import re
 
 from mimeo.config import MimeoConfig
+from mimeo.context import MimeoContextManager
 from mimeo.utils import (AutoIncrementUtil, CityUtil, CountryUtil,
                          CurrentIterationUtil, DateTimeUtil, DateUtil, KeyUtil,
                          MimeoUtil, RandomIntegerUtil, RandomItemUtil,
@@ -8,7 +9,7 @@ from mimeo.utils import (AutoIncrementUtil, CityUtil, CountryUtil,
 from mimeo.utils.exc import InvalidMimeoUtil
 
 
-class MimeoUtilRenderer:
+class UtilsRenderer:
 
     _MIMEO_UTIL_NAME = "_name"
     _MIMEO_UTILS = {
@@ -69,3 +70,11 @@ class MimeoUtilRenderer:
         mimeo_util = cls._MIMEO_UTILS.get(name)(**config)
         cls._INSTANCES[key] = mimeo_util
         return mimeo_util
+
+
+class VarsRenderer:
+
+    @classmethod
+    def render(cls, var: str):
+        with MimeoContextManager() as mimeo_manager:
+            return mimeo_manager.get_var(var[1:][:-1])

@@ -4,7 +4,7 @@ from mimeo.config import MimeoConfig
 from mimeo.context import MimeoContextManager
 from mimeo.database import MimeoDB
 from mimeo.database.exc import CountryNotFound
-from mimeo.utils import MimeoUtilRenderer
+from mimeo.utils import UtilsRenderer
 from mimeo.utils.exc import InvalidValue
 
 
@@ -33,7 +33,7 @@ def test_country_raw(default_config):
         context = mimeo_manager.get_context("SomeEntity")
         mimeo_manager.set_current_context(context)
 
-        country = MimeoUtilRenderer.render_raw("country")
+        country = UtilsRenderer.render_raw("country")
         assert country in countries
 
 
@@ -44,7 +44,7 @@ def test_country_parametrized_default(default_config):
         context = mimeo_manager.get_context("SomeEntity")
         mimeo_manager.set_current_context(context)
 
-        country = MimeoUtilRenderer.render_parametrized({"_name": "country"})
+        country = UtilsRenderer.render_parametrized({"_name": "country"})
         assert country in country_names
 
 
@@ -55,7 +55,7 @@ def test_country_parametrized_with_allow_duplicates(default_config):
         context = mimeo_manager.get_context("SomeEntity")
         mimeo_manager.set_current_context(context)
 
-        country = MimeoUtilRenderer.render_parametrized({"_name": "country", "allow_duplicates": True})
+        country = UtilsRenderer.render_parametrized({"_name": "country", "allow_duplicates": True})
         assert country in country_names
 
 
@@ -64,7 +64,7 @@ def test_country_parametrized_with_country_iso3(default_config):
         context = mimeo_manager.get_context("SomeEntity")
         mimeo_manager.set_current_context(context)
 
-        country = MimeoUtilRenderer.render_parametrized({"_name": "country", "country": "GBR"})
+        country = UtilsRenderer.render_parametrized({"_name": "country", "country": "GBR"})
         assert country == "United Kingdom"
 
 
@@ -73,7 +73,7 @@ def test_country_parametrized_with_country_iso2(default_config):
         context = mimeo_manager.get_context("SomeEntity")
         mimeo_manager.set_current_context(context)
 
-        country = MimeoUtilRenderer.render_parametrized({"_name": "country", "country": "GB"})
+        country = UtilsRenderer.render_parametrized({"_name": "country", "country": "GB"})
         assert country == "United Kingdom"
 
 
@@ -83,7 +83,7 @@ def test_country_parametrized_with_non_existing_country(default_config):
         mimeo_manager.set_current_context(context)
 
         with pytest.raises(CountryNotFound) as err:
-            MimeoUtilRenderer.render_parametrized({"_name": "country", "country": "NEC"})
+            UtilsRenderer.render_parametrized({"_name": "country", "country": "NEC"})
 
         assert err.value.args[0] == "Mimeo database does not contain such a country [NEC]."
 
@@ -95,7 +95,7 @@ def test_country_parametrized_with_value_iso3(default_config):
         context = mimeo_manager.get_context("SomeEntity")
         mimeo_manager.set_current_context(context)
 
-        country = MimeoUtilRenderer.render_parametrized({"_name": "country", "value": "iso3"})
+        country = UtilsRenderer.render_parametrized({"_name": "country", "value": "iso3"})
         assert country in countries_iso3
 
 
@@ -106,7 +106,7 @@ def test_country_parametrized_with_value_iso3_and_allow_duplicates(default_confi
         context = mimeo_manager.get_context("SomeEntity")
         mimeo_manager.set_current_context(context)
 
-        country = MimeoUtilRenderer.render_parametrized({"_name": "country", "value": "iso3", "allow_duplicates": True})
+        country = UtilsRenderer.render_parametrized({"_name": "country", "value": "iso3", "allow_duplicates": True})
         assert country in countries_iso3
 
 
@@ -115,7 +115,7 @@ def test_country_parametrized_with_value_iso3_and_country_name(default_config):
         context = mimeo_manager.get_context("SomeEntity")
         mimeo_manager.set_current_context(context)
 
-        country = MimeoUtilRenderer.render_parametrized({"_name": "country", "value": "iso3", "country": "United Kingdom"})
+        country = UtilsRenderer.render_parametrized({"_name": "country", "value": "iso3", "country": "United Kingdom"})
         assert country == "GBR"
 
 
@@ -124,7 +124,7 @@ def test_country_parametrized_with_value_iso3_and_country_iso2(default_config):
         context = mimeo_manager.get_context("SomeEntity")
         mimeo_manager.set_current_context(context)
 
-        country = MimeoUtilRenderer.render_parametrized({"_name": "country", "value": "iso3", "country": "GB"})
+        country = UtilsRenderer.render_parametrized({"_name": "country", "value": "iso3", "country": "GB"})
         assert country == "GBR"
 
 
@@ -134,7 +134,7 @@ def test_country_parametrized_with_value_iso3_and_non_existing_country(default_c
         mimeo_manager.set_current_context(context)
 
         with pytest.raises(CountryNotFound) as err:
-            MimeoUtilRenderer.render_parametrized({"_name": "country", "value": "iso3", "country": "NEC"})
+            UtilsRenderer.render_parametrized({"_name": "country", "value": "iso3", "country": "NEC"})
 
         assert err.value.args[0] == "Mimeo database does not contain such a country [NEC]."
 
@@ -146,7 +146,7 @@ def test_country_parametrized_with_value_iso2(default_config):
         context = mimeo_manager.get_context("SomeEntity")
         mimeo_manager.set_current_context(context)
 
-        country = MimeoUtilRenderer.render_parametrized({"_name": "country", "value": "iso2"})
+        country = UtilsRenderer.render_parametrized({"_name": "country", "value": "iso2"})
         assert country in countries_iso2
 
 
@@ -157,7 +157,7 @@ def test_country_parametrized_with_value_iso2_and_allow_duplicates(default_confi
         context = mimeo_manager.get_context("SomeEntity")
         mimeo_manager.set_current_context(context)
 
-        country = MimeoUtilRenderer.render_parametrized({"_name": "country", "value": "iso2", "allow_duplicates": True})
+        country = UtilsRenderer.render_parametrized({"_name": "country", "value": "iso2", "allow_duplicates": True})
         assert country in countries_iso2
 
 
@@ -166,7 +166,7 @@ def test_country_parametrized_with_value_iso2_and_country_name(default_config):
         context = mimeo_manager.get_context("SomeEntity")
         mimeo_manager.set_current_context(context)
 
-        country = MimeoUtilRenderer.render_parametrized({"_name": "country", "value": "iso2", "country": "United Kingdom"})
+        country = UtilsRenderer.render_parametrized({"_name": "country", "value": "iso2", "country": "United Kingdom"})
         assert country == "GB"
 
 
@@ -175,7 +175,7 @@ def test_country_parametrized_with_value_iso2_and_country_iso3(default_config):
         context = mimeo_manager.get_context("SomeEntity")
         mimeo_manager.set_current_context(context)
 
-        country = MimeoUtilRenderer.render_parametrized({"_name": "country", "value": "iso2", "country": "GBR"})
+        country = UtilsRenderer.render_parametrized({"_name": "country", "value": "iso2", "country": "GBR"})
         assert country == "GB"
 
 
@@ -185,7 +185,7 @@ def test_country_parametrized_with_value_iso2_and_non_existing_country(default_c
         mimeo_manager.set_current_context(context)
 
         with pytest.raises(CountryNotFound) as err:
-            MimeoUtilRenderer.render_parametrized({"_name": "country", "value": "iso2", "country": "NEC"})
+            UtilsRenderer.render_parametrized({"_name": "country", "value": "iso2", "country": "NEC"})
 
         assert err.value.args[0] == "Mimeo database does not contain such a country [NEC]."
 
@@ -196,7 +196,7 @@ def test_country_parametrized_with_invalid_value(default_config):
         mimeo_manager.set_current_context(context)
 
         with pytest.raises(InvalidValue) as err:
-            MimeoUtilRenderer.render_parametrized({"_name": "country", "value": "not_supported"})
+            UtilsRenderer.render_parametrized({"_name": "country", "value": "not_supported"})
 
         assert err.value.args[0] == "The `country` Mimeo Util does not support such value [not_supported]. " \
                                     "Supported values are: name (default), iso3, iso2."

@@ -2,7 +2,7 @@ import pytest
 
 from mimeo.config import MimeoConfig
 from mimeo.context import MimeoContextManager
-from mimeo.utils import MimeoUtilRenderer
+from mimeo.utils import UtilsRenderer
 
 
 @pytest.fixture(autouse=True)
@@ -29,11 +29,11 @@ def test_curr_iter_raw(default_config):
         mimeo_manager.set_current_context(context)
 
         context.next_iteration()
-        curr_iter = MimeoUtilRenderer.render_raw("curr_iter")
+        curr_iter = UtilsRenderer.render_raw("curr_iter")
         assert curr_iter == 1
 
         context.next_iteration()
-        curr_iter = MimeoUtilRenderer.render_raw("curr_iter")
+        curr_iter = UtilsRenderer.render_raw("curr_iter")
         assert curr_iter == 2
 
 
@@ -43,11 +43,11 @@ def test_curr_iter_parametrized_default(default_config):
         mimeo_manager.set_current_context(context)
 
         context.next_iteration()
-        curr_iter = MimeoUtilRenderer.render_parametrized({"_name": "curr_iter"})
+        curr_iter = UtilsRenderer.render_parametrized({"_name": "curr_iter"})
         assert curr_iter == 1
 
         context.next_iteration()
-        curr_iter = MimeoUtilRenderer.render_parametrized({"_name": "curr_iter"})
+        curr_iter = UtilsRenderer.render_parametrized({"_name": "curr_iter"})
         assert curr_iter == 2
 
 
@@ -58,12 +58,12 @@ def test_curr_iter_parametrized_with_context(default_config):
 
         mimeo_manager.set_current_context(context1)
         context1.next_iteration()
-        curr_iter = MimeoUtilRenderer.render_raw("curr_iter")
+        curr_iter = UtilsRenderer.render_raw("curr_iter")
         assert curr_iter == 1
         context1.next_iteration()
-        curr_iter = MimeoUtilRenderer.render_raw("curr_iter")
+        curr_iter = UtilsRenderer.render_raw("curr_iter")
         assert curr_iter == 2
 
         context2.next_iteration()
-        curr_iter = MimeoUtilRenderer.render_parametrized({"_name": "curr_iter", "context": "SomeOtherEntity"})
+        curr_iter = UtilsRenderer.render_parametrized({"_name": "curr_iter", "context": "SomeOtherEntity"})
         assert curr_iter == 1

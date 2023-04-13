@@ -2,7 +2,7 @@ import pytest
 
 from mimeo.config import MimeoConfig
 from mimeo.context import MimeoContextManager
-from mimeo.utils import MimeoUtilRenderer
+from mimeo.utils import UtilsRenderer
 
 
 @pytest.fixture(autouse=True)
@@ -29,16 +29,16 @@ def test_key_raw(default_config):
         mimeo_manager.set_current_context(context)
 
         context.next_iteration()
-        key1_1 = MimeoUtilRenderer.render_raw("key")
-        key1_2 = MimeoUtilRenderer.render_raw("key")
+        key1_1 = UtilsRenderer.render_raw("key")
+        key1_2 = UtilsRenderer.render_raw("key")
 
         context.next_iteration()
-        key2_1 = MimeoUtilRenderer.render_raw("key")
-        key2_2 = MimeoUtilRenderer.render_raw("key")
+        key2_1 = UtilsRenderer.render_raw("key")
+        key2_2 = UtilsRenderer.render_raw("key")
 
         context.next_iteration()
-        key3_1 = MimeoUtilRenderer.render_raw("key")
-        key3_2 = MimeoUtilRenderer.render_raw("key")
+        key3_1 = UtilsRenderer.render_raw("key")
+        key3_2 = UtilsRenderer.render_raw("key")
 
         assert key1_1 == key1_2
         assert key2_1 == key2_2
@@ -54,16 +54,16 @@ def test_key_parametrized_default(default_config):
         mimeo_manager.set_current_context(context)
 
         context.next_iteration()
-        key1_1 = MimeoUtilRenderer.render_parametrized({"_name": "key"})
-        key1_2 = MimeoUtilRenderer.render_parametrized({"_name": "key"})
+        key1_1 = UtilsRenderer.render_parametrized({"_name": "key"})
+        key1_2 = UtilsRenderer.render_parametrized({"_name": "key"})
 
         context.next_iteration()
-        key2_1 = MimeoUtilRenderer.render_parametrized({"_name": "key"})
-        key2_2 = MimeoUtilRenderer.render_parametrized({"_name": "key"})
+        key2_1 = UtilsRenderer.render_parametrized({"_name": "key"})
+        key2_2 = UtilsRenderer.render_parametrized({"_name": "key"})
 
         context.next_iteration()
-        key3_1 = MimeoUtilRenderer.render_parametrized({"_name": "key"})
-        key3_2 = MimeoUtilRenderer.render_parametrized({"_name": "key"})
+        key3_1 = UtilsRenderer.render_parametrized({"_name": "key"})
+        key3_2 = UtilsRenderer.render_parametrized({"_name": "key"})
 
         assert key1_1 == key1_2
         assert key2_1 == key2_2
@@ -80,12 +80,12 @@ def test_key_parametrized_with_context(default_config):
 
         mimeo_manager.set_current_context(context1)
         context1.next_iteration()
-        key_some_entity = MimeoUtilRenderer.render_raw("key")
+        key_some_entity = UtilsRenderer.render_raw("key")
 
         mimeo_manager.set_current_context(context2)
         context2.next_iteration()
-        key_some_other_entity = MimeoUtilRenderer.render_raw("key")
-        key_some_entity_outside_context = MimeoUtilRenderer.render_parametrized({
+        key_some_other_entity = UtilsRenderer.render_raw("key")
+        key_some_entity_outside_context = UtilsRenderer.render_parametrized({
             "_name": "key",
             "context": "SomeEntity"
         })
@@ -102,13 +102,61 @@ def test_key_parametrized_with_context_and_iteration(default_config):
         mimeo_manager.set_current_context(context1)
         context1.next_iteration()
         context1.next_iteration()
-        key = MimeoUtilRenderer.render_raw("key")
+        key = UtilsRenderer.render_raw("key")
         context1.next_iteration()
 
         mimeo_manager.set_current_context(context2)
-        key_outside_context = MimeoUtilRenderer.render_parametrized({
+        key_outside_context = UtilsRenderer.render_parametrized({
             "_name": "key",
             "context": "SomeEntity",
             "iteration": 2
+        })
+        assert key == key_outside_context
+
+
+def test_key_parametrized_with_context_and_iteration_using_raw_mimeo_util(default_config):
+    with MimeoContextManager(default_config) as mimeo_manager:
+        context1 = mimeo_manager.get_context("SomeEntity")
+        context2 = mimeo_manager.get_context("SomeOtherEntity")
+
+        mimeo_manager.set_current_context(context1)
+        context1.next_iteration()
+        context1.next_iteration()
+        key = UtilsRenderer.render_raw("key")
+        context1.next_iteration()
+
+        mimeo_manager.set_current_context(context2)
+        context2.next_iteration()
+        context2.next_iteration()
+        key_outside_context = UtilsRenderer.render_parametrized({
+            "_name": "key",
+            "context": "SomeEntity",
+            "iteration": "{curr_iter}"
+        })
+        assert key == key_outside_context
+
+
+def test_key_parametrized_with_context_and_iteration_using_parametrized_mimeo_util(default_config):
+    with MimeoContextManager(default_config) as mimeo_manager:
+        context1 = mimeo_manager.get_context("SomeEntity")
+        context2 = mimeo_manager.get_context("SomeOtherEntity")
+
+        mimeo_manager.set_current_context(context1)
+        context1.next_iteration()
+        context1.next_iteration()
+        key = UtilsRenderer.render_raw("key")
+        context1.next_iteration()
+
+        mimeo_manager.set_current_context(context2)
+        context2.next_iteration()
+        context2.next_iteration()
+        key_outside_context = UtilsRenderer.render_parametrized({
+            "_name": "key",
+            "context": "SomeEntity",
+            "iteration": {
+                "_mimeo_util": {
+                    "_name": "curr_iter"
+                }
+            }
         })
         assert key == key_outside_context
