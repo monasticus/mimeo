@@ -1,3 +1,6 @@
+import re
+
+from mimeo.config import MimeoConfig
 from mimeo.utils import (AutoIncrementUtil, CityUtil, CountryUtil,
                          CurrentIterationUtil, DateTimeUtil, DateUtil, KeyUtil,
                          MimeoUtil, RandomIntegerUtil, RandomItemUtil,
@@ -30,6 +33,16 @@ class MimeoUtilRenderer:
     def render_parametrized(cls, mimeo_util_config: dict):
         mimeo_util = cls._get_mimeo_util(mimeo_util_config)
         return mimeo_util.render()
+
+    @classmethod
+    def is_raw_mimeo_util(cls, value: str):
+        raw_mimeo_utils = cls._MIMEO_UTILS.keys()
+        raw_mimeo_utils_re = "^{(" + "|".join(raw_mimeo_utils) + ")}$"
+        return bool(re.match(raw_mimeo_utils_re, value))
+
+    @classmethod
+    def is_parametrized_mimeo_util(cls, value: dict):
+        return isinstance(value, dict) and len(value) == 1 and MimeoConfig.MODEL_MIMEO_UTIL_KEY in value
 
     @classmethod
     def _get_mimeo_util(cls, mimeo_util_config: dict) -> MimeoUtil:
