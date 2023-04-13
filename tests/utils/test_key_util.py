@@ -2,7 +2,7 @@ import pytest
 
 from mimeo.config import MimeoConfig
 from mimeo.context import MimeoContextManager
-from mimeo.utils import UtilsRenderer
+from mimeo.utils.renderer import UtilsRenderer
 
 
 @pytest.fixture(autouse=True)
@@ -110,53 +110,5 @@ def test_key_parametrized_with_context_and_iteration(default_config):
             "_name": "key",
             "context": "SomeEntity",
             "iteration": 2
-        })
-        assert key == key_outside_context
-
-
-def test_key_parametrized_with_context_and_iteration_using_raw_mimeo_util(default_config):
-    with MimeoContextManager(default_config) as mimeo_manager:
-        context1 = mimeo_manager.get_context("SomeEntity")
-        context2 = mimeo_manager.get_context("SomeOtherEntity")
-
-        mimeo_manager.set_current_context(context1)
-        context1.next_iteration()
-        context1.next_iteration()
-        key = UtilsRenderer.render_raw("key")
-        context1.next_iteration()
-
-        mimeo_manager.set_current_context(context2)
-        context2.next_iteration()
-        context2.next_iteration()
-        key_outside_context = UtilsRenderer.render_parametrized({
-            "_name": "key",
-            "context": "SomeEntity",
-            "iteration": "{curr_iter}"
-        })
-        assert key == key_outside_context
-
-
-def test_key_parametrized_with_context_and_iteration_using_parametrized_mimeo_util(default_config):
-    with MimeoContextManager(default_config) as mimeo_manager:
-        context1 = mimeo_manager.get_context("SomeEntity")
-        context2 = mimeo_manager.get_context("SomeOtherEntity")
-
-        mimeo_manager.set_current_context(context1)
-        context1.next_iteration()
-        context1.next_iteration()
-        key = UtilsRenderer.render_raw("key")
-        context1.next_iteration()
-
-        mimeo_manager.set_current_context(context2)
-        context2.next_iteration()
-        context2.next_iteration()
-        key_outside_context = UtilsRenderer.render_parametrized({
-            "_name": "key",
-            "context": "SomeEntity",
-            "iteration": {
-                "_mimeo_util": {
-                    "_name": "curr_iter"
-                }
-            }
         })
         assert key == key_outside_context

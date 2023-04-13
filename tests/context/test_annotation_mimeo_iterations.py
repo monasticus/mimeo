@@ -1,8 +1,9 @@
 import pytest
 
 from mimeo.config import MimeoConfig
-from mimeo.context import MimeoContext, MimeoContextManager
-from mimeo.context.annotations import mimeo_context, mimeo_next_iteration, mimeo_clear_iterations
+from mimeo.context import MimeoContextManager
+from mimeo.context.annotations import (mimeo_clear_iterations,
+                                       mimeo_next_iteration)
 
 
 @pytest.fixture(autouse=True)

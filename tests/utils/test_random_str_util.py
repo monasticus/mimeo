@@ -1,4 +1,4 @@
-from mimeo.utils import UtilsRenderer
+from mimeo.utils.renderer import UtilsRenderer
 
 
 def test_random_str_raw():

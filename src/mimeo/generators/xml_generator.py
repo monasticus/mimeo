@@ -4,9 +4,11 @@ from typing import Iterator, List, Union
 from xml.dom import minidom
 
 from mimeo.config.mimeo_config import MimeoConfig, MimeoTemplate
-from mimeo.context.annotations import (mimeo_context_switch,
+from mimeo.context.annotations import (mimeo_clear_iterations,
+                                       mimeo_context_switch,
                                        mimeo_next_iteration)
-from mimeo.generators import Generator, GeneratorUtils
+from mimeo.generators import Generator
+from mimeo.utils import MimeoRenderer
 
 logger = logging.getLogger(__name__)
 
@@ -14,10 +16,9 @@ logger = logging.getLogger(__name__)
 class XMLGenerator(Generator):
 
     def __init__(self, mimeo_config: MimeoConfig):
-        super().__init__(mimeo_config)
+        super().__init__()
         self.__indent = mimeo_config.indent
         self.__xml_declaration = mimeo_config.xml_declaration
-        self.__current_template = None
 
     def generate(self, templates: Union[list, Iterator[MimeoTemplate]], parent: ElemTree.Element = None) -> Iterator[ElemTree.Element]:
         for template in templates:
@@ -39,22 +40,15 @@ class XMLGenerator(Generator):
                 return xml_minidom.childNodes[0].toprettyxml(indent=" " * self.__indent, encoding="utf-8").decode('ascii')
 
     @mimeo_context_switch
+    @mimeo_clear_iterations
     def __process_single_template(self, template: MimeoTemplate, parent: ElemTree.Element = None) -> List[ElemTree.Element]:
         logger.debug(f"Reading template [{template}]")
-        self.__current_template = template
-        utils = GeneratorUtils.get_for_context(template.model.context_name)
-        utils.reset()
-        items = []
-        for i in iter(range(template.count)):
-            utils.setup_iteration(i + 1)
-            items.append(self.__process_single_copy(template, parent))
-        return items
+        copies = [self.__process_single_copy(template, parent) for _ in iter(range(template.count))]
+        return copies
 
     @mimeo_next_iteration
     def __process_single_copy(self, template: MimeoTemplate, parent: ElemTree.Element = None):
-        return self.__to_xml(parent,
-                             template.model.root_name,
-                             template.model.root_data)
+        return self.__to_xml(parent, template.model.root_name, template.model.root_data)
 
     def __to_xml(self, parent, element_tag, element_value, attributes: dict = None):
         logger.fine(f"Rendering element - "
@@ -65,19 +59,16 @@ class XMLGenerator(Generator):
         attributes = attributes if attributes is not None else {}
         if element_tag == MimeoConfig.TEMPLATES_KEY:
             templates = (MimeoTemplate(template) for template in element_value)
-            curr_template = self.__current_template
             for _ in self.generate(templates, parent):
                 pass
-            self.__current_template = curr_template
         else:
-            is_special_field = GeneratorUtils.is_special_field(element_tag)
+            is_special_field = MimeoRenderer.is_special_field(element_tag)
             if is_special_field:
-                special_field = element_tag
-                element_tag = GeneratorUtils.get_special_field_name(element_tag)
+                element_tag = MimeoRenderer.get_special_field_name(element_tag)
 
             element = ElemTree.Element(element_tag, attrib=attributes) if parent is None else ElemTree.SubElement(
                 parent, element_tag, attrib=attributes)
-            if isinstance(element_value, dict):
+            if isinstance(element_value, dict) and MimeoConfig.MODEL_MIMEO_UTIL_KEY not in element_value:
                 if MimeoConfig.MODEL_ATTRIBUTES_KEY in element_value:
                     element_value_copy = dict(element_value)
                     attrs = element_value_copy.pop(MimeoConfig.MODEL_ATTRIBUTES_KEY)
@@ -102,12 +93,13 @@ class XMLGenerator(Generator):
                         grand_child_data = child[grand_child_tag]
                         self.__to_xml(element, grand_child_tag, grand_child_data)
             else:
-                element.text = GeneratorUtils.render_value(self.__current_template.model.context_name, element_value)
+                value = MimeoRenderer.render(element_value)
                 if is_special_field:
-                    utils = GeneratorUtils.get_for_context(self.__current_template.model.context_name)
-                    utils.provide(special_field, element.text)
-                    self._mimeo_manager.get_current_context().curr_iteration().add_special_field(special_field,
-                                                                                                 element.text)
+                    self._mimeo_manager.get_current_context().curr_iteration().add_special_field(element_tag,
+                                                                                                 value)
+
+                value_str = str(value)
+                element.text = value_str.lower() if isinstance(value, bool) else value_str
                 logger.fine(f"Rendered value [{element.text}]")
 
             if parent is None:

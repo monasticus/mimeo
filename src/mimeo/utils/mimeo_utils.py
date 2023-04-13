@@ -111,7 +111,7 @@ class CurrentIterationUtil(MimeoUtil):
     KEY = "curr_iter"
 
     def __init__(self, **kwargs):
-        self.__context_name = kwargs.get("context", None)
+        self.__context_name = kwargs.get("context")
 
     @mimeo_context
     def render(self, context: MimeoContext = None):
@@ -124,8 +124,8 @@ class KeyUtil(MimeoUtil):
     KEY = "key"
 
     def __init__(self, **kwargs):
-        self.__context_name = kwargs.get("context", None)
-        self.__iteration = kwargs.get("iteration", None)
+        self.__context_name = kwargs.get("context")
+        self.__iteration = kwargs.get("iteration")
 
     @mimeo_context
     def render(self, context: MimeoContext = None):

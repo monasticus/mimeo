@@ -4,8 +4,8 @@ from mimeo.config import MimeoConfig
 from mimeo.context import MimeoContextManager
 from mimeo.database import MimeoDB
 from mimeo.database.exc import CountryNotFound
-from mimeo.utils import UtilsRenderer
 from mimeo.utils.exc import InvalidValue
+from mimeo.utils.renderer import UtilsRenderer
 
 
 @pytest.fixture(autouse=True)

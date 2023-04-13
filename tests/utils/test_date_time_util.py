@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 
-from mimeo.utils import UtilsRenderer
+from mimeo.utils.renderer import UtilsRenderer
 
 
 def test_date_time_raw():

@@ -46,6 +46,7 @@ class MimeoConfig(MimeoDTO):
     MODEL_ATTRIBUTES_KEY = "_attrs"
     MODEL_VALUE_KEY = "_value"
     MODEL_MIMEO_UTIL_KEY = "_mimeo_util"
+    MODEL_MIMEO_UTIL_NAME_KEY = "_name"
 
     SUPPORTED_OUTPUT_FORMATS = ("xml",)
 

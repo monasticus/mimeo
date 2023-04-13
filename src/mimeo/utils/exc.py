@@ -4,3 +4,7 @@ class InvalidMimeoUtil(Exception):
 
 class InvalidValue(Exception):
     pass
+
+
+class NotASpecialField(Exception):
+    pass
