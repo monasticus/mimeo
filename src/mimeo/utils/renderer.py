@@ -76,5 +76,4 @@ class VarsRenderer:
 
     @classmethod
     def render(cls, var: str):
-        with MimeoContextManager() as mimeo_manager:
-            return mimeo_manager.get_var(var[1:][:-1])
+        return MimeoContextManager().get_var(var)

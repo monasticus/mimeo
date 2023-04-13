@@ -11,7 +11,7 @@ def test_vars_str():
         "_templates_": []
     })
     with MimeoContextManager(config):
-        value = VarsRenderer.render("{CUSTOM_VAR_1}")
+        value = VarsRenderer.render("CUSTOM_VAR_1")
         assert value == "custom-value-1"
 
 
@@ -23,7 +23,7 @@ def test_vars_int():
         "_templates_": []
     })
     with MimeoContextManager(config):
-        value = VarsRenderer.render("{CUSTOM_VAR_1}")
+        value = VarsRenderer.render("CUSTOM_VAR_1")
         assert value == 1
 
 
@@ -35,5 +35,5 @@ def test_vars_bool():
         "_templates_": []
     })
     with MimeoContextManager(config):
-        value = VarsRenderer.render("{CUSTOM_VAR_1}")
+        value = VarsRenderer.render("CUSTOM_VAR_1")
         assert value is True
