@@ -3,16 +3,22 @@
     {
       "count": 30,
       "model": {
+        "context": "ROOT",
         "SomeEntity": {
-          "ID": "{curr_iter()}",
+          "ID": "{curr_iter}",
           "Children": {
             "_templates_": [
               {
                 "count": 5,
                 "model": {
                   "SomeChild": {
-                    "ID": "{curr_iter()}",
-                    "Parent": "{curr_iter('SomeEntity')}"
+                    "ID": "{curr_iter}",
+                    "Parent": {
+                      "_mimeo_util": {
+                        "_name": "curr_iter",
+                        "context": "ROOT"
+                      }
+                    }
                   }
                 }
               }

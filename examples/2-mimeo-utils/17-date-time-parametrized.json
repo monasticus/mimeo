@@ -1,0 +1,59 @@
+{
+  "_templates_": [
+    {
+      "count": 30,
+      "model": {
+        "SomeEntity": {
+          "TomorrowAtTheSameTime": {
+            "_mimeo_util": {
+              "_name": "date_time",
+              "days_delta": 1
+            }
+          },
+          "TomorrowThreeHoursLater": {
+            "_mimeo_util": {
+              "_name": "date_time",
+              "days_delta": 1,
+              "hours_delta": 3
+            }
+          },
+          "TomorrowThreeHoursLaterTwentyMinutesAgo": {
+            "_mimeo_util": {
+              "_name": "date_time",
+              "days_delta": 1,
+              "hours_delta": 3,
+              "minutes_delta": -20
+            }
+          },
+          "TomorrowThreeHoursLaterTwentyMinutesAgoTwoSecondsLater": {
+            "_mimeo_util": {
+              "_name": "date_time",
+              "days_delta": 1,
+              "hours_delta": 3,
+              "minutes_delta": -20,
+              "seconds_delta": 2
+            }
+          },
+          "OneHourAgo": {
+            "_mimeo_util": {
+              "_name": "date_time",
+              "hours_delta": -1
+            }
+          },
+          "OneMinuteAgo": {
+            "_mimeo_util": {
+              "_name": "date_time",
+              "minutes_delta": -1
+            }
+          },
+          "OneSecondAgo": {
+            "_mimeo_util": {
+              "_name": "date_time",
+              "seconds_delta": -1
+            }
+          }
+        }
+      }
+    }
+  ]
+}

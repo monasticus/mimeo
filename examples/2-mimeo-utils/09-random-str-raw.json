@@ -4,7 +4,7 @@
       "count": 30,
       "model": {
         "SomeEntity": {
-          "ID": "{random(['value', 1, True])}"
+          "ID": "{random_str}"
         }
       }
     }

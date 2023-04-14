@@ -1,0 +1,83 @@
+{
+  "_templates_": [
+    {
+      "count": 30,
+      "model": {
+        "SomeEntity": {
+          "CountryNameWithDuplicates": {
+            "_mimeo_util": {
+              "_name": "country",
+              "allow_duplicates": true
+            }
+          },
+          "CountryNameForISO2": {
+            "_mimeo_util": {
+              "_name": "country",
+              "country": "GB"
+            }
+          },
+          "CountryNameForISO3": {
+            "_mimeo_util": {
+              "_name": "country",
+              "country": "GBR"
+            }
+          },
+          "CountryISO2": {
+            "_mimeo_util": {
+              "_name": "country",
+              "value": "iso2"
+            }
+          },
+          "CountryISO2WithDuplicates": {
+            "_mimeo_util": {
+              "_name": "country",
+              "value": "iso2",
+              "allow_duplicates": true
+            }
+          },
+          "CountryISO2ForName": {
+            "_mimeo_util": {
+              "_name": "country",
+              "value": "iso2",
+              "country": "United Kingdom"
+            }
+          },
+          "CountryISO2ForISO3": {
+            "_mimeo_util": {
+              "_name": "country",
+              "value": "iso2",
+              "country": "GBR"
+            }
+          },
+          "CountryISO3": {
+            "_mimeo_util": {
+              "_name": "country",
+              "value": "iso3"
+            }
+          },
+          "CountryISO3WithDuplicates": {
+            "_mimeo_util": {
+              "_name": "country",
+              "value": "iso3",
+              "allow_duplicates": true
+            }
+          },
+          "CountryISO3ForName": {
+            "_mimeo_util": {
+              "_name": "country",
+              "value": "iso3",
+              "country": "United Kingdom"
+            }
+          },
+          "CountryISO3ForISO2": {
+            "_mimeo_util": {
+              "_name": "country",
+              "value": "iso3",
+              "country": "GB"
+            }
+          }
+        }
+      }
+    }
+  ]
+}

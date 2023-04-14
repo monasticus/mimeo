@@ -1,0 +1,23 @@
+{
+  "_templates_": [
+    {
+      "count": 30,
+      "model": {
+        "SomeEntity": {
+          "Yesterday": {
+            "_mimeo_util": {
+              "_name": "date",
+              "days_delta": -1
+            }
+          },
+          "Tomorrow": {
+            "_mimeo_util": {
+              "_name": "date",
+              "days_delta": 1
+            }
+          }
+        }
+      }
+    }
+  ]
+}

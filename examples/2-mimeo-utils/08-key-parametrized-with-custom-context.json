@@ -1,0 +1,45 @@
+{
+  "_templates_": [
+    {
+      "count": 30,
+      "model": {
+        "context": "SomeEntity_1",
+        "SomeEntity": {
+          "ID": "{key}"
+        }
+      }
+    },
+    {
+      "count": 30,
+      "model": {
+        "context": "SomeEntity_2",
+        "SomeEntity": {
+          "ID": "{key}",
+          "LinkedEntity": {
+            "_mimeo_util": {
+              "_name": "key",
+              "context": "SomeEntity_1",
+              "iteration": 3
+            }
+          }
+        }
+      }
+    },
+    {
+      "count": 30,
+      "model": {
+        "context": "SomeEntity_3",
+        "SomeEntity": {
+          "ID": "{key}",
+          "LinkedEntity": {
+            "_mimeo_util": {
+              "_name": "key",
+              "context": "SomeEntity_1",
+              "iteration": "{curr_iter}"
+            }
+          }
+        }
+      }
+    }
+  ]
+}

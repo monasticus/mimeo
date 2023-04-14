@@ -4,7 +4,7 @@
       "count": 30,
       "model": {
         "SomeEntity": {
-          "ID": "{auto_increment()}"
+          "ID": "{auto_increment}"
         }
       }
     }

@@ -4,7 +4,7 @@
       "count": 30,
       "model": {
         "SomeEntity": {
-          "Country": "{country_iso3(True)}"
+          "ID": "{random_int}"
         }
       }
     }
