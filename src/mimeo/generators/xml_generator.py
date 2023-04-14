@@ -5,9 +5,9 @@ from xml.dom import minidom
 
 from mimeo.config.mimeo_config import MimeoConfig, MimeoTemplate
 from mimeo.context import MimeoContext
-from mimeo.context.annotations import (mimeo_clear_iterations,
+from mimeo.context.annotations import (mimeo_clear_iterations, mimeo_context,
                                        mimeo_context_switch,
-                                       mimeo_next_iteration, mimeo_context)
+                                       mimeo_next_iteration)
 from mimeo.generators import Generator
 from mimeo.utils import MimeoRenderer
 
