@@ -167,6 +167,43 @@ Mimeo configuration is defined in a JSON file using internal settings and data t
 | `model`                         | Template | :heavy_check_mark: |          object          |      ---       | Defines data template to be copied                                                                                                                      |
 | `context`                       |  Model   |        :x:         |          object          |      ---       | Defines a context name that is internally used e.g. using `curr_iter()` and `get_key()` mimeo utils (by default model name is used as the context name) |
 
+#### Mimeo Environment
+
+To make `http` output directory easier to use, mimeo allows you to configure Mimeo Environments.
+They are configured in a JSON file (by default: mimeo.envs.json) and support the following output details:
+- `protocol`
+- `host`
+- `port`
+- `auth`
+- `username`
+- `password`
+
+Example
+```json
+{
+    "local": {
+        "host": "localhost",
+        "port": 8000,
+        "username": "admin",
+        "password": "admin"
+    },
+    "dev": {
+        "protocol": "https",
+        "host": "11.111.11.111",
+        "port": 8000,
+        "auth": "digest",
+        "username": "some-user",
+        "password": "some-password"
+    }
+}
+```
+
+To use a specific Mimeo Environment you can use the following commands:
+```sh
+mimeo SomeEntity-config.json -e dev
+mimeo SomeEntity-config.json -e dev --http-envs-file environments.json
+```
+
 #### Mimeo Vars
 
 Mimeo allows you to define a list of variables.
