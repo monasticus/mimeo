@@ -1,0 +1,2 @@
+class InstanceNotAlive(Exception):
+    pass

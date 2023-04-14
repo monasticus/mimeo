@@ -1,6 +1,6 @@
 import pandas
 
-from mimeo import utils
+from mimeo import tools
 from mimeo.database.exc import InvalidIndex
 
 
@@ -62,5 +62,5 @@ class CountriesDB:
     @classmethod
     def __get_countries_df(cls) -> pandas.DataFrame:
         if cls.__COUNTRIES_DF is None:
-            cls.__COUNTRIES_DF = pandas.read_csv(utils.get_resource(CountriesDB.__COUNTRIES_DB))
+            cls.__COUNTRIES_DF = pandas.read_csv(tools.get_resource(CountriesDB.__COUNTRIES_DB))
         return cls.__COUNTRIES_DF

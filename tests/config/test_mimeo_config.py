@@ -41,7 +41,13 @@ def test_parsing_config():
         "xml_declaration": True,
         "indent": 4,
         "vars": {
-            "CUSTOM_KEY1": "custom value"
+            "CUSTOM_KEY1": "custom value",
+            "CUSTOM_KEY2": {
+                "_mimeo_util": {
+                    "_name": "auto_increment",
+                    "pattern": "{}"
+                }
+            }
         },
         "_templates_": [
             {
@@ -61,7 +67,13 @@ def test_parsing_config():
     assert mimeo_config.xml_declaration is True
     assert mimeo_config.indent == 4
     assert mimeo_config.vars == {
-        "CUSTOM_KEY1": "custom value"
+        "CUSTOM_KEY1": "custom value",
+        "CUSTOM_KEY2": {
+            "_mimeo_util": {
+                "_name": "auto_increment",
+                "pattern": "{}"
+            }
+        }
     }
 
 
@@ -217,7 +229,7 @@ def test_parsing_config_with_invalid_vars_starting_with_digit():
                                 "(you can use upper-cased name with underscore and digits, starting with a letter)!"
 
 
-def test_parsing_config_with_invalid_vars_using_non_atomic_value():
+def test_parsing_config_with_invalid_vars_using_non_atomic_value_and_non_mimeo_util():
     config = {
         "vars": {
             "CUSTOM_KEY1": {}
@@ -237,7 +249,7 @@ def test_parsing_config_with_invalid_vars_using_non_atomic_value():
     with pytest.raises(InvalidVars) as err:
         MimeoConfig(config)
 
-    assert err.value.args[0] == "Provided var [CUSTOM_KEY1] is invalid (you can use ony atomic values)!"
+    assert err.value.args[0] == "Provided var [CUSTOM_KEY1] is invalid (you can use ony atomic values and Mimeo Utils)!"
 
 
 def test_parsing_config_invalid_vars_not_being_object():

@@ -1,0 +1,17 @@
+{
+  "_templates_": [
+    {
+      "count": 30,
+      "model": {
+        "SomeEntity": {
+          "ID": {
+            "_mimeo_util": {
+              "_name": "random_int",
+              "limit": 25
+            }
+          }
+        }
+      }
+    }
+  ]
+}

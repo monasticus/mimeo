@@ -1,7 +1,7 @@
 
 # Mimeo (Mimeograph)
 
-**Mimeo** is a command line tool and python library generating custom data based on a template.
+**Mimeo** is a command line tool generating custom data based on a template.
 It can be used by developers, testers or even business analysts in their daily work.
 
 
@@ -44,26 +44,12 @@ Prepare Mimeo Configuration first
 ```
 _You can find more configuration examples in the `examples` folder._
 
-### Mimeograph
-
-#### Command line tool
+### Mimeo CLI
 
 ```sh
 mimeo SomeEntity-config.json
 ```
 
-#### Python library
-
-```python
-from mimeo import Mimeograph
-from mimeo.config import MimeoConfig
-
-config = {
-    # Your configuration
-}
-mimeo_config = MimeoConfig(config)
-Mimeograph(mimeo_config).produce()
-```
 ***
 The Mimeo Configuration above will produce 2 files:
 
@@ -95,9 +81,9 @@ Mimeo exposes several functions for data generation that will make it more usefu
   "count": 2,
   "model": {
     "SomeEntity": {
-      "id": "{auto_increment()}",
-      "randomstring": "{random_str()}",
-      "randomint": "{random_int()}",
+      "id": "{auto_increment}",
+      "randomstring": "{random_str}",
+      "randomint": "{random_int}"
     }
   }
 }
@@ -121,6 +107,38 @@ Mimeo exposes several functions for data generation that will make it more usefu
 
 
 ## Documentation
+
+### Mimeo CLI
+
+#### Mimeo Configuration arguments
+
+When using Mimeo command line tool you can overwrite Mimeo Configuration properties:
+
+| Short option | Long option         | Description                                                                          |
+|:------------:|:--------------------|:-------------------------------------------------------------------------------------|
+|     `-x`     | `--xml-declaration` | overwrite the `xml_declaration` property                                             |
+|     `-i`     | `--indent`          | overwrite the `indent` property                                                      |
+|     `-o`     | `--output`          | overwrite the `output_details/direction` property                                    |
+|     `-d`     | `--directory`       | overwrite the `output_details/directory_path` property                               |
+|     `-f`     | `--file`            | overwrite the `output_details/file_name` property                                    |
+|     `-H`     | `--http-host`       | overwrite the `output_details/host` property                                         |
+|     `-p`     | `--http-port`       | overwrite the `output_details/port` property                                         |
+|     `-E`     | `--http-endpoint`   | overwrite the `output_details/endpoint` property                                     |
+|     `-U`     | `--http-user`       | overwrite the `output_details/username` property                                     |
+|     `-P`     | `--http-password`   | overwrite the `output_details/password` property                                     |
+|              | `--http-method`     | overwrite the `output_details/method` property                                       |
+|              | `--http-protocol`   | overwrite the `output_details/protocol` property                                     |
+|              | `--http-auth`       | overwrite the `output_details/auth` property                                         |
+|     `-e`     | `--http-env`        | overwrite the output_details http properties using a mimeo environment configuration |
+|              | `--http-envs-file`  | use a custom environments file (by default: mimeo.envs.json)                         |
+
+#### Logging arguments
+
+| Short option | Long option | Description       |
+|:------------:|:------------|:------------------|
+|              | `--silent`  | disable INFO logs |
+|              | `--debug`   | enable DEBUG mode |
+|              | `--fine`    | enable FINE mode  |
 
 ### Mimeo Configuration
 
@@ -173,7 +191,13 @@ Example:
     "CUSTOM_VAR_2": 1,
     "CUSTOM_VAR_3": true,
     "CUSTOM_VAR_4": "{CUSTOM_VAR_2}",
-    "CUSTOM_VAR_5": "{auto_increment('{}')}"
+    "CUSTOM_VAR_5": "{auto_increment}",
+    "CUSTOM_VAR_6": {
+      "_mimeo_util": {
+        "_name": "random_int",
+        "limit": 99
+      }
+    }
   },
   "_templates_": [
     {
@@ -185,7 +209,8 @@ Example:
           "ChildNode3": "{CUSTOM_VAR_3}",
           "ChildNode4": "{CUSTOM_VAR_4}",
           "ChildNode5": "{CUSTOM_VAR_5}",
-          "ChildNode6": "{CUSTOM_VAR_1}-with-suffix"
+          "ChildNode6": "{CUSTOM_VAR_6}",
+          "ChildNode7": "{CUSTOM_VAR_1}-with-suffix"
         }
       }
     }
@@ -220,76 +245,356 @@ Example
 }
 ```
 
-### Mimeo CLI
+#### Mimeo Utils
 
-#### Mimeo Configuration arguments
+You can use several predefined functions to generate data. They can be used in a _raw_ format or _parametrized_.
 
-When using Mimeo command line tool you can overwrite Mimeo Configuration properties:
+##### Random String
 
-| Short option | Long option         | Description                                                                          |
-|:------------:|:--------------------|:-------------------------------------------------------------------------------------|
-|     `-x`     | `--xml-declaration` | overwrite the `xml_declaration` property                                             |
-|     `-i`     | `--indent`          | overwrite the `indent` property                                                      |
-|     `-o`     | `--output`          | overwrite the `output_details/direction` property                                    |
-|     `-d`     | `--directory`       | overwrite the `output_details/directory_path` property                               |
-|     `-f`     | `--file`            | overwrite the `output_details/file_name` property                                    |
-|     `-H`     | `--http-host`       | overwrite the `output_details/host` property                                         |
-|     `-p`     | `--http-port`       | overwrite the `output_details/port` property                                         |
-|     `-E`     | `--http-endpoint`   | overwrite the `output_details/endpoint` property                                     |
-|     `-U`     | `--http-user`       | overwrite the `output_details/username` property                                     |
-|     `-P`     | `--http-password`   | overwrite the `output_details/password` property                                     |
-|              | `--http-method`     | overwrite the `output_details/method` property                                       |
-|              | `--http-protocol`   | overwrite the `output_details/protocol` property                                     |
-|              | `--http-auth`       | overwrite the `output_details/auth` property                                         |
-|     `-e`     | `--http-env`        | overwrite the output_details http properties using a mimeo environment configuration |
-|              | `--http-envs-file`  | use a custom environments file (by default: mimeo.envs.json)                         |
+Generates a random string value.
 
-#### Logging arguments
+###### Raw
 
-| Short option | Long option | Description       |
-|:------------:|:------------|:------------------|
-|              | `--silent`  | disable INFO logs |
-|              | `--debug`   | enable DEBUG mode |
-|              | `--fine`    | enable FINE mode  |
+Uses the default length: 20 characters.
 
-### Mimeo Utils
-
-You can use several predefined functions to generate data by using them within curly braces:
-```xml
-<id>{auto_increment()}</id>
+```json
+{
+  "randomstring": "{random_str}"
+}
 ```
 
-| Function                                                                   | Example                                 | Data                                                                                                                       |
-|:---------------------------------------------------------------------------|:----------------------------------------|:---------------------------------------------------------------------------------------------------------------------------|
-| `auto_increment()`                                                         |                                         | Generates next integer in context of a model (in nested templates it will use a separated context)                         |
-| `auto_increment(<STRING_PATTERN>)`                                         | `auto_increment('MYID{:010d}')`         | Same as `auto_increment()` but the integer is used in a string pattern provided                                            |
-| `curr_iter()`                                                              |                                         | Generates a value of the current iteration in a Mimeo Template context                                                     |
-| `curr_iter(<CONTEXT_NAME>)`                                                | `curr_iter('SomeEntity')`               | Generates a value of the current iteration in a specific Mimeo Model context (model name when `context` is not configured) |
-| `key()`                                                                    |                                         | Generates a key unique across all Mimeo Models and being the same within a single Mimeo Model context                      |
-| `get_key(<CONTEXT_NAME>)`                                                  | `get_key('SomeEntity')`                 | Retrieves the last key from a specific context  (model name when `context` is not configured)                              |
-| `get_key(<CONTEXT_NAME>, <ITERATION>)`                                     | `get_key('SomeEntity', 5)`              | Retrieves a key from a specific context (model name when `context` is not configured) and from a specific iteration        |
-| `random_str()`                                                             |                                         | Generates a random string value of the default length: 20 characters                                                       |
-| `random_str(<LENGTH>)`                                                     | `random_str(2)`                         | Generates a random string value of the customized length                                                                   |
-| `random_int()`                                                             |                                         | Generates a random integer value within the default range: 0-99                                                            |
-| `random_int(<LIMIT>)`                                                      | `random_int(10)`                        | Generates a random integer value within the custom range: 0-<LIMIT>                                                        |
-| `random(<ITEMS>)`                                                          | `random(['value', 1, True])`            | Generates a random value from <ITEMS> provided                                                                             |
-| `date()`                                                                   |                                         | Generates a today's date in format YYYY-MM-DD                                                                              |
-| `date(<DAYS_DELTA>)`                                                       | `date(-1)`                              | Generates a date with customized days in format YYYY-MM-DD                                                                 |
-| `date_time()`                                                              |                                         | Generates a current date time in format YYYY-MM-DD'T'HH:mm:SS                                                              |
-| `date_time(<DAYS_DELTA>, <HOURS_DELTA>, <MINUTES_DELTA>, <SECONDS_DELTA>)` | `date(hours=5, minutes=-3)`             | Generates a date time with customized time in format YYYY-MM-DD'T'HH:mm:SS                                                 |
-| `city()`                                                                   | `city()`                                | Generates a city name                                                                                                      |
-| `city(<ALLOW_DUPLICATES>)`                                                 | `city(True)`                            | Generates a city name allowing for duplicates within a context                                                             |
-| `city_of(<COUNTRY>)`                                                       | `city('GBR')`                           | Generates a city name of a specific country (name, iso3 or iso2)                                                           |
-| `city_of(<COUNTRY>, <ALLOW_DUPLICATES>)`                                   | `city('United Kingdom', True)`          | Generates a city name of a specific country (name, iso3 or iso2) allowing for duplicates within a context                  |
-| `country()`                                                                | `country()`                             | Generates a country name                                                                                                   |
-| `country(<ALLOW_DUPLICATES>)`                                              | `country(True)`                         | Generates a country name allowing for duplicates within a context                                                          |
-| `country(<ALLOW_DUPLICATES>, <COUNTRY>)`                                   | `country(False, 'GBR')`                 | Generates a country name of a specific country (iso3 / iso2) (`<ALLOW_DUPLICATES>` parameter is ignored)                   |
-| `country_iso3()`                                                           | `country_iso3()`                        | Generates a country iso3 code                                                                                              |
-| `country_iso3(<ALLOW_DUPLICATES>)`                                         | `country_iso3(True)`                    | Generates a country iso3 code allowing for duplicates within a context                                                     |
-| `country_iso3(<ALLOW_DUPLICATES>, <COUNTRY>)`                              | `country_iso3(False, 'GB')`             | Generates a country iso3 code of a specific country (name / iso2) (`<ALLOW_DUPLICATES>` parameter is ignored)              |
-| `country_iso2()`                                                           | `country_iso2()`                        | Generates a country iso2 code                                                                                              |
-| `country_iso2(<ALLOW_DUPLICATES>)`                                         | `country_iso2(True)`                    | Generates a country iso2 code allowing for duplicates within a context                                                     |
-| `country_iso2(<ALLOW_DUPLICATES>, <COUNTRY>)`                              | `country_iso2(False, 'United Kingdom')` | Generates a country iso2 code of a specific country (name / iso3) (`<ALLOW_DUPLICATES>` parameter is ignored)              |
+###### Parametrized
+
+Uses the customized length.
+
+```json
+{
+  "randomstring": {
+    "_mimeo_util": {
+      "_name": "random_str",
+      "length": 5
+    }
+  }
+}
+```
+
+##### Random Integer
+
+Generates a random integer value.
+
+###### Raw
+
+Uses the default limit: 100.
+
+```json
+{
+  "randominteger": "{random_int}"
+}
+```
+
+###### Parametrized
+
+Uses the customized limit.
+
+```json
+{
+  "randominteger": {
+    "_mimeo_util": {
+      "_name": "random_int",
+      "limit": 5
+    }
+  }
+}
+```
+
+##### Random Item
+
+Generates a random value from items provided.  
+NOTICE: The raw form of this Mimeo Util will generate a blank string value (as same as no items parametrized).
+
+###### Parametrized
+
+```json
+{
+  "random": {
+    "_mimeo_util": {
+      "_name": "random_item",
+      "items": ["value", 1, true]
+    }
+  }
+}
+```
+
+##### Date
+
+Generates a date value in format `YYYY-MM-DD`.
+
+###### Raw
+
+Uses the today's date.
+
+```json
+{
+  "Today": "{date}"
+}
+```
+
+###### Parametrized
+
+Uses the customized days delta.
+
+```json
+{
+  "Yesterday": {
+    "_mimeo_util": {
+      "_name": "date",
+      "days_delta": -1
+    }
+  },
+  "Tomorrow": {
+    "_mimeo_util": {
+      "_name": "date",
+      "days_delta": 1
+    }
+  }
+}
+```
+
+##### Date Time
+
+Generates a date time value in format `YYYY-MM-DD'T'HH:mm:SS`.
+
+###### Raw
+
+Uses the current timestamp.
+
+```json
+{
+  "Now": "{date_time}"
+}
+```
+
+###### Parametrized
+
+Uses the customized deltas.
+
+```json
+{
+  "TomorrowThreeHoursLaterTwentyMinutesAgoTwoSecondsLater": {
+    "_mimeo_util": {
+      "_name": "date_time",
+      "days_delta": 1,
+      "hours_delta": 3,
+      "minutes_delta": -20,
+      "seconds_delta": 2
+    }
+  }
+}
+```
+
+##### Auto Increment
+
+Generates a next integer in context of a model (in nested templates it will use a separated context).
+
+###### Raw
+
+Uses a default pattern: **{:05d}** (an integer with 5 leading zeros).
+
+```json
+{
+  "ID": "{auto_increment}"
+}
+```
+
+###### Parametrized
+
+Uses the string pattern provided.
+
+```json
+{
+  "ID": {
+    "_mimeo_util": {
+      "_name": "auto_increment",
+      "pattern": "MY_ID_{:010d}"
+    }
+  }
+}
+```
+
+##### Current Iteration
+
+Generates a value of the current iteration in a Mimeo Template context.
+
+###### Raw
+
+Uses the current context.
+
+```json
+{
+  "ID": "{curr_iter}"
+}
+```
+
+###### Parametrized
+
+Uses a specific Mimeo Model context (model name when `context` is not configured).
+
+```json
+{
+  "Parent": {
+    "_mimeo_util": {
+      "_name": "curr_iter",
+      "context": "SomeEntity"
+    }
+  }
+}
+```
+
+##### Key
+
+Generates a key unique across all Mimeo Models and being the same within a single Mimeo Model context.
+
+###### Raw
+
+Uses a key from the current context and iteration.
+
+```json
+{
+  "ID": "{key}"
+}
+```
+
+###### Parametrized
+
+Uses a key from the specific context and iteration.  
+When context is indicated and iteration is not, then the current iteration **of the indicated context** is being used.
+
+```json
+{
+  "SomeEntity": {
+    "_mimeo_util": {
+      "_name": "key",
+      "context": "SomeEntity",
+      "iteration": "{curr_iter}"
+    }
+  }
+}
+```
+
+##### City
+
+Generates a city name.
+
+###### Raw
+
+By default city names will be unique across a Mimeo Context.
+
+```json
+{
+  "City": "{city}"
+}
+```
+
+###### Parametrized
+
+Uses country (name, iso2, iso3) and `allow_duplicates` flag to generate a city name.
+
+```json
+{
+  "CityWithDuplicates": {
+    "_mimeo_util": {
+      "_name": "city",
+      "allow_duplicates": true
+    }
+  },
+  "CityOfCountryName": {
+    "_mimeo_util": {
+      "_name": "city",
+      "country": "United Kingdom"
+    }
+  },
+  "CityOfCountryISO2": {
+    "_mimeo_util": {
+      "_name": "city",
+      "country": "GB"
+    }
+  },
+  "CityOfCountryISO3": {
+    "_mimeo_util": {
+      "_name": "city",
+      "country": "GBR"
+    }
+  },
+  "CityOfCountryWithDuplicates": {
+    "_mimeo_util": {
+      "_name": "city",
+      "country": "United Kingdom",
+      "allow_duplicates": true
+    }
+  }
+}
+```
+
+##### Country
+
+Generates a country name (by default), iso2 or iso3.
+
+###### Raw
+
+By default country names will be unique across a Mimeo Context.
+
+```json
+{
+  "Country": "{country}"
+}
+```
+
+###### Parametrized
+
+It can generate:
+- country iso3 or iso 2 instead of name
+- country with duplicates
+- country name for a provided iso3 or iso2
+- country iso2 for a provided name or iso3
+- country iso3 for a provided name or iso2
+
+When the `country` param is provided then the `allow_duplicates` flag is ignored.
+
+```json
+{
+  "CountryNameWithDuplicates": {
+    "_mimeo_util": {
+      "_name": "country",
+      "allow_duplicates": true
+    }
+  },
+  "CountryISO2": {
+    "_mimeo_util": {
+      "_name": "country",
+      "value": "iso2"
+    }
+  },
+  "CountryISO3": {
+    "_mimeo_util": {
+      "_name": "country",
+      "value": "iso3"
+    }
+  },
+  "CountryNameForISO3": {
+    "_mimeo_util": {
+      "_name": "country",
+      "country": "GBR"
+    }
+  },
+  "CountryISO2ForName": {
+    "_mimeo_util": {
+      "_name": "country",
+      "value": "iso2",
+      "country": "United Kingdom"
+    }
+  }
+}
+```
 
 
 ## License

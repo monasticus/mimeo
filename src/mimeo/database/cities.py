@@ -1,6 +1,6 @@
 import pandas
 
-from mimeo import utils
+from mimeo import tools
 from mimeo.database.exc import InvalidIndex
 
 
@@ -63,5 +63,5 @@ class CitiesDB:
     @classmethod
     def __get_cities_df(cls) -> pandas.DataFrame:
         if cls.__CITIES_DF is None:
-            cls.__CITIES_DF = pandas.read_csv(utils.get_resource(CitiesDB.__CITIES_DB))
+            cls.__CITIES_DF = pandas.read_csv(tools.get_resource(CitiesDB.__CITIES_DB))
         return cls.__CITIES_DF

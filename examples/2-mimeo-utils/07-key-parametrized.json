@@ -1,0 +1,30 @@
+{
+  "_templates_": [
+    {
+      "count": 30,
+      "model": {
+        "SomeEntity": {
+          "ID": "{key}",
+          "Children": {
+            "_templates_": [
+              {
+                "count": 5,
+                "model": {
+                  "SomeChild": {
+                    "ID": "{key}",
+                    "Parent": {
+                      "_mimeo_util": {
+                        "_name": "key",
+                        "context": "SomeEntity"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

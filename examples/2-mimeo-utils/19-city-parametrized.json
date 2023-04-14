@@ -1,0 +1,42 @@
+{
+  "_templates_": [
+    {
+      "count": 30,
+      "model": {
+        "SomeEntity": {
+          "CityWithDuplicates": {
+            "_mimeo_util": {
+              "_name": "city",
+              "allow_duplicates": true
+            }
+          },
+          "CityOfCountryName": {
+            "_mimeo_util": {
+              "_name": "city",
+              "country": "United Kingdom"
+            }
+          },
+          "CityOfCountryISO2": {
+            "_mimeo_util": {
+              "_name": "city",
+              "country": "GB"
+            }
+          },
+          "CityOfCountryISO3": {
+            "_mimeo_util": {
+              "_name": "city",
+              "country": "GBR"
+            }
+          },
+          "CityOfCountryWithDuplicates": {
+            "_mimeo_util": {
+              "_name": "city",
+              "country": "United Kingdom",
+              "allow_duplicates": true
+            }
+          }
+        }
+      }
+    }
+  ]
+}

@@ -45,6 +45,8 @@ class MimeoConfig(MimeoDTO):
     MODEL_CONTEXT_KEY = "context"
     MODEL_ATTRIBUTES_KEY = "_attrs"
     MODEL_VALUE_KEY = "_value"
+    MODEL_MIMEO_UTIL_KEY = "_mimeo_util"
+    MODEL_MIMEO_UTIL_NAME_KEY = "_name"
 
     SUPPORTED_OUTPUT_FORMATS = ("xml",)
 
@@ -82,8 +84,8 @@ class MimeoConfig(MimeoDTO):
             if not re.match(r"^[A-Z][A-Z_0-9]*$", var):
                 raise InvalidVars(f"Provided var [{var}] is invalid "
                                   "(you can use upper-cased name with underscore and digits, starting with a letter)!")
-            if isinstance(val, list) or isinstance(val, dict):
-                raise InvalidVars(f"Provided var [{var}] is invalid (you can use ony atomic values)!")
+            if isinstance(val, list) or (isinstance(val, dict) and not MimeoConfig.__is_mimeo_util_object(val)):
+                raise InvalidVars(f"Provided var [{var}] is invalid (you can use ony atomic values and Mimeo Utils)!")
         return variables
 
     @staticmethod
@@ -95,6 +97,10 @@ class MimeoConfig(MimeoDTO):
             raise IncorrectMimeoConfig(f"_templates_ property does not store an array: {config}")
         else:
             return (MimeoTemplate(template) for template in config.get(MimeoConfig.TEMPLATES_KEY))
+
+    @staticmethod
+    def __is_mimeo_util_object(obj: dict):
+        return isinstance(obj, dict) and len(obj) == 1 and MimeoConfig.MODEL_MIMEO_UTIL_KEY in obj
 
 
 class MimeoOutputDetails(MimeoDTO):

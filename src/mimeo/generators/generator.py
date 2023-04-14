@@ -2,8 +2,7 @@ import xml.etree.ElementTree as ElemTree
 from abc import ABCMeta, abstractmethod
 from typing import Any, Iterator, Union
 
-from mimeo.config.mimeo_config import MimeoConfig, MimeoTemplate
-from mimeo.generators import GeneratorUtils
+from mimeo.config.mimeo_config import MimeoTemplate
 
 
 class Generator(metaclass=ABCMeta):
@@ -17,9 +16,6 @@ class Generator(metaclass=ABCMeta):
                 hasattr(subclass, 'stringify') and
                 callable(subclass.stringify) or
                 NotImplemented)
-
-    def __init__(self, mimeo_config: MimeoConfig):
-        GeneratorUtils.setup(mimeo_config)
 
     @abstractmethod
     def generate(self,
