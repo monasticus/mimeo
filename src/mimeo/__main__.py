@@ -1,7 +1,7 @@
 import json
 import logging
 from argparse import ArgumentParser
-from os import path
+from os import path, walk
 
 from mimeo import Mimeograph
 from mimeo.config import MimeoConfig
@@ -138,6 +138,18 @@ class MimeoArgumentParser(ArgumentParser):
 def main():
     mimeo_parser = MimeoArgumentParser()
     args = mimeo_parser.parse_args()
+    customize_logging_level(args)
+
+    logger.info("Starting Mimeo job")
+    paths = get_paths(args.paths)
+    for config_path in paths:
+        logger.info(f"Data generation from Mimeo Config: {config_path}")
+        mimeo_config = get_config(config_path, args)
+        with MimeoContextManager(mimeo_config):
+            Mimeograph(mimeo_config).produce()
+
+
+def customize_logging_level(args):
     if args.silent:
         logging.getLogger("mimeo").setLevel(logging.WARNING)
     elif args.debug:
@@ -145,12 +157,17 @@ def main():
     elif args.fine:
         logging.getLogger("mimeo").setLevel(logging.FINE)
 
-    logger.info("Starting Mimeo job")
-    for path in args.paths:
-        logger.info(f"Data generation from Mimeo Config: {path}")
-        mimeo_config = get_config(path, args)
-        with MimeoContextManager(mimeo_config):
-            Mimeograph(mimeo_config).produce()
+
+def get_paths(paths: list) -> list:
+    file_paths = []
+    for file_path in paths:
+        if path.isdir(file_path):
+            for dir_path, _, file_names in walk(file_path):
+                for file_name in file_names:
+                    paths.append(f"{dir_path}/{file_name}")
+        elif path.isfile(file_path):
+            file_paths.append(file_path)
+    return file_paths
 
 
 def get_config(config_path, args):

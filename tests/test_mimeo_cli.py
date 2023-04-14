@@ -141,6 +141,8 @@ def setup_and_teardown(minimum_config, default_config, http_config, http_default
     remove("custom-mimeo-envs-file.json")
     for filename in glob("mimeo-output/customized-output-file*"):
         remove(filename)
+    for filename in glob("mimeo-output/mimeo-output*"):
+        remove(filename)
     if path.exists("mimeo-output") and not listdir("mimeo-output"):
         rmdir("mimeo-output")
 
@@ -164,6 +166,42 @@ def test_basic_use():
             assert file_content.readline() == '    <ChildNode2>value-2</ChildNode2>\n'
             assert file_content.readline() == '    <ChildNode3>true</ChildNode3>\n'
             assert file_content.readline() == '</SomeEntity>\n'
+
+
+@responses.activate
+def test_directory_path():
+    sys.argv = ["mimeo", "test_mimeo_cli-dir"]
+
+    responses.add(responses.POST, "http://localhost:8080/document")
+    assert not path.exists("test_mimeo_cli-dir/output")
+    assert not path.exists("mimeo-output")
+
+    MimeoCLI.main()
+
+    assert path.exists("test_mimeo_cli-dir/output")
+    for i in range(1, 11):
+        file_path = f"test_mimeo_cli-dir/output/output-file-{i}.xml"
+        assert path.exists(file_path)
+
+        with open(file_path, "r") as file_content:
+            assert file_content.readline() == '<?xml version="1.0" encoding="utf-8"?>\n'
+            assert file_content.readline() == '<SomeEntity>\n'
+            assert file_content.readline() == '    <ChildNode1>1</ChildNode1>\n'
+            assert file_content.readline() == '    <ChildNode2>value-2</ChildNode2>\n'
+            assert file_content.readline() == '    <ChildNode3>true</ChildNode3>\n'
+            assert file_content.readline() == '</SomeEntity>\n'
+
+    assert path.exists("mimeo-output")
+    for i in range(1, 11):
+        file_path = f"mimeo-output/mimeo-output-{i}.xml"
+        assert path.exists(file_path)
+
+        with open(file_path, "r") as file_content:
+            assert file_content.readline() == '<SomeEntity>' \
+                                              '<ChildNode1>1</ChildNode1>' \
+                                              '<ChildNode2>value-2</ChildNode2>' \
+                                              '<ChildNode3>true</ChildNode3>' \
+                                              '</SomeEntity>' \
 
 
 def test_custom_short_xml_declaration_false():
