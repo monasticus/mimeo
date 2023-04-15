@@ -46,7 +46,7 @@ class MimeoConfig(MimeoDTO):
     Attributes
     ----------
     OUTPUT_FORMAT_KEY : str
-        A Mimeo Configuration format key
+        A Mimeo Configuration output format key
     OUTPUT_DETAILS_KEY : str
         A Mimeo Configuration output details key
     OUTPUT_DETAILS_DIRECTION_KEY : str
@@ -95,6 +95,19 @@ class MimeoConfig(MimeoDTO):
         A Mimeo Configuration Mimeo Util's name key
     SUPPORTED_OUTPUT_FORMATS : set
         A set of supported output formats
+
+    output_format : str, default 'xml'
+        A Mimeo Configuration output format setting
+    output_details : MimeoOutputDetails, default {}
+        A Mimeo Output Details settings
+    xml_declaration : bool, default False
+        A Mimeo Configuration xml declaration setting
+    indent : int, default 0
+        A Mimeo Configuration indent setting
+    vars : dict, default {}
+        A Mimeo Configuration vars setting
+    templates : list
+        A Mimeo Templates setting
     """
 
     OUTPUT_FORMAT_KEY = "output_format"
