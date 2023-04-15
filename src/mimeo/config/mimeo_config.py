@@ -9,19 +9,93 @@ from mimeo.exceptions import (IncorrectMimeoConfig, IncorrectMimeoModel,
                               UnsupportedRequestMethod)
 from mimeo.logging import setup_logging
 
+# setup logging when mimeo is used as a python library
 setup_logging()
 
 
 class MimeoDTO:
+    """A superclass for all Mimeo configuration DTOs
+
+    It is meant to store a source dictionary for logging purposes.
+
+    Methods
+    -------
+    __str__
+        Returns the stringified source dictionary of a DTO
+    """
 
     def __init__(self, source: dict):
-        self.__source = source
+        """
+        Parameters
+        ----------
+        source : dict
+            The source dictionary for a Mimeo DTO
+        """
+        self._source = source
 
     def __str__(self):
-        return str(self.__source)
+        """Returns the stringified source dictionary of a DTO"""
+        return str(self._source)
 
 
 class MimeoConfig(MimeoDTO):
+    """A MimeoDTO class representing Mimeo Configuration
+
+    It is a python representation of a Mimeo Configuration file / dictionary.
+
+    Attributes
+    ----------
+    OUTPUT_FORMAT_KEY : str
+        A Mimeo Configuration format key
+    OUTPUT_DETAILS_KEY : str
+        A Mimeo Configuration output details key
+    OUTPUT_DETAILS_DIRECTION_KEY : str
+        A Mimeo Configuration output direction key
+    OUTPUT_DETAILS_DIRECTORY_PATH_KEY : str
+        A Mimeo Configuration output directory path key
+    OUTPUT_DETAILS_FILE_NAME_KEY : str
+        A Mimeo Configuration output file name key
+    OUTPUT_DETAILS_METHOD : str
+        A Mimeo Configuration http method key
+    OUTPUT_DETAILS_PROTOCOL : str
+        A Mimeo Configuration http protocol key
+    OUTPUT_DETAILS_HOST : str
+        A Mimeo Configuration http host key
+    OUTPUT_DETAILS_PORT : str
+        A Mimeo Configuration http port key
+    OUTPUT_DETAILS_ENDPOINT : str
+        A Mimeo Configuration http endpoint key
+    OUTPUT_DETAILS_AUTH : str
+        A Mimeo Configuration http auth key
+    OUTPUT_DETAILS_USERNAME : str
+        A Mimeo Configuration http username key
+    OUTPUT_DETAILS_PASSWORD : str
+        A Mimeo Configuration http password key
+    XML_DECLARATION_KEY : str
+        A Mimeo Configuration xml declaration key
+    INDENT_KEY : str
+        A Mimeo Configuration indent key
+    VARS_KEY : str
+        A Mimeo Configuration vars key
+    TEMPLATES_KEY : str
+        A Mimeo Configuration templates key
+    TEMPLATES_COUNT_KEY : str
+        A Mimeo Configuration template's count key
+    TEMPLATES_MODEL_KEY : str
+        A Mimeo Configuration template's model key
+    MODEL_CONTEXT_KEY : str
+        A Mimeo Configuration model's context name key
+    MODEL_ATTRIBUTES_KEY : str
+        A Mimeo Configuration attributes key (for nodes' attributes)
+    MODEL_VALUE_KEY : str
+        A Mimeo Configuration value key (for nodes' value)
+    MODEL_MIMEO_UTIL_KEY : str
+        A Mimeo Configuration Mimeo Util key
+    MODEL_MIMEO_UTIL_NAME_KEY : str
+        A Mimeo Configuration Mimeo Util's name key
+    SUPPORTED_OUTPUT_FORMATS : set
+        A set of supported output formats
+    """
 
     OUTPUT_FORMAT_KEY = "output_format"
     OUTPUT_DETAILS_KEY = "output_details"
@@ -51,16 +125,41 @@ class MimeoConfig(MimeoDTO):
     SUPPORTED_OUTPUT_FORMATS = ("xml",)
 
     def __init__(self, config: dict):
+        """Extends MimeoDTO constructor
+
+        Parameters
+        ----------
+        config : dict
+            A source config dictionary
+        """
         super().__init__(config)
-        self.output_format = MimeoConfig.__get_output_format(config)
+        self.output_format = MimeoConfig._get_output_format(config)
         self.output_details = MimeoOutputDetails(self.output_format, config.get(self.OUTPUT_DETAILS_KEY, {}))
         self.xml_declaration = config.get(self.XML_DECLARATION_KEY, False)
-        self.indent = MimeoConfig.__get_indent(config)
-        self.vars = MimeoConfig.__get_vars(config)
-        self.templates = MimeoConfig.__get_templates(config)
+        self.indent = MimeoConfig._get_indent(config)
+        self.vars = MimeoConfig._get_vars(config)
+        self.templates = MimeoConfig._get_templates(config)
 
     @staticmethod
-    def __get_output_format(config):
+    def _get_output_format(config: dict) -> str:
+        """Extracts an output format from the source dictionary
+
+        Parameters
+        ----------
+        config : dict
+            A source config dictionary
+
+        Returns
+        -------
+        output_format : str
+            The customized output format or 'xml' by default
+
+        Raises
+        ------
+        UnsupportedOutputFormat
+            If the customized output format is not supported
+        """
+
         output_format = config.get(MimeoConfig.OUTPUT_FORMAT_KEY, "xml")
         if output_format in MimeoConfig.SUPPORTED_OUTPUT_FORMATS:
             return output_format
@@ -68,7 +167,25 @@ class MimeoConfig(MimeoDTO):
             raise UnsupportedOutputFormat(f"Provided format [{output_format}] is not supported!")
 
     @staticmethod
-    def __get_indent(config):
+    def _get_indent(config: dict) -> int:
+        """Extracts an indent value from the source dictionary
+
+        Parameters
+        ----------
+        config : dict
+            A source config dictionary
+
+        Returns
+        -------
+        indent : int
+            The customized indent or 0 by default
+
+        Raises
+        ------
+        InvalidIndent
+            If the customized indent is lower than zero
+        """
+
         indent = config.get(MimeoConfig.INDENT_KEY, 0)
         if indent >= 0:
             return indent
@@ -76,7 +193,28 @@ class MimeoConfig(MimeoDTO):
             raise InvalidIndent(f"Provided indent [{indent}] is negative!")
 
     @staticmethod
-    def __get_vars(config):
+    def _get_vars(config: dict) -> dict:
+        """Extracts variables from the source dictionary
+
+        Parameters
+        ----------
+        config : dict
+            A source config dictionary
+
+        Returns
+        -------
+        variables : dict
+            Customized variables or an empty dictionary
+
+        Raises
+        ------
+        InvalidVars
+            If (1) the vars key does not point to a dictionary or
+            (2) some variable's name does not start with a letter,
+            is not SNAKE_UPPER_CASE with possible digits or
+            (3) some variable's value points to non-atomic value nor Mimeo Util
+        """
+
         variables = config.get(MimeoConfig.VARS_KEY, {})
         if not isinstance(variables, dict):
             raise InvalidVars(f"vars property does not store an object: {variables}")
@@ -84,22 +222,53 @@ class MimeoConfig(MimeoDTO):
             if not re.match(r"^[A-Z][A-Z_0-9]*$", var):
                 raise InvalidVars(f"Provided var [{var}] is invalid "
                                   "(you can use upper-cased name with underscore and digits, starting with a letter)!")
-            if isinstance(val, list) or (isinstance(val, dict) and not MimeoConfig.__is_mimeo_util_object(val)):
+            if isinstance(val, list) or (isinstance(val, dict) and not MimeoConfig._is_mimeo_util_object(val)):
                 raise InvalidVars(f"Provided var [{var}] is invalid (you can use ony atomic values and Mimeo Utils)!")
         return variables
 
     @staticmethod
-    def __get_templates(config):
+    def _get_templates(config: dict) -> list:
+        """Extracts Mimeo Templates from the source dictionary
+
+        Parameters
+        ----------
+        config : dict
+            A source config dictionary
+
+        Returns
+        -------
+        list
+            A Mimeo Templates list
+
+        Raises
+        ------
+        IncorrectMimeoConfig
+            If (1) the source dictionary does not include the _templates_ key or
+            (2) the _templates_ key does not point to a list
+        """
+
         templates = config.get(MimeoConfig.TEMPLATES_KEY)
         if templates is None:
             raise IncorrectMimeoConfig(f"No templates in the Mimeo Config: {config}")
         elif not isinstance(templates, list):
             raise IncorrectMimeoConfig(f"_templates_ property does not store an array: {config}")
         else:
-            return (MimeoTemplate(template) for template in config.get(MimeoConfig.TEMPLATES_KEY))
+            return [MimeoTemplate(template) for template in config.get(MimeoConfig.TEMPLATES_KEY)]
 
     @staticmethod
-    def __is_mimeo_util_object(obj: dict):
+    def _is_mimeo_util_object(obj: dict) -> bool:
+        """Verifies if the object is a Mimeo Util
+
+        Parameters
+        ----------
+        obj : dict
+            An object to verify
+
+        Returns
+        -------
+        bool
+            True if the object is a dictionary having only one key: _mimeo_util, otherwise False
+        """
         return isinstance(obj, dict) and len(obj) == 1 and MimeoConfig.MODEL_MIMEO_UTIL_KEY in obj
 
 
