@@ -672,8 +672,27 @@ class MimeoOutputDetails(MimeoDTO):
 
 
 class MimeoTemplate(MimeoDTO):
+    """A MimeoDTO class representing Mimeo Template
+
+    It is a python representation of a Mimeo Template configuration node.
+
+    Attributes
+    ----------
+    count : int
+        A configured count of the Mimeo Template
+    model : MimeoModel
+        A configured model of the Mimeo Template
+    """
 
     def __init__(self, template: dict):
+        """Extends MimeoDTO constructor
+
+        Parameters
+        ----------
+        template : dict
+            A source config template dictionary
+        """
+
         super().__init__(template)
         MimeoTemplate.__validate_template(template)
         self.count = template.get(MimeoConfig.TEMPLATES_COUNT_KEY)
@@ -681,6 +700,19 @@ class MimeoTemplate(MimeoDTO):
 
     @staticmethod
     def __validate_template(template: dict):
+        """Validates template in the source dictionary
+
+        Parameters
+        ----------
+        template : dict
+            A source config template dictionary
+
+        Raises
+        ------
+        IncorrectMimeoTemplate
+            If the source config doesn't include count or model properties
+        """
+
         if MimeoConfig.TEMPLATES_COUNT_KEY not in template:
             raise IncorrectMimeoTemplate(f"No count value in the Mimeo Template: {template}")
         if MimeoConfig.TEMPLATES_MODEL_KEY not in template:
