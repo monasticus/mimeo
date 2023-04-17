@@ -283,6 +283,7 @@ class MimeoConfig(MimeoDTO):
         bool
             True if the object is a dictionary having only one key: _mimeo_util, otherwise False
         """
+
         return isinstance(obj, dict) and len(obj) == 1 and MimeoConfig.MODEL_MIMEO_UTIL_KEY in obj
 
 
@@ -408,33 +409,6 @@ class MimeoOutputDetails(MimeoDTO):
             return direction
         else:
             raise UnsupportedOutputDirection(f"Provided direction [{direction}] is not supported!")
-
-    @staticmethod
-    def _validate_output_details(direction: str, output_details: dict) -> None:
-        """Validates output details in the source dictionary
-        according to the configured output direction
-
-        Parameters
-        ----------
-        direction : str
-            The configured output direction
-        output_details : dict
-            A source config output details dictionary
-
-        Raises
-        ------
-        MissingRequiredProperty
-            If the output details doesn't include all required settings for the direction
-        """
-
-        if direction == MimeoOutputDetails.HTTP_DIRECTION:
-            missing_details = []
-            for detail in MimeoOutputDetails.REQUIRED_HTTP_DETAILS:
-                if detail not in output_details:
-                    missing_details.append(detail)
-            if len(missing_details) > 0:
-                missing_details_str = ', '.join(missing_details)
-                raise MissingRequiredProperty(f"Missing required fields is HTTP output details: {missing_details_str}")
 
     @staticmethod
     def _get_directory_path(direction: str, output_details: dict) -> str:
@@ -670,6 +644,33 @@ class MimeoOutputDetails(MimeoDTO):
         if direction == MimeoOutputDetails.HTTP_DIRECTION:
             return output_details.get(MimeoConfig.OUTPUT_DETAILS_PASSWORD)
 
+    @staticmethod
+    def _validate_output_details(direction: str, output_details: dict) -> None:
+        """Validates output details in the source dictionary
+        according to the configured output direction
+
+        Parameters
+        ----------
+        direction : str
+            The configured output direction
+        output_details : dict
+            A source config output details dictionary
+
+        Raises
+        ------
+        MissingRequiredProperty
+            If the output details doesn't include all required settings for the direction
+        """
+
+        if direction == MimeoOutputDetails.HTTP_DIRECTION:
+            missing_details = []
+            for detail in MimeoOutputDetails.REQUIRED_HTTP_DETAILS:
+                if detail not in output_details:
+                    missing_details.append(detail)
+            if len(missing_details) > 0:
+                missing_details_str = ', '.join(missing_details)
+                raise MissingRequiredProperty(f"Missing required fields is HTTP output details: {missing_details_str}")
+
 
 class MimeoTemplate(MimeoDTO):
     """A MimeoDTO class representing Mimeo Template
@@ -694,12 +695,12 @@ class MimeoTemplate(MimeoDTO):
         """
 
         super().__init__(template)
-        MimeoTemplate.__validate_template(template)
+        MimeoTemplate._validate_template(template)
         self.count = template.get(MimeoConfig.TEMPLATES_COUNT_KEY)
         self.model = MimeoModel(template.get(MimeoConfig.TEMPLATES_MODEL_KEY))
 
     @staticmethod
-    def __validate_template(template: dict):
+    def _validate_template(template: dict) -> None:
         """Validates template in the source dictionary
 
         Parameters
@@ -720,16 +721,55 @@ class MimeoTemplate(MimeoDTO):
 
 
 class MimeoModel(MimeoDTO):
+    """A MimeoDTO class representing Mimeo Model
+
+    It is a python representation of a Mimeo Model configuration node.
+
+    Attributes
+    ----------
+    root_name : str
+        A root node's tag
+    root_data : dict
+        A template data
+    context_name : str
+        A context name (root_name by default)
+    """
 
     def __init__(self, model: dict):
+        """Extends MimeoDTO constructor
+
+        Parameters
+        ----------
+        model : dict
+            A source config model dictionary
+        """
+
         super().__init__(model)
-        self.root_name = MimeoModel.__get_root_name(model)
+        self.root_name = MimeoModel._get_root_name(model)
         self.root_data = model.get(self.root_name)
-        self.context_name = MimeoModel.__get_context_name(model, self.root_name)
+        self.context_name = MimeoModel._get_context_name(model, self.root_name)
 
     @staticmethod
-    def __get_root_name(model: dict) -> str:
-        model_keys = [key for key in filter(MimeoModel.__is_not_metadata_key, iter(model))]
+    def _get_root_name(model: dict) -> str:
+        """Extracts a root name from the source dictionary
+
+        Parameters
+        ----------
+        model : dict
+            A source config model dictionary
+
+        Returns
+        -------
+        str
+            The configured root node's tag
+
+        Raises
+        ------
+        IncorrectMimeoModel
+            If the source config has no or more than one root nodes
+        """
+
+        model_keys = [key for key in filter(MimeoModel._is_not_configuration_key, iter(model))]
         if len(model_keys) == 1:
             return model_keys[0]
         if len(model_keys) == 0:
@@ -738,13 +778,47 @@ class MimeoModel(MimeoDTO):
             raise IncorrectMimeoModel(f"Multiple root data in Mimeo Model: {model}")
 
     @staticmethod
-    def __is_not_metadata_key(dict_key: str) -> bool:
-        return dict_key not in [MimeoConfig.MODEL_CONTEXT_KEY]
+    def _get_context_name(model: dict, root_name: str) -> str:
+        """Extracts a context name from the source dictionary
 
-    @staticmethod
-    def __get_context_name(model: dict, root_name: str) -> str:
+        Parameters
+        ----------
+        model : dict
+            A source config model dictionary
+        root_name : str
+            The configured root node's tag
+
+        Returns
+        -------
+        str
+            The configured context name.
+            If the 'context' setting is missing returns root name by default
+
+        Raises
+        ------
+        IncorrectMimeoModel
+            If the source config has a context name not being a string value
+        """
+
         context_name = model.get(MimeoConfig.MODEL_CONTEXT_KEY, root_name)
         if isinstance(context_name, str):
             return context_name
         else:
             raise IncorrectMimeoModel(f"Invalid context name in Mimeo Model (not a string value): {model}")
+
+    @staticmethod
+    def _is_not_configuration_key(dict_key: str) -> bool:
+        """Verifies if the dictionary key is a configuration one
+
+        Parameters
+        ----------
+        dict_key : str
+            A dictionary key to verify
+
+        Returns
+        -------
+        bool
+            True if the key is 'context', otherwise False
+        """
+
+        return dict_key not in [MimeoConfig.MODEL_CONTEXT_KEY]
