@@ -145,6 +145,7 @@ class MimeoConfig(MimeoDTO):
         config : dict
             A source config dictionary
         """
+
         super().__init__(config)
         self.output_format = MimeoConfig._get_output_format(config)
         self.output_details = MimeoOutputDetails(self.output_format, config.get(self.OUTPUT_DETAILS_KEY, {}))
@@ -286,6 +287,58 @@ class MimeoConfig(MimeoDTO):
 
 
 class MimeoOutputDetails(MimeoDTO):
+    """A MimeoDTO class representing Mimeo Output Details configuration
+
+    It is a python representation of a Mimeo Output Details configuration node.
+
+    Attributes
+    ----------
+    FILE_DIRECTION : str
+        The 'file' output direction
+    STD_OUT_DIRECTION : str
+        The 'stdout' output direction
+    HTTP_DIRECTION : str
+        The 'http' output direction
+    REQUEST_POST : str
+        The 'POST' http request method
+    REQUEST_PUT : str
+        The 'PUT' http request method
+    AUTH_BASIC : str
+        The 'basic' http auth method
+    AUTH_DIGEST : str
+        The 'digest' http auth method
+    SUPPORTED_OUTPUT_DIRECTIONS : set
+        List of supported output directions
+    SUPPORTED_REQUEST_METHODS : set
+        List of supported http request methods
+    SUPPORTED_AUTH_METHODS : set
+        List of supported auth request methods
+    REQUIRED_HTTP_DETAILS : set
+        List of required http request output direction details
+
+    direction : str, default 'file'
+        The configured output direction
+    directory_path : str, default 'mimeo-output'
+        The configured file output directory
+    file_name_tmplt : str, default 'mimeo-output-{}.{output_format}'
+        The configured file output file name template
+    method : str, default POST
+        The configured http output request method
+    protocol : str, default 'http'
+        The configured http output protocol
+    host : str
+        The configured http output host
+    port : str
+        The configured http output port
+    endpoint : str
+        The configured http output endpoint
+    auth : str, default 'basic'
+        The configured http output auth method
+    username : str
+        The configured http output username
+    password : str
+        The configured http output password
+    """
 
     FILE_DIRECTION = "file"
     STD_OUT_DIRECTION = "stdout"
@@ -306,22 +359,50 @@ class MimeoOutputDetails(MimeoDTO):
                              MimeoConfig.OUTPUT_DETAILS_PASSWORD)
 
     def __init__(self, output_format: str, output_details: dict):
+        """Extends MimeoDTO constructor
+
+        Parameters
+        ----------
+        output_format : str
+            An output format
+        output_details : dict
+            A source config output details dictionary
+        """
+
         super().__init__(output_details)
-        self.direction = MimeoOutputDetails.__get_direction(output_details)
-        MimeoOutputDetails.__validate_output_details(self.direction, output_details)
-        self.directory_path = MimeoOutputDetails.__get_directory_path(self.direction, output_details)
-        self.file_name_tmplt = MimeoOutputDetails.__get_file_name_tmplt(self.direction, output_details, output_format)
-        self.method = MimeoOutputDetails.__get_method(self.direction, output_details)
-        self.protocol = MimeoOutputDetails.__get_protocol(self.direction, output_details)
-        self.host = MimeoOutputDetails.__get_host(self.direction, output_details)
-        self.port = MimeoOutputDetails.__get_port(self.direction, output_details)
-        self.endpoint = MimeoOutputDetails.__get_endpoint(self.direction, output_details)
-        self.auth = MimeoOutputDetails.__get_auth(self.direction, output_details)
-        self.username = MimeoOutputDetails.__get_username(self.direction, output_details)
-        self.password = MimeoOutputDetails.__get_password(self.direction, output_details)
+        self.direction = MimeoOutputDetails._get_direction(output_details)
+        MimeoOutputDetails._validate_output_details(self.direction, output_details)
+        self.directory_path = MimeoOutputDetails._get_directory_path(self.direction, output_details)
+        self.file_name_tmplt = MimeoOutputDetails._get_file_name_tmplt(self.direction, output_details, output_format)
+        self.method = MimeoOutputDetails._get_method(self.direction, output_details)
+        self.protocol = MimeoOutputDetails._get_protocol(self.direction, output_details)
+        self.host = MimeoOutputDetails._get_host(self.direction, output_details)
+        self.port = MimeoOutputDetails._get_port(self.direction, output_details)
+        self.endpoint = MimeoOutputDetails._get_endpoint(self.direction, output_details)
+        self.auth = MimeoOutputDetails._get_auth(self.direction, output_details)
+        self.username = MimeoOutputDetails._get_username(self.direction, output_details)
+        self.password = MimeoOutputDetails._get_password(self.direction, output_details)
 
     @staticmethod
-    def __get_direction(output_details):
+    def _get_direction(output_details: dict) -> str:
+        """Extracts output direction from the source dictionary
+
+        Parameters
+        ----------
+        output_details : dict
+            A source config output details dictionary
+
+        Returns
+        -------
+        direction : str
+            The configured output direction
+
+        Raises
+        ------
+        UnsupportedOutputDirection
+            If the configured output direction is not supported
+        """
+
         direction = output_details.get(MimeoConfig.OUTPUT_DETAILS_DIRECTION_KEY, MimeoOutputDetails.FILE_DIRECTION)
         if direction in MimeoOutputDetails.SUPPORTED_OUTPUT_DIRECTIONS:
             return direction
@@ -329,7 +410,23 @@ class MimeoOutputDetails(MimeoDTO):
             raise UnsupportedOutputDirection(f"Provided direction [{direction}] is not supported!")
 
     @staticmethod
-    def __validate_output_details(direction: str, output_details: dict):
+    def _validate_output_details(direction: str, output_details: dict) -> None:
+        """Validates output details in the source dictionary
+        according to the configured output direction
+
+        Parameters
+        ----------
+        direction : str
+            The configured output direction
+        output_details : dict
+            A source config output details dictionary
+
+        Raises
+        ------
+        MissingRequiredProperty
+            If the output details doesn't include all required settings for the direction
+        """
+
         if direction == MimeoOutputDetails.HTTP_DIRECTION:
             missing_details = []
             for detail in MimeoOutputDetails.REQUIRED_HTTP_DETAILS:
@@ -340,18 +437,72 @@ class MimeoOutputDetails(MimeoDTO):
                 raise MissingRequiredProperty(f"Missing required fields is HTTP output details: {missing_details_str}")
 
     @staticmethod
-    def __get_directory_path(direction: str, output_details: dict):
+    def _get_directory_path(direction: str, output_details: dict) -> str:
+        """Extracts an output directory path from the source dictionary
+        when the output direction is 'file'.
+
+        Parameters
+        ----------
+        direction : str
+            The configured output direction
+        output_details : dict
+            A source config output details dictionary
+
+        Returns
+        -------
+        str
+            The configured output directory path when the output direction is 'file'.
+            Otherwise, None. If the 'directory_path' setting is missing returns
+            'mimeo-output' by default.
+        """
+
         if direction == MimeoOutputDetails.FILE_DIRECTION:
             return output_details.get(MimeoConfig.OUTPUT_DETAILS_DIRECTORY_PATH_KEY, "mimeo-output")
 
     @staticmethod
-    def __get_file_name_tmplt(direction: str, output_details: dict, output_format: str):
+    def _get_file_name_tmplt(direction: str, output_details: dict, output_format: str):
+        """Generates an output file name template based on the source dictionary
+        when the output direction is 'file'.
+
+        Parameters
+        ----------
+        direction : str
+            The configured output direction
+        output_details : dict
+            A source config output details dictionary
+
+        Returns
+        -------
+        str
+            The configured output file name template when the output direction is 'file'.
+            Otherwise, None. If the 'file_name' setting is missing returns
+            'mimeo-output-{}.{output_format}' by default.
+        """
+
         if direction == MimeoOutputDetails.FILE_DIRECTION:
             file_name = output_details.get(MimeoConfig.OUTPUT_DETAILS_FILE_NAME_KEY, "mimeo-output")
             return f"{file_name}-{'{}'}.{output_format}"
 
     @staticmethod
-    def __get_method(direction: str, output_details: dict):
+    def _get_method(direction: str, output_details: dict) -> str:
+        """Extracts an HTTP request method from the source dictionary
+        when the output direction is 'http'.
+
+        Parameters
+        ----------
+        direction : str
+            The configured output direction
+        output_details : dict
+            A source config output details dictionary
+
+        Returns
+        -------
+        method: str
+            The configured HTTP request method when the output direction is 'http'.
+            Otherwise, None. If the 'method' setting is missing returns
+            'POST' by default.
+        """
+
         if direction == MimeoOutputDetails.HTTP_DIRECTION:
             method = output_details.get(MimeoConfig.OUTPUT_DETAILS_METHOD, "POST")
             if method in MimeoOutputDetails.SUPPORTED_REQUEST_METHODS:
@@ -360,41 +511,162 @@ class MimeoOutputDetails(MimeoDTO):
                 raise UnsupportedRequestMethod(f"Provided request method [{method}] is not supported!")
 
     @staticmethod
-    def __get_protocol(direction: str, output_details: dict):
+    def _get_protocol(direction: str, output_details: dict) -> str:
+        """Extracts an HTTP protocol from the source dictionary
+        when the output direction is 'http'.
+
+        Parameters
+        ----------
+        direction : str
+            The configured output direction
+        output_details : dict
+            A source config output details dictionary
+
+        Returns
+        -------
+        str
+            The configured HTTP request method when the output direction is 'http'.
+            Otherwise, None. If the 'protocol' setting is missing returns
+            'http' by default.
+        """
+
         if direction == MimeoOutputDetails.HTTP_DIRECTION:
             return output_details.get(MimeoConfig.OUTPUT_DETAILS_PROTOCOL, "http")
 
     @staticmethod
-    def __get_host(direction: str, output_details: dict):
+    def _get_host(direction: str, output_details: dict) -> str:
+        """Extracts an HTTP host from the source dictionary
+        when the output direction is 'http'.
+
+        Parameters
+        ----------
+        direction : str
+            The configured output direction
+        output_details : dict
+            A source config output details dictionary
+
+        Returns
+        -------
+        str
+            The configured HTTP host when the output direction is 'http'.
+            Otherwise, None.
+        """
+
         if direction == MimeoOutputDetails.HTTP_DIRECTION:
             return output_details.get(MimeoConfig.OUTPUT_DETAILS_HOST)
 
     @staticmethod
-    def __get_port(direction: str, output_details: dict):
+    def _get_port(direction: str, output_details: dict) -> str:
+        """Extracts an HTTP port from the source dictionary
+        when the output direction is 'http'.
+
+        Parameters
+        ----------
+        direction : str
+            The configured output direction
+        output_details : dict
+            A source config output details dictionary
+
+        Returns
+        -------
+        str
+            The configured HTTP port when the output direction is 'http'.
+            Otherwise, None.
+        """
+
         if direction == MimeoOutputDetails.HTTP_DIRECTION:
             return output_details.get(MimeoConfig.OUTPUT_DETAILS_PORT)
 
     @staticmethod
-    def __get_endpoint(direction: str, output_details: dict):
+    def _get_endpoint(direction: str, output_details: dict) -> str:
+        """Extracts an HTTP endpoint from the source dictionary
+        when the output direction is 'http'.
+
+        Parameters
+        ----------
+        direction : str
+            The configured output direction
+        output_details : dict
+            A source config output details dictionary
+
+        Returns
+        -------
+        str
+            The configured HTTP request method when the output direction is 'http'.
+            Otherwise, None.
+        """
+
         if direction == MimeoOutputDetails.HTTP_DIRECTION:
             return output_details.get(MimeoConfig.OUTPUT_DETAILS_ENDPOINT)
 
     @staticmethod
-    def __get_auth(direction: str, output_details: dict):
+    def _get_auth(direction: str, output_details: dict) -> str:
+        """Extracts an HTTP auth method from the source dictionary
+        when the output direction is 'http'.
+
+        Parameters
+        ----------
+        direction : str
+            The configured output direction
+        output_details : dict
+            A source config output details dictionary
+
+        Returns
+        -------
+        method: str
+            The configured HTTP auth method when the output direction is 'http'.
+            Otherwise, None. If the 'auth' setting is missing returns
+            'basic' by default.
+        """
+
         if direction == MimeoOutputDetails.HTTP_DIRECTION:
-            auth =  output_details.get(MimeoConfig.OUTPUT_DETAILS_AUTH, "basic")
+            auth = output_details.get(MimeoConfig.OUTPUT_DETAILS_AUTH, "basic")
             if auth in MimeoOutputDetails.SUPPORTED_AUTH_METHODS:
                 return auth
             else:
                 raise UnsupportedAuthMethod(f"Provided auth [{auth}] is not supported!")
 
     @staticmethod
-    def __get_username(direction: str, output_details: dict):
+    def _get_username(direction: str, output_details: dict) -> str:
+        """Extracts a username from the source dictionary
+        when the output direction is 'http'.
+
+        Parameters
+        ----------
+        direction : str
+            The configured output direction
+        output_details : dict
+            A source config output details dictionary
+
+        Returns
+        -------
+        str
+            The configured username when the output direction is 'http'.
+            Otherwise, None.
+        """
+
         if direction == MimeoOutputDetails.HTTP_DIRECTION:
             return output_details.get(MimeoConfig.OUTPUT_DETAILS_USERNAME)
 
     @staticmethod
-    def __get_password(direction: str, output_details: dict):
+    def _get_password(direction: str, output_details: dict) -> str:
+        """Extracts a password from the source dictionary
+        when the output direction is 'http'.
+
+        Parameters
+        ----------
+        direction : str
+            The configured output direction
+        output_details : dict
+            A source config output details dictionary
+
+        Returns
+        -------
+        str
+            The configured password when the output direction is 'http'.
+            Otherwise, None.
+        """
+
         if direction == MimeoOutputDetails.HTTP_DIRECTION:
             return output_details.get(MimeoConfig.OUTPUT_DETAILS_PASSWORD)
 
