@@ -4,6 +4,25 @@ from mimeo.exceptions import UnsupportedOutputDirection
 
 
 class ConsumerFactory:
+    """A Factory class used to instantiate Consumer based on Mimeo Config
+
+    Implementation of the Consumer class depends on the output direction configured.
+
+    Attributes
+    ----------
+    FILE_DIRECTION
+        The 'file' output direction
+    STD_OUT_DIRECTION
+        The 'stdout' output direction
+    HTTP_DIRECTION
+        The 'http' output direction
+
+    Methods
+    -------
+    get_consumer(mimeo_config: MimeoConfig) -> Consumer
+        Returns a Consumer's implementation instance
+        based on Mimeo Config output direction
+    """
 
     FILE_DIRECTION = "file"
     STD_OUT_DIRECTION = "stdout"
@@ -11,6 +30,25 @@ class ConsumerFactory:
 
     @staticmethod
     def get_consumer(mimeo_config: MimeoConfig) -> Consumer:
+        """Returns a Consumer's implementation instance
+        based on Mimeo Config output direction
+
+        Parameters
+        ----------
+        mimeo_config : MimeoConfig
+            A Mimeo Configuration
+
+        Returns
+        -------
+        Consumer
+            A Consumer's implementation instance
+
+        Raises
+        ------
+        UnsupportedOutputDirection
+            If the output direction is not supported
+        """
+
         direction = mimeo_config.output_details.direction
         if direction == ConsumerFactory.STD_OUT_DIRECTION:
             return RawConsumer()
