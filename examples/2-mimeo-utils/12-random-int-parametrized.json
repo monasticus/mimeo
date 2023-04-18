@@ -4,9 +4,22 @@
       "count": 30,
       "model": {
         "SomeEntity": {
-          "ID": {
+          "IDBetween0And100Inclusive": {
             "_mimeo_util": {
               "_name": "random_int",
+              "start": 0
+            }
+          },
+          "IDBetween1And25Inclusive": {
+            "_mimeo_util": {
+              "_name": "random_int",
+              "limit": 25
+            }
+          },
+          "IDBetween0And25Inclusive": {
+            "_mimeo_util": {
+              "_name": "random_int",
+              "start": 0,
               "limit": 25
             }
           }

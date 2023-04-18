@@ -317,11 +317,11 @@ Uses the customized length.
 
 ##### Random Integer
 
-Generates a random integer value.
+Generates a random integer value between `start` and `limit` parameters (inclusive).
 
 ###### Raw
 
-Uses the default limit: 100.
+Uses the default start (1) and limit (100) values.
 
 ```json
 {
@@ -335,9 +335,22 @@ Uses the customized limit.
 
 ```json
 {
-  "randominteger": {
+  "randominteger1": {
     "_mimeo_util": {
       "_name": "random_int",
+      "start": 0
+    }
+  },
+  "randominteger2": {
+    "_mimeo_util": {
+      "_name": "random_int",
+      "limit": 5
+    }
+  },
+  "randominteger3": {
+    "_mimeo_util": {
+      "_name": "random_int",
+      "start": 0,
       "limit": 5
     }
   }

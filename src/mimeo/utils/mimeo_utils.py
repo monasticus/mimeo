@@ -40,10 +40,11 @@ class RandomIntegerUtil(MimeoUtil):
     KEY = "random_int"
 
     def __init__(self, **kwargs):
+        self.__start = kwargs.get("limit", 1)
         self.__limit = kwargs.get("limit", 100)
 
     def render(self):
-        return random.randrange(self.__limit)
+        return random.randrange(self.__start, self.__limit + 1)
 
 
 class RandomItemUtil(MimeoUtil):
