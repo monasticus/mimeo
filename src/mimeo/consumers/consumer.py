@@ -33,9 +33,7 @@ class Consumer(metaclass=ABCMeta):
             If the Consumer subclass doesn't include the consume method
         """
 
-        return (hasattr(subclass, 'consume') and
-                callable(subclass.consume) or
-                NotImplemented)
+        return 'consume' in subclass.__dict__ and callable(subclass.consume)
 
     @abstractmethod
     def consume(self, data: str):
@@ -49,8 +47,8 @@ class Consumer(metaclass=ABCMeta):
 
         Raises
         ------
-        NotImplementedError
+        TypeError
             if a subclass doesn't implement this method
         """
 
-        raise NotImplementedError
+        pass
