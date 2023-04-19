@@ -3,7 +3,7 @@ import re
 
 from mimeo.config import MimeoConfig
 from mimeo.context import MimeoContext, MimeoContextManager
-from mimeo.context.annotations import mimeo_context
+from mimeo.context.decorators import mimeo_context
 from mimeo.context.exc import VarNotFound
 from mimeo.utils import (AutoIncrementUtil, CityUtil, CountryUtil,
                          CurrentIterationUtil, DateTimeUtil, DateUtil, KeyUtil,

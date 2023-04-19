@@ -4,7 +4,7 @@ from abc import ABCMeta, abstractmethod
 from datetime import date, datetime, timedelta
 
 from mimeo.context import MimeoContext, MimeoContextManager
-from mimeo.context.annotations import mimeo_context
+from mimeo.context.decorators import mimeo_context
 from mimeo.database import Country, MimeoDB
 from mimeo.database.exc import CountryNotFound
 from mimeo.utils.exc import InvalidValue
