@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 
 class HttpConsumer(Consumer):
-    """A Consumer implementation for sending produced data in HTTP requests
+    """A Consumer implementation sending produced data in HTTP requests
 
     This Consumer is instantiated for the 'http' output direction
     and sends data produced by Mimeo in an HTTP request body

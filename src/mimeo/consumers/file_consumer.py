@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 
 
 class FileConsumer(Consumer):
-    """A Consumer implementation for saving produced data in the filesystem
+    """A Consumer implementation saving produced data in the filesystem
 
     This Consumer is instantiated for the 'file' output direction
     and saves data produced by Mimeo as files using Mimeo Output Details.

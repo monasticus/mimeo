@@ -2,7 +2,7 @@ from mimeo.consumers import Consumer
 
 
 class RawConsumer(Consumer):
-    """A Consumer implementation for printing produced data in the standard output
+    """A Consumer implementation printing produced data in the standard output
 
     This Consumer is instantiated for the 'stdout' output direction
     and prints data produced by Mimeo in the standard output.
