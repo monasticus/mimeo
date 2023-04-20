@@ -10,9 +10,9 @@ from mimeo.database.exc import CountryNotFound, OutOfStock
 
 class MimeoContext:
 
-    __ALL = "_ALL_"
-    __INITIAL_COUNT = "init-count"
-    __INDEXES = "indexes"
+    _ALL = "_ALL_"
+    _INITIAL_COUNT = "init-count"
+    _INDEXES = "indexes"
 
     def __init__(self, name: str):
         self.name = name
@@ -59,29 +59,26 @@ class MimeoContext:
         self.__iterations = []
 
     def next_country_index(self):
-        self.__initialize_countries_indexes()
-
-        if len(self.__countries_indexes) == 0:
-            raise OutOfStock(f"No more unique values, database contain only {MimeoDB.NUM_OF_COUNTRIES} countries.")
+        self._initialize_countries_indexes()
+        self._validate_countries()
 
         return self.__countries_indexes.pop()
 
     def next_city_index(self, country: str = None):
-        if not country:
-            country = MimeoContext.__ALL
-        self.__initialize_cities_indexes(country)
-        self.__validate_cities(country)
+        country = country if country else MimeoContext._ALL
+        self._initialize_cities_indexes(country)
+        self._validate_cities(country)
 
-        return self.__cities_indexes[country][MimeoContext.__INDEXES].pop()
+        return self.__cities_indexes[country][MimeoContext._INDEXES].pop()
 
-    def __initialize_countries_indexes(self):
+    def _initialize_countries_indexes(self):
         if self.__countries_indexes is None:
             countries_indexes = random.sample(range(MimeoDB.NUM_OF_COUNTRIES), MimeoDB.NUM_OF_COUNTRIES)
             self.__countries_indexes = countries_indexes
 
-    def __initialize_cities_indexes(self, country: str):
+    def _initialize_cities_indexes(self, country: str):
         if country not in self.__cities_indexes:
-            if country == MimeoContext.__ALL:
+            if country == MimeoContext._ALL:
                 num_of_entries = MimeoDB.NUM_OF_CITIES
             else:
                 country_cities = MimeoDB().get_cities_of(country)
@@ -91,14 +88,18 @@ class MimeoContext:
 
             cities_indexes = random.sample(range(num_of_entries), num_of_entries)
             self.__cities_indexes[country] = {
-                MimeoContext.__INITIAL_COUNT: num_of_entries,
-                MimeoContext.__INDEXES: cities_indexes
+                MimeoContext._INITIAL_COUNT: num_of_entries,
+                MimeoContext._INDEXES: cities_indexes
             }
 
-    def __validate_cities(self, country: str) -> None:
-        if len(self.__cities_indexes[country][MimeoContext.__INDEXES]) == 0:
-            init_count = self.__cities_indexes[country][MimeoContext.__INITIAL_COUNT]
-            if country == MimeoContext.__ALL:
+    def _validate_countries(self) -> None:
+        if len(self.__countries_indexes) == 0:
+            raise OutOfStock(f"No more unique values, database contain only {MimeoDB.NUM_OF_COUNTRIES} countries.")
+
+    def _validate_cities(self, country: str) -> None:
+        if len(self.__cities_indexes[country][MimeoContext._INDEXES]) == 0:
+            init_count = self.__cities_indexes[country][MimeoContext._INITIAL_COUNT]
+            if country == MimeoContext._ALL:
                 raise OutOfStock(f"No more unique values, database contain only {init_count} cities.")
             else:
                 raise OutOfStock(f"No more unique values, database contain only {init_count} cities of {country}.")
