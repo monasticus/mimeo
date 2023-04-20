@@ -3,6 +3,7 @@ pandas
 pyyaml
 haggis
 bumpver
+pylama
 isort
 pytest
 pytest-cov
