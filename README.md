@@ -646,6 +646,54 @@ When the `country` param is provided then the `allow_duplicates` flag is ignored
 }
 ```
 
+##### First Name
+
+Generates a first name.
+
+###### Raw
+
+By default first names will be unique across a Mimeo Context.
+
+```json
+{
+  "FirstName": "{first_name}"
+}
+```
+
+###### Parametrized
+
+Uses sex (`M` / `Male` / `F` / `Female`) and `allow_duplicates` flag to generate a first name.
+
+```json
+{
+  "FirstNameWithDuplicates": {
+    "_mimeo_util": {
+      "_name": "first_name",
+      "allow_duplicates": true
+    }
+  },
+  "MaleFirstName": {
+    "_mimeo_util": {
+      "_name": "first_name",
+      "sex": "M"
+    }
+  },
+  "FemaleFirstName": {
+    "_mimeo_util": {
+      "_name": "first_name",
+      "sex": "F"
+    }
+  },
+  "MaleFirstNameWithDuplicates": {
+    "_mimeo_util": {
+      "_name": "first_name",
+      "sex": "M",
+      "allow_duplicates": true
+    }
+  }
+}
+```
+
 
 ## License
 

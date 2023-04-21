@@ -6,7 +6,7 @@ from datetime import date, datetime, timedelta
 from mimeo.context import MimeoContext, MimeoContextManager
 from mimeo.context.annotations import mimeo_context
 from mimeo.database import Country, MimeoDB
-from mimeo.database.exc import CountryNotFound
+from mimeo.database.exc import CountryNotFound, InvalidSex
 from mimeo.utils.exc import InvalidValue
 
 
@@ -210,3 +210,44 @@ class CountryUtil(MimeoUtil):
 
             country = self.__MIMEO_DB.get_country_at(index)
             return country
+
+
+class FirstNameUtil(MimeoUtil):
+
+    KEY = "first_name"
+    __MIMEO_DB = MimeoDB()
+
+    def __init__(self, **kwargs):
+        self.__allow_duplicates = kwargs.get("allow_duplicates", False)
+        self.__sex = self._standardize_sex(kwargs.get("sex"))
+
+    @mimeo_context
+    def render(self, context: MimeoContext = None):
+        if self.__sex is None:
+            if self.__allow_duplicates:
+                index = random.randrange(MimeoDB.NUM_OF_FIRST_NAMES)
+            else:
+                index = context.next_first_name_index()
+            first_name = self.__MIMEO_DB.get_first_name_at(index)
+        else:
+            first_name_for_sex = self.__MIMEO_DB.get_first_names_by_sex(self.__sex)
+            first_name_for_sex_count = len(first_name_for_sex)
+
+            if self.__allow_duplicates:
+                index = random.randrange(first_name_for_sex_count)
+            else:
+                index = context.next_first_name_index(self.__sex)
+            first_name = first_name_for_sex[index]
+
+        return first_name.name
+
+    @classmethod
+    def _standardize_sex(cls, sex: str):
+        if sex is None:
+            return sex
+        elif sex.upper() in ["M", "MALE"]:
+            return "M"
+        elif sex.upper() in ["F", "FEMALE"]:
+            return "F"
+        else:
+            raise InvalidSex("Invalid sex (use M, F, Male or Female)!")

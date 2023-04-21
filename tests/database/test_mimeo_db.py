@@ -1,4 +1,4 @@
-from mimeo.database import CitiesDB, CountriesDB, MimeoDB
+from mimeo.database import CitiesDB, CountriesDB, FirstNamesDB, MimeoDB
 
 
 def test_get_cities():
@@ -83,15 +83,15 @@ def test_get_countries():
 def test_get_country_at():
     mimeo_db = MimeoDB()
     countries_db = CountriesDB()
-    country_from_cities_db = countries_db.get_country_at(0)
+    country_from_countries_db = countries_db.get_country_at(0)
     country_from_mimeo_db = mimeo_db.get_country_at(0)
     assert country_from_mimeo_db is not None
-    assert country_from_mimeo_db is country_from_cities_db
+    assert country_from_mimeo_db is country_from_countries_db
 
-    country_from_cities_db = countries_db.get_country_at(1)
+    country_from_countries_db = countries_db.get_country_at(1)
     country_from_mimeo_db = mimeo_db.get_country_at(1)
     assert country_from_mimeo_db is not None
-    assert country_from_mimeo_db is country_from_cities_db
+    assert country_from_mimeo_db is country_from_countries_db
 
 
 def test_get_country_by_iso_3():
@@ -119,3 +119,40 @@ def test_get_country_by_name():
     country_from_mimeo_db = mimeo_db.get_country_by_name('United Kingdom')
     assert country_from_mimeo_db is not None
     assert country_from_mimeo_db is country_from_cities_db
+
+
+def test_get_first_names():
+    mimeo_db = MimeoDB()
+    first_names_form_first_names_db = FirstNamesDB.get_first_names()
+    first_names_from_mimeo_db = mimeo_db.get_first_names()
+    mimeo_db_count = len(first_names_from_mimeo_db)
+    assert mimeo_db_count > 0
+    assert mimeo_db_count == len(first_names_form_first_names_db)
+    for i in range(mimeo_db_count):
+        assert first_names_from_mimeo_db[i] is first_names_form_first_names_db[i]
+
+
+def test_get_first_name_at():
+    mimeo_db = MimeoDB()
+    first_names_db = FirstNamesDB()
+    first_name_from_first_names_db = first_names_db.get_first_name_at(0)
+    first_name_from_mimeo_db = mimeo_db.get_first_name_at(0)
+    assert first_name_from_mimeo_db is not None
+    assert first_name_from_mimeo_db is first_name_from_first_names_db
+
+    first_name_from_first_names_db = first_names_db.get_first_name_at(1)
+    first_name_from_mimeo_db = mimeo_db.get_first_name_at(1)
+    assert first_name_from_mimeo_db is not None
+    assert first_name_from_mimeo_db is first_name_from_first_names_db
+
+
+def test_get_first_names_by_sex():
+    mimeo_db = MimeoDB()
+    first_names_db = FirstNamesDB()
+    first_names_from_first_names_db = first_names_db.get_first_names_by_sex('M')
+    first_names_from_mimeo_db = mimeo_db.get_first_names_by_sex('M')
+    mimeo_db_count = len(first_names_from_mimeo_db)
+    assert mimeo_db_count > 0
+    assert mimeo_db_count == len(first_names_from_first_names_db)
+    for i in range(mimeo_db_count):
+        assert first_names_from_mimeo_db[i] is first_names_from_first_names_db[i]

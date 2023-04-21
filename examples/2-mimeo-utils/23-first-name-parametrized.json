@@ -1,0 +1,48 @@
+{
+  "_templates_": [
+    {
+      "count": 30,
+      "model": {
+        "SomeEntity": {
+          "FirstNameWithDuplicates": {
+            "_mimeo_util": {
+              "_name": "first_name",
+              "allow_duplicates": true
+            }
+          },
+          "MaleFirstName1": {
+            "_mimeo_util": {
+              "_name": "first_name",
+              "sex": "M"
+            }
+          },
+          "MaleFirstName2": {
+            "_mimeo_util": {
+              "_name": "first_name",
+              "sex": "Male"
+            }
+          },
+          "FemaleFirstName1": {
+            "_mimeo_util": {
+              "_name": "first_name",
+              "sex": "F"
+            }
+          },
+          "FemaleFirstName2": {
+            "_mimeo_util": {
+              "_name": "first_name",
+              "sex": "Female"
+            }
+          },
+          "MaleFirstNameWithDuplicates": {
+            "_mimeo_util": {
+              "_name": "first_name",
+              "sex": "M",
+              "allow_duplicates": true
+            }
+          }
+        }
+      }
+    }
+  ]
+}
