@@ -6,9 +6,9 @@ from mimeo.context import MimeoContext, MimeoContextManager
 from mimeo.context.annotations import mimeo_context
 from mimeo.context.exc import VarNotFound
 from mimeo.utils import (AutoIncrementUtil, CityUtil, CountryUtil,
-                         CurrentIterationUtil, DateTimeUtil, DateUtil, KeyUtil,
-                         MimeoUtil, RandomIntegerUtil, RandomItemUtil,
-                         RandomStringUtil)
+                         CurrentIterationUtil, DateTimeUtil, DateUtil,
+                         FirstNameUtil, KeyUtil, MimeoUtil, RandomIntegerUtil,
+                         RandomItemUtil, RandomStringUtil)
 from mimeo.utils.exc import InvalidMimeoUtil, InvalidValue, NotASpecialField
 
 logger = logging.getLogger(__name__)
@@ -28,6 +28,7 @@ class UtilsRenderer:
         KeyUtil.KEY: KeyUtil,
         CityUtil.KEY: CityUtil,
         CountryUtil.KEY: CountryUtil,
+        FirstNameUtil.KEY: FirstNameUtil,
     }
     _INSTANCES = {}
 
