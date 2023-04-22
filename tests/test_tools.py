@@ -1,7 +1,7 @@
 import pytest
 
 from mimeo import tools
-from mimeo.exceptions import ResourceNotFound
+from mimeo.resources.exc import ResourceNotFound
 
 
 def test_get_resource_existing():

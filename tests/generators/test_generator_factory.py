@@ -1,7 +1,7 @@
 import pytest
 
 from mimeo.config import MimeoConfig
-from mimeo.exceptions import UnsupportedOutputFormat
+from mimeo.config.exc import UnsupportedOutputFormat
 from mimeo.generators import GeneratorFactory, XMLGenerator
 
 

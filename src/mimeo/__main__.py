@@ -6,7 +6,7 @@ from os import path, walk
 from mimeo import Mimeograph
 from mimeo.config import MimeoConfig
 from mimeo.context import MimeoContextManager
-from mimeo.exceptions import EnvironmentNotFound, EnvironmentsFileNotFound
+from mimeo.exc import EnvironmentNotFound, EnvironmentsFileNotFound
 from mimeo.logging import setup_logging
 
 setup_logging()

@@ -1,7 +1,7 @@
 import pytest
 
 from mimeo.config.mimeo_config import MimeoConfig
-from mimeo.exceptions import (IncorrectMimeoConfig, InvalidIndent, InvalidVars,
+from mimeo.config.exc import (IncorrectMimeoConfig, InvalidIndent, InvalidVars,
                               UnsupportedOutputFormat)
 
 

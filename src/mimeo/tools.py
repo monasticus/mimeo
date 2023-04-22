@@ -1,6 +1,6 @@
 from typing.io import TextIO
 
-from mimeo.exceptions import ResourceNotFound
+from mimeo.resources.exc import ResourceNotFound
 
 try:
     import importlib.resources as pkg_resources

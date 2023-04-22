@@ -1,6 +1,6 @@
 import re
 
-from mimeo.exceptions import (IncorrectMimeoConfig, IncorrectMimeoModel,
+from mimeo.config.exc import (IncorrectMimeoConfig, IncorrectMimeoModel,
                               IncorrectMimeoTemplate, InvalidIndent,
                               InvalidVars, MissingRequiredProperty,
                               UnsupportedAuthMethod,

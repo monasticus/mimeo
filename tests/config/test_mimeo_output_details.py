@@ -1,7 +1,7 @@
 import pytest
 
 from mimeo.config.mimeo_config import MimeoOutputDetails
-from mimeo.exceptions import (MissingRequiredProperty, UnsupportedAuthMethod,
+from mimeo.config.exc import (MissingRequiredProperty, UnsupportedAuthMethod,
                               UnsupportedOutputDirection,
                               UnsupportedRequestMethod)
 

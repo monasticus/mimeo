@@ -3,7 +3,7 @@ import pytest
 from mimeo.config import MimeoConfig
 from mimeo.consumers import (ConsumerFactory, FileConsumer, HttpConsumer,
                              RawConsumer)
-from mimeo.exceptions import UnsupportedOutputDirection
+from mimeo.config.exc import UnsupportedOutputDirection
 
 
 def test_get_consumer_for_file_direction():
