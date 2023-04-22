@@ -1,7 +1,7 @@
 import pytest
 
 from mimeo.config import MimeoConfig
-from mimeo.exceptions import UnsupportedOutputFormat
+from mimeo.config.exc import UnsupportedPropertyValue
 from mimeo.generators import GeneratorFactory, XMLGenerator
 
 
@@ -41,7 +41,7 @@ def test_generator_factory_for_unsupported_format():
     mimeo_config = MimeoConfig(config)
     mimeo_config.output_format = "unsupported_format"
 
-    with pytest.raises(UnsupportedOutputFormat) as err:
+    with pytest.raises(UnsupportedPropertyValue) as err:
         GeneratorFactory.get_generator(mimeo_config)
 
-    assert err.value.args[0] == "Provided format [unsupported_format] is not supported!"
+    assert err.value.args[0] == "Provided output_format [unsupported_format] is not supported! Supported values: [xml]."

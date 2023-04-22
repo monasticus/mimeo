@@ -13,8 +13,8 @@ import responses
 from responses import matchers
 
 import mimeo.__main__ as MimeoCLI
-from mimeo.exceptions import (EnvironmentNotFound, EnvironmentsFileNotFound,
-                              MissingRequiredProperty)
+from mimeo.config.exc import MissingRequiredProperty
+from mimeo.exc import EnvironmentNotFound, EnvironmentsFileNotFound
 
 
 @pytest.fixture(autouse=True)

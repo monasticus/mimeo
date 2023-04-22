@@ -1,7 +1,7 @@
 import pytest
 
+from mimeo.config.exc import IncorrectMimeoTemplate
 from mimeo.config.mimeo_config import MimeoTemplate
-from mimeo.exceptions import IncorrectMimeoTemplate
 
 
 def test_str():
