@@ -708,4 +708,5 @@ MIT
 ## Acknowledgements
 
  - [SimpleMaps.com](https://simplemaps.com/data/world-cities) (Cities & countries data)
+ - [@hadley/data-baby-names](https://github.com/hadley/data-baby-names/) (First names data)
 
