@@ -1,17 +1,8 @@
-class UnsupportedOutputFormat(Exception):
-    pass
+class UnsupportedPropertyValue(Exception):
 
-
-class UnsupportedOutputDirection(Exception):
-    pass
-
-
-class UnsupportedAuthMethod(Exception):
-    pass
-
-
-class UnsupportedRequestMethod(Exception):
-    pass
+    def __init__(self, prop: str, val: str, supported_values: tuple):
+        super().__init__(f"Provided {prop} [{val}] is not supported! "
+                         f"Supported values: [{', '.join(supported_values)}].")
 
 
 class MissingRequiredProperty(Exception):

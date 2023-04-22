@@ -190,21 +190,21 @@ def get_config(config_path, args):
         if args.file is not None:
             customize_output_details(config, MimeoConfig.OUTPUT_DETAILS_FILE_NAME_KEY, args.file)
         if args.http_method is not None:
-            customize_output_details(config, MimeoConfig.OUTPUT_DETAILS_METHOD, args.http_method)
+            customize_output_details(config, MimeoConfig.OUTPUT_DETAILS_METHOD_KEY, args.http_method)
         if args.http_protocol is not None:
-            customize_output_details(config, MimeoConfig.OUTPUT_DETAILS_PROTOCOL, args.http_protocol)
+            customize_output_details(config, MimeoConfig.OUTPUT_DETAILS_PROTOCOL_KEY, args.http_protocol)
         if args.http_auth is not None:
-            customize_output_details(config, MimeoConfig.OUTPUT_DETAILS_AUTH, args.http_auth)
+            customize_output_details(config, MimeoConfig.OUTPUT_DETAILS_AUTH_KEY, args.http_auth)
         if args.http_host is not None:
-            customize_output_details(config, MimeoConfig.OUTPUT_DETAILS_HOST, args.http_host)
+            customize_output_details(config, MimeoConfig.OUTPUT_DETAILS_HOST_KEY, args.http_host)
         if args.http_port is not None:
-            customize_output_details(config, MimeoConfig.OUTPUT_DETAILS_PORT, args.http_port)
+            customize_output_details(config, MimeoConfig.OUTPUT_DETAILS_PORT_KEY, args.http_port)
         if args.http_endpoint is not None:
-            customize_output_details(config, MimeoConfig.OUTPUT_DETAILS_ENDPOINT, args.http_endpoint)
+            customize_output_details(config, MimeoConfig.OUTPUT_DETAILS_ENDPOINT_KEY, args.http_endpoint)
         if args.http_user is not None:
-            customize_output_details(config, MimeoConfig.OUTPUT_DETAILS_USERNAME, args.http_user)
+            customize_output_details(config, MimeoConfig.OUTPUT_DETAILS_USERNAME_KEY, args.http_user)
         if args.http_password is not None:
-            customize_output_details(config, MimeoConfig.OUTPUT_DETAILS_PASSWORD, args.http_password)
+            customize_output_details(config, MimeoConfig.OUTPUT_DETAILS_PASSWORD_KEY, args.http_password)
     mimeo_config = MimeoConfig(config)
     logger.debug(f"Mimeo Config: {mimeo_config}")
     return mimeo_config
@@ -217,12 +217,12 @@ def customize_output_details_with_env(config, envs_path, env_name):
             if env_name in envs:
                 env = envs[env_name]
                 logger.debug(f"Using environment [{env_name}] from file [{envs_path}]: [{env}]")
-                for prop in [MimeoConfig.OUTPUT_DETAILS_PROTOCOL,
-                             MimeoConfig.OUTPUT_DETAILS_HOST,
-                             MimeoConfig.OUTPUT_DETAILS_PORT,
-                             MimeoConfig.OUTPUT_DETAILS_AUTH,
-                             MimeoConfig.OUTPUT_DETAILS_USERNAME,
-                             MimeoConfig.OUTPUT_DETAILS_PASSWORD]:
+                for prop in [MimeoConfig.OUTPUT_DETAILS_PROTOCOL_KEY,
+                             MimeoConfig.OUTPUT_DETAILS_HOST_KEY,
+                             MimeoConfig.OUTPUT_DETAILS_PORT_KEY,
+                             MimeoConfig.OUTPUT_DETAILS_AUTH_KEY,
+                             MimeoConfig.OUTPUT_DETAILS_USERNAME_KEY,
+                             MimeoConfig.OUTPUT_DETAILS_PASSWORD_KEY]:
                     prop_value = env.get(prop)
                     if prop_value is not None:
                         customize_output_details(config, prop, prop_value)

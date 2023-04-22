@@ -1,9 +1,9 @@
 import pytest
 
 from mimeo.config import MimeoConfig
+from mimeo.config.exc import UnsupportedPropertyValue
 from mimeo.consumers import (ConsumerFactory, FileConsumer, HttpConsumer,
                              RawConsumer)
-from mimeo.config.exc import UnsupportedOutputDirection
 
 
 def test_get_consumer_for_file_direction():
@@ -85,7 +85,8 @@ def test_get_consumer_for_unsupported_format():
     mimeo_config = MimeoConfig(config)
     mimeo_config.output_details.direction = "unsupported_direction"
 
-    with pytest.raises(UnsupportedOutputDirection) as err:
+    with pytest.raises(UnsupportedPropertyValue) as err:
         ConsumerFactory.get_consumer(mimeo_config)
 
-    assert err.value.args[0] == "Provided direction [unsupported_direction] is not supported!"
+    assert err.value.args[0] == "Provided direction [unsupported_direction] is not supported! " \
+                                "Supported values: [stdout, file, http]."
