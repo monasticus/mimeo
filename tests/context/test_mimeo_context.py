@@ -239,3 +239,21 @@ def test_next_first_name_index_non_existing_sex():
 
     assert err.value.args[0] == "Invalid sex (use M or F)!"
 
+
+def test_next_last_name_index():
+    ctx = MimeoContext("SomeContext")
+    for i in range(MimeoDB.NUM_OF_LAST_NAMES):
+        last_name_index = ctx.next_last_name_index()
+        assert last_name_index >= 0
+        assert last_name_index < MimeoDB.NUM_OF_LAST_NAMES
+
+
+def test_next_last_name_index_out_of_stock():
+    ctx = MimeoContext("SomeContext")
+    for _ in range(MimeoDB.NUM_OF_LAST_NAMES):
+        ctx.next_last_name_index()
+
+    with pytest.raises(OutOfStock) as err:
+        ctx.next_last_name_index()
+    assert err.value.args[0] == "No more unique values, database contain only 151670 last names."
+

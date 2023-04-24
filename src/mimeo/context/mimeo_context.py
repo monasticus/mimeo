@@ -21,6 +21,7 @@ class MimeoContext:
         self.__countries_indexes = None
         self.__cities_indexes = {}
         self.__first_names_indexes = {}
+        self.__last_names_indexes = None
 
     def next_id(self) -> int:
         self.__id += 1
@@ -79,6 +80,12 @@ class MimeoContext:
 
         return self.__first_names_indexes[sex][MimeoContext.__INDEXES].pop()
 
+    def next_last_name_index(self):
+        self.__initialize_last_names_indexes()
+        self.__validate_last_names()
+
+        return self.__last_names_indexes.pop()
+
     def __initialize_countries_indexes(self):
         if self.__countries_indexes is None:
             countries_indexes = random.sample(range(MimeoDB.NUM_OF_COUNTRIES), MimeoDB.NUM_OF_COUNTRIES)
@@ -114,6 +121,11 @@ class MimeoContext:
                 MimeoContext.__INDEXES: first_names_indexes
             }
 
+    def __initialize_last_names_indexes(self):
+        if self.__last_names_indexes is None:
+            last_names_indexes = random.sample(range(MimeoDB.NUM_OF_LAST_NAMES), MimeoDB.NUM_OF_LAST_NAMES)
+            self.__last_names_indexes = last_names_indexes
+
     def __validate_countries(self) -> None:
         if len(self.__countries_indexes) == 0:
             raise OutOfStock(f"No more unique values, database contain only {MimeoDB.NUM_OF_COUNTRIES} countries.")
@@ -134,3 +146,7 @@ class MimeoContext:
             else:
                 raise OutOfStock(f"No more unique values, database contain only {init_count} "
                                  f"{'male' if sex == 'M' else 'female'} first names.")
+
+    def __validate_last_names(self) -> None:
+        if len(self.__last_names_indexes) == 0:
+            raise OutOfStock(f"No more unique values, database contain only {MimeoDB.NUM_OF_LAST_NAMES} last names.")
