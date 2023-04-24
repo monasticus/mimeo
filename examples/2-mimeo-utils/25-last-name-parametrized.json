@@ -7,7 +7,7 @@
           "LastNameWithDuplicates": {
             "_mimeo_util": {
               "_name": "last_name",
-              "allow_duplicates": true
+              "unique": false
             }
           }
         }

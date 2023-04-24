@@ -48,14 +48,14 @@ def test_country_parametrized_default(default_config):
         assert country in country_names
 
 
-def test_country_parametrized_with_allow_duplicates(default_config):
+def test_country_parametrized_with_unique(default_config):
     mimeo_db = MimeoDB()
     country_names = [country.name for country in iter(mimeo_db.get_countries())]
     with MimeoContextManager(default_config) as mimeo_manager:
         context = mimeo_manager.get_context("SomeEntity")
         mimeo_manager.set_current_context(context)
 
-        country = UtilsRenderer.render_parametrized({"_name": "country", "allow_duplicates": True})
+        country = UtilsRenderer.render_parametrized({"_name": "country", "unique": False})
         assert country in country_names
 
 
@@ -99,14 +99,14 @@ def test_country_parametrized_with_value_iso3(default_config):
         assert country in countries_iso3
 
 
-def test_country_parametrized_with_value_iso3_and_allow_duplicates(default_config):
+def test_country_parametrized_with_value_iso3_and_unique(default_config):
     mimeo_db = MimeoDB()
     countries_iso3 = [country.iso_3 for country in iter(mimeo_db.get_countries())]
     with MimeoContextManager(default_config) as mimeo_manager:
         context = mimeo_manager.get_context("SomeEntity")
         mimeo_manager.set_current_context(context)
 
-        country = UtilsRenderer.render_parametrized({"_name": "country", "value": "iso3", "allow_duplicates": True})
+        country = UtilsRenderer.render_parametrized({"_name": "country", "value": "iso3", "unique": False})
         assert country in countries_iso3
 
 
@@ -150,14 +150,14 @@ def test_country_parametrized_with_value_iso2(default_config):
         assert country in countries_iso2
 
 
-def test_country_parametrized_with_value_iso2_and_allow_duplicates(default_config):
+def test_country_parametrized_with_value_iso2_and_unique(default_config):
     mimeo_db = MimeoDB()
     countries_iso2 = [country.iso_2 for country in iter(mimeo_db.get_countries())]
     with MimeoContextManager(default_config) as mimeo_manager:
         context = mimeo_manager.get_context("SomeEntity")
         mimeo_manager.set_current_context(context)
 
-        country = UtilsRenderer.render_parametrized({"_name": "country", "value": "iso2", "allow_duplicates": True})
+        country = UtilsRenderer.render_parametrized({"_name": "country", "value": "iso2", "unique": False})
         assert country in countries_iso2
 
 
