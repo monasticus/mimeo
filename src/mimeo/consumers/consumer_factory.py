@@ -1,6 +1,6 @@
+from mimeo.config.exc import UnsupportedPropertyValue
 from mimeo.config.mimeo_config import MimeoConfig
 from mimeo.consumers import Consumer, FileConsumer, HttpConsumer, RawConsumer
-from mimeo.exceptions import UnsupportedOutputDirection
 
 
 class ConsumerFactory:
@@ -24,9 +24,9 @@ class ConsumerFactory:
         based on Mimeo Config output direction
     """
 
-    FILE_DIRECTION = "file"
-    STD_OUT_DIRECTION = "stdout"
-    HTTP_DIRECTION = "http"
+    FILE_DIRECTION = MimeoConfig.OUTPUT_DETAILS_DIRECTION_FILE
+    STD_OUT_DIRECTION = MimeoConfig.OUTPUT_DETAILS_DIRECTION_STD_OUT
+    HTTP_DIRECTION = MimeoConfig.OUTPUT_DETAILS_DIRECTION_HTTP
 
     @staticmethod
     def get_consumer(mimeo_config: MimeoConfig) -> Consumer:
@@ -45,7 +45,7 @@ class ConsumerFactory:
 
         Raises
         ------
-        UnsupportedOutputDirection
+        UnsupportedPropertyValue
             If the output direction is not supported
         """
 
@@ -57,4 +57,6 @@ class ConsumerFactory:
         elif direction == ConsumerFactory.HTTP_DIRECTION:
             return HttpConsumer(mimeo_config.output_details)
         else:
-            raise UnsupportedOutputDirection(f"Provided direction [{direction}] is not supported!")
+            raise UnsupportedPropertyValue(MimeoConfig.OUTPUT_DETAILS_DIRECTION_KEY,
+                                           direction,
+                                           MimeoConfig.SUPPORTED_OUTPUT_DIRECTIONS)

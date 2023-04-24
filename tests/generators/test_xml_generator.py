@@ -315,6 +315,40 @@ def test_generate_single_template_bool_value():
         assert count == 5
 
 
+def test_generate_single_template_none_value():
+    config = MimeoConfig({
+        "output_format": "xml",
+        "_templates_": [
+            {
+                "count": 5,
+                "model": {
+                    "SomeEntity": {
+                        "ChildNode": None
+                    }
+                }
+            }
+        ]
+    })
+
+    with MimeoContextManager(config):
+        generator = XMLGenerator(config)
+        count = 0
+        for data in generator.generate(config.templates):
+            assert data.tag == "SomeEntity"
+            assert data.attrib == {}
+            assert len(list(data)) == 1  # number of children
+
+            child = data.find("ChildNode")
+            assert child.tag == "ChildNode"
+            assert child.attrib == {}
+            assert child.text == ""
+            assert len(list(child)) == 0  # number of children
+
+            count += 1
+
+        assert count == 5
+
+
 def test_generate_single_template_using_variables():
     config = MimeoConfig({
         "output_format": "xml",

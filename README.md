@@ -547,14 +547,14 @@ By default city names will be unique across a Mimeo Context.
 
 ###### Parametrized
 
-Uses country (name, iso2, iso3) and `allow_duplicates` flag to generate a city name.
+Uses country (name, iso2, iso3) and `unique` flag to generate a city name.
 
 ```json
 {
   "CityWithDuplicates": {
     "_mimeo_util": {
       "_name": "city",
-      "allow_duplicates": true
+      "unique": false
     }
   },
   "CityOfCountryName": {
@@ -579,7 +579,7 @@ Uses country (name, iso2, iso3) and `allow_duplicates` flag to generate a city n
     "_mimeo_util": {
       "_name": "city",
       "country": "United Kingdom",
-      "allow_duplicates": true
+      "unique": false
     }
   }
 }
@@ -608,14 +608,14 @@ It can generate:
 - country iso2 for a provided name or iso3
 - country iso3 for a provided name or iso2
 
-When the `country` param is provided then the `allow_duplicates` flag is ignored.
+When the `country` param is provided then the `unique` flag is ignored.
 
 ```json
 {
   "CountryNameWithDuplicates": {
     "_mimeo_util": {
       "_name": "country",
-      "allow_duplicates": true
+      "unique": false
     }
   },
   "CountryISO2": {
@@ -646,6 +646,83 @@ When the `country` param is provided then the `allow_duplicates` flag is ignored
 }
 ```
 
+##### First Name
+
+Generates a first name.
+
+###### Raw
+
+By default first names will be unique across a Mimeo Context.
+
+```json
+{
+  "FirstName": "{first_name}"
+}
+```
+
+###### Parametrized
+
+Uses sex (`M` / `Male` / `F` / `Female`) and `unique` flag to generate a first name.
+
+```json
+{
+  "FirstNameWithDuplicates": {
+    "_mimeo_util": {
+      "_name": "first_name",
+      "unique": false
+    }
+  },
+  "MaleFirstName": {
+    "_mimeo_util": {
+      "_name": "first_name",
+      "sex": "M"
+    }
+  },
+  "FemaleFirstName": {
+    "_mimeo_util": {
+      "_name": "first_name",
+      "sex": "F"
+    }
+  },
+  "MaleFirstNameWithDuplicates": {
+    "_mimeo_util": {
+      "_name": "first_name",
+      "sex": "M",
+      "unique": false
+    }
+  }
+}
+```
+
+##### Last Name
+
+Generates a last name.
+
+###### Raw
+
+By default last names will be unique across a Mimeo Context.
+
+```json
+{
+  "LastName": "{last_name}"
+}
+```
+
+###### Parametrized
+
+Uses `unique` flag to generate a last name.
+
+```json
+{
+  "LastNameWithDuplicates": {
+    "_mimeo_util": {
+      "_name": "last_name",
+      "unique": false
+    }
+  }
+}
+```
+
 
 ## License
 
@@ -660,4 +737,6 @@ MIT
 ## Acknowledgements
 
  - [SimpleMaps.com](https://simplemaps.com/data/world-cities) (Cities & countries data)
+ - [@hadley/data-baby-names](https://github.com/hadley/data-baby-names/) (Forenames data)
+ - [@fivethirtyeigh/data/most-common-name](https://github.com/fivethirtyeight/data/tree/master/most-common-name) (Surnames data)
 

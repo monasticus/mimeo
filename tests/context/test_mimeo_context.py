@@ -5,7 +5,7 @@ from mimeo.context.exc import (ContextIterationNotFound,
                                MinimumIdentifierReached,
                                UninitializedContextIteration)
 from mimeo.database import MimeoDB
-from mimeo.database.exc import CountryNotFound, OutOfStock
+from mimeo.database.exc import CountryNotFound, InvalidSex, OutOfStock
 
 
 def test_next_id():
@@ -152,7 +152,7 @@ def test_next_city_index_custom_country():
         assert city_index < cities_count
 
 
-def test_next_city_index_custom_country_default_out_of_stock():
+def test_next_city_index_custom_country_out_of_stock():
     mimeo_db = MimeoDB()
     cities = [city.name_ascii for city in mimeo_db.get_cities_of("United Kingdom")]
     cities_count = len(cities)
@@ -172,4 +172,88 @@ def test_next_city_index_non_existing_country():
         ctx.next_city_index("NEC")
 
     assert err.value.args[0] == "Mimeo database does not contain any cities of provided country [NEC]."
+
+
+def test_next_first_name_index_default():
+    ctx = MimeoContext("SomeContext")
+    for _ in range(MimeoDB.NUM_OF_FIRST_NAMES):
+        first_name_index = ctx.next_first_name_index()
+        assert first_name_index >= 0
+        assert first_name_index < MimeoDB.NUM_OF_FIRST_NAMES
+
+
+def test_next_first_name_index_default_out_of_stock():
+    ctx = MimeoContext("SomeContext")
+    for _ in range(MimeoDB.NUM_OF_FIRST_NAMES):
+        ctx.next_first_name_index()
+
+    with pytest.raises(OutOfStock) as err:
+        ctx.next_first_name_index()
+    assert err.value.args[0] == "No more unique values, database contain only 7455 first names."
+
+
+def test_next_first_name_index_custom_sex():
+    mimeo_db = MimeoDB()
+    first_names = [first_name.name for first_name in mimeo_db.get_first_names_by_sex("M")]
+    first_names_count = len(first_names)
+
+    ctx = MimeoContext("SomeContext")
+    for _ in range(first_names_count):
+        first_name_index = ctx.next_first_name_index("M")
+        assert first_name_index >= 0
+        assert first_name_index < first_names_count
+
+
+def test_next_first_name_index_male_sex_out_of_stock():
+    mimeo_db = MimeoDB()
+    first_names = [first_name.name for first_name in mimeo_db.get_first_names_by_sex("M")]
+    first_names_count = len(first_names)
+
+    ctx = MimeoContext("SomeContext")
+    for _ in range(first_names_count):
+        ctx.next_first_name_index("M")
+
+    with pytest.raises(OutOfStock) as err:
+        ctx.next_first_name_index("M")
+    assert err.value.args[0] == "No more unique values, database contain only 3437 male first names."
+
+
+def test_next_first_name_index_female_sex_out_of_stock():
+    mimeo_db = MimeoDB()
+    first_names = [first_name.name for first_name in mimeo_db.get_first_names_by_sex("F")]
+    first_names_count = len(first_names)
+
+    ctx = MimeoContext("SomeContext")
+    for _ in range(first_names_count):
+        ctx.next_first_name_index("F")
+
+    with pytest.raises(OutOfStock) as err:
+        ctx.next_first_name_index("F")
+    assert err.value.args[0] == "No more unique values, database contain only 4018 female first names."
+
+
+def test_next_first_name_index_non_existing_sex():
+    ctx = MimeoContext("SomeContext")
+    with pytest.raises(InvalidSex) as err:
+        ctx.next_first_name_index("N")
+
+    assert err.value.args[0] == "Invalid sex (use M or F)!"
+
+
+def test_next_last_name_index():
+    ctx = MimeoContext("SomeContext")
+    for i in range(MimeoDB.NUM_OF_LAST_NAMES):
+        last_name_index = ctx.next_last_name_index()
+        assert last_name_index >= 0
+        assert last_name_index < MimeoDB.NUM_OF_LAST_NAMES
+
+
+def test_next_last_name_index_out_of_stock():
+    ctx = MimeoContext("SomeContext")
+    for _ in range(MimeoDB.NUM_OF_LAST_NAMES):
+        ctx.next_last_name_index()
+
+    with pytest.raises(OutOfStock) as err:
+        ctx.next_last_name_index()
+    assert err.value.args[0] == "No more unique values, database contain only 151670 last names."
 

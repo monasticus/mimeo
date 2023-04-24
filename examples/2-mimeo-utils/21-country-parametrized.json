@@ -7,7 +7,7 @@
           "CountryNameWithDuplicates": {
             "_mimeo_util": {
               "_name": "country",
-              "allow_duplicates": true
+              "unique": false
             }
           },
           "CountryNameForISO2": {
@@ -32,7 +32,7 @@
             "_mimeo_util": {
               "_name": "country",
               "value": "iso2",
-              "allow_duplicates": true
+              "unique": false
             }
           },
           "CountryISO2ForName": {
@@ -59,7 +59,7 @@
             "_mimeo_util": {
               "_name": "country",
               "value": "iso3",
-              "allow_duplicates": true
+              "unique": false
             }
           },
           "CountryISO3ForName": {

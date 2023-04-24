@@ -1,0 +1,17 @@
+{
+  "_templates_": [
+    {
+      "count": 30,
+      "model": {
+        "SomeEntity": {
+          "LastNameWithDuplicates": {
+            "_mimeo_util": {
+              "_name": "last_name",
+              "unique": false
+            }
+          }
+        }
+      }
+    }
+  ]
+}

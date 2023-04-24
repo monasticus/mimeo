@@ -1,8 +1,8 @@
 import pytest
 
+from mimeo.config.exc import (IncorrectMimeoConfig, InvalidIndent, InvalidVars,
+                              UnsupportedPropertyValue)
 from mimeo.config.mimeo_config import MimeoConfig
-from mimeo.exceptions import (IncorrectMimeoConfig, InvalidIndent, InvalidVars,
-                              UnsupportedOutputFormat)
 
 
 def test_str():
@@ -136,10 +136,10 @@ def test_parsing_config_with_unsupported_format():
         ]
     }
 
-    with pytest.raises(UnsupportedOutputFormat) as err:
+    with pytest.raises(UnsupportedPropertyValue) as err:
         MimeoConfig(config)
 
-    assert err.value.args[0] == "Provided format [unsupported_format] is not supported!"
+    assert err.value.args[0] == "Provided output_format [unsupported_format] is not supported! Supported values: [xml]."
 
 
 def test_parsing_config_without_templates():

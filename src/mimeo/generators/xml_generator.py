@@ -101,10 +101,9 @@ class XMLGenerator(Generator):
             else:
                 value = MimeoRenderer.render(element_value)
                 if is_special_field:
-                    context.curr_iteration().add_special_field(element_tag,
-                                                                                                 value)
+                    context.curr_iteration().add_special_field(element_tag, value)
 
-                value_str = str(value)
+                value_str = str(value) if value is not None else ""
                 element.text = value_str.lower() if isinstance(value, bool) else value_str
                 logger.fine(f"Rendered value [{element.text}]")
 
