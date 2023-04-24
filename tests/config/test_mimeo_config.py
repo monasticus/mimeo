@@ -1,6 +1,6 @@
 import pytest
 
-from mimeo.config.exc import (IncorrectMimeoConfig, InvalidIndent, InvalidVars,
+from mimeo.config.exc import (InvalidMimeoConfig, InvalidIndent, InvalidVars,
                               UnsupportedPropertyValue)
 from mimeo.config.mimeo_config import MimeoConfig
 
@@ -152,7 +152,7 @@ def test_parsing_config_without_templates():
         "indent": 4
     }
 
-    with pytest.raises(IncorrectMimeoConfig) as err:
+    with pytest.raises(InvalidMimeoConfig) as err:
         MimeoConfig(config)
 
     assert err.value.args[0] == "No templates in the Mimeo Config: " \
@@ -172,7 +172,7 @@ def test_parsing_config_with_templates_object():
         }
     }
 
-    with pytest.raises(IncorrectMimeoConfig) as err:
+    with pytest.raises(InvalidMimeoConfig) as err:
         MimeoConfig(config)
 
     assert err.value.args[0] == "_templates_ property does not store an array: " \

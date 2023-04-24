@@ -1,6 +1,6 @@
 import pytest
 
-from mimeo.config.exc import IncorrectMimeoTemplate
+from mimeo.config.exc import InvalidMimeoTemplate
 from mimeo.config.mimeo_config import MimeoTemplate
 
 
@@ -45,7 +45,7 @@ def test_parsing_template_without_count():
       }
     }
 
-    with pytest.raises(IncorrectMimeoTemplate) as err:
+    with pytest.raises(InvalidMimeoTemplate) as err:
         MimeoTemplate(template)
 
     assert err.value.args[0] == "No count value in the Mimeo Template: " \
@@ -57,7 +57,7 @@ def test_parsing_template_with_multiple_roots():
       "count": 30
     }
 
-    with pytest.raises(IncorrectMimeoTemplate) as err:
+    with pytest.raises(InvalidMimeoTemplate) as err:
         MimeoTemplate(template)
 
     assert err.value.args[0] == "No model data in the Mimeo Template: " \

@@ -1,6 +1,6 @@
 import pytest
 
-from mimeo.config.exc import IncorrectMimeoModel
+from mimeo.config.exc import InvalidMimeoModel
 from mimeo.config.mimeo_config import MimeoModel
 
 
@@ -52,7 +52,7 @@ def test_parsing_model_without_root():
         "context": "My Context"
     }
 
-    with pytest.raises(IncorrectMimeoModel) as err:
+    with pytest.raises(InvalidMimeoModel) as err:
         MimeoModel(model)
 
     assert err.value.args[0] == "No root data in Mimeo Model: " \
@@ -69,7 +69,7 @@ def test_parsing_model_with_multiple_roots():
         }
     }
 
-    with pytest.raises(IncorrectMimeoModel) as err:
+    with pytest.raises(InvalidMimeoModel) as err:
         MimeoModel(model)
 
     assert err.value.args[0] == "Multiple root data in Mimeo Model: " \
@@ -84,7 +84,7 @@ def test_parsing_model_with_non_str_context():
         }
     }
 
-    with pytest.raises(IncorrectMimeoModel) as err:
+    with pytest.raises(InvalidMimeoModel) as err:
         MimeoModel(model)
 
     assert err.value.args[0] == "Invalid context name in Mimeo Model (not a string value): " \
