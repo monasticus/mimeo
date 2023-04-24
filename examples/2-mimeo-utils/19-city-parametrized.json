@@ -7,7 +7,7 @@
           "CityWithDuplicates": {
             "_mimeo_util": {
               "_name": "city",
-              "allow_duplicates": true
+              "unique": false
             }
           },
           "CityOfCountryName": {
@@ -32,7 +32,7 @@
             "_mimeo_util": {
               "_name": "city",
               "country": "United Kingdom",
-              "allow_duplicates": true
+              "unique": false
             }
           }
         }

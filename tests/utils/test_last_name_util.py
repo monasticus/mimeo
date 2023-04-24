@@ -46,12 +46,12 @@ def test_last_name_parametrized_default(default_config):
         assert last_name in last_names
 
 
-def test_last_name_parametrized_with_allow_duplicates(default_config):
+def test_last_name_parametrized_with_unique(default_config):
     mimeo_db = MimeoDB()
     last_names = mimeo_db.get_last_names()
     with MimeoContextManager(default_config) as mimeo_manager:
         context = mimeo_manager.get_context("SomeEntity")
         mimeo_manager.set_current_context(context)
 
-        last_name = UtilsRenderer.render_parametrized({"_name": "last_name", "allow_duplicates": True})
+        last_name = UtilsRenderer.render_parametrized({"_name": "last_name", "unique": False})
         assert last_name in last_names
