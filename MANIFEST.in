@@ -1,2 +1,1 @@
-include src/mimeo/resources/*.csv
-include src/mimeo/resources/*.yaml
+include src/mimeo/resources/*
