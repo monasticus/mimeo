@@ -380,6 +380,42 @@ def test_vars_as_partial_values_multiple():
         assert value == "/data/1.xml"
 
 
+def test_vars_as_partial_values_str():
+    config = MimeoConfig({
+        "vars": {
+            "URI_PREFIX": "/data",
+        },
+        "_templates_": []
+    })
+    with MimeoContextManager(config):
+        value = MimeoRenderer.render("{URI_PREFIX}/1.xml")
+        assert value == "/data/1.xml"
+
+
+def test_vars_as_partial_values_int():
+    config = MimeoConfig({
+        "vars": {
+            "NUM": 1,
+        },
+        "_templates_": []
+    })
+    with MimeoContextManager(config):
+        value = MimeoRenderer.render("/data/{NUM}.xml")
+        assert value == "/data/1.xml"
+
+
+def test_vars_as_partial_values_bool():
+    config = MimeoConfig({
+        "vars": {
+            "VALIDATED": True,
+        },
+        "_templates_": []
+    })
+    with MimeoContextManager(config):
+        value = MimeoRenderer.render("/data/{VALIDATED}/1.xml")
+        assert value == "/data/true/1.xml"
+
+
 def test_special_fields_render_str(default_config):
     with MimeoContextManager(default_config) as mimeo_manager:
         context = mimeo_manager.get_context("SomeEntity")
@@ -408,3 +444,84 @@ def test_special_fields_render_bool(default_config):
         context.curr_iteration().add_special_field("ChildNode1", True)
 
         assert MimeoRenderer.render("{:ChildNode1:}") is True
+
+
+def test_special_fields_as_partial_values_single_beginning(default_config):
+    with MimeoContextManager(default_config) as mimeo_manager:
+        context = mimeo_manager.get_context("SomeEntity")
+        mimeo_manager.set_current_context(context)
+        context.next_iteration()
+        context.curr_iteration().add_special_field("ChildNode1", "custom-value")
+
+        assert MimeoRenderer.render("{:ChildNode1:}-1") == "custom-value-1"
+
+
+def test_special_fields_as_partial_values_single_middle(default_config):
+    with MimeoContextManager(default_config) as mimeo_manager:
+        context = mimeo_manager.get_context("SomeEntity")
+        mimeo_manager.set_current_context(context)
+        context.next_iteration()
+        context.curr_iteration().add_special_field("ChildNode1", "custom-value")
+
+        assert MimeoRenderer.render("_{:ChildNode1:}_") == "_custom-value_"
+
+
+def test_special_fields_as_partial_values_single_end(default_config):
+    with MimeoContextManager(default_config) as mimeo_manager:
+        context = mimeo_manager.get_context("SomeEntity")
+        mimeo_manager.set_current_context(context)
+        context.next_iteration()
+        context.curr_iteration().add_special_field("ChildNode1", "custom-value")
+
+        assert MimeoRenderer.render("my-{:ChildNode1:}") == "my-custom-value"
+
+
+def test_special_fields_as_partial_values_single_repeated(default_config):
+    with MimeoContextManager(default_config) as mimeo_manager:
+        context = mimeo_manager.get_context("SomeEntity")
+        mimeo_manager.set_current_context(context)
+        context.next_iteration()
+        context.curr_iteration().add_special_field("ChildNode1", "custom-value")
+
+        assert MimeoRenderer.render("{:ChildNode1:}-and-{:ChildNode1:}") == "custom-value-and-custom-value"
+
+
+def test_special_fields_as_partial_values_multiple(default_config):
+    with MimeoContextManager(default_config) as mimeo_manager:
+        context = mimeo_manager.get_context("SomeEntity")
+        mimeo_manager.set_current_context(context)
+        context.next_iteration()
+        context.curr_iteration().add_special_field("ChildNode1", "prefix-to")
+        context.curr_iteration().add_special_field("ChildNode2", "my-custom-value")
+
+        assert MimeoRenderer.render("{:ChildNode1:}-{:ChildNode2:}") == "prefix-to-my-custom-value"
+
+
+def test_special_fields_as_partial_values_str(default_config):
+    with MimeoContextManager(default_config) as mimeo_manager:
+        context = mimeo_manager.get_context("SomeEntity")
+        mimeo_manager.set_current_context(context)
+        context.next_iteration()
+        context.curr_iteration().add_special_field("ChildNode1", "custom-value")
+
+        assert MimeoRenderer.render("{:ChildNode1:}-1") == "custom-value-1"
+
+
+def test_special_fields_as_partial_values_int(default_config):
+    with MimeoContextManager(default_config) as mimeo_manager:
+        context = mimeo_manager.get_context("SomeEntity")
+        mimeo_manager.set_current_context(context)
+        context.next_iteration()
+        context.curr_iteration().add_special_field("ChildNode1", 1)
+
+        assert MimeoRenderer.render("custom-value-{:ChildNode1:}") == "custom-value-1"
+
+
+def test_special_fields_as_partial_values_bool(default_config):
+    with MimeoContextManager(default_config) as mimeo_manager:
+        context = mimeo_manager.get_context("SomeEntity")
+        mimeo_manager.set_current_context(context)
+        context.next_iteration()
+        context.curr_iteration().add_special_field("ChildNode1", True)
+
+        assert MimeoRenderer.render("custom-{:ChildNode1:}-value") == "custom-true-value"
