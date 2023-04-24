@@ -39,6 +39,7 @@ class UtilsRenderer:
 
     @classmethod
     def render_parametrized(cls, mimeo_util_config: dict):
+        logger.fine(f"Rendering a mimeo util [{mimeo_util_config}]")
         mimeo_util = cls._get_mimeo_util(mimeo_util_config)
         return mimeo_util.render()
 
@@ -73,6 +74,7 @@ class VarsRenderer:
 
     @classmethod
     def render(cls, var: str):
+        logger.fine(f"Rendering a variable [{var}]")
         return MimeoContextManager().get_var(var)
 
 
@@ -81,6 +83,7 @@ class SpecialFieldsRenderer:
     @classmethod
     @mimeo_context
     def render(cls, field_name: str, context: MimeoContext = None):
+        logger.fine(f"Rendering a special field [{field_name}]")
         return context.curr_iteration().get_special_field(field_name)
 
 
@@ -113,6 +116,7 @@ class MimeoRenderer:
 
     @classmethod
     def render(cls, value):
+        logger.fine(f"Rendering a value [{value}]")
         try:
             if isinstance(value, str):
                 return cls._render_string_value(value)
@@ -141,7 +145,9 @@ class MimeoRenderer:
         match = next(cls._SPECIAL_FIELDS_PATTERN.finditer(value))
         wrapped_special_field = match.group(1)
         rendered_value = SpecialFieldsRenderer.render(wrapped_special_field[2:][:-2])
-        if isinstance(rendered_value, str):
+        logger.fine(f"Rendered special field value [{rendered_value}]")
+        if len(wrapped_special_field) != len(value):
+            rendered_value = str(rendered_value).lower() if isinstance(rendered_value, bool) else str(rendered_value)
             rendered_value = value.replace(wrapped_special_field, str(rendered_value))
         return cls.render(rendered_value)
 
@@ -150,9 +156,11 @@ class MimeoRenderer:
         match = next(cls._VARS_PATTERN.finditer(value))
         wrapped_var = match.group(1)
         rendered_value = VarsRenderer.render(wrapped_var[1:][:-1])
+        logger.fine(f"Rendered variable value [{rendered_value}]")
         if cls.is_parametrized_mimeo_util(rendered_value):
             rendered_value = cls._render_parametrized_mimeo_util(rendered_value)
-        elif isinstance(rendered_value, str):
+        if len(wrapped_var) != len(value):
+            rendered_value = str(rendered_value).lower() if isinstance(rendered_value, bool) else str(rendered_value)
             rendered_value = value.replace(wrapped_var, str(rendered_value))
         return cls.render(rendered_value)
 
