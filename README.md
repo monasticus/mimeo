@@ -694,6 +694,35 @@ Uses sex (`M` / `Male` / `F` / `Female`) and `allow_duplicates` flag to generate
 }
 ```
 
+##### Last Name
+
+Generates a last name.
+
+###### Raw
+
+By default last names will be unique across a Mimeo Context.
+
+```json
+{
+  "LastName": "{last_name}"
+}
+```
+
+###### Parametrized
+
+Uses `allow_duplicates` flag to generate a last name.
+
+```json
+{
+  "LastNameWithDuplicates": {
+    "_mimeo_util": {
+      "_name": "last_name",
+      "allow_duplicates": true
+    }
+  }
+}
+```
+
 
 ## License
 
@@ -708,5 +737,6 @@ MIT
 ## Acknowledgements
 
  - [SimpleMaps.com](https://simplemaps.com/data/world-cities) (Cities & countries data)
- - [@hadley/data-baby-names](https://github.com/hadley/data-baby-names/) (First names data)
+ - [@hadley/data-baby-names](https://github.com/hadley/data-baby-names/) (Forenames data)
+ - [@fivethirtyeigh/data/most-common-name](https://github.com/fivethirtyeight/data/tree/master/most-common-name) (Surnames data)
 

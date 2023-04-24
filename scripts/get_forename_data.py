@@ -41,7 +41,7 @@ def create_first_names_data(source_df: pandas.DataFrame, data_dir: str):
     columns_order = ["NAME", "SEX"]
     sort_column = "NAME"
 
-    cities_df = (
+    first_names_df = (
         source_df
         .rename(columns=columns_mapping)
         .loc[:, columns_order]
@@ -50,8 +50,8 @@ def create_first_names_data(source_df: pandas.DataFrame, data_dir: str):
         .drop_duplicates()
         .sort_values(sort_column))
 
-    cities_file_name = "firstnames.csv"
-    cities_df.to_csv(f"{data_dir}/{cities_file_name}", index=False)
+    first_names_file_name = "forenames.csv"
+    first_names_df.to_csv(f"{data_dir}/{first_names_file_name}", index=False)
 
 
 def remove_file_safely(file_path: str):

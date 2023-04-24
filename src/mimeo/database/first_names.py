@@ -24,7 +24,7 @@ class FirstNamesDB:
 
     NUM_OF_RECORDS = 7455
     __SUPPORTED_SEX = ("M", "F")
-    __FIRST_NAMES_DB = "firstnames.csv"
+    __FIRST_NAMES_DB = "forenames.csv"
     __FIRST_NAMES_DF = None
     __FIRST_NAMES = None
     __NAMES_FOR_SEX = {}

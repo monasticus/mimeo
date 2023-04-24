@@ -1,4 +1,5 @@
-from mimeo.database import CitiesDB, CountriesDB, FirstNamesDB, MimeoDB
+from mimeo.database import (CitiesDB, CountriesDB, FirstNamesDB, LastNamesDB,
+                            MimeoDB)
 
 
 def test_get_cities():
@@ -156,3 +157,28 @@ def test_get_first_names_by_sex():
     assert mimeo_db_count == len(first_names_from_first_names_db)
     for i in range(mimeo_db_count):
         assert first_names_from_mimeo_db[i] is first_names_from_first_names_db[i]
+
+
+def test_get_last_names():
+    mimeo_db = MimeoDB()
+    last_names_form_last_names_db = LastNamesDB.get_last_names()
+    last_names_from_mimeo_db = mimeo_db.get_last_names()
+    mimeo_db_count = len(last_names_from_mimeo_db)
+    assert mimeo_db_count > 0
+    assert mimeo_db_count == len(last_names_form_last_names_db)
+    for i in range(mimeo_db_count):
+        assert last_names_from_mimeo_db[i] is last_names_form_last_names_db[i]
+
+
+def test_get_last_name_at():
+    mimeo_db = MimeoDB()
+    last_names_db = LastNamesDB()
+    last_name_from_last_names_db = last_names_db.get_last_name_at(0)
+    last_name_from_mimeo_db = mimeo_db.get_last_name_at(0)
+    assert last_name_from_mimeo_db is not None
+    assert last_name_from_mimeo_db is last_name_from_last_names_db
+
+    last_name_from_last_names_db = last_names_db.get_last_name_at(1)
+    last_name_from_mimeo_db = mimeo_db.get_last_name_at(1)
+    assert last_name_from_mimeo_db is not None
+    assert last_name_from_mimeo_db is last_name_from_last_names_db
