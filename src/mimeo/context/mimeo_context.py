@@ -35,7 +35,7 @@ class MimeoContext:
             self.__id -= 1
             return self.__id
         else:
-            raise MinimumIdentifierReached("There's no previous ID!")
+            raise MinimumIdentifierReached()
 
     def next_iteration(self) -> MimeoIteration:
         next_iteration_id = 1 if len(self.__iterations) == 0 else self.__iterations[-1].id + 1
@@ -47,15 +47,14 @@ class MimeoContext:
         if len(self.__iterations) > 0:
             return self.__iterations[-1]
         else:
-            raise UninitializedContextIteration(f"No iteration has been initialized for the current context [{self.name}]")
+            raise UninitializedContextIteration(self.name)
 
     def get_iteration(self, iteration_id: int) -> MimeoIteration:
         iteration = next(filter(lambda i: i.id == iteration_id, self.__iterations), None)
         if iteration is not None:
             return iteration
         else:
-            raise ContextIterationNotFound(f"No iteration with id [{iteration_id}] "
-                                           f"has been initialized for the current context [{self.name}]")
+            raise ContextIterationNotFound(iteration_id, self.name)
 
     def clear_iterations(self) -> None:
         self.__iterations = []

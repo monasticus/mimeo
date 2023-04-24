@@ -45,4 +45,4 @@ class MimeoContextManager(Alive, metaclass=OnlyOneAlive):
         if value is not None:
             return value
         else:
-            raise VarNotFound(f"Provided variable [{variable_name}] is not defined!")
+            raise VarNotFound(variable_name)
