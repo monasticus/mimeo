@@ -1,4 +1,5 @@
-from mimeo.database import CitiesDB, CountriesDB, FirstNamesDB, MimeoDB, LastNamesDB
+from mimeo.database import (CitiesDB, CountriesDB, FirstNamesDB, LastNamesDB,
+                            MimeoDB)
 
 
 def test_get_cities():

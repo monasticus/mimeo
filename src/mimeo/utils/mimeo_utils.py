@@ -251,3 +251,22 @@ class FirstNameUtil(MimeoUtil):
             return "F"
         else:
             raise InvalidSex("Invalid sex (use M, F, Male or Female)!")
+
+
+class LastNameUtil(MimeoUtil):
+
+    KEY = "last_name"
+    __MIMEO_DB = MimeoDB()
+
+    def __init__(self, **kwargs):
+        self.__allow_duplicates = kwargs.get("allow_duplicates", False)
+
+    @mimeo_context
+    def render(self, context: MimeoContext = None):
+        if self.__allow_duplicates:
+            index = random.randrange(MimeoDB.NUM_OF_FIRST_NAMES)
+        else:
+            index = context.next_first_name_index()
+        last_name = self.__MIMEO_DB.get_last_name_at(index)
+
+        return last_name
