@@ -40,7 +40,7 @@ class RandomIntegerUtil(MimeoUtil):
     KEY = "random_int"
 
     def __init__(self, **kwargs):
-        self.__start = kwargs.get("limit", 1)
+        self.__start = kwargs.get("start", 1)
         self.__limit = kwargs.get("limit", 100)
 
     def render(self):
