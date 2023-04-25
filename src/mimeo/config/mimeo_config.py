@@ -1,3 +1,18 @@
+"""The Mimeo Configuration module.
+
+It contains classes representing Mimeo Configuration components
+at all levels. All of them are Data Transfer Objects:
+    * MimeoDTO
+        A superclass for all Mimeo configuration DTOs
+    * MimeoConfig
+        A MimeoDTO class representing Mimeo Configuration
+    * MimeoOutputDetails
+        A MimeoDTO class representing Mimeo Output Details
+    * MimeoTemplate
+        A MimeoDTO class representing Mimeo Template
+    * MimeoModel
+        A MimeoDTO class representing Mimeo Model
+"""
 import re
 
 from mimeo.config.exc import (InvalidIndent, InvalidMimeoConfig,
@@ -11,7 +26,7 @@ setup_logging()
 
 
 class MimeoDTO:
-    """A superclass for all Mimeo configuration DTOs
+    """A superclass for all Mimeo configuration DTOs.
 
     It is meant to store a source dictionary for logging purposes.
 
@@ -22,7 +37,8 @@ class MimeoDTO:
     """
 
     def __init__(self, source: dict):
-        """
+        """Initialize MimeoDTO class.
+
         Parameters
         ----------
         source : dict
@@ -31,12 +47,12 @@ class MimeoDTO:
         self._source = source
 
     def __str__(self):
-        """Returns the stringified source dictionary of a DTO"""
+        """Return the stringified source dictionary of a DTO."""
         return str(self._source)
 
 
 class MimeoConfig(MimeoDTO):
-    """A MimeoDTO class representing Mimeo Configuration
+    """A MimeoDTO class representing Mimeo Configuration.
 
     It is a python representation of a Mimeo Configuration file / dictionary.
 
@@ -181,14 +197,15 @@ class MimeoConfig(MimeoDTO):
                              OUTPUT_DETAILS_PASSWORD_KEY)
 
     def __init__(self, config: dict):
-        """Extends MimeoDTO constructor
+        """Initialize MimeoConfig class.
+
+        Extends MimeoDTO constructor.
 
         Parameters
         ----------
         config : dict
             A source config dictionary
         """
-
         super().__init__(config)
         self.output_format = MimeoConfig._get_output_format(config)
         self.output_details = MimeoOutputDetails(self.output_format, config.get(self.OUTPUT_DETAILS_KEY, {}))
@@ -199,7 +216,7 @@ class MimeoConfig(MimeoDTO):
 
     @staticmethod
     def _get_output_format(config: dict) -> str:
-        """Extracts an output format from the source dictionary
+        """Extract an output format from the source dictionary.
 
         Parameters
         ----------
@@ -216,7 +233,6 @@ class MimeoConfig(MimeoDTO):
         UnsupportedPropertyValue
             If the customized output format is not supported
         """
-
         output_format = config.get(MimeoConfig.OUTPUT_FORMAT_KEY, MimeoConfig.OUTPUT_FORMAT_XML)
         if output_format in MimeoConfig.SUPPORTED_OUTPUT_FORMATS:
             return output_format
@@ -227,7 +243,7 @@ class MimeoConfig(MimeoDTO):
 
     @staticmethod
     def _get_indent(config: dict) -> int:
-        """Extracts an indent value from the source dictionary
+        """Extract an indent value from the source dictionary.
 
         Parameters
         ----------
@@ -244,7 +260,6 @@ class MimeoConfig(MimeoDTO):
         InvalidIndent
             If the customized indent is lower than zero
         """
-
         indent = config.get(MimeoConfig.INDENT_KEY, 0)
         if indent >= 0:
             return indent
@@ -253,7 +268,7 @@ class MimeoConfig(MimeoDTO):
 
     @staticmethod
     def _get_vars(config: dict) -> dict:
-        """Extracts variables from the source dictionary
+        """Extract variables from the source dictionary.
 
         Parameters
         ----------
@@ -273,7 +288,6 @@ class MimeoConfig(MimeoDTO):
             is not SNAKE_UPPER_CASE with possible digits or
             (3) some variable's value points to non-atomic value nor Mimeo Util
         """
-
         variables = config.get(MimeoConfig.VARS_KEY, {})
         if not isinstance(variables, dict):
             raise InvalidVars(f"vars property does not store an object: {variables}")
@@ -287,7 +301,7 @@ class MimeoConfig(MimeoDTO):
 
     @staticmethod
     def _get_templates(config: dict) -> list:
-        """Extracts Mimeo Templates from the source dictionary
+        """Extract Mimeo Templates from the source dictionary.
 
         Parameters
         ----------
@@ -305,7 +319,6 @@ class MimeoConfig(MimeoDTO):
             If (1) the source dictionary does not include the _templates_ key or
             (2) the _templates_ key does not point to a list
         """
-
         templates = config.get(MimeoConfig.TEMPLATES_KEY)
         if templates is None:
             raise InvalidMimeoConfig(f"No templates in the Mimeo Config: {config}")
@@ -316,7 +329,7 @@ class MimeoConfig(MimeoDTO):
 
     @staticmethod
     def _is_mimeo_util_object(obj: dict) -> bool:
-        """Verifies if the object is a Mimeo Util
+        """Verify if the object is a Mimeo Util.
 
         Parameters
         ----------
@@ -328,12 +341,11 @@ class MimeoConfig(MimeoDTO):
         bool
             True if the object is a dictionary having only one key: _mimeo_util, otherwise False
         """
-
         return isinstance(obj, dict) and len(obj) == 1 and MimeoConfig.MODEL_MIMEO_UTIL_KEY in obj
 
 
 class MimeoOutputDetails(MimeoDTO):
-    """A MimeoDTO class representing Mimeo Output Details configuration
+    """A MimeoDTO class representing Mimeo Output Details.
 
     It is a python representation of a Mimeo Output Details configuration node.
 
@@ -364,7 +376,9 @@ class MimeoOutputDetails(MimeoDTO):
     """
 
     def __init__(self, output_format: str, output_details: dict):
-        """Extends MimeoDTO constructor
+        """Initialize MimeoOutputDetails class.
+
+        Extends MimeoDTO constructor.
 
         Parameters
         ----------
@@ -373,7 +387,6 @@ class MimeoOutputDetails(MimeoDTO):
         output_details : dict
             A source config output details dictionary
         """
-
         super().__init__(output_details)
         self.direction = MimeoOutputDetails._get_direction(output_details)
         MimeoOutputDetails._validate_output_details(self.direction, output_details)
@@ -390,7 +403,7 @@ class MimeoOutputDetails(MimeoDTO):
 
     @staticmethod
     def _get_direction(output_details: dict) -> str:
-        """Extracts output direction from the source dictionary
+        """Extract output direction from the source dictionary.
 
         Parameters
         ----------
@@ -407,7 +420,6 @@ class MimeoOutputDetails(MimeoDTO):
         UnsupportedPropertyValue
             If the configured output direction is not supported
         """
-
         direction = output_details.get(MimeoConfig.OUTPUT_DETAILS_DIRECTION_KEY,
                                        MimeoConfig.OUTPUT_DETAILS_DIRECTION_FILE)
         if direction in MimeoConfig.SUPPORTED_OUTPUT_DIRECTIONS:
@@ -419,8 +431,9 @@ class MimeoOutputDetails(MimeoDTO):
 
     @staticmethod
     def _get_directory_path(direction: str, output_details: dict) -> str:
-        """Extracts an output directory path from the source dictionary
-        when the output direction is 'file'.
+        """Extract an output directory path from the source dictionary.
+
+        It is extracted only when the output direction is 'file'.
 
         Parameters
         ----------
@@ -436,14 +449,14 @@ class MimeoOutputDetails(MimeoDTO):
             Otherwise, None. If the 'directory_path' setting is missing returns
             'mimeo-output' by default.
         """
-
         if direction == MimeoConfig.OUTPUT_DETAILS_DIRECTION_FILE:
             return output_details.get(MimeoConfig.OUTPUT_DETAILS_DIRECTORY_PATH_KEY, "mimeo-output")
 
     @staticmethod
     def _get_file_name_tmplt(direction: str, output_details: dict, output_format: str):
-        """Generates an output file name template based on the source dictionary
-        when the output direction is 'file'.
+        """Generate an output file name template based on the source dictionary.
+
+        It is generated only when the output direction is 'file'.
 
         Parameters
         ----------
@@ -459,15 +472,15 @@ class MimeoOutputDetails(MimeoDTO):
             Otherwise, None. If the 'file_name' setting is missing returns
             'mimeo-output-{}.{output_format}' by default.
         """
-
         if direction == MimeoConfig.OUTPUT_DETAILS_DIRECTION_FILE:
             file_name = output_details.get(MimeoConfig.OUTPUT_DETAILS_FILE_NAME_KEY, "mimeo-output")
             return f"{file_name}-{'{}'}.{output_format}"
 
     @staticmethod
     def _get_method(direction: str, output_details: dict) -> str:
-        """Extracts an HTTP request method from the source dictionary
-        when the output direction is 'http'.
+        """Extract an HTTP request method from the source dictionary.
+
+        It is extracted only when the output direction is 'http'.
 
         Parameters
         ----------
@@ -483,7 +496,6 @@ class MimeoOutputDetails(MimeoDTO):
             Otherwise, None. If the 'method' setting is missing returns
             'POST' by default.
         """
-
         if direction == MimeoConfig.OUTPUT_DETAILS_DIRECTION_HTTP:
             method = output_details.get(MimeoConfig.OUTPUT_DETAILS_METHOD_KEY,
                                         MimeoConfig.OUTPUT_DETAILS_DIRECTION_HTTP_REQUEST_POST)
@@ -496,8 +508,9 @@ class MimeoOutputDetails(MimeoDTO):
 
     @staticmethod
     def _get_protocol(direction: str, output_details: dict) -> str:
-        """Extracts an HTTP protocol from the source dictionary
-        when the output direction is 'http'.
+        """Extract an HTTP protocol from the source dictionary.
+
+        It is extracted only when the output direction is 'http'.
 
         Parameters
         ----------
@@ -513,15 +526,15 @@ class MimeoOutputDetails(MimeoDTO):
             Otherwise, None. If the 'protocol' setting is missing returns
             'http' by default.
         """
-
         if direction == MimeoConfig.OUTPUT_DETAILS_DIRECTION_HTTP:
             return output_details.get(MimeoConfig.OUTPUT_DETAILS_PROTOCOL_KEY,
                                       MimeoConfig.OUTPUT_DETAILS_DIRECTION_HTTP)
 
     @staticmethod
     def _get_host(direction: str, output_details: dict) -> str:
-        """Extracts an HTTP host from the source dictionary
-        when the output direction is 'http'.
+        """Extract an HTTP host from the source dictionary.
+
+        It is extracted only when the output direction is 'http'.
 
         Parameters
         ----------
@@ -536,14 +549,14 @@ class MimeoOutputDetails(MimeoDTO):
             The configured HTTP host when the output direction is 'http'.
             Otherwise, None.
         """
-
         if direction == MimeoConfig.OUTPUT_DETAILS_DIRECTION_HTTP:
             return output_details.get(MimeoConfig.OUTPUT_DETAILS_HOST_KEY)
 
     @staticmethod
     def _get_port(direction: str, output_details: dict) -> str:
-        """Extracts an HTTP port from the source dictionary
-        when the output direction is 'http'.
+        """Extract an HTTP port from the source dictionary.
+
+        It is extracted only when the output direction is 'http'.
 
         Parameters
         ----------
@@ -558,14 +571,14 @@ class MimeoOutputDetails(MimeoDTO):
             The configured HTTP port when the output direction is 'http'.
             Otherwise, None.
         """
-
         if direction == MimeoConfig.OUTPUT_DETAILS_DIRECTION_HTTP:
             return output_details.get(MimeoConfig.OUTPUT_DETAILS_PORT_KEY)
 
     @staticmethod
     def _get_endpoint(direction: str, output_details: dict) -> str:
-        """Extracts an HTTP endpoint from the source dictionary
-        when the output direction is 'http'.
+        """Extract an HTTP endpoint from the source dictionary.
+
+        It is extracted only when the output direction is 'http'.
 
         Parameters
         ----------
@@ -580,14 +593,14 @@ class MimeoOutputDetails(MimeoDTO):
             The configured HTTP request method when the output direction is 'http'.
             Otherwise, None.
         """
-
         if direction == MimeoConfig.OUTPUT_DETAILS_DIRECTION_HTTP:
             return output_details.get(MimeoConfig.OUTPUT_DETAILS_ENDPOINT_KEY)
 
     @staticmethod
     def _get_auth(direction: str, output_details: dict) -> str:
-        """Extracts an HTTP auth method from the source dictionary
-        when the output direction is 'http'.
+        """Extract an HTTP auth method from the source dictionary.
+
+        It is extracted only when the output direction is 'http'.
 
         Parameters
         ----------
@@ -603,7 +616,6 @@ class MimeoOutputDetails(MimeoDTO):
             Otherwise, None. If the 'auth' setting is missing returns
             'basic' by default.
         """
-
         if direction == MimeoConfig.OUTPUT_DETAILS_DIRECTION_HTTP:
             auth =  output_details.get(MimeoConfig.OUTPUT_DETAILS_AUTH_KEY,
                                        MimeoConfig.OUTPUT_DETAILS_DIRECTION_HTTP_AUTH_BASIC)
@@ -616,8 +628,9 @@ class MimeoOutputDetails(MimeoDTO):
 
     @staticmethod
     def _get_username(direction: str, output_details: dict) -> str:
-        """Extracts a username from the source dictionary
-        when the output direction is 'http'.
+        """Extract a username from the source dictionary.
+
+        It is extracted only when the output direction is 'http'.
 
         Parameters
         ----------
@@ -632,14 +645,14 @@ class MimeoOutputDetails(MimeoDTO):
             The configured username when the output direction is 'http'.
             Otherwise, None.
         """
-
         if direction == MimeoConfig.OUTPUT_DETAILS_DIRECTION_HTTP:
             return output_details.get(MimeoConfig.OUTPUT_DETAILS_USERNAME_KEY)
 
     @staticmethod
     def _get_password(direction: str, output_details: dict) -> str:
-        """Extracts a password from the source dictionary
-        when the output direction is 'http'.
+        """Extract a password from the source dictionary.
+
+        It is extracted only when the output direction is 'http'.
 
         Parameters
         ----------
@@ -654,14 +667,15 @@ class MimeoOutputDetails(MimeoDTO):
             The configured password when the output direction is 'http'.
             Otherwise, None.
         """
-
         if direction == MimeoConfig.OUTPUT_DETAILS_DIRECTION_HTTP:
             return output_details.get(MimeoConfig.OUTPUT_DETAILS_PASSWORD_KEY)
 
     @staticmethod
     def _validate_output_details(direction: str, output_details: dict) -> None:
-        """Validates output details in the source dictionary
-        according to the configured output direction
+        """Validate output details in the source dictionary.
+
+        The validation is being done according to the configured output
+        direction.
 
         Parameters
         ----------
@@ -675,7 +689,6 @@ class MimeoOutputDetails(MimeoDTO):
         MissingRequiredProperty
             If the output details doesn't include all required settings for the direction
         """
-
         if direction == MimeoConfig.OUTPUT_DETAILS_DIRECTION_HTTP:
             missing_details = []
             for detail in MimeoConfig.REQUIRED_HTTP_DETAILS:
@@ -687,7 +700,7 @@ class MimeoOutputDetails(MimeoDTO):
 
 
 class MimeoTemplate(MimeoDTO):
-    """A MimeoDTO class representing Mimeo Template
+    """A MimeoDTO class representing Mimeo Template.
 
     It is a python representation of a Mimeo Template configuration node.
 
@@ -700,14 +713,15 @@ class MimeoTemplate(MimeoDTO):
     """
 
     def __init__(self, template: dict):
-        """Extends MimeoDTO constructor
+        """Initialize MimeoTemplate class.
+
+        Extends MimeoDTO constructor.
 
         Parameters
         ----------
         template : dict
             A source config template dictionary
         """
-
         super().__init__(template)
         MimeoTemplate._validate_template(template)
         self.count = template.get(MimeoConfig.TEMPLATES_COUNT_KEY)
@@ -715,7 +729,7 @@ class MimeoTemplate(MimeoDTO):
 
     @staticmethod
     def _validate_template(template: dict) -> None:
-        """Validates template in the source dictionary
+        """Validate template in the source dictionary.
 
         Parameters
         ----------
@@ -727,7 +741,6 @@ class MimeoTemplate(MimeoDTO):
         IncorrectMimeoTemplate
             If the source config doesn't include count or model properties
         """
-
         if MimeoConfig.TEMPLATES_COUNT_KEY not in template:
             raise InvalidMimeoTemplate(f"No count value in the Mimeo Template: {template}")
         if MimeoConfig.TEMPLATES_MODEL_KEY not in template:
@@ -735,7 +748,7 @@ class MimeoTemplate(MimeoDTO):
 
 
 class MimeoModel(MimeoDTO):
-    """A MimeoDTO class representing Mimeo Model
+    """A MimeoDTO class representing Mimeo Model.
 
     It is a python representation of a Mimeo Model configuration node.
 
@@ -750,14 +763,15 @@ class MimeoModel(MimeoDTO):
     """
 
     def __init__(self, model: dict):
-        """Extends MimeoDTO constructor
+        """Initialize MimeoModel class.
+
+        Extends MimeoDTO constructor.
 
         Parameters
         ----------
         model : dict
             A source config model dictionary
         """
-
         super().__init__(model)
         self.root_name = MimeoModel._get_root_name(model)
         self.root_data = model.get(self.root_name)
@@ -765,7 +779,7 @@ class MimeoModel(MimeoDTO):
 
     @staticmethod
     def _get_root_name(model: dict) -> str:
-        """Extracts a root name from the source dictionary
+        """Extract a root name from the source dictionary.
 
         Parameters
         ----------
@@ -782,7 +796,6 @@ class MimeoModel(MimeoDTO):
         IncorrectMimeoModel
             If the source config has no or more than one root nodes
         """
-
         model_keys = [key for key in filter(MimeoModel._is_not_configuration_key, iter(model))]
         if len(model_keys) == 1:
             return model_keys[0]
@@ -793,7 +806,7 @@ class MimeoModel(MimeoDTO):
 
     @staticmethod
     def _get_context_name(model: dict, root_name: str) -> str:
-        """Extracts a context name from the source dictionary
+        """Extract a context name from the source dictionary.
 
         Parameters
         ----------
@@ -813,7 +826,6 @@ class MimeoModel(MimeoDTO):
         IncorrectMimeoModel
             If the source config has a context name not being a string value
         """
-
         context_name = model.get(MimeoConfig.MODEL_CONTEXT_KEY, root_name)
         if isinstance(context_name, str):
             return context_name
@@ -822,7 +834,7 @@ class MimeoModel(MimeoDTO):
 
     @staticmethod
     def _is_not_configuration_key(dict_key: str) -> bool:
-        """Verifies if the dictionary key is a configuration one
+        """Verify if the dictionary key is a configuration one.
 
         Parameters
         ----------
@@ -834,5 +846,4 @@ class MimeoModel(MimeoDTO):
         bool
             True if the key is 'context', otherwise False
         """
-
         return dict_key not in [MimeoConfig.MODEL_CONTEXT_KEY]
