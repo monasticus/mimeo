@@ -1,3 +1,6 @@
+from typing import Union
+
+
 class MinimumIdentifierReached(Exception):
     """
     Raised when using MimeoContext.prev_id() method
@@ -66,12 +69,12 @@ class InvalidSpecialFieldValue(Exception):
     is non-atomic one.
     """
 
-    def __init__(self, field_value):
+    def __init__(self, field_value: Union[dict, list]):
         """Extends Exception constructor with a custom message.
 
         Parameters
         ----------
-        field_value : str
+        field_value : Union[str, int, bool]
             A special field value
         """
 
