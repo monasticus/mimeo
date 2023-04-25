@@ -1,7 +1,7 @@
 import re
 
-from mimeo.config.exc import (InvalidMimeoConfig, InvalidMimeoModel,
-                              InvalidMimeoTemplate, InvalidIndent,
+from mimeo.config.exc import (InvalidIndent, InvalidMimeoConfig,
+                              InvalidMimeoModel, InvalidMimeoTemplate,
                               InvalidVars, MissingRequiredProperty,
                               UnsupportedPropertyValue)
 from mimeo.logging import setup_logging
