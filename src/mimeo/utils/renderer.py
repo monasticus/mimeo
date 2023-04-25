@@ -173,9 +173,11 @@ class MimeoRenderer:
     def _render_parametrized_mimeo_util(cls, value: dict):
         mimeo_util = value[MimeoConfig.MODEL_MIMEO_UTIL_KEY]
         mimeo_util = cls._render_mimeo_util_parameters(mimeo_util)
+        logger.fine(f"Pre-rendered mimeo util [{mimeo_util}]")
         rendered_value = UtilsRenderer.render_parametrized(mimeo_util)
         return cls.render(rendered_value)
 
     @classmethod
     def _render_mimeo_util_parameters(cls, mimeo_util_config: dict) -> dict:
-        return {key: cls.render(value) for key, value in mimeo_util_config.items()}
+        logger.fine("Rendering mimeo util parameters")
+        return {key: cls.render(value) if key != "_name" else value for key, value in mimeo_util_config.items()}
