@@ -1,3 +1,10 @@
+"""The Mimeo Context Manager module.
+
+It exports only one class:
+    * MimeoContextManager
+        An OnlyOneAlive class managing Mimeo Contexts.
+"""
+from __future__ import annotations
 from mimeo.config import MimeoConfig
 from mimeo.context import MimeoContext
 from mimeo.context.exc import VarNotFound
@@ -5,43 +12,141 @@ from mimeo.meta import Alive, OnlyOneAlive
 
 
 class MimeoContextManager(Alive, metaclass=OnlyOneAlive):
+    """An OnlyOneAlive class managing Mimeo Contexts.
 
-    __INSTANCES = []
+    It allows you to initialize a context, get the currently processing
+    context, switch it or reach any other. Besides that it gives you
+    access to Mimeo Vars.
+    """
 
     def __init__(self, mimeo_config: MimeoConfig = None):
-        super().__init__()
-        self.__mimeo_config = mimeo_config
-        self.__vars = {}
-        self.__contexts = {}
-        self.__current_context = None
+        """Initialize MimeoContextManager class.
 
-    def __enter__(self):
+        Parameters
+        ----------
+        mimeo_config : MimeoConfig
+            The Mimeo Configuration
+        """
+        super().__init__()
+        self._mimeo_config = mimeo_config
+        self._vars = {}
+        self._contexts = {}
+        self._current_context = None
+
+    def __enter__(self) -> MimeoContextManager:
+        """Enter the MimeoContextManager instance.
+
+        Extends Alive __enter__ function and initializes vars.
+
+        Returns
+        -------
+        self : MimeoContextManager
+            A MimeoContextManager instance
+        """
         super().__enter__()
-        self.__vars = self.__mimeo_config.vars
+        self._vars = self._mimeo_config.vars
         return self
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
+    def __exit__(self, exc_type, exc_val, exc_tb) -> None:
+        """Exit the MimeoContextManager instance.
+
+        Extends Alive __enter__ function and removes internal
+        attributes.
+
+        Parameters
+        ----------
+        exc_type
+            An exception's type
+        exc_val
+            An exception's value
+        exc_tb
+            An exception's traceback
+
+        Returns
+        -------
+        None
+            A None value
+        """
         super().__exit__(exc_type, exc_val, exc_tb)
-        self.__vars = None
-        self.__contexts = None
+        self._vars = None
+        self._contexts = None
         return None
 
     def get_context(self, context: str) -> MimeoContext:
+        """Return a Mimeo Context with a specific name.
+
+        If the context does not exist, it is initialized.
+
+        Parameters
+        ----------
+        context : str
+            A context's name
+
+        Returns
+        -------
+        MimeoContext
+            A specific Mimeo Context
+
+        Raises
+        ------
+        InstanceNotAlive
+            If the MimeoContextManager instance is not alive
+        """
         super().assert_alive()
-        if context not in self.__contexts:
-            self.__contexts[context] = MimeoContext(context)
-        return self.__contexts[context]
+        if context not in self._contexts:
+            self._contexts[context] = MimeoContext(context)
+        return self._contexts[context]
 
     def get_current_context(self) -> MimeoContext:
-        super().assert_alive()
-        return self.__current_context
+        """Return the current Mimeo Context.
 
-    def set_current_context(self, context: MimeoContext) -> None:
+        Returns
+        -------
+        MimeoContext
+            The current Mimeo Context
+
+        Raises
+        ------
+        InstanceNotAlive
+            If the MimeoContextManager instance is not alive
+        """
         super().assert_alive()
-        self.__current_context = context
+        return self._current_context
+
+    def set_current_context(self, context: MimeoContext):
+        """Set the current Mimeo Context.
+
+        Parameters
+        ----------
+        context : MimeoContext
+            A Mimeo Context to be set as the current one
+
+        Raises
+        ------
+        InstanceNotAlive
+            If the MimeoContextManager instance is not alive
+        """
+        super().assert_alive()
+        self._current_context = context
 
     def get_var(self, variable_name: str):
-        value = self.__vars.get(variable_name)
+        """Return a specific Mimeo Var value.
+
+        Returns
+        -------
+        variable_name
+            The Mimeo Var name
+
+        Raises
+        ------
+        InstanceNotAlive
+            If the MimeoContextManager instance is not alive
+        VarNotFound
+            If the Mimeo Var with the `variable_name` provided does not
+            exist
+        """
+        super().assert_alive()
+        value = self._vars.get(variable_name)
         if value is not None:
             return value
         else:
