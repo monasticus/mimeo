@@ -1,10 +1,16 @@
+"""The Mimeo Consumer module.
+
+It exports only one class:
+    * ConsumerFactory
+        A Factory class instantiating a Consumer based on Mimeo Config.
+"""
 from mimeo.config.exc import UnsupportedPropertyValue
 from mimeo.config.mimeo_config import MimeoConfig
 from mimeo.consumers import Consumer, FileConsumer, HttpConsumer, RawConsumer
 
 
 class ConsumerFactory:
-    """A Factory class used to instantiate Consumer based on Mimeo Config
+    """A Factory class instantiating a Consumer based on Mimeo Config.
 
     Implementation of the Consumer class depends on the output direction configured.
 
@@ -30,8 +36,7 @@ class ConsumerFactory:
 
     @staticmethod
     def get_consumer(mimeo_config: MimeoConfig) -> Consumer:
-        """Returns a Consumer's implementation instance
-        based on Mimeo Config output direction
+        """Initialize a Consumer based on the Mimeo Output Direction.
 
         Parameters
         ----------
@@ -48,7 +53,6 @@ class ConsumerFactory:
         UnsupportedPropertyValue
             If the output direction is not supported
         """
-
         direction = mimeo_config.output_details.direction
         if direction == ConsumerFactory.STD_OUT_DIRECTION:
             return RawConsumer()
