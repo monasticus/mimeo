@@ -13,7 +13,6 @@ This module defines the following decorators:
     Decorator clearing iterations of the current context
 
 """
-
 import functools
 from typing import Callable
 
@@ -22,8 +21,7 @@ from mimeo.context import MimeoContext, MimeoContextManager
 
 
 def mimeo_context(func: Callable) -> Callable:
-    """
-    Decorator providing a 'context' parameter to a function.
+    """Provide a 'context' parameter to a function.
 
     It can be used only for functions having defined a 'context'
     parameter. In case the function being decorated is called providing
@@ -54,8 +52,7 @@ def mimeo_context(func: Callable) -> Callable:
 
 
 def mimeo_context_switch(func: Callable) -> Callable:
-    """
-    Decorator switching context before and after function's call.
+    """Switch context before and after function's call.
 
     It can be used only for functions having defined a MimeoTemplate
     parameter. It switches a Mimeo Context to the one defined in
@@ -96,8 +93,7 @@ def mimeo_context_switch(func: Callable) -> Callable:
 
 
 def mimeo_next_iteration(func):
-    """
-    Decorator incrementing current context's iteration.
+    """Increment current context's iteration.
 
     It is meant to be used for Generator's function that
     generates a single data copy.
@@ -123,8 +119,7 @@ def mimeo_next_iteration(func):
 
 
 def mimeo_clear_iterations(func):
-    """
-    Decorator clearing iterations of the current context.
+    """Clear iterations of the current context.
 
     It is meant to be used for Generator's function that generates
     data from a template.

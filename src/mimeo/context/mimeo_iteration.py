@@ -1,3 +1,9 @@
+"""The Mimeo Iteration module.
+
+It exports only one class:
+    * MimeoIteration
+        A class representing a single iteration in a Mimeo Template.
+"""
 import uuid
 from typing import Union
 
@@ -6,8 +12,7 @@ from mimeo.context.exc import (InvalidSpecialFieldName,
 
 
 class MimeoIteration:
-    """A class representing a single iteration in a Mimeo Template
-    generation.
+    """A class representing a single iteration in a Mimeo Template.
 
     Each iteration has its own id (an ordinal number in a context),
     a key being a unique value across all iterations, and
@@ -22,19 +27,19 @@ class MimeoIteration:
     """
 
     def __init__(self, identifier: int):
-        """
+        """Initialize MimeoIteration class.
+
         Parameters
         ----------
         identifier : int
             An ordinal number in a Mimeo Context
         """
-
         self.id = identifier
         self.key = str(uuid.uuid4())
         self._special_fields = {}
 
     def add_special_field(self, field_name: str, field_value: Union[str, int, bool]):
-        """Puts a special field entry to memory
+        """Put a special field entry to memory.
 
         Parameters
         ----------
@@ -51,7 +56,7 @@ class MimeoIteration:
         self._special_fields[field_name] = field_value
 
     def get_special_field(self, field_name: str) -> Union[str, int, bool]:
-        """Gets a special field value from memory
+        """Get a special field value from memory.
 
         Parameters
         ----------

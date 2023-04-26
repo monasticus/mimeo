@@ -1,3 +1,9 @@
+"""The Mimeo Context module.
+
+It exports only one class:
+    * MimeoContext
+        A class managing Mimeo-Template-dependent utilities.
+"""
 import random
 
 from mimeo.context import MimeoIteration
@@ -9,8 +15,7 @@ from mimeo.database.exc import CountryNotFound, OutOfStock
 
 
 class MimeoContext:
-    """A class responsible for Mimeo-Template-dependent utilities
-    management.
+    """A class managing Mimeo-Template-dependent utilities.
 
     It allows you to reach a specific iteration of a template
     generation, and ensures uniqueness of all values generated
@@ -30,13 +35,13 @@ class MimeoContext:
     _INDEXES = "indexes"
 
     def __init__(self, name: str):
-        """
+        """Initialize MimeoContext class.
+
         Parameters
         ----------
         name : str
             A context name
         """
-
         self.name = name
         self._id = 0
         self._iterations = []
@@ -46,7 +51,7 @@ class MimeoContext:
         self._last_names_indexes = None
 
     def next_id(self) -> int:
-        """Increments an identifier and returns the current (incremented) one.
+        """Increments an identifier and return the current (incremented) one.
 
         Identifier is used by Auto Increment Mimeo Util.
 
@@ -55,12 +60,11 @@ class MimeoContext:
         int
             A next identifier within the context
         """
-
         self._id += 1
         return self.curr_id()
 
     def curr_id(self) -> int:
-        """Returns the current identifier within the context.
+        """Return the current identifier within the context.
 
         Identifier is used by Auto Increment Mimeo Util.
 
@@ -69,11 +73,10 @@ class MimeoContext:
         int
             The current identifier within the context
         """
-
         return self._id
 
     def prev_id(self) -> int:
-        """Decrements an identifier and returns the current (decremented) one.
+        """Decrement an identifier and return the current (decremented) one.
 
         Identifier is used by Auto Increment Mimeo Util.
         This method is meant to be used when an error appear
@@ -89,7 +92,6 @@ class MimeoContext:
         MinimumIdentifierReached
             If the current identifier (before decrement) equals 0
         """
-
         if self._id > 0:
             self._id -= 1
             return self.curr_id()
@@ -97,7 +99,7 @@ class MimeoContext:
             raise MinimumIdentifierReached()
 
     def next_iteration(self) -> MimeoIteration:
-        """Initializes a next iteration within the context.
+        """Initialize a next iteration within the context.
 
         To initialize the iteration, it gets the last iteration id and
         provides its incrementation.
@@ -107,14 +109,13 @@ class MimeoContext:
         next_iteration : MimeoIteration
             The initialized iteration
         """
-
         next_iteration_id = 1 if len(self._iterations) == 0 else self._iterations[-1].id + 1
         next_iteration = MimeoIteration(next_iteration_id)
         self._iterations.append(next_iteration)
         return next_iteration
 
     def curr_iteration(self) -> MimeoIteration:
-        """Returns the current iteration within the context.
+        """Return the current iteration within the context.
 
         Returns
         -------
@@ -126,15 +127,13 @@ class MimeoContext:
         UninitializedContextIteration
             If no iteration has been initialized yet for the context
         """
-
         if len(self._iterations) > 0:
             return self._iterations[-1]
         else:
             raise UninitializedContextIteration(self.name)
 
     def get_iteration(self, iteration_id: int) -> MimeoIteration:
-        """Returns a specific iteration from the context
-        based on the `iteration_id` provided.
+        """Return a specific iteration from the context.
 
         Returns
         -------
@@ -147,7 +146,6 @@ class MimeoContext:
             If the context does not have an iteration with the id
             provided
         """
-
         iteration = next(filter(lambda i: i.id == iteration_id, self._iterations), None)
         if iteration is not None:
             return iteration
@@ -155,7 +153,7 @@ class MimeoContext:
             raise ContextIterationNotFound(iteration_id, self.name)
 
     def clear_iterations(self):
-        """Clears out all context iterations.
+        """Clear out all context iterations.
 
         This method is meant to be used in case of nested templates.
         Thanks to iteration reset the nested template is properly
@@ -164,7 +162,7 @@ class MimeoContext:
         self._iterations = []
 
     def next_country_index(self) -> int:
-        """Provides next unique country index.
+        """Provide next unique country index.
 
         When used for the first time in the specific context
         it populates internal countries' indexes list. This approach
@@ -184,14 +182,13 @@ class MimeoContext:
         OutOfStock
             If all countries' indexes have been consumed already
         """
-
         self._initialize_countries_indexes()
         self._validate_countries()
 
         return self._countries_indexes.pop()
 
     def next_city_index(self, country: str = None) -> int:
-        """Provides next unique city index.
+        """Provide next unique city index.
 
         When used for the first time in the specific context
         it populates internal cities' indexes map. Each `country` key
@@ -221,7 +218,6 @@ class MimeoContext:
         OutOfStock
             If all cities' indexes have been consumed already
         """
-
         country = country if country is not None else MimeoContext._ALL
         self._initialize_cities_indexes(country)
         self._validate_cities(country)
@@ -229,7 +225,7 @@ class MimeoContext:
         return self._cities_indexes[country][MimeoContext._INDEXES].pop()
 
     def next_first_name_index(self, sex: str = None) -> int:
-        """Provides next unique first name index.
+        """Provide next unique first name index.
 
         When used for the first time in the specific context
         it populates internal first names' indexes map. Each `sex` key
@@ -258,7 +254,6 @@ class MimeoContext:
         OutOfStock
             If all first names' indexes have been consumed already
         """
-
         sex = sex if sex is not None else MimeoContext._ALL
         self._initialize_first_names_indexes(sex)
         self._validate_first_names(sex)
@@ -266,7 +261,7 @@ class MimeoContext:
         return self._first_names_indexes[sex][MimeoContext._INDEXES].pop()
 
     def next_last_name_index(self) -> int:
-        """Provides next unique last name index.
+        """Provide next unique last name index.
 
         When used for the first time in the specific context
         it populates internal last names' indexes list. This approach
@@ -286,30 +281,26 @@ class MimeoContext:
         OutOfStock
             If all last names' indexes have been consumed already
         """
-
         self._initialize_last_names_indexes()
         self._validate_last_names()
 
         return self._last_names_indexes.pop()
 
     def _initialize_countries_indexes(self):
-        """Initializes countries' indexes list with random and unique
-        integers.
+        """Initialize countries' indexes with unique integers.
 
         The list length and range depends on the number of country
         records in database.
         """
-
         if self._countries_indexes is None:
             countries_indexes = random.sample(range(MimeoDB.NUM_OF_COUNTRIES), MimeoDB.NUM_OF_COUNTRIES)
             self._countries_indexes = countries_indexes
 
     def _initialize_cities_indexes(self, country: str):
-        """Initializes cities' indexes list for a `country` key
-        with random and unique integers.
+        """Initialize cities' indexes with unique integers.
 
         The list length and range depends on the number of city
-        records in database.
+        records in database for the `country`.
 
         Raises
         ------
@@ -317,7 +308,6 @@ class MimeoContext:
             If database does not contain any cities for the provided
             `country`
         """
-
         if country not in self._cities_indexes:
             if country == MimeoContext._ALL:
                 num_of_entries = MimeoDB.NUM_OF_CITIES
@@ -334,18 +324,16 @@ class MimeoContext:
             }
 
     def _initialize_first_names_indexes(self, sex: str):
-        """Initializes first names' indexes list for a `sex` key
-        with random and unique integers.
+        """Initialize first names' indexes with integers.
 
         The list length and range depends on the number of first name
-        records in database.
+        records in database for the `sex`.
 
         Raises
         ------
         InvalidSex
             If `sex` is not 'M' nor 'F' value
         """
-
         if sex not in self._first_names_indexes:
             if sex == MimeoContext._ALL:
                 num_of_entries = MimeoDB.NUM_OF_FIRST_NAMES
@@ -360,39 +348,34 @@ class MimeoContext:
             }
 
     def _initialize_last_names_indexes(self):
-        """Initializes last names' indexes list with random and unique
-        integers.
+        """Initialize last names' indexes with unique integers.
 
         The list length and range depends on the number of last name
         records in database.
         """
-
         if self._last_names_indexes is None:
             last_names_indexes = random.sample(range(MimeoDB.NUM_OF_LAST_NAMES), MimeoDB.NUM_OF_LAST_NAMES)
             self._last_names_indexes = last_names_indexes
 
     def _validate_countries(self):
-        """Verifies if all countries' indexes have been consumed
+        """Verify if all countries' indexes have been consumed.
 
         Raises
         ------
         OutOfStock
             If all countries' indexes have been consumed already
         """
-
         if len(self._countries_indexes) == 0:
             raise OutOfStock(f"No more unique values, database contain only {MimeoDB.NUM_OF_COUNTRIES} countries.")
 
     def _validate_cities(self, country: str):
-        """Verifies if all cities' indexes have been consumed
-        for a `country` key provided.
+        """Verify if all cities' indexes have been consumed.
 
         Raises
         ------
         OutOfStock
             If all cities' indexes have been consumed already
         """
-
         if len(self._cities_indexes[country][MimeoContext._INDEXES]) == 0:
             init_count = self._cities_indexes[country][MimeoContext._INITIAL_COUNT]
             if country == MimeoContext._ALL:
@@ -401,15 +384,13 @@ class MimeoContext:
                 raise OutOfStock(f"No more unique values, database contain only {init_count} cities of {country}.")
 
     def _validate_first_names(self, sex: str):
-        """Verifies if all first names' indexes have been consumed
-        for a `sex` key provided.
+        """Verify if all first names' indexes have been consumed.
 
         Raises
         ------
         OutOfStock
             If all first names' indexes have been consumed already
         """
-
         if len(self._first_names_indexes[sex][MimeoContext._INDEXES]) == 0:
             init_count = self._first_names_indexes[sex][MimeoContext._INITIAL_COUNT]
             if sex == MimeoContext._ALL:
@@ -419,13 +400,12 @@ class MimeoContext:
                                  f"{'male' if sex == 'M' else 'female'} first names.")
 
     def _validate_last_names(self):
-        """Verifies if all last names' indexes have been consumed
+        """Verify if all last names' indexes have been consumed.
 
         Raises
         ------
         OutOfStock
             If all last names' indexes have been consumed already
         """
-
         if len(self._last_names_indexes) == 0:
             raise OutOfStock(f"No more unique values, database contain only {MimeoDB.NUM_OF_LAST_NAMES} last names.")
