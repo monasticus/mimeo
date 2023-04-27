@@ -24,6 +24,13 @@ class MimeoIteration:
         An ordinal number in a Mimeo Context
     key : str
         An UUID value unique across all templates
+
+    Methods
+    -------
+    add_special_field(self, field_name: str, field_value: Union[str, int, bool])
+        Put a special field entry to memory.
+    get_special_field(self, field_name: str) -> Union[str, int, bool]
+        Get a special field value from memory.
     """
 
     def __init__(self, identifier: int):

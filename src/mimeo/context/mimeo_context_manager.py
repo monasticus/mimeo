@@ -17,6 +17,20 @@ class MimeoContextManager(Alive, metaclass=OnlyOneAlive):
     It allows you to initialize a context, get the currently processing
     context, switch it or reach any other. Besides that it gives you
     access to Mimeo Vars.
+    The only way to use it successfully it is by `with` statement:
+        with MimeoContextManager(mimeo_config) as mimeo_mng:
+            ...
+
+    Methods
+    -------
+    get_context(self, context: str) -> MimeoContext
+        Return a Mimeo Context with a specific name.
+    get_current_context(self) -> MimeoContext
+        Return the current Mimeo Context.
+    set_current_context(self, context: MimeoContext)
+        Set the current Mimeo Context.
+    get_var(self, variable_name: str)
+        Return a specific Mimeo Var value.
     """
 
     def __init__(self, mimeo_config: MimeoConfig = None):

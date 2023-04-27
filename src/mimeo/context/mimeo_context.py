@@ -28,6 +28,31 @@ class MimeoContext:
     name : str
         A context name (a model's root name if not explicitly
         defined in a Mimeo Configuration)
+
+    Methods
+    -------
+    next_id() -> int
+        Increment an identifier and return the current (incremented) one.
+    curr_id() -> int
+        Return the current identifier within the context.
+    prev_id() -> int
+        Decrement an identifier and return the current (decremented) one.
+    next_iteration() -> MimeoIteration
+        Initialize a next iteration within the context.
+    curr_iteration() -> MimeoIteration
+        Return the current iteration within the context.
+    get_iteration(iteration_id: int) -> MimeoIteration
+        Return a specific iteration from the context.
+    clear_iterations()
+        Clear out all context iterations.
+    next_country_index() -> int
+        Provide next unique country index.
+    next_city_index(country: str = None) -> int
+        Provide next unique city index.
+    next_first_name_index(sex: str = None) -> int
+        Provide next unique first name index.
+    next_last_name_index() -> int
+        Provide next unique last name index.
     """
 
     _ALL = "_ALL_"
@@ -51,7 +76,7 @@ class MimeoContext:
         self._last_names_indexes = None
 
     def next_id(self) -> int:
-        """Increments an identifier and return the current (incremented) one.
+        """Increment an identifier and return the current (incremented) one.
 
         Identifier is used by Auto Increment Mimeo Util.
 
