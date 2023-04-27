@@ -5,6 +5,7 @@ It exports only one class:
         An OnlyOneAlive class managing Mimeo Contexts.
 """
 from __future__ import annotations
+
 from mimeo.config import MimeoConfig
 from mimeo.context import MimeoContext
 from mimeo.context.exc import VarNotFound
