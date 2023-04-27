@@ -2,7 +2,7 @@
 
 It exports classes related to cities CSV data:
     * City
-        DTO class representing a single city row in cities CSV data.
+        DTO class representing a single row in cities CSV data.
     * CitiesDB
         Class exposing READ operations on cities CSV data.
 """
@@ -15,7 +15,7 @@ from mimeo.database.exc import InvalidIndex
 
 
 class City:
-    """DTO class representing a single city row in cities CSV data.
+    """DTO class representing a single row in cities CSV data.
 
     Attributes
     ----------
@@ -80,7 +80,7 @@ class CitiesDB:
     Attributes
     ----------
     NUM_OF_RECORDS : int
-        A number of city rows in cities CSV data
+        A number of rows in cities CSV data
 
     Methods
     -------

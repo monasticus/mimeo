@@ -2,7 +2,7 @@
 
 It exports classes related to countries CSV data:
     * Country
-        DTO class representing a single country row in countries CSV
+        DTO class representing a single row in countries CSV
         data.
     * CountriesDB
         Class exposing READ operations on countries CSV data.
@@ -16,7 +16,7 @@ from mimeo.database.exc import InvalidIndex
 
 
 class Country:
-    """DTO class representing a single country row in cities CSV data.
+    """DTO class representing a single row in cities CSV data.
 
     Attributes
     ----------
@@ -75,7 +75,7 @@ class CountriesDB:
     Attributes
     ----------
     NUM_OF_RECORDS : int
-        A number of countries rows in cities CSV data
+        A number of rows in cities CSV data
 
     Methods
     -------
