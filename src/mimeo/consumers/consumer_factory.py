@@ -1,4 +1,4 @@
-"""The Mimeo Consumer module.
+"""The Mimeo Consumer Factory module.
 
 It exports only one class:
     * ConsumerFactory

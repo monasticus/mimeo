@@ -1,7 +1,6 @@
-"""
-Decorators for the context package.
+"""The Mimeo Context Decorators module.
 
-This module defines the following decorators:
+It defines the following decorators:
 
 - @mimeo_context:
     Decorator providing a 'context' parameter to a function

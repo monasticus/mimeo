@@ -1,9 +1,20 @@
 """The Mimeo Context package.
 
-The context package contains classes providing data used by
-Mimeo-Template-dependent utilities.
+This package provides support fot Mimeo-Template-dependent utilities.
 
-This package exports the following classes:
+It contains the following modules:
+* mimeo_context_manager
+    The Mimeo Context Manager module.
+* mimeo_context
+    The Mimeo Context module.
+* mimeo_iteration
+    The Mimeo Iteration module.
+* decorators
+    The Mimeo Context Decorators module.
+* exc
+    The Mimeo Context Exceptions module.
+
+The Mimeo Context package exports the following classes:
 - MimeoIteration:
     A class representing a single iteration in a Mimeo Template.
 - MimeoContext:

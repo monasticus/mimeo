@@ -1,20 +1,29 @@
 """The Mimeo Consumers package.
 
-The consumers package contains classes corresponding to
-the Mimeo Config output directions.
+It contains modules supporting the Mimeo Config output directions:
+* consumer
+    The Mimeo Consumer module.
+* consumer_factory
+    The Mimeo Consumer Factory module.
+* raw_consumer
+    The Mimeo Raw Consumer module.
+* file_consumer
+    The Mimeo File Consumer module.
+* http_consumer
+    The Mimeo HTTP Consumer module.
 
 This package exports the following classes:
-- Consumer:
+* Consumer:
     An abstract class for data consumers in Mimeo.
-- ConsumerFactory:
+* ConsumerFactory:
     A Factory class instantiating a Consumer based on Mimeo Config.
-- RawConsumer:
+* RawConsumer:
     A Consumer implementation printing data in the standard output.
     Corresponds to the 'stdout' output direction
-- FileConsumer:
+* FileConsumer:
     A Consumer implementation saving data in the filesystem.
     Corresponds to the 'file' output direction
-- HttpConsumer:
+* HttpConsumer:
     A Consumer implementation sending data in HTTP requests.
     Corresponds to the 'http' output direction
 
