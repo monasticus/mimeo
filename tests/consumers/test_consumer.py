@@ -20,16 +20,16 @@ def test_issubclass_false():
     assert not issubclass(InvalidConsumer, Consumer)
 
 
-def test_does_not_throw_error():
+def test_valid_class_instantiation():
     try:
-        ValidConsumer().consume("")
+        ValidConsumer()
         assert True
     except TypeError:
         assert False
 
 
-def test_throws_error():
+def test_invalid_class_instantiation():
     with pytest.raises(TypeError) as err:
-        InvalidConsumer().consume("")
+        InvalidConsumer()
 
     assert err.value.args[0] == "Can't instantiate abstract class InvalidConsumer with abstract methods consume"
