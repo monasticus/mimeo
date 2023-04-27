@@ -5,7 +5,7 @@ from mimeo.context.exc import (ContextIterationNotFound,
                                MinimumIdentifierReached,
                                UninitializedContextIteration)
 from mimeo.database import MimeoDB
-from mimeo.database.exc import CountryNotFound, InvalidSex, OutOfStock
+from mimeo.database.exc import DataNotFound, InvalidSex, OutOfStock
 
 
 def test_next_id():
@@ -168,7 +168,7 @@ def test_next_city_index_custom_country_out_of_stock():
 
 def test_next_city_index_non_existing_country():
     ctx = MimeoContext("SomeContext")
-    with pytest.raises(CountryNotFound) as err:
+    with pytest.raises(DataNotFound) as err:
         ctx.next_city_index("NEC")
 
     assert err.value.args[0] == "Mimeo database does not contain any cities of provided country [NEC]."
@@ -237,7 +237,7 @@ def test_next_first_name_index_non_existing_sex():
     with pytest.raises(InvalidSex) as err:
         ctx.next_first_name_index("N")
 
-    assert err.value.args[0] == "Invalid sex (use M or F)!"
+    assert err.value.args[0] == "Invalid sex (use M / F)!"
 
 
 def test_next_last_name_index():

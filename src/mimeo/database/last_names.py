@@ -13,7 +13,7 @@ class LastNamesDB:
         try:
             return last_names[index]
         except IndexError:
-            raise InvalidIndex(f"Provided index [{index}] is out or the range: 0-{LastNamesDB.NUM_OF_RECORDS-1}!")
+            raise InvalidIndex(index, LastNamesDB.NUM_OF_RECORDS-1)
 
     @classmethod
     def get_last_names(cls) -> list:

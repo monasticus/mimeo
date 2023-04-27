@@ -6,7 +6,7 @@ from datetime import date, datetime, timedelta
 from mimeo.context import MimeoContext, MimeoContextManager
 from mimeo.context.decorators import mimeo_context
 from mimeo.database import Country, MimeoDB
-from mimeo.database.exc import CountryNotFound, InvalidSex
+from mimeo.database.exc import DataNotFound, InvalidSex
 from mimeo.utils.exc import InvalidValue
 
 
@@ -156,7 +156,7 @@ class CityUtil(MimeoUtil):
             country_cities = self.__MIMEO_DB.get_cities_of(self.__country)
             country_cities_count = len(country_cities)
             if country_cities_count == 0:
-                raise CountryNotFound(f"Mimeo database does not contain any cities of provided country [{self.__country}].")
+                raise DataNotFound(f"Mimeo database does not contain any cities of provided country [{self.__country}].")
 
             if self.__unique:
                 index = context.next_city_index(self.__country)
@@ -201,7 +201,7 @@ class CountryUtil(MimeoUtil):
             if country_found is not None:
                 return country_found
             else:
-                raise CountryNotFound(f"Mimeo database does not contain such a country [{self.__country}].")
+                raise DataNotFound(f"Mimeo database does not contain such a country [{self.__country}].")
         else:
             if self.__unique:
                 index = context.next_country_index()
@@ -250,7 +250,7 @@ class FirstNameUtil(MimeoUtil):
         elif sex.upper() in ["F", "FEMALE"]:
             return "F"
         else:
-            raise InvalidSex("Invalid sex (use M, F, Male or Female)!")
+            raise InvalidSex(("M", "F", "Male", "Female"))
 
 
 class LastNameUtil(MimeoUtil):

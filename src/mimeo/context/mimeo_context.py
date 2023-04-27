@@ -11,7 +11,7 @@ from mimeo.context.exc import (ContextIterationNotFound,
                                MinimumIdentifierReached,
                                UninitializedContextIteration)
 from mimeo.database import MimeoDB
-from mimeo.database.exc import CountryNotFound, OutOfStock
+from mimeo.database.exc import DataNotFound, OutOfStock
 
 
 class MimeoContext:
@@ -340,7 +340,7 @@ class MimeoContext:
                 country_cities = MimeoDB().get_cities_of(country)
                 num_of_entries = len(country_cities)
                 if num_of_entries == 0:
-                    raise CountryNotFound(f"Mimeo database does not contain any cities of provided country [{country}].")
+                    raise DataNotFound(f"Mimeo database does not contain any cities of provided country [{country}].")
 
             cities_indexes = random.sample(range(num_of_entries), num_of_entries)
             self._cities_indexes[country] = {

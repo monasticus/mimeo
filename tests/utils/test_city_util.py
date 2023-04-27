@@ -3,7 +3,7 @@ import pytest
 from mimeo.config import MimeoConfig
 from mimeo.context import MimeoContextManager
 from mimeo.database import MimeoDB
-from mimeo.database.exc import CountryNotFound
+from mimeo.database.exc import DataNotFound
 from mimeo.utils.renderer import UtilsRenderer
 
 
@@ -63,7 +63,7 @@ def test_city_parametrized_with_unique_and_non_existing_country(default_config):
         context = mimeo_manager.get_context("SomeEntity")
         mimeo_manager.set_current_context(context)
 
-        with pytest.raises(CountryNotFound) as err:
+        with pytest.raises(DataNotFound) as err:
             UtilsRenderer.render_parametrized({"_name": "city", "unique": False, "country": "NEC"})
 
         assert err.value.args[0] == "Mimeo database does not contain any cities of provided country [NEC]."
@@ -85,7 +85,7 @@ def test_city_parametrized_with_non_existing_country(default_config):
         context = mimeo_manager.get_context("SomeEntity")
         mimeo_manager.set_current_context(context)
 
-        with pytest.raises(CountryNotFound) as err:
+        with pytest.raises(DataNotFound) as err:
             UtilsRenderer.render_parametrized({"_name": "city", "country": "NEC"})
 
         assert err.value.args[0] == "Mimeo database does not contain any cities of provided country [NEC]."

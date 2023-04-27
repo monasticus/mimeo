@@ -34,7 +34,7 @@ class CountriesDB:
         try:
             return countries[index]
         except IndexError:
-            raise InvalidIndex(f"Provided index [{index}] is out or the range: 0-{len(countries)-1}!")
+            raise InvalidIndex(index, CountriesDB.NUM_OF_RECORDS-1)
 
     def get_country_by_iso_3(self, iso_3: str) -> Country:
         countries = self.__get_countries()

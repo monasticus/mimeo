@@ -34,13 +34,13 @@ class FirstNamesDB:
         try:
             return first_names[index]
         except IndexError:
-            raise InvalidIndex(f"Provided index [{index}] is out or the range: 0-{FirstNamesDB.NUM_OF_RECORDS-1}!")
+            raise InvalidIndex(index, FirstNamesDB.NUM_OF_RECORDS-1)
 
     def get_first_names_by_sex(self, sex: str) -> list:
         if sex in FirstNamesDB.__SUPPORTED_SEX:
             return self.__get_first_names_by_sex(sex).copy()
         else:
-            raise InvalidSex("Invalid sex (use M or F)!")
+            raise InvalidSex(FirstNamesDB.__SUPPORTED_SEX)
 
     @classmethod
     def get_first_names(cls) -> list:

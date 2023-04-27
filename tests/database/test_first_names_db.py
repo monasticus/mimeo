@@ -53,4 +53,4 @@ def test_get_first_names_by_sex_invalid():
     with pytest.raises(InvalidSex) as err:
         FirstNamesDB().get_first_names_by_sex('N')
 
-    assert err.value.args[0] == "Invalid sex (use M or F)!"
+    assert err.value.args[0] == "Invalid sex (use M / F)!"
