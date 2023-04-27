@@ -75,7 +75,7 @@ class CountriesDB:
     Attributes
     ----------
     NUM_OF_RECORDS : int
-        A number of rows in cities CSV data
+        A number of rows in countries CSV data
 
     Methods
     -------
