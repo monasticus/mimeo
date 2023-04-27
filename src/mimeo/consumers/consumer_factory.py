@@ -26,8 +26,7 @@ class ConsumerFactory:
     Methods
     -------
     get_consumer(mimeo_config: MimeoConfig) -> Consumer
-        Returns a Consumer's implementation instance
-        based on Mimeo Config output direction
+        Initialize a Consumer based on the Mimeo Output Direction.
     """
 
     FILE_DIRECTION = MimeoConfig.OUTPUT_DETAILS_DIRECTION_FILE
