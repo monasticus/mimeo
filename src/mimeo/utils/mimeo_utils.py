@@ -1,7 +1,10 @@
+from __future__ import annotations
+
 import random
 import string
 from abc import ABCMeta, abstractmethod
 from datetime import date, datetime, timedelta
+from typing import Any
 
 from mimeo.context import MimeoContext, MimeoContextManager
 from mimeo.context.decorators import mimeo_context
@@ -11,52 +14,163 @@ from mimeo.utils.exc import InvalidValue
 
 
 class MimeoUtil(metaclass=ABCMeta):
+    """A superclass for all Mimeo Utils.
+
+    It defines abstract methods to be implemented in each subclass.
+
+    Methods
+    -------
+    render
+        Render a value.
+    """
 
     @classmethod
-    def __subclasshook__(cls, subclass):
-        return (hasattr(subclass, 'KEY') and
-                hasattr(subclass, 'render') and
-                callable(subclass.render) and
-                NotImplemented)
+    def __subclasshook__(cls, subclass: MimeoUtil):
+        """Verify if a subclass implements all abstract methods.
+
+        Parameters
+        ----------
+        subclass : MimeoUtil
+            A Generator subclass
+
+        Returns
+        -------
+        bool
+            True if the subclass includes the render method
+        """
+        return ('KEY' in subclass.__dict__ and
+                not callable(subclass.KEY) and
+                'render' in subclass.__dict__ and
+                callable(subclass.render))
 
     @abstractmethod
-    def render(self):
+    def render(self) -> Any:
+        """Render a value.
+
+        It is an abstract method to implement in subclasses
+        """
         raise NotImplementedError
 
 
 class RandomStringUtil(MimeoUtil):
+    """A MimeoUtil implementation rendering a random string value.
+
+    Methods
+    -------
+    render
+        Render a random string value.
+
+    Attributes
+    ----------
+    KEY : str
+        A Mimeo Util key
+    """
 
     KEY = "random_str"
 
-    def __init__(self, **kwargs):
-        self.__length = kwargs.get("length", 20)
+    def __init__(self, length: int = 20, **kwargs):
+        """Initialize RandomStringUtil class with parameters.
 
-    def render(self):
-        return "".join(random.choice(string.ascii_letters) for _ in range(self.__length))
+        Parameters
+        ----------
+        length : int, default 20
+            A length of a string to render
+        kwargs : dict
+            Arbitrary keyword arguments (ignored).
+        """
+        self._length = length
+
+    def render(self) -> str:
+        """Render a random string value.
+
+        Returns
+        -------
+        str
+            A random string value
+        """
+        return "".join(random.choice(string.ascii_letters) for _ in range(self._length))
 
 
 class RandomIntegerUtil(MimeoUtil):
+    """A MimeoUtil implementation rendering a random integer value.
+
+    Methods
+    -------
+    render
+        Render a random integer value
+
+    Attributes
+    ----------
+    KEY : str
+        A Mimeo Util key
+    """
 
     KEY = "random_int"
 
-    def __init__(self, **kwargs):
-        self.__start = kwargs.get("start", 1)
-        self.__limit = kwargs.get("limit", 100)
+    def __init__(self, start: int = 1, limit: int = 100, **kwargs):
+        """Initialize RandomIntegerUtil class with parameters.
 
-    def render(self):
-        return random.randrange(self.__start, self.__limit + 1)
+        Parameters
+        ----------
+        start : int, default 1
+            A lower bound for integers (inclusive)
+        limit : int, default 100
+            An upper bound for integers (inclusive)
+        kwargs : dict
+            Arbitrary keyword arguments (ignored)
+        """
+        self._start = start
+        self._limit = limit
+
+    def render(self) -> int:
+        """Render a random integer value.
+
+        Returns
+        -------
+        int
+            A random integer value
+        """
+        return random.randrange(self._start, self._limit + 1)
 
 
 class RandomItemUtil(MimeoUtil):
+    """A MimeoUtil implementation rendering a random item.
+
+    Methods
+    -------
+    render
+        Render a random item
+
+    Attributes
+    ----------
+    KEY : str
+        A Mimeo Util key
+    """
 
     KEY = "random_item"
 
-    def __init__(self, **kwargs):
-        self.__items = kwargs.get("items", [])
+    def __init__(self, items: list = None, **kwargs):
+        """Initialize RandomItemUtil class with parameters.
 
-    def render(self):
-        length = len(self.__items)
-        return "" if length == 0 else self.__items[random.randrange(0, length)]
+        Parameters
+        ----------
+        items : int, default ['']
+            A list of items from which a value will be picked up
+        kwargs : dict
+            Arbitrary keyword arguments (ignored)
+        """
+        self._items = items if items is not None and len(items) != 0 else [""]
+
+    def render(self) -> Any:
+        """Render a random item.
+
+        Returns
+        -------
+        Any
+            A random item
+        """
+        length = len(self._items)
+        return self._items[random.randrange(0, length)]
 
 
 class DateUtil(MimeoUtil):
