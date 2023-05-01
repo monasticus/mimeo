@@ -31,12 +31,13 @@ class MimeoUtil(metaclass=ABCMeta):
         Parameters
         ----------
         subclass : MimeoUtil
-            A Generator subclass
+            A MimeoUtil subclass
 
         Returns
         -------
         bool
-            True if the subclass includes the render method
+            True if the subclass includes the render method and KEY
+            attribute
         """
         return ('KEY' in subclass.__dict__ and
                 not callable(subclass.KEY) and
@@ -97,7 +98,7 @@ class RandomIntegerUtil(MimeoUtil):
     Methods
     -------
     render
-        Render a random integer value
+        Render a random integer value.
 
     Attributes
     ----------
@@ -139,7 +140,7 @@ class RandomItemUtil(MimeoUtil):
     Methods
     -------
     render
-        Render a random item
+        Render a random item.
 
     Attributes
     ----------
@@ -174,32 +175,99 @@ class RandomItemUtil(MimeoUtil):
 
 
 class DateUtil(MimeoUtil):
+    """A MimeoUtil implementation rendering a stringified date value.
+
+    Methods
+    -------
+    render
+        Render a stringified date value.
+
+    Attributes
+    ----------
+    KEY : str
+        A Mimeo Util key
+    """
 
     KEY = "date"
 
-    def __init__(self, **kwargs):
-        self.__days_delta = kwargs.get("days_delta", 0)
+    def __init__(self, days_delta: int = 0, **kwargs):
+        """Initialize DateUtil class with parameters.
 
-    def render(self):
-        date_value = date.today() if self.__days_delta == 0 else date.today() + timedelta(days=self.__days_delta)
+        Parameters
+        ----------
+        days_delta : int, default 0
+            An integer value of days to add or subtract from today
+        kwargs : dict
+            Arbitrary keyword arguments (ignored)
+        """
+        self._days_delta = days_delta
+
+    def render(self) -> str:
+        """Render a stringified date value.
+
+        Returns
+        -------
+        str
+            A stringified date value in format %Y-%m-%d
+        """
+        date_value = date.today() if self._days_delta == 0 else date.today() + timedelta(days=self._days_delta)
         return date_value.strftime("%Y-%m-%d")
 
 
 class DateTimeUtil(MimeoUtil):
+    """A MimeoUtil implementation rendering a stringified date time value.
+
+    Methods
+    -------
+    render
+        Render a stringified date time value.
+
+    Attributes
+    ----------
+    KEY : str
+        A Mimeo Util key
+    """
 
     KEY = "date_time"
 
-    def __init__(self, **kwargs):
-        self.__days_delta = kwargs.get("days_delta", 0)
-        self.__hours_delta = kwargs.get("hours_delta", 0)
-        self.__minutes_delta = kwargs.get("minutes_delta", 0)
-        self.__seconds_delta = kwargs.get("seconds_delta", 0)
+    def __init__(self,
+                 days_delta: int = 0,
+                 hours_delta: int = 0,
+                 minutes_delta: int = 0,
+                 seconds_delta: int = 0,
+                 **kwargs):
+        """Initialize DateTimeUtil class with parameters.
 
-    def render(self):
-        time_value = datetime.now() + timedelta(days=self.__days_delta,
-                                                hours=self.__hours_delta,
-                                                minutes=self.__minutes_delta,
-                                                seconds=self.__seconds_delta)
+        Parameters
+        ----------
+        days_delta : int, default 0
+            An integer value of days to add or subtract from now
+        hours_delta : int, default 0
+            An integer value of hours to add or subtract from now
+        minutes_delta : int, default 0
+            An integer value of minutes to add or subtract from now
+        seconds_delta : int, default 0
+            An integer value of seconds to add or subtract from now
+        kwargs : dict
+            Arbitrary keyword arguments (ignored)
+        """
+        self._days_delta = days_delta
+        self._hours_delta = hours_delta
+        self._minutes_delta = minutes_delta
+        self._seconds_delta = seconds_delta
+
+    def render(self) -> str:
+        """Render a stringified date time value.
+
+        Returns
+        -------
+        str
+            A stringified date time value in format %Y-%m-%dT%H:%M:%S
+        """
+        time_value = datetime.now() + timedelta(days=self._days_delta,
+                                                hours=self._hours_delta,
+                                                minutes=self._minutes_delta,
+                                                seconds=self._seconds_delta)
         return time_value.strftime("%Y-%m-%dT%H:%M:%S")
 
 
