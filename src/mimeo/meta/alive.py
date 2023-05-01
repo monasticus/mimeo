@@ -16,7 +16,7 @@ class Alive:
 
     def assert_alive(self):
         if not self.is_alive():
-            raise InstanceNotAlive("The instance is not alive!")
+            raise InstanceNotAlive()
         return self.is_alive()
 
     def is_alive(self):
