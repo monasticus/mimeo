@@ -2,10 +2,9 @@ import json
 import logging
 from os import path, walk
 
-from mimeo import Mimeograph
+from mimeo import MimeoConfig, Mimeograph
 from mimeo.cli import MimeoArgumentParser
 from mimeo.cli.exc import EnvironmentNotFound, EnvironmentsFileNotFound
-from mimeo.config import MimeoConfig
 
 logger = logging.getLogger(__name__)
 
