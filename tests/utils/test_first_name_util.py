@@ -4,7 +4,7 @@ from mimeo.config import MimeoConfig
 from mimeo.context import MimeoContextManager
 from mimeo.database import MimeoDB
 from mimeo.database.exc import InvalidSex
-from mimeo.utils.renderer import UtilsRenderer
+from mimeo.utils.renderers import UtilsRenderer
 
 
 @pytest.fixture(autouse=True)

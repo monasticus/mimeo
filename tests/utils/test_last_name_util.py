@@ -3,7 +3,7 @@ import pytest
 from mimeo.config import MimeoConfig
 from mimeo.context import MimeoContextManager
 from mimeo.database import MimeoDB
-from mimeo.utils.renderer import UtilsRenderer
+from mimeo.utils.renderers import UtilsRenderer
 
 
 @pytest.fixture(autouse=True)

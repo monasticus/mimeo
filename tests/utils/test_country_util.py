@@ -5,7 +5,7 @@ from mimeo.context import MimeoContextManager
 from mimeo.database import MimeoDB
 from mimeo.database.exc import DataNotFound
 from mimeo.utils.exc import InvalidValue
-from mimeo.utils.renderer import UtilsRenderer
+from mimeo.utils.renderers import UtilsRenderer
 
 
 @pytest.fixture(autouse=True)

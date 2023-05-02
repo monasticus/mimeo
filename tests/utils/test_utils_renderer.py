@@ -1,7 +1,7 @@
 import pytest
 
 from mimeo.utils.exc import InvalidMimeoUtil
-from mimeo.utils.renderer import UtilsRenderer
+from mimeo.utils.renderers import UtilsRenderer
 
 
 def test_missing_mimeo_util_name():
