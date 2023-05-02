@@ -44,7 +44,7 @@ def test_produce():
         mimeo = Mimeograph(mimeo_config)
 
         assert not path.exists("test_mimeograph-dir")
-        mimeo.produce()
+        mimeo.process()
         assert path.exists("test_mimeograph-dir")
         for i in range(1, 11):
             file_path = f"test_mimeograph-dir/output-{i}.xml"

@@ -147,7 +147,7 @@ def main():
         logger.info(f"Data generation from Mimeo Config: {config_path}")
         mimeo_config = get_config(config_path, args)
         with MimeoContextManager(mimeo_config):
-            Mimeograph(mimeo_config).produce()
+            Mimeograph(mimeo_config).process()
 
 
 def customize_logging_level(args):
