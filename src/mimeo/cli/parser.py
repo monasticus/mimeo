@@ -29,12 +29,12 @@ class MimeoArgumentParser(ArgumentParser):
           -v, --version         show program's version number and exit
 
         Mimeo Configuration arguments:
-          -x {true,false}, --xml-declaration {true,false}
-                                overwrite the xml_declaration property
-          -i INDENT, --indent INDENT
-                                overwrite the indent property
           -o {file,stdout,http}, --output {file,stdout,http}
                                 overwrite the output_details/direction property
+          -x {true,false}, --xml-declaration {true,false}
+                                overwrite the output_details/xml_declaration property
+          -i INDENT, --indent INDENT
+                                overwrite the output_details/indent property
           -d DIRECTORY_PATH, --directory DIRECTORY_PATH
                                 overwrite the output_details/directory_path property
           -f FILE_NAME, --file FILE_NAME
@@ -88,6 +88,12 @@ class MimeoArgumentParser(ArgumentParser):
     def _add_mimeo_configuration_arguments(self):
         mimeo_config_args = self.add_argument_group("Mimeo Configuration arguments")
         mimeo_config_args.add_argument(
+            "-o",
+            "--output",
+            type=str,
+            choices=["file", "stdout", "http"],
+            help="overwrite the output_details/direction property")
+        mimeo_config_args.add_argument(
             "-x",
             "--xml-declaration",
             type=str,
@@ -98,12 +104,6 @@ class MimeoArgumentParser(ArgumentParser):
             "--indent",
             type=int,
             help="overwrite the indent property")
-        mimeo_config_args.add_argument(
-            "-o",
-            "--output",
-            type=str,
-            choices=["file", "stdout", "http"],
-            help="overwrite the output_details/direction property")
         mimeo_config_args.add_argument(
             "-d",
             "--directory",

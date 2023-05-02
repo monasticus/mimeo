@@ -1,12 +1,12 @@
 {
-  "output_format": "xml",
   "output_details": {
     "direction": "file",
+    "format": "xml",
+    "xml_declaration": false,
+    "indent": 0,
     "directory_path": "mimeo-output",
     "file_name": "mimeo-output"
   },
-  "xml_declaration": false,
-  "indent": 0,
   "_templates_": [
     {
       "count": 30,
