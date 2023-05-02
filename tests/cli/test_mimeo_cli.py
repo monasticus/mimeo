@@ -13,8 +13,8 @@ import responses
 from responses import matchers
 
 import mimeo.__main__ as MimeoCLI
+from mimeo.cli.exc import EnvironmentNotFound, EnvironmentsFileNotFound
 from mimeo.config.exc import MissingRequiredProperty
-from mimeo.exc import EnvironmentNotFound, EnvironmentsFileNotFound
 
 
 @pytest.fixture(autouse=True)
@@ -201,7 +201,7 @@ def test_directory_path():
                                               '<ChildNode1>1</ChildNode1>' \
                                               '<ChildNode2>value-2</ChildNode2>' \
                                               '<ChildNode3>true</ChildNode3>' \
-                                              '</SomeEntity>' \
+                                              '</SomeEntity>'
 
 
 def test_custom_short_xml_declaration_false():
