@@ -348,7 +348,7 @@ class AutoIncrementUtil(MimeoUtil):
         
         Raises
         ------
-        AttributeError
+        InvalidValue
             If the pattern is not a string value
         """
         try:
