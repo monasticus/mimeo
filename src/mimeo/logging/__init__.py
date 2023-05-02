@@ -29,7 +29,12 @@ from .filters import DetailedFilter, RegularFilter
 
 
 def setup_logging():
-    """Set up customized logging configuration."""
+    """Set up customized logging configuration.
+
+    The configuration is stored in the logging.yaml file in
+    the resources package. Besides that a new log level is defined,
+    FINE, together with a method logger.fine().
+    """
     add_logging_level("FINE", logging.DEBUG - 1)
     with tools.get_resource("logging.yaml") as config_file:
         config = yaml.safe_load(config_file.read())
