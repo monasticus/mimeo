@@ -6,6 +6,8 @@ It exports only one class:
 """
 from __future__ import annotations
 
+from typing import Union
+
 from mimeo.config import MimeoConfig
 from mimeo.context import MimeoContext
 from mimeo.context.exc import VarNotFound
@@ -144,13 +146,18 @@ class MimeoContextManager(Alive, metaclass=OnlyOneAlive):
         super().assert_alive()
         self._current_context = context
 
-    def get_var(self, variable_name: str):
+    def get_var(self, variable_name: str) -> Union[str, int, bool, dict]:
         """Return a specific Mimeo Var value.
+
+        Parameters
+        ----------
+        variable_name : str
+            The Mimeo Var name
 
         Returns
         -------
-        variable_name
-            The Mimeo Var name
+        value : Union[str, int, bool, dict]
+            The Mimeo Var value
 
         Raises
         ------
