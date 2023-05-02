@@ -18,11 +18,11 @@ def teardown():
 
 def test_produce():
     config = {
-        "output_format": "xml",
-        "indent": 4,
-        "xml_declaration": True,
         "output_details": {
             "direction": "file",
+            "format": "xml",
+            "indent": 4,
+            "xml_declaration": True,
             "directory_path": "test_mimeograph-dir",
             "file_name": "output"
         },

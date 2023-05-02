@@ -11,14 +11,13 @@ logger = logging.getLogger(__name__)
 
 class MimeoJob:
 
-    DEFAULT_ENVS_FILE_PATH = "mimeo.envs.json"
+    _DEFAULT_ENVS_FILE_PATH = "mimeo.envs.json"
 
     def __init__(self):
         self.args = MimeoArgumentParser().parse_args()
 
     def run(self):
         self._customize_logging_level()
-
         logger.info("Starting a Mimeo job")
         for config_path in self._get_paths():
             logger.info(f"Data generation from Mimeo Config: {config_path}")
@@ -48,15 +47,13 @@ class MimeoJob:
         with open(config_path) as config_file:
             config = json.load(config_file)
             if self.args.http_env is not None:
-                envs_file = self.args.http_envs_file if self.args.http_envs_file is not None else self.DEFAULT_ENVS_FILE_PATH
+                envs_file = self.args.http_envs_file if self.args.http_envs_file is not None else self._DEFAULT_ENVS_FILE_PATH
                 self._customize_output_details_with_env(config, envs_file, self.args.http_env)
             if self.args.xml_declaration is not None:
                 xml_declaration = self.args.xml_declaration.lower() == "true"
-                logger.fine(f"Overwriting xml_declaration to [{xml_declaration}]")
-                config[MimeoConfig.XML_DECLARATION_KEY] = xml_declaration
+                self._customize_output_details(config, MimeoConfig.OUTPUT_DETAILS_XML_DECLARATION_KEY, xml_declaration)
             if self.args.indent is not None:
-                logger.fine(f"Overwriting indent to [{self.args.indent}]")
-                config[MimeoConfig.INDENT_KEY] = self.args.indent
+                self._customize_output_details(config, MimeoConfig.OUTPUT_DETAILS_INDENT_KEY, self.args.indent)
             if self.args.output is not None:
                 self._customize_output_details(config, MimeoConfig.OUTPUT_DETAILS_DIRECTION_KEY, self.args.output)
             if self.args.directory is not None:

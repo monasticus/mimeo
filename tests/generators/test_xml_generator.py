@@ -8,7 +8,9 @@ from mimeo.utils.exc import InvalidValue
 
 def test_generate_single_template_model_without_attributes():
     config = MimeoConfig({
-        "output_format": "xml",
+        "output_details": {
+            "format": "xml"
+        },
         "_templates_": [
             {
                 "count": 5,
@@ -34,7 +36,9 @@ def test_generate_single_template_model_without_attributes():
 
 def test_generate_single_template_model_with_attributes():
     config = MimeoConfig({
-        "output_format": "xml",
+        "output_details": {
+            "format": "xml"
+        },
         "_templates_": [
             {
                 "count": 5,
@@ -64,7 +68,9 @@ def test_generate_single_template_model_with_attributes():
 
 def test_generate_single_template_model_with_prefixed_ns():
     config = MimeoConfig({
-        "output_format": "xml",
+        "output_details": {
+            "format": "xml"
+        },
         "_templates_": [
             {
                 "count": 5,
@@ -94,7 +100,9 @@ def test_generate_single_template_model_with_prefixed_ns():
 
 def test_generate_single_template_model_with_attributes_in_atomic_child():
     config = MimeoConfig({
-        "output_format": "xml",
+        "output_details": {
+            "format": "xml"
+        },
         "_templates_": [
             {
                 "count": 5,
@@ -133,7 +141,9 @@ def test_generate_single_template_model_with_attributes_in_atomic_child():
 
 def test_generate_single_template_model_with_attributes_in_complex_child():
     config = MimeoConfig({
-        "output_format": "xml",
+        "output_details": {
+            "format": "xml"
+        },
         "_templates_": [
             {
                 "count": 5,
@@ -177,7 +187,9 @@ def test_generate_single_template_model_with_attributes_in_complex_child():
 
 def test_generate_single_template_model_with_attributes_in_child_mixed():
     config = MimeoConfig({
-        "output_format": "xml",
+        "output_details": {
+            "format": "xml"
+        },
         "_templates_": [
             {
                 "count": 5,
@@ -215,7 +227,9 @@ def test_generate_single_template_model_with_attributes_in_child_mixed():
 
 def test_generate_single_template_str_value():
     config = MimeoConfig({
-        "output_format": "xml",
+        "output_details": {
+            "format": "xml"
+        },
         "_templates_": [
             {
                 "count": 5,
@@ -249,7 +263,9 @@ def test_generate_single_template_str_value():
 
 def test_generate_single_template_int_value():
     config = MimeoConfig({
-        "output_format": "xml",
+        "output_details": {
+            "format": "xml"
+        },
         "_templates_": [
             {
                 "count": 5,
@@ -283,7 +299,9 @@ def test_generate_single_template_int_value():
 
 def test_generate_single_template_bool_value():
     config = MimeoConfig({
-        "output_format": "xml",
+        "output_details": {
+            "format": "xml"
+        },
         "_templates_": [
             {
                 "count": 5,
@@ -317,7 +335,9 @@ def test_generate_single_template_bool_value():
 
 def test_generate_single_template_none_value():
     config = MimeoConfig({
-        "output_format": "xml",
+        "output_details": {
+            "format": "xml"
+        },
         "_templates_": [
             {
                 "count": 5,
@@ -351,7 +371,9 @@ def test_generate_single_template_none_value():
 
 def test_generate_single_template_using_variables():
     config = MimeoConfig({
-        "output_format": "xml",
+        "output_details": {
+            "format": "xml"
+        },
         "vars": {
             "CUSTOM_VAR_1": "custom-value-1",
             "CUSTOM_VAR_2": 1,
@@ -433,7 +455,9 @@ def test_generate_single_template_using_variables():
 
 def test_generate_single_template_child_elements():
     config = MimeoConfig({
-        "output_format": "xml",
+        "output_details": {
+            "format": "xml"
+        },
         "_templates_": [
             {
                 "count": 5,
@@ -474,7 +498,9 @@ def test_generate_single_template_child_elements():
 
 def test_generate_single_template_child_elements_in_array():
     config = MimeoConfig({
-        "output_format": "xml",
+        "output_details": {
+            "format": "xml"
+        },
         "_templates_": [
             {
                 "count": 5,
@@ -527,7 +553,9 @@ def test_generate_single_template_child_elements_in_array():
 
 def test_generate_single_template_only_atomic_child_elements_in_array():
     config = MimeoConfig({
-        "output_format": "xml",
+        "output_details": {
+            "format": "xml"
+        },
         "_templates_": [
             {
                 "count": 5,
@@ -577,7 +605,9 @@ def test_generate_single_template_only_atomic_child_elements_in_array():
 
 def test_generate_multiple_templates():
     config = MimeoConfig({
-        "output_format": "xml",
+        "output_details": {
+            "format": "xml"
+        },
         "_templates_": [
             {
                 "count": 2,
@@ -617,7 +647,9 @@ def test_generate_multiple_templates():
 
 def test_generate_nested_templates():
     config = MimeoConfig({
-        "output_format": "xml",
+        "output_details": {
+            "format": "xml"
+        },
         "_templates_": [
             {
                 "count": 5,
@@ -680,9 +712,11 @@ def test_generate_nested_templates():
 
 def test_stringify_with_indent_and_xml_declaration():
     config = MimeoConfig({
-        "output_format": "xml",
-        "xml_declaration": True,
-        "indent": 4,
+        "output_details": {
+            "format": "xml",
+            "xml_declaration": True,
+            "indent": 4
+        },
         "_templates_": [
             {
                 "count": 1,
@@ -713,9 +747,11 @@ def test_stringify_with_indent_and_xml_declaration():
 
 def test_stringify_with_indent_and_without_xml_declaration():
     config = MimeoConfig({
-        "output_format": "xml",
-        "xml_declaration": False,
-        "indent": 4,
+        "output_details": {
+            "format": "xml",
+            "xml_declaration": False,
+            "indent": 4
+        },
         "_templates_": [
             {
                 "count": 1,
@@ -745,8 +781,10 @@ def test_stringify_with_indent_and_without_xml_declaration():
 
 def test_stringify_without_indent_and_with_xml_declaration():
     config = MimeoConfig({
-        "output_format": "xml",
-        "xml_declaration": True,
+        "output_details": {
+            "format": "xml",
+            "xml_declaration": True
+        },
         "_templates_": [
             {
                 "count": 1,
@@ -778,7 +816,9 @@ def test_stringify_without_indent_and_with_xml_declaration():
 
 def test_stringify_without_indent_and_xml_declaration():
     config = MimeoConfig({
-        "output_format": "xml",
+        "output_details": {
+            "format": "xml"
+        },
         "_templates_": [
             {
                 "count": 1,
@@ -809,7 +849,9 @@ def test_stringify_without_indent_and_xml_declaration():
 
 def test_generate_template_using_mimeo_util_raw():
     config = MimeoConfig({
-        "output_format": "xml",
+        "output_details": {
+            "format": "xml"
+        },
         "_templates_": [
             {
                 "count": 5,
@@ -843,7 +885,9 @@ def test_generate_template_using_mimeo_util_raw():
 
 def test_generate_template_using_mimeo_util_parametrized():
     config = MimeoConfig({
-        "output_format": "xml",
+        "output_details": {
+            "format": "xml"
+        },
         "_templates_": [
             {
                 "count": 5,
@@ -882,7 +926,9 @@ def test_generate_template_using_mimeo_util_parametrized():
 
 def test_generate_template_using_mimeo_util_parametrized_invalid():
     config = MimeoConfig({
-        "output_format": "xml",
+        "output_details": {
+            "format": "xml"
+        },
         "_templates_": [
             {
                 "count": 5,
@@ -912,7 +958,9 @@ def test_generate_template_using_mimeo_util_parametrized_invalid():
 
 def test_generate_template_using_auto_increment_util():
     config = MimeoConfig({
-        "output_format": "xml",
+        "output_details": {
+            "format": "xml"
+        },
         "_templates_": [
             {
                 "count": 5,
@@ -946,7 +994,9 @@ def test_generate_template_using_auto_increment_util():
 
 def test_generate_template_using_auto_increment_util_in_two_templates():
     config = MimeoConfig({
-        "output_format": "xml",
+        "output_details": {
+            "format": "xml"
+        },
         "_templates_": [
             {
                 "count": 5,
@@ -988,7 +1038,9 @@ def test_generate_template_using_auto_increment_util_in_two_templates():
 
 def test_generate_template_using_auto_increment_util_in_two_templates_with_customized_context_name():
     config = MimeoConfig({
-        "output_format": "xml",
+        "output_details": {
+            "format": "xml"
+        },
         "_templates_": [
             {
                 "count": 5,
@@ -1032,7 +1084,9 @@ def test_generate_template_using_auto_increment_util_in_two_templates_with_custo
 
 def test_generate_template_using_curr_iter_util():
     config = MimeoConfig({
-        "output_format": "xml",
+        "output_details": {
+            "format": "xml"
+        },
         "_templates_": [
             {
                 "count": 5,
@@ -1067,7 +1121,9 @@ def test_generate_template_using_curr_iter_util():
 
 def test_generate_template_using_curr_iter_util_in_two_templates():
     config = MimeoConfig({
-        "output_format": "xml",
+        "output_details": {
+            "format": "xml"
+        },
         "_templates_": [
             {
                 "count": 5,
@@ -1111,7 +1167,9 @@ def test_generate_template_using_curr_iter_util_in_two_templates():
 
 def test_generate_templates_using_curr_iter_util_in_nested_templates():
     config = MimeoConfig({
-        "output_format": "xml",
+        "output_details": {
+            "format": "xml"
+        },
         "_templates_": [
             {
                 "count": 5,
@@ -1176,7 +1234,9 @@ def test_generate_templates_using_curr_iter_util_in_nested_templates():
 
 def test_generate_templates_using_curr_iter_util_in_nested_templates_indicating_one():
     config = MimeoConfig({
-        "output_format": "xml",
+        "output_details": {
+            "format": "xml"
+        },
         "_templates_": [
             {
                 "count": 5,
@@ -1245,7 +1305,9 @@ def test_generate_templates_using_curr_iter_util_in_nested_templates_indicating_
 
 def test_generate_templates_using_curr_iter_util_in_nested_templates_indicating_customized_one():
     config = MimeoConfig({
-        "output_format": "xml",
+        "output_details": {
+            "format": "xml"
+        },
         "_templates_": [
             {
                 "count": 5,
@@ -1315,7 +1377,9 @@ def test_generate_templates_using_curr_iter_util_in_nested_templates_indicating_
 
 def test_generate_template_using_curr_iter_and_auto_increment_utils():
     config = MimeoConfig({
-        "output_format": "xml",
+        "output_details": {
+            "format": "xml"
+        },
         "_templates_": [
             {
                 "count": 5,
@@ -1371,7 +1435,9 @@ def test_generate_template_using_curr_iter_and_auto_increment_utils():
 
 def test_generate_template_using_key_util():
     config = MimeoConfig({
-        "output_format": "xml",
+        "output_details": {
+            "format": "xml"
+        },
         "_templates_": [
             {
                 "count": 5,
@@ -1425,7 +1491,9 @@ def test_generate_template_using_key_util():
 
 def test_generate_template_using_key_util_in_separated_contexts():
     config = MimeoConfig({
-        "output_format": "xml",
+        "output_details": {
+            "format": "xml"
+        },
         "_templates_": [
             {
                 "count": 5,
@@ -1482,7 +1550,9 @@ def test_generate_template_using_key_util_in_separated_contexts():
 
 def test_generate_template_using_key_util_in_separated_contexts_indicating_one():
     config = MimeoConfig({
-        "output_format": "xml",
+        "output_details": {
+            "format": "xml"
+        },
         "_templates_": [
             {
                 "count": 5,
@@ -1544,7 +1614,9 @@ def test_generate_template_using_key_util_in_separated_contexts_indicating_one()
 
 def test_generate_template_using_key_util_in_two_templates_with_customized_iteration():
     config = MimeoConfig({
-        "output_format": "xml",
+        "output_details": {
+            "format": "xml"
+        },
         "_templates_": [
             {
                 "count": 5,
@@ -1611,7 +1683,9 @@ def test_generate_template_using_key_util_in_two_templates_with_customized_itera
 
 def test_generate_template_using_get_key_util_in_two_templates_with_customized_context_name():
     config = MimeoConfig({
-        "output_format": "xml",
+        "output_details": {
+            "format": "xml"
+        },
         "_templates_": [
             {
                 "count": 5,
@@ -1675,7 +1749,9 @@ def test_generate_template_using_get_key_util_in_two_templates_with_customized_c
 
 def test_generate_template_using_special_fields():
     config = MimeoConfig({
-        "output_format": "xml",
+        "output_details": {
+            "format": "xml"
+        },
         "_templates_": [
             {
                 "count": 5,
@@ -1716,7 +1792,9 @@ def test_generate_template_using_special_fields():
 
 def test_generate_template_using_special_fields_as_partial_values():
     config = MimeoConfig({
-        "output_format": "xml",
+        "output_details": {
+            "format": "xml"
+        },
         "_templates_": [
             {
                 "count": 5,
@@ -1792,7 +1870,9 @@ def test_generate_template_using_special_fields_as_partial_values():
 
 def test_generate_template_using_special_fields_using_namespace():
     config = MimeoConfig({
-        "output_format": "xml",
+        "output_details": {
+            "format": "xml"
+        },
         "_templates_": [
             {
                 "count": 5,
@@ -1838,7 +1918,9 @@ def test_generate_template_using_special_fields_using_namespace():
 
 def test_generate_template_using_special_fields_recursive():
     config = MimeoConfig({
-        "output_format": "xml",
+        "output_details": {
+            "format": "xml"
+        },
         "_templates_": [
             {
                 "count": 5,
@@ -1886,7 +1968,9 @@ def test_generate_template_using_special_fields_recursive():
 
 def test_generate_template_using_special_fields_in_template_context():
     config = MimeoConfig({
-        "output_format": "xml",
+        "output_details": {
+            "format": "xml"
+        },
         "_templates_": [
             {
                 "count": 5,

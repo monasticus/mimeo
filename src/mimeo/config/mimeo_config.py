@@ -58,12 +58,16 @@ class MimeoConfig(MimeoDTO):
 
     Attributes
     ----------
-    OUTPUT_FORMAT_KEY : str
-        A Mimeo Configuration output format key
     OUTPUT_DETAILS_KEY : str
         A Mimeo Configuration output details key
     OUTPUT_DETAILS_DIRECTION_KEY : str
         A Mimeo Configuration output direction key
+    OUTPUT_DETAILS_FORMAT_KEY : str
+        A Mimeo Configuration output format key
+    OUTPUT_DETAILS_XML_DECLARATION_KEY : str
+        A Mimeo Configuration xml declaration key
+    OUTPUT_DETAILS_INDENT_KEY : str
+        A Mimeo Configuration indent key
     OUTPUT_DETAILS_DIRECTORY_PATH_KEY : str
         A Mimeo Configuration output directory path key
     OUTPUT_DETAILS_FILE_NAME_KEY : str
@@ -84,10 +88,6 @@ class MimeoConfig(MimeoDTO):
         A Mimeo Configuration http username key
     OUTPUT_DETAILS_PASSWORD_KEY : str
         A Mimeo Configuration http password key
-    XML_DECLARATION_KEY : str
-        A Mimeo Configuration xml declaration key
-    INDENT_KEY : str
-        A Mimeo Configuration indent key
     VARS_KEY : str
         A Mimeo Configuration vars key
     TEMPLATES_KEY : str
@@ -131,23 +131,19 @@ class MimeoConfig(MimeoDTO):
     REQUIRED_HTTP_DETAILS : set
         List of required http request output direction details
 
-    output_format : str, default 'xml'
-        A Mimeo Configuration output format setting
     output_details : MimeoOutputDetails, default {}
         A Mimeo Output Details settings
-    xml_declaration : bool, default False
-        A Mimeo Configuration xml declaration setting
-    indent : int, default 0
-        A Mimeo Configuration indent setting
     vars : dict, default {}
         A Mimeo Configuration vars setting
     templates : list
         A Mimeo Templates setting
     """
 
-    OUTPUT_FORMAT_KEY = "output_format"
     OUTPUT_DETAILS_KEY = "output_details"
     OUTPUT_DETAILS_DIRECTION_KEY = "direction"
+    OUTPUT_DETAILS_FORMAT_KEY = "format"
+    OUTPUT_DETAILS_XML_DECLARATION_KEY = "xml_declaration"
+    OUTPUT_DETAILS_INDENT_KEY = "indent"
     OUTPUT_DETAILS_DIRECTORY_PATH_KEY = "directory_path"
     OUTPUT_DETAILS_FILE_NAME_KEY = "file_name"
     OUTPUT_DETAILS_METHOD_KEY = "method"
@@ -158,8 +154,6 @@ class MimeoConfig(MimeoDTO):
     OUTPUT_DETAILS_AUTH_KEY = "auth"
     OUTPUT_DETAILS_USERNAME_KEY = "username"
     OUTPUT_DETAILS_PASSWORD_KEY = "password"
-    XML_DECLARATION_KEY = "xml_declaration"
-    INDENT_KEY = "indent"
     VARS_KEY = "vars"
     TEMPLATES_KEY = "_templates_"
     TEMPLATES_COUNT_KEY = "count"
@@ -207,64 +201,9 @@ class MimeoConfig(MimeoDTO):
             A source config dictionary
         """
         super().__init__(config)
-        self.output_format = MimeoConfig._get_output_format(config)
-        self.output_details = MimeoOutputDetails(self.output_format, config.get(self.OUTPUT_DETAILS_KEY, {}))
-        self.xml_declaration = config.get(self.XML_DECLARATION_KEY, False)
-        self.indent = MimeoConfig._get_indent(config)
+        self.output_details = MimeoOutputDetails(config.get(self.OUTPUT_DETAILS_KEY, {}))
         self.vars = MimeoConfig._get_vars(config)
         self.templates = MimeoConfig._get_templates(config)
-
-    @staticmethod
-    def _get_output_format(config: dict) -> str:
-        """Extract an output format from the source dictionary.
-
-        Parameters
-        ----------
-        config : dict
-            A source config dictionary
-
-        Returns
-        -------
-        output_format : str
-            The customized output format or 'xml' by default
-
-        Raises
-        ------
-        UnsupportedPropertyValue
-            If the customized output format is not supported
-        """
-        output_format = config.get(MimeoConfig.OUTPUT_FORMAT_KEY, MimeoConfig.OUTPUT_FORMAT_XML)
-        if output_format in MimeoConfig.SUPPORTED_OUTPUT_FORMATS:
-            return output_format
-        else:
-            raise UnsupportedPropertyValue(MimeoConfig.OUTPUT_FORMAT_KEY,
-                                           output_format,
-                                           MimeoConfig.SUPPORTED_OUTPUT_FORMATS)
-
-    @staticmethod
-    def _get_indent(config: dict) -> int:
-        """Extract an indent value from the source dictionary.
-
-        Parameters
-        ----------
-        config : dict
-            A source config dictionary
-
-        Returns
-        -------
-        indent : int
-            The customized indent or 0 by default
-
-        Raises
-        ------
-        InvalidIndent
-            If the customized indent is lower than zero
-        """
-        indent = config.get(MimeoConfig.INDENT_KEY, 0)
-        if indent >= 0:
-            return indent
-        else:
-            raise InvalidIndent(indent)
 
     @staticmethod
     def _get_vars(config: dict) -> dict:
@@ -353,6 +292,12 @@ class MimeoOutputDetails(MimeoDTO):
     ----------
     direction : str, default 'file'
         The configured output direction
+    format : str, default 'xml'
+        A Mimeo Configuration output format setting
+    xml_declaration : bool, default False
+        A Mimeo Configuration xml declaration setting
+    indent : int, default 0
+        A Mimeo Configuration indent setting
     directory_path : str, default 'mimeo-output'
         The configured file output directory
     file_name_tmplt : str, default 'mimeo-output-{}.{output_format}'
@@ -375,23 +320,24 @@ class MimeoOutputDetails(MimeoDTO):
         The configured http output password
     """
 
-    def __init__(self, output_format: str, output_details: dict):
+    def __init__(self, output_details: dict):
         """Initialize MimeoOutputDetails class.
 
         Extends MimeoDTO constructor.
 
         Parameters
         ----------
-        output_format : str
-            An output format
         output_details : dict
             A source config output details dictionary
         """
         super().__init__(output_details)
         self.direction = MimeoOutputDetails._get_direction(output_details)
         MimeoOutputDetails._validate_output_details(self.direction, output_details)
+        self.format = MimeoOutputDetails._get_format(output_details)
+        self.xml_declaration = output_details.get(MimeoConfig.OUTPUT_DETAILS_XML_DECLARATION_KEY, False)
+        self.indent = MimeoOutputDetails._get_indent(output_details)
         self.directory_path = MimeoOutputDetails._get_directory_path(self.direction, output_details)
-        self.file_name_tmplt = MimeoOutputDetails._get_file_name_tmplt(self.direction, output_details, output_format)
+        self.file_name_tmplt = MimeoOutputDetails._get_file_name_tmplt(self.direction, output_details, self.format)
         self.method = MimeoOutputDetails._get_method(self.direction, output_details)
         self.protocol = MimeoOutputDetails._get_protocol(self.direction, output_details)
         self.host = MimeoOutputDetails._get_host(self.direction, output_details)
@@ -428,6 +374,58 @@ class MimeoOutputDetails(MimeoDTO):
             raise UnsupportedPropertyValue(MimeoConfig.OUTPUT_DETAILS_DIRECTION_KEY,
                                            direction,
                                            MimeoConfig.SUPPORTED_OUTPUT_DIRECTIONS)
+
+    @staticmethod
+    def _get_format(config: dict) -> str:
+        """Extract an output format from the source dictionary.
+
+        Parameters
+        ----------
+        config : dict
+            A source config dictionary
+
+        Returns
+        -------
+        output_format : str
+            The customized output format or 'xml' by default
+
+        Raises
+        ------
+        UnsupportedPropertyValue
+            If the customized output format is not supported
+        """
+        output_format = config.get(MimeoConfig.OUTPUT_DETAILS_FORMAT_KEY, MimeoConfig.OUTPUT_FORMAT_XML)
+        if output_format in MimeoConfig.SUPPORTED_OUTPUT_FORMATS:
+            return output_format
+        else:
+            raise UnsupportedPropertyValue(MimeoConfig.OUTPUT_DETAILS_FORMAT_KEY,
+                                           output_format,
+                                           MimeoConfig.SUPPORTED_OUTPUT_FORMATS)
+
+    @staticmethod
+    def _get_indent(config: dict) -> int:
+        """Extract an indent value from the source dictionary.
+
+        Parameters
+        ----------
+        config : dict
+            A source config dictionary
+
+        Returns
+        -------
+        indent : int
+            The customized indent or 0 by default
+
+        Raises
+        ------
+        InvalidIndent
+            If the customized indent is lower than zero
+        """
+        indent = config.get(MimeoConfig.OUTPUT_DETAILS_INDENT_KEY, 0)
+        if indent >= 0:
+            return indent
+        else:
+            raise InvalidIndent(indent)
 
     @staticmethod
     def _get_directory_path(direction: str, output_details: dict) -> str:

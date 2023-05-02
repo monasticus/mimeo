@@ -47,10 +47,10 @@ class GeneratorFactory:
         UnsupportedPropertyValue
             If the output format is not supported
         """
-        output_format = mimeo_config.output_format
+        output_format = mimeo_config.output_details.format
         if output_format == GeneratorFactory.XML:
             return XMLGenerator(mimeo_config)
         else:
-            raise UnsupportedPropertyValue(MimeoConfig.OUTPUT_FORMAT_KEY,
+            raise UnsupportedPropertyValue(MimeoConfig.OUTPUT_DETAILS_FORMAT_KEY,
                                            output_format,
                                            MimeoConfig.SUPPORTED_OUTPUT_FORMATS)

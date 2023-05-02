@@ -51,8 +51,8 @@ class XMLGenerator(Generator):
         mimeo_config : MimeoConfig
             A Mimeo Configuration
         """
-        self.__indent = mimeo_config.indent
-        self.__xml_declaration = mimeo_config.xml_declaration
+        self.__indent = mimeo_config.output_details.indent
+        self.__xml_declaration = mimeo_config.output_details.xml_declaration
 
     @classmethod
     def generate(

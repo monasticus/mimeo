@@ -38,11 +38,11 @@ def minimum_config():
 @pytest.fixture(autouse=True)
 def default_config():
     return {
-        "output_format": "xml",
-        "indent": 4,
-        "xml_declaration": True,
         "output_details": {
             "direction": "file",
+            "format": "xml",
+            "indent": 4,
+            "xml_declaration": True,
             "directory_path": "test_mimeo_cli-dir/output",
             "file_name": "output-file"
         },
