@@ -5,7 +5,6 @@ from os import path, walk
 
 from mimeo import Mimeograph
 from mimeo.config import MimeoConfig
-from mimeo.context import MimeoContextManager
 from mimeo.exc import EnvironmentNotFound, EnvironmentsFileNotFound
 from mimeo.logging import setup_logging
 
@@ -146,8 +145,7 @@ def main():
     for config_path in paths:
         logger.info(f"Data generation from Mimeo Config: {config_path}")
         mimeo_config = get_config(config_path, args)
-        with MimeoContextManager(mimeo_config):
-            Mimeograph(mimeo_config).process()
+        Mimeograph(mimeo_config).process()
 
 
 def customize_logging_level(args):
