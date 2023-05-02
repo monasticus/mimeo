@@ -33,7 +33,7 @@ class MimeoDTO:
     Methods
     -------
     __str__
-        Returns the stringified source dictionary of a DTO
+        Return the stringified source dictionary of a DTO.
     """
 
     def __init__(self, source: dict):

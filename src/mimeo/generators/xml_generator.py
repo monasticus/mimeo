@@ -219,6 +219,13 @@ class XMLGenerator(Generator):
         ElemTree.Element
             Returned only when `parent` is None. A single data unit
             generated within a single template iteration.
+
+        Raises
+        ------
+        InvalidSpecialFieldValue
+            If the special field value is dict or list
+        SpecialFieldNotFound
+            If the special field does not exist.
         """
         logger.fine(f"Rendering element - "
                     f"parent [{parent if parent is None else parent.tag}], "

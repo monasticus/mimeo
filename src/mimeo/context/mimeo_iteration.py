@@ -54,6 +54,13 @@ class MimeoIteration:
             A special field name
         field_value : Union[str, int, bool]
             A special field value
+
+        Raises
+        ------
+        InvalidSpecialFieldName
+            If the special field name is not a string
+        InvalidSpecialFieldValue
+            If the special field value is dict or list
         """
         if not isinstance(field_name, str):
             raise InvalidSpecialFieldName()
@@ -74,6 +81,11 @@ class MimeoIteration:
         -------
         Union[str, int, bool]
             A special field value
+
+        Raises
+        ------
+        SpecialFieldNotFound
+            If the special field does not exist.
         """
         if field_name not in self._special_fields:
             raise SpecialFieldNotFound(field_name)
