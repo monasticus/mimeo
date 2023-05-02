@@ -96,7 +96,7 @@ class MimeoRenderer:
     @classmethod
     def get_special_field_name(cls, field_name: str) -> str:
         if not cls.is_special_field(field_name):
-            raise NotASpecialField(f"Provided field [{field_name}] is not a special one (use {'{:NAME:}'})!")
+            raise NotASpecialField(field_name)
 
         return field_name[2:][:-2]
 
