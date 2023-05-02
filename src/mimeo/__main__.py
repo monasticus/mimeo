@@ -20,7 +20,8 @@ class MimeoArgumentParser(ArgumentParser):
     def __init__(self):
         super().__init__(
             prog="mimeo",
-            description="Generate data based on a template")
+            description="Generate data based on a template",
+            usage="%(prog)s [OPTIONS] paths")
         self.add_argument(
             "-v",
             "--version",
@@ -30,7 +31,7 @@ class MimeoArgumentParser(ArgumentParser):
             "paths",
             nargs="+",
             type=str,
-            help="take paths to Mimeo Configurations")
+            help="take paths to Mimeo Configuration files")
 
         mimeo_config_args = self.add_argument_group("Mimeo Configuration arguments")
         mimeo_config_args.add_argument(
@@ -227,9 +228,9 @@ def customize_output_details_with_env(config, envs_path, env_name):
                     if prop_value is not None:
                         customize_output_details(config, prop, prop_value)
             else:
-                raise EnvironmentNotFound(f"No such env [{env_name}] in environments file [{envs_path}]")
+                raise EnvironmentNotFound(env_name, envs_path)
     else:
-        raise EnvironmentsFileNotFound(f"Environments file not found [{envs_path}]")
+        raise EnvironmentsFileNotFound(envs_path)
 
 
 def customize_output_details(config, key, value):
