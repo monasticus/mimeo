@@ -16,7 +16,7 @@ This module contains all Mimeo Utils. It exports the following classes:
     * AutoIncrementUtil
         A MimeoUtil implementation rendering an auto incremented ID.
     * CurrentIterationUtil
-        A MimeoUtil implementation rendering a current iteration ID..
+        A MimeoUtil implementation rendering a current iteration ID.
     * KeyUtil
         A MimeoUtil implementation rendering a unique identifier.
     * CityUtil
