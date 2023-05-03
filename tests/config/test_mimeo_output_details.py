@@ -1,6 +1,7 @@
 import pytest
 
-from mimeo.config.exc import MissingRequiredProperty, UnsupportedPropertyValue, InvalidIndent
+from mimeo.config.exc import (InvalidIndent, MissingRequiredProperty,
+                              UnsupportedPropertyValue)
 from mimeo.config.mimeo_config import MimeoOutputDetails
 
 

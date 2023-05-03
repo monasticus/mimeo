@@ -5,10 +5,14 @@ in Mimeo:
     * Mimeograph
         A class responsible for the Mimeo processing.
 """
+import logging
+
 from mimeo.config.mimeo_config import MimeoConfig
 from mimeo.consumers import ConsumerFactory
 from mimeo.context import MimeoContextManager
 from mimeo.generators import GeneratorFactory
+
+logger = logging.getLogger(__name__)
 
 
 class Mimeograph:
@@ -30,7 +34,9 @@ class Mimeograph:
 
     def process(self):
         """Process the Mimeo Configuration (generate data and consume)."""
+        logger.info("Starting data generation")
         with MimeoContextManager(self._mimeo_config):
             for data in self._generator.generate(self._mimeo_config.templates):
                 data_str = self._generator.stringify(data, self._mimeo_config)
                 self._consumer.consume(data_str)
+        logger.info("Data has been processed")
