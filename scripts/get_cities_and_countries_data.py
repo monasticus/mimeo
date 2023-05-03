@@ -1,60 +1,42 @@
 #!venv/bin/python3
-import os
 import unicodedata
-import zipfile
-from pathlib import Path
 
 import pandas
-from requests import Session
+import utils
+
+SOURCE_URL = "https://simplemaps.com/static/data/world-cities/basic/simplemaps_worldcities_basicv1.75.zip"
+SOURCE_DATA_FILE = "worldcities.csv"
+TARGET_CITIES_FILE = utils.MIMEO_RESOURCES_CITIES
+TARGET_COUNTRIES_FILE = utils.MIMEO_RESOURCES_COUNTRIES
 
 
 def main():
-    source_url = "https://simplemaps.com/static/data/world-cities/basic/simplemaps_worldcities_basicv1.75.zip"
-    zip_path = download_zip(source_url)
+    print("Getting cities and countries data.")
+    zip_path = utils.download_file(SOURCE_URL)
+    utils.extract_zip_data(zip_path, [SOURCE_DATA_FILE])
+    utils.remove_file(zip_path)
 
-    extract_path = "src/mimeo/resources"
-    resource_file = "worldcities.csv"
-    extract_data(zip_path, extract_path, [resource_file])
-
-    modify_data(extract_path, resource_file)
+    adjust_data(SOURCE_DATA_FILE)
 
 
-def download_zip(url: str):
-    zip_path = url.split("/")[-1]
-    remove_file_safely(zip_path)
-
-    with Session() as sess:
-        resp = sess.get(url, stream=True)
-        with open(zip_path, "wb") as output:
-            for chunk in resp.iter_content(chunk_size=128):
-                output.write(chunk)
-
-    return zip_path
-
-
-def extract_data(zip_path: str, extract_path: str, extract_files: list):
-    Path(extract_path).mkdir(parents=True, exist_ok=True)
-    for file_name in extract_files:
-        file_path = f"{extract_path}/{file_name}"
-        remove_file_safely(file_path)
-
-    with zipfile.ZipFile(zip_path, "r") as zip_file:
-        zip_file.extractall(extract_path, extract_files)
-    os.remove(zip_path)
-
-
-def modify_data(data_dir: str, file_name: str):
-    resource_path = f"{data_dir}/{file_name}"
-    source_df = pandas.read_csv(resource_path)
+def adjust_data(source_data_file: str):
+    print(f"Adjusting source data [{source_data_file}].")
+    source_df = pandas.read_csv(source_data_file)
     source_df = prepare_data(source_df)
 
-    create_cities_data(source_df, data_dir)
-    create_countries_data(source_df, data_dir)
+    cities_df = modify_source_data_for_cities(source_df)
+    utils.dump_to_database(cities_df, TARGET_CITIES_FILE)
+    utils.overwrite_num_of_records(utils.MIMEO_DB_CITIES, cities_df)
 
-    os.remove(resource_path)
+    countries_df = modify_source_data_for_countries(source_df)
+    utils.dump_to_database(countries_df, TARGET_COUNTRIES_FILE)
+    utils.overwrite_num_of_records(utils.MIMEO_DB_COUNTRIES, countries_df)
+
+    utils.remove_file(source_data_file)
 
 
 def prepare_data(source_df: pandas.DataFrame) -> pandas.DataFrame:
+    print("Pre-processing source data.")
     columns_to_remove = ["lat", "lng", "admin_name", "capital", "population"]
     for col in columns_to_remove:
         del source_df[col]
@@ -62,7 +44,7 @@ def prepare_data(source_df: pandas.DataFrame) -> pandas.DataFrame:
     return source_df
 
 
-def create_cities_data(source_df: pandas.DataFrame, data_dir: str):
+def modify_source_data_for_cities(source_df: pandas.DataFrame):
     columns_mapping = {
         "id": "ID",
         "city": "CITY",
@@ -78,12 +60,11 @@ def create_cities_data(source_df: pandas.DataFrame, data_dir: str):
         .rename(columns=columns_mapping)
         .loc[:, columns_order]
         .sort_values(sort_column))
+    print("Cities data has been prepared.")
+    return cities_df
 
-    cities_file_name = "cities.csv"
-    cities_df.to_csv(f"{data_dir}/{cities_file_name}", index=False)
 
-
-def create_countries_data(source_df: pandas.DataFrame, data_dir: str):
+def modify_source_data_for_countries(source_df: pandas.DataFrame):
     columns_to_remove = ["city", "city_ascii", "id"]
     columns_mapping = {
         "iso3": "ISO_3",
@@ -104,18 +85,12 @@ def create_countries_data(source_df: pandas.DataFrame, data_dir: str):
         .loc[:, columns_order]
         .sort_values(sort_column))
     countries_df["NAME"] = countries_df["NAME"].apply(ascii_encoding)
-
-    countries_file_name = "countries.csv"
-    countries_df.to_csv(f"{data_dir}/{countries_file_name}", index=False)
+    print("Countries data has been prepared.")
+    return countries_df
 
 
 def ascii_encoding(value: str):
     return unicodedata.normalize('NFKD', value).encode('ascii', 'ignore').decode()
-
-
-def remove_file_safely(file_path: str):
-    if os.path.exists(file_path):
-        os.remove(file_path)
 
 
 if __name__ == "__main__":
