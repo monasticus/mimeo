@@ -1,40 +1,82 @@
+"""The Mimeo Job module.
+
+It exports a single class:
+    * MimeoJob
+        A class representing a single Mimeo processing job.
+"""
 import json
 import logging
+from argparse import Namespace
 from os import path, walk
 
 from mimeo import MimeoConfig, Mimeograph
-from mimeo.cli import MimeoArgumentParser
-from mimeo.cli.exc import EnvironmentNotFound, EnvironmentsFileNotFound
+from mimeo.cli import MimeoArgumentParser, MimeoConfigParser
 
 logger = logging.getLogger(__name__)
 
 
 class MimeoJob:
+    """A class representing a single Mimeo processing job.
 
-    _DEFAULT_ENVS_FILE_PATH = "mimeo.envs.json"
+    It is meant to be used in context of a command line. First it
+    parses command line arguments using MimeoArgumentParser and then
+    prepares logging. In the next step each Mimeo Configuration is
+    parsed by MimeoConfigParser and provided arguments. Having prepared
+    Mimeo Configuration, data processing starts.
+
+    Methods
+    -------
+    run()
+        Executes a Mimeo Job based on the CLI arguments.
+    """
 
     def __init__(self):
-        self.args = MimeoArgumentParser().parse_args()
+        """Initialize MimeoJob class."""
+        self._args = MimeoArgumentParser().parse_args()
 
     def run(self):
-        self._customize_logging_level()
+        """Execute a Mimeo Job based on the CLI arguments.
+
+        First it customizes a log level. After that all Mimeo Configs
+        paths are collected. Each of them is used in the next steps,
+        which are: (1) parsing the configuration and (2) processing
+        it.
+        """
+        self._customize_log_level(self._args)
         logger.info("Starting a Mimeo job")
-        for config_path in self._get_paths():
-            logger.info(f"Data generation from Mimeo Config: {config_path}")
-            mimeo_config = self._get_config(config_path)
+        for config_path in self._get_config_paths(self._args.paths):
+            mimeo_config = self._get_mimeo_config(config_path, self._args)
             Mimeograph(mimeo_config).process()
 
-    def _customize_logging_level(self):
-        if self.args.silent:
+    @staticmethod
+    def _customize_log_level(args):
+        """Customize the log level based on command line arguments."""
+        if args.silent:
             logging.getLogger("mimeo").setLevel(logging.WARNING)
-        elif self.args.debug:
+        elif args.debug:
             logging.getLogger("mimeo").setLevel(logging.DEBUG)
-        elif self.args.fine and hasattr(logging, "FINE"):
+        elif args.fine and hasattr(logging, "FINE"):
             logging.getLogger("mimeo").setLevel(logging.FINE)
 
-    def _get_paths(self) -> list:
+    @staticmethod
+    def _get_config_paths(paths: list) -> list:
+        """Collect Mimeo Configuration paths.
+
+        This method traverses directory paths and collects all files
+        within.
+
+        Parameters
+        ----------
+        paths : list
+            A list of paths provided in command line
+
+        Returns
+        -------
+        file_paths : list
+            A list of file paths
+        """
         file_paths = []
-        for file_path in self.args.paths:
+        for file_path in paths:
             if path.isdir(file_path):
                 for dir_path, _, file_names in walk(file_path):
                     for file_name in file_names:
@@ -43,69 +85,40 @@ class MimeoJob:
                 file_paths.append(file_path)
         return file_paths
 
-    def _get_config(self, config_path):
+    @classmethod
+    def _get_mimeo_config(cls, config_path: str, args: Namespace) -> MimeoConfig:
+        """Return parsed Mimeo Configuration.
+
+        This method parses a raw configuration with command line
+        arguments using a MimeoConfigParser instance.
+
+        Parameters
+        ----------
+        config_path : str
+            A raw configuration path
+        args
+            Command line arguments parsed by MimeoArgumentParser
+
+        Returns
+        -------
+        MimeoConfig
+            A parsed Mimeo Configuration
+
+        Raises
+        ------
+        EnvironmentsFileNotFound
+            If environments file does not exist.
+        EnvironmentNotFound
+            If the http environment is not defined in the environments file
+        """
+        config = cls._get_raw_config(config_path)
+        mimeo_config_parser = MimeoConfigParser(config, args)
+        return mimeo_config_parser.parse_config()
+
+    @staticmethod
+    def _get_raw_config(config_path: str) -> dict:
+        """Load configuration file to a dictionary."""
+        logger.info(f"Reading Mimeo Configuration: {config_path}")
         with open(config_path) as config_file:
             config = json.load(config_file)
-            if self.args.http_env is not None:
-                envs_file = self.args.http_envs_file if self.args.http_envs_file is not None else self._DEFAULT_ENVS_FILE_PATH
-                self._customize_output_details_with_env(config, envs_file, self.args.http_env)
-            if self.args.xml_declaration is not None:
-                xml_declaration = self.args.xml_declaration.lower() == "true"
-                self._customize_output_details(config, MimeoConfig.OUTPUT_DETAILS_XML_DECLARATION_KEY, xml_declaration)
-            if self.args.indent is not None:
-                self._customize_output_details(config, MimeoConfig.OUTPUT_DETAILS_INDENT_KEY, self.args.indent)
-            if self.args.output is not None:
-                self._customize_output_details(config, MimeoConfig.OUTPUT_DETAILS_DIRECTION_KEY, self.args.output)
-            if self.args.directory is not None:
-                self._customize_output_details(config, MimeoConfig.OUTPUT_DETAILS_DIRECTORY_PATH_KEY, self.args.directory)
-            if self.args.file is not None:
-                self._customize_output_details(config, MimeoConfig.OUTPUT_DETAILS_FILE_NAME_KEY, self.args.file)
-            if self.args.http_method is not None:
-                self._customize_output_details(config, MimeoConfig.OUTPUT_DETAILS_METHOD_KEY, self.args.http_method)
-            if self.args.http_protocol is not None:
-                self._customize_output_details(config, MimeoConfig.OUTPUT_DETAILS_PROTOCOL_KEY, self.args.http_protocol)
-            if self.args.http_auth is not None:
-                self._customize_output_details(config, MimeoConfig.OUTPUT_DETAILS_AUTH_KEY, self.args.http_auth)
-            if self.args.http_host is not None:
-                self._customize_output_details(config, MimeoConfig.OUTPUT_DETAILS_HOST_KEY, self.args.http_host)
-            if self.args.http_port is not None:
-                self._customize_output_details(config, MimeoConfig.OUTPUT_DETAILS_PORT_KEY, self.args.http_port)
-            if self.args.http_endpoint is not None:
-                self._customize_output_details(config, MimeoConfig.OUTPUT_DETAILS_ENDPOINT_KEY, self.args.http_endpoint)
-            if self.args.http_user is not None:
-                self._customize_output_details(config, MimeoConfig.OUTPUT_DETAILS_USERNAME_KEY, self.args.http_user)
-            if self.args.http_password is not None:
-                self._customize_output_details(config, MimeoConfig.OUTPUT_DETAILS_PASSWORD_KEY, self.args.http_password)
-        mimeo_config = MimeoConfig(config)
-        logger.debug(f"Mimeo Config: {mimeo_config}")
-        return mimeo_config
-
-    @classmethod
-    def _customize_output_details_with_env(cls, config, envs_path, env_name):
-        if path.exists(envs_path):
-            with open(envs_path) as envs_file:
-                envs = json.load(envs_file)
-                if env_name in envs:
-                    env = envs[env_name]
-                    logger.debug(f"Using environment [{env_name}] from file [{envs_path}]: [{env}]")
-                    for prop in [MimeoConfig.OUTPUT_DETAILS_PROTOCOL_KEY,
-                                 MimeoConfig.OUTPUT_DETAILS_HOST_KEY,
-                                 MimeoConfig.OUTPUT_DETAILS_PORT_KEY,
-                                 MimeoConfig.OUTPUT_DETAILS_AUTH_KEY,
-                                 MimeoConfig.OUTPUT_DETAILS_USERNAME_KEY,
-                                 MimeoConfig.OUTPUT_DETAILS_PASSWORD_KEY]:
-                        prop_value = env.get(prop)
-                        if prop_value is not None:
-                            cls._customize_output_details(config, prop, prop_value)
-                else:
-                    raise EnvironmentNotFound(env_name, envs_path)
-        else:
-            raise EnvironmentsFileNotFound(envs_path)
-
-    @classmethod
-    def _customize_output_details(cls, config, key, value):
-        if config.get(MimeoConfig.OUTPUT_DETAILS_KEY) is None:
-            config[MimeoConfig.OUTPUT_DETAILS_KEY] = {}
-
-        logger.fine(f"Overwriting output details' {key} to [{value}]")
-        config[MimeoConfig.OUTPUT_DETAILS_KEY][key] = value
+        return config
