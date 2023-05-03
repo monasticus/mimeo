@@ -1,7 +1,7 @@
 
 # Mimeo (Mimeograph)
 
-**Mimeo** is a command line tool generating custom data based on a template.
+**Mimeo** is a command line tool and python library generating custom data based on a template.
 It can be used by developers, testers or even business analysts in their daily work.
 
 
@@ -44,12 +44,25 @@ Prepare Mimeo Configuration first
 ```
 _You can find more configuration examples in the `examples` folder._
 
-### Mimeo CLI
+### Mimeograph
+
+#### Command line tool
 
 ```sh
 mimeo SomeEntity-config.json
 ```
 
+#### Python library
+
+```python
+from mimeo import MimeoConfig, Mimeograph
+
+config = {
+    # Your configuration
+}
+mimeo_config = MimeoConfig(config)
+Mimeograph(mimeo_config).process()
+```
 ***
 The Mimeo Configuration above will produce 2 files:
 
