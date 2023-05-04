@@ -5,7 +5,7 @@ non-Mimeo-specific operations. It exports the following functions:
     * get_resource(resource_name: str) -> TextIO
         Return a Mimeo resource.
 """
-from typing.io import TextIO
+from typing import TextIO
 
 from mimeo.resources.exc import ResourceNotFound
 
