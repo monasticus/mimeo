@@ -1,5 +1,6 @@
 import pytest
 
+import tests.utils as test_utils
 from mimeo.utils import MimeoUtil
 
 
@@ -58,4 +59,4 @@ def test_invalid_class_instantiation():
     with pytest.raises(TypeError) as err:
         InvalidMimeoUtilWithoutRender()
 
-    assert err.value.args[0] == "Can't instantiate abstract class InvalidMimeoUtilWithoutRender with abstract methods render"
+    assert err.value.args[0] == test_utils.get_class_impl_error_msg("InvalidMimeoUtilWithoutRender", ["render"])

@@ -1,5 +1,6 @@
 import pytest
 
+import tests.utils as test_utils
 from mimeo.consumers import Consumer
 
 
@@ -32,4 +33,4 @@ def test_invalid_class_instantiation():
     with pytest.raises(TypeError) as err:
         InvalidConsumer()
 
-    assert err.value.args[0] == "Can't instantiate abstract class InvalidConsumer with abstract methods consume"
+    assert err.value.args[0] == test_utils.get_class_impl_error_msg("InvalidConsumer", ["consume"])

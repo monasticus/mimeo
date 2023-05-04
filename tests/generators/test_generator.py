@@ -3,6 +3,7 @@ from typing import Any, Iterator, Union
 
 import pytest
 
+import tests.utils as test_utils
 from mimeo.config import MimeoConfig
 from mimeo.config.mimeo_config import MimeoTemplate
 from mimeo.generators import Generator
@@ -56,17 +57,14 @@ def test_invalid_class_instantiation():
     with pytest.raises(TypeError) as err:
         InvalidGenerator1()
 
-    assert err.value.args[0] == "Can't instantiate abstract class " \
-                                "InvalidGenerator1 with abstract methods stringify"
+    assert err.value.args[0] == test_utils.get_class_impl_error_msg("InvalidGenerator1", ["stringify"])
 
     with pytest.raises(TypeError) as err:
         InvalidGenerator2()
 
-    assert err.value.args[0] == "Can't instantiate abstract class " \
-                                "InvalidGenerator2 with abstract methods generate"
+    assert err.value.args[0] == test_utils.get_class_impl_error_msg("InvalidGenerator2", ["generate"])
 
     with pytest.raises(TypeError) as err:
         InvalidGenerator3()
 
-    assert err.value.args[0] == "Can't instantiate abstract class " \
-                                "InvalidGenerator3 with abstract methods generate, stringify"
+    assert err.value.args[0] == test_utils.get_class_impl_error_msg("InvalidGenerator3", ["generate", "stringify"])
