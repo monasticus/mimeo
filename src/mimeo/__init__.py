@@ -46,4 +46,4 @@ To use this package, simply import the desired classes:
 from .config import MimeoConfig
 from .mimeo import Mimeograph
 
-__version__ = "0.4.1"
+__version__ = "0.4.2"

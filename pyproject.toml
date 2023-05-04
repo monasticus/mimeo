@@ -36,7 +36,7 @@ dev = ["bumpver", "build", "twine", "pylama", "isort", "pytest", "pytest-cov", "
 mimeo = "mimeo.__main__:main"
 
 [tool.bumpver]
-current_version = "0.4.1"
+current_version = "0.4.2"
 version_pattern = "MAJOR.MINOR.PATCH"
 commit_message  = "Bump version {old_version} to {new_version}"
 commit          = true
