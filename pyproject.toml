@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "mimeograph"
-version = "0.4.1"
+version = "0.4.2"
 description = "Generate data based on a simple template"
 readme = "README.md"
 authors = [{ name = "T.A. Programming Svcs.", email = "tomasz.maciej.aniolowski@gmail.com" }]
@@ -46,7 +46,7 @@ push            = false
 [tool.bumpver.file_patterns]
 "pyproject.toml" = ['current_version = "{version}"', 'version = "{version}"']
 "src/mimeo/__init__.py" = ["{version}"]
-"src/mimeo/__main__.py" = ["{version}"]
+"src/mimeo/cli/parsers.py" = ["{version}"]
 
 [tool.pylama]
 async = true
