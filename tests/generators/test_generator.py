@@ -3,7 +3,7 @@ from typing import Any, Iterator, Union
 
 import pytest
 
-import tests.utils as test_utils
+import tests as test_utils
 from mimeo.config import MimeoConfig
 from mimeo.config.mimeo_config import MimeoTemplate
 from mimeo.generators import Generator

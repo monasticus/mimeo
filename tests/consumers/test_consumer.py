@@ -1,6 +1,6 @@
 import pytest
 
-import tests.utils as test_utils
+import tests as test_utils
 from mimeo.consumers import Consumer
 
 
