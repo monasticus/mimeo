@@ -12,10 +12,13 @@ data:
 test:
 	pytest --cov=src --cov-report term-missing:skip-covered tests/
 
+latest_tag:
+	@git tag --sort=committerdate --list '[0-9]*' | tail -1
+
 bump:
 	@bumpver update $(v)
 	@git push
-	@git push origin `git tag --sort=committerdate --list '[0-9]*' | tail -1`
+	@git push origin `make --no-print-directory latest_tag`
 
 build:
 	@mkdir -p dist/archive
@@ -25,6 +28,9 @@ build:
 	@python -m build
 
 publish:
-	@twine upload dist/mimeograph*
+	@twine upload dist/mimeograph-$(v)*
 
-upgrade: bump build publish
+upgrade:
+	@make --no-print-directory bump v=$(v)
+	@make --no-print-directory build
+	@make --no-print-directory publish v=`make --no-print-directory latest_tag`
