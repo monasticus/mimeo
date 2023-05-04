@@ -26,7 +26,7 @@ def _modify_source_data(source_df: pandas.DataFrame) -> pandas.DataFrame:
 
     This function introduces following modifications:
     * removes all columns except 'name'
-    * drops duplicates
+    * drops empty rows
     * applies sorting
     * capitalizes values
 
@@ -40,15 +40,14 @@ def _modify_source_data(source_df: pandas.DataFrame) -> pandas.DataFrame:
     surnames_df : pandas.DataFrame
         A modified data frame
     """
-    columns_order = ["name"]
-    sort_column = "name"
+    column = "name"
 
     surnames_df = (
         source_df
-        .loc[:, columns_order]
+        .loc[:, [column]]
         .dropna()
-        .sort_values(sort_column))
-    surnames_df["name"] = surnames_df["name"].str.title()
+        .sort_values(column))
+    surnames_df[column] = surnames_df[column].str.title()
     print("Surnames data has been prepared.")
     return surnames_df
 

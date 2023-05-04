@@ -45,13 +45,12 @@ def _modify_source_data(source_df: pandas.DataFrame) -> pandas.DataFrame:
         "name": "NAME",
         "sex": "SEX"
     }
-    columns_order = ["NAME", "SEX"]
     sort_column = "NAME"
 
     forenames_df = (
         source_df
         .rename(columns=columns_mapping)
-        .loc[:, columns_order]
+        .loc[:, columns_mapping.values()]
         .replace("boy", "M")
         .replace("girl", "F")
         .drop_duplicates()
