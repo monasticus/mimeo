@@ -12,43 +12,21 @@ import pandas
 import utils
 
 SOURCE_URL = "https://raw.githubusercontent.com/hadley/data-baby-names/master/baby-names.csv"
-TARGET_FILE = utils.MIMEO_RESOURCES_FORENAMES
 
 
 def main():
     """Get forenames data."""
     print("Getting forenames data.")
     source_data_path = utils.download_file(SOURCE_URL)
-    _adjust_data(source_data_path)
+    utils.adjust_data(source_data_path, utils.MIMEO_DB_FORENAMES, utils.MIMEO_RESOURCES_FORENAMES, _modify_source_data)
 
 
-def _adjust_data(source_data_path: str):
-    """Adjust source data for Mimeo usage.
-
-    Once data is modified, it saves it and overwrites number of records
-    in a corresponding Mimeo Database module. The source file is
-    removed at the end.
-
-    Parameters
-    ----------
-    source_data_path : str
-        A source file path
-    """
-    print(f"Adjusting source data [{source_data_path}].")
-    source_df = pandas.read_csv(source_data_path)
-    forenames_df = _modify_source_data(source_df)
-
-    utils.dump_to_database(forenames_df, TARGET_FILE)
-    utils.overwrite_num_of_records(utils.MIMEO_DB_FORENAMES, forenames_df)
-    utils.remove_file(source_data_path)
-
-
-def _modify_source_data(source_df: pandas.DataFrame):
+def _modify_source_data(source_df: pandas.DataFrame) -> pandas.DataFrame:
     """Modify source data frame.
 
     This function introduces following modifications:
     * renames headers to uppercase (name -> NAME, sex -> SEX)
-    * updates order of columns (NAME, SEX)
+    * updates order of columns (NAME, SEX) and removes all remaining
     * replaces SEX column values (boy -> M, girl -> F)
     * drops duplicates
     * applies sorting by NAME column

@@ -40,6 +40,7 @@ It exports the following functions:
 import os
 import re
 import zipfile
+from typing import Callable
 
 import pandas
 from requests import Session
@@ -107,6 +108,33 @@ def remove_file(file_path: str):
     if os.path.exists(file_path):
         print(f"Removing file: {file_path}.")
         os.remove(file_path)
+
+
+def adjust_data(source_data_path: str, target_db: str, target_file_name: str, modify: Callable):
+    """Adjust source data for Mimeo usage.
+
+    Once data is modified, it saves it and overwrites number of records
+    in a corresponding Mimeo Database module. The source file is
+    removed at the end.
+
+    Parameters
+    ----------
+    source_data_path : str
+        A source file path
+    target_db : str
+        A module of Mimeo Database package to update number of records
+    target_file_name : str
+        A target file name
+    modify : Callable
+        A function modifying source data
+    """
+    print(f"Adjusting source data [{source_data_path}].")
+    source_df = pandas.read_csv(source_data_path)
+    target_df = modify(source_df)
+
+    dump_to_database(target_df, target_file_name)
+    overwrite_num_of_records(target_db, target_df)
+    remove_file(source_data_path)
 
 
 def dump_to_database(data_frame: pandas.DataFrame, target_file: str):
