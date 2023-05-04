@@ -49,6 +49,11 @@ push            = false
 "src/mimeo/__init__.py" = ["{version}"]
 "src/mimeo/cli/parsers.py" = ["{version}"]
 
+[tool.pytest.ini_options]
+pythonpath = [
+    "."
+]
+
 [tool.pylama]
 async = true
 linters = "mccabe,pycodestyle,pydocstyle,pyflakes"
