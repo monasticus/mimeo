@@ -2,7 +2,7 @@ name: Test Mimeo
 
 on: [push]
 jobs:
-  Test-Mimeo:
+  test-python-version:
     runs-on: ubuntu-latest
     strategy:
       matrix:
