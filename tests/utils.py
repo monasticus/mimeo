@@ -8,7 +8,7 @@ def get_class_impl_error_msg(cls: str, methods_list: List[str]) -> str:
     methods = ', '.join(methods_list)
     if py_major >= 3 and py_minor >= 10:
         print("Python >= 3.10")
-        plural = len(methods) > 1
+        plural = len(methods_list) > 1
         method = "methods" if plural else "method"
         return f"Can't instantiate abstract class {cls} with abstract {method} {methods}"
     else:
