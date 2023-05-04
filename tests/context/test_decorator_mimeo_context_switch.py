@@ -3,7 +3,7 @@ import pytest
 from mimeo.config import MimeoConfig
 from mimeo.config.mimeo_config import MimeoTemplate
 from mimeo.context import MimeoContext, MimeoContextManager
-from mimeo.context.annotations import mimeo_context, mimeo_context_switch
+from mimeo.context.decorators import mimeo_context, mimeo_context_switch
 
 
 @pytest.fixture(autouse=True)

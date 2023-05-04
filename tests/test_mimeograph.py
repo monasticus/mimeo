@@ -18,11 +18,11 @@ def teardown():
 
 def test_produce():
     config = {
-        "output_format": "xml",
-        "indent": 4,
-        "xml_declaration": True,
         "output_details": {
             "direction": "file",
+            "format": "xml",
+            "indent": 4,
+            "xml_declaration": True,
             "directory_path": "test_mimeograph-dir",
             "file_name": "output"
         },
@@ -44,7 +44,7 @@ def test_produce():
         mimeo = Mimeograph(mimeo_config)
 
         assert not path.exists("test_mimeograph-dir")
-        mimeo.produce()
+        mimeo.process()
         assert path.exists("test_mimeograph-dir")
         for i in range(1, 11):
             file_path = f"test_mimeograph-dir/output-{i}.xml"

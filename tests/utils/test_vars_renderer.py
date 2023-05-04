@@ -1,6 +1,6 @@
 from mimeo.config import MimeoConfig
 from mimeo.context import MimeoContextManager
-from mimeo.utils.renderer import VarsRenderer
+from mimeo.utils.renderers import VarsRenderer
 
 
 def test_vars_str():

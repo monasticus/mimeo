@@ -1,7 +1,7 @@
 {
-  "output_format": "xml",
   "output_details": {
     "direction": "http",
+    "format": "xml",
     "host": "localhost",
     "port": 8080,
     "endpoint": "/document",

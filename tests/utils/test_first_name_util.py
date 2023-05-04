@@ -4,7 +4,7 @@ from mimeo.config import MimeoConfig
 from mimeo.context import MimeoContextManager
 from mimeo.database import MimeoDB
 from mimeo.database.exc import InvalidSex
-from mimeo.utils.renderer import UtilsRenderer
+from mimeo.utils.renderers import UtilsRenderer
 
 
 @pytest.fixture(autouse=True)
@@ -66,7 +66,7 @@ def test_first_name_parametrized_with_unique_and_invalid_sex(default_config):
         with pytest.raises(InvalidSex) as err:
             UtilsRenderer.render_parametrized({"_name": "first_name", "unique": False, "sex": "N"})
 
-        assert err.value.args[0] == "Invalid sex (use M, F, Male or Female)!"
+        assert err.value.args[0] == "Invalid sex (use M / F / Male / Female)!"
 
 
 def test_first_name_parametrized_with_unique_and_sex_m(default_config):
@@ -121,7 +121,7 @@ def test_first_name_parametrized_with_invalid_sex(default_config):
         with pytest.raises(InvalidSex) as err:
             UtilsRenderer.render_parametrized({"_name": "first_name", "sex": "N"})
 
-        assert err.value.args[0] == "Invalid sex (use M, F, Male or Female)!"
+        assert err.value.args[0] == "Invalid sex (use M / F / Male / Female)!"
 
 
 def test_first_name_parametrized_with_sex(default_config):

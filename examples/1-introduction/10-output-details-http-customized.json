@@ -1,7 +1,7 @@
 {
-  "output_format": "xml",
   "output_details": {
     "direction": "http",
+    "format": "xml",
     "method": "PUT",
     "protocol": "https",
     "host": "localhost",
