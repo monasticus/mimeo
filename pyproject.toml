@@ -27,10 +27,11 @@ dependencies = [
     "pyyaml",
     "haggis"
 ]
-requires-python = ">=3.7"
+requires-python = ">=3.8"
 
 [project.optional-dependencies]
 dev = ["bumpver", "build", "twine", "pylama", "isort", "pytest", "pytest-cov", "responses"]
+test = ["pylama", "pytest", "pytest-cov", "responses"]
 
 [project.scripts]
 mimeo = "mimeo.__main__:main"
@@ -47,6 +48,11 @@ push            = false
 "pyproject.toml" = ['current_version = "{version}"', 'version = "{version}"']
 "src/mimeo/__init__.py" = ["{version}"]
 "src/mimeo/cli/parsers.py" = ["{version}"]
+
+[tool.pytest.ini_options]
+pythonpath = [
+    "."
+]
 
 [tool.pylama]
 async = true
