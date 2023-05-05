@@ -17,7 +17,7 @@ def test_get_countries():
 
 def test_get_country_at():
     with open("src/mimeo/resources/countries.csv", "r") as countries:
-        headers = next(countries)
+        next(countries)
         country_1_cols = next(countries).rstrip().split(",")
         country_2_cols = next(countries).rstrip().split(",")
 

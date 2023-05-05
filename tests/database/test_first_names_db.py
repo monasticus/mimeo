@@ -17,7 +17,7 @@ def test_get_first_names():
 
 def test_get_first_name_at():
     with open("src/mimeo/resources/forenames.csv", "r") as first_names:
-        headers = next(first_names)
+        next(first_names)
         first_name_1_cols = next(first_names).rstrip().split(",")
         first_name_2_cols = next(first_names).rstrip().split(",")
 

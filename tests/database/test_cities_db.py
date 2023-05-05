@@ -17,7 +17,7 @@ def test_get_cities():
 
 def test_get_city_at():
     with open("src/mimeo/resources/cities.csv", "r") as cities:
-        headers = next(cities)
+        next(cities)
         city_1_cols = next(cities).rstrip().split(",")
         city_2_cols = next(cities).rstrip().split(",")
 

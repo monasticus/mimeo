@@ -1643,7 +1643,7 @@ def test_generate_template_using_key_util_in_two_templates_with_customized_itera
         ]
     })
 
-    with MimeoContextManager(config) as mimeo_manager:
+    with MimeoContextManager(config):
         generator = XMLGenerator(config)
         data = [data for data in generator.generate(config.templates)]
         some_entity_data = data[:5]
