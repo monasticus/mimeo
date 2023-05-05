@@ -19,16 +19,17 @@ jobs:
           pip install -r requirements.txt
       - name: Build mimeo
         run: pip install .
-      - name: Create a coverage file
+      - name: Create test reports
         run: |
-          pytest --junitxml=pytest.xml --cov=mimeo --cov-report=xml:coverage.xml tests | tee output.txt
+          pytest --junitxml=pytest.xml --cov=mimeo tests | tee output.txt
+          pytest --cov=mimeo --cov-report=xml:coverage.xml tests
       - name: Put an overall test & coverage comment
         uses: MishaKav/pytest-coverage-comment@main
         with:
           title: Code Coverage Report
           badge-title: Code Coverage
-          pytest-coverage-path: ./output.txt
-          junitxml-path: ./pytest.xml
+          pytest-coverage-path: output.txt
+          junitxml-path: pytest.xml
           junitxml-title: Test Results
       - name: Put a detailed coverage comment
         uses: orgoro/coverage@v3
