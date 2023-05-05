@@ -229,57 +229,57 @@ class MimeoConfigParser:
     _ARGS_MAPPING = {
         "output": {
             "entry_path": [MimeoConfig.OUTPUT_DETAILS_KEY,
-                           MimeoConfig.OUTPUT_DETAILS_DIRECTION_KEY]
+                           MimeoConfig.OUTPUT_DETAILS_DIRECTION_KEY],
         },
         "xml_declaration": {
             "entry_path": [MimeoConfig.OUTPUT_DETAILS_KEY,
                            MimeoConfig.OUTPUT_DETAILS_XML_DECLARATION_KEY],
-            "get_value": lambda arg: arg.lower() == "true"
+            "get_value": lambda arg: arg.lower() == "true",
         },
         "indent": {
             "entry_path": [MimeoConfig.OUTPUT_DETAILS_KEY,
-                           MimeoConfig.OUTPUT_DETAILS_INDENT_KEY]
+                           MimeoConfig.OUTPUT_DETAILS_INDENT_KEY],
         },
         "directory": {
             "entry_path": [MimeoConfig.OUTPUT_DETAILS_KEY,
-                           MimeoConfig.OUTPUT_DETAILS_DIRECTORY_PATH_KEY]
+                           MimeoConfig.OUTPUT_DETAILS_DIRECTORY_PATH_KEY],
         },
         "file": {
             "entry_path": [MimeoConfig.OUTPUT_DETAILS_KEY,
-                           MimeoConfig.OUTPUT_DETAILS_FILE_NAME_KEY]
+                           MimeoConfig.OUTPUT_DETAILS_FILE_NAME_KEY],
         },
         "http_method": {
             "entry_path": [MimeoConfig.OUTPUT_DETAILS_KEY,
-                           MimeoConfig.OUTPUT_DETAILS_METHOD_KEY]
+                           MimeoConfig.OUTPUT_DETAILS_METHOD_KEY],
         },
         "http_protocol": {
             "entry_path": [MimeoConfig.OUTPUT_DETAILS_KEY,
-                           MimeoConfig.OUTPUT_DETAILS_PROTOCOL_KEY]
+                           MimeoConfig.OUTPUT_DETAILS_PROTOCOL_KEY],
         },
         "http_auth": {
             "entry_path": [MimeoConfig.OUTPUT_DETAILS_KEY,
-                           MimeoConfig.OUTPUT_DETAILS_AUTH_KEY]
+                           MimeoConfig.OUTPUT_DETAILS_AUTH_KEY],
         },
         "http_host": {
             "entry_path": [MimeoConfig.OUTPUT_DETAILS_KEY,
-                           MimeoConfig.OUTPUT_DETAILS_HOST_KEY]
+                           MimeoConfig.OUTPUT_DETAILS_HOST_KEY],
         },
         "http_port": {
             "entry_path": [MimeoConfig.OUTPUT_DETAILS_KEY,
-                           MimeoConfig.OUTPUT_DETAILS_PORT_KEY]
+                           MimeoConfig.OUTPUT_DETAILS_PORT_KEY],
         },
         "http_endpoint": {
             "entry_path": [MimeoConfig.OUTPUT_DETAILS_KEY,
-                           MimeoConfig.OUTPUT_DETAILS_ENDPOINT_KEY]
+                           MimeoConfig.OUTPUT_DETAILS_ENDPOINT_KEY],
         },
         "http_user": {
             "entry_path": [MimeoConfig.OUTPUT_DETAILS_KEY,
-                           MimeoConfig.OUTPUT_DETAILS_USERNAME_KEY]
+                           MimeoConfig.OUTPUT_DETAILS_USERNAME_KEY],
         },
         "http_password": {
             "entry_path": [MimeoConfig.OUTPUT_DETAILS_KEY,
-                           MimeoConfig.OUTPUT_DETAILS_PASSWORD_KEY]
-        }
+                           MimeoConfig.OUTPUT_DETAILS_PASSWORD_KEY],
+        },
     }
 
     def __init__(self, config: dict, args: Namespace):

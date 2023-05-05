@@ -16,11 +16,11 @@ def default_config():
                     "SomeEntity": {
                         "ChildNode1": 1,
                         "ChildNode2": "value-2",
-                        "ChildNode3": True
-                    }
-                }
-            }
-        ]
+                        "ChildNode3": True,
+                    },
+                },
+            },
+        ],
     })
 
 

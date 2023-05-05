@@ -24,7 +24,7 @@ def test_produce():
             "indent": 4,
             "xml_declaration": True,
             "directory_path": "test_mimeograph-dir",
-            "file_name": "output"
+            "file_name": "output",
         },
         "_templates_": [
             {
@@ -33,11 +33,11 @@ def test_produce():
                     "SomeEntity": {
                         "ChildNode1": 1,
                         "ChildNode2": "value-2",
-                        "ChildNode3": True
-                    }
-                }
-            }
-        ]
+                        "ChildNode3": True,
+                    },
+                },
+            },
+        ],
     }
     mimeo_config = MimeoConfig(config)
     with MimeoContextManager(mimeo_config):

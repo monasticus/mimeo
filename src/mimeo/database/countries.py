@@ -55,7 +55,7 @@ class Country:
         return str({
             "iso_3": self.iso_3,
             "iso_2": self.iso_2,
-            "name": self.name
+            "name": self.name,
         })
 
     def __repr__(self) -> str:

@@ -110,7 +110,7 @@ def _modify_source_data_for_cities(source_df: pandas.DataFrame) -> pandas.DataFr
         "id": "ID",
         "city": "CITY",
         "city_ascii": "CITY_ASCII",
-        "iso3": "COUNTRY"
+        "iso3": "COUNTRY",
     }
     columns_order = ["ID", "CITY", "CITY_ASCII", "COUNTRY"]
     sort_column = "ID"
@@ -153,7 +153,7 @@ def _modify_source_data_for_countries(source_df: pandas.DataFrame) -> pandas.Dat
     columns_mapping = {
         "iso3": "ISO_3",
         "iso2": "ISO_2",
-        "country": "NAME"
+        "country": "NAME",
     }
     sort_column = "ISO_3"
 

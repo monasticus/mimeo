@@ -43,7 +43,7 @@ def _modify_source_data(source_df: pandas.DataFrame) -> pandas.DataFrame:
     """
     columns_mapping = {
         "name": "NAME",
-        "sex": "SEX"
+        "sex": "SEX",
     }
     sort_column = "NAME"
 

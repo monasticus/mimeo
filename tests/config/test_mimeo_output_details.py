@@ -20,7 +20,7 @@ def test_str():
         "endpoint": "/document",
         "auth": "digest",
         "username": "admin",
-        "password": "admin"
+        "password": "admin",
     }
 
     mimeo_output_details = MimeoOutputDetails(output_details)
@@ -51,7 +51,7 @@ def test_parsing_output_details_with_customized_direction_independent_settings()
 
 def test_parsing_output_details_stdout():
     output_details = {
-        "direction": "stdout"
+        "direction": "stdout",
     }
 
     mimeo_output_details = MimeoOutputDetails(output_details)
@@ -85,7 +85,7 @@ def test_parsing_output_details_stdout_with_other_directions_customization():
         "endpoint": "/document",
         "auth": "digest",
         "username": "admin",
-        "password": "admin"
+        "password": "admin",
     }
 
     mimeo_output_details = MimeoOutputDetails(output_details)
@@ -107,7 +107,7 @@ def test_parsing_output_details_stdout_with_other_directions_customization():
 
 def test_parsing_output_details_file_default():
     output_details = {
-        "direction": "file"
+        "direction": "file",
     }
 
     mimeo_output_details = MimeoOutputDetails(output_details)
@@ -131,7 +131,7 @@ def test_parsing_output_details_file_customized():
     output_details = {
         "direction": "file",
         "directory_path": "out",
-        "file_name": "out-file"
+        "file_name": "out-file",
     }
 
     mimeo_output_details = MimeoOutputDetails(output_details)
@@ -157,7 +157,7 @@ def test_parsing_output_details_http_default():
         "host": "localhost",
         "endpoint": "/document",
         "username": "admin",
-        "password": "admin"
+        "password": "admin",
     }
 
     mimeo_output_details = MimeoOutputDetails(output_details)
@@ -187,7 +187,7 @@ def test_parsing_output_details_http_customized():
         "endpoint": "/document",
         "auth": "digest",
         "username": "admin",
-        "password": "admin"
+        "password": "admin",
     }
 
     mimeo_output_details = MimeoOutputDetails(output_details)
@@ -209,7 +209,7 @@ def test_parsing_output_details_http_customized():
 
 def test_parsing_output_details_with_invalid_indent():
     output_details = {
-        "indent": -1
+        "indent": -1,
     }
 
     with pytest.raises(InvalidIndent) as err:
@@ -220,7 +220,7 @@ def test_parsing_output_details_with_invalid_indent():
 
 def test_parsing_output_details_with_unsupported_format():
     output_details = {
-        "format": "unsupported_format"
+        "format": "unsupported_format",
     }
 
     with pytest.raises(UnsupportedPropertyValue) as err:
@@ -231,7 +231,7 @@ def test_parsing_output_details_with_unsupported_format():
 
 def test_parsing_output_details_unsupported_direction():
     output_details = {
-        "direction": "unsupported_direction"
+        "direction": "unsupported_direction",
     }
 
     with pytest.raises(UnsupportedPropertyValue) as err:
@@ -248,7 +248,7 @@ def test_parsing_output_details_unsupported_auth_method():
         "endpoint": "/documents",
         "auth": "unsupported_auth",
         "username": "admin",
-        "password": "admin"
+        "password": "admin",
     }
 
     with pytest.raises(UnsupportedPropertyValue) as err:
@@ -264,7 +264,7 @@ def test_parsing_output_details_unsupported_request_method():
         "host": "localhost",
         "endpoint": "/documents",
         "username": "admin",
-        "password": "admin"
+        "password": "admin",
     }
 
     with pytest.raises(UnsupportedPropertyValue) as err:
@@ -279,7 +279,7 @@ def test_parsing_output_details_missing_required_field():
         "direction": "http",
         "host": "localhost",
         "username": "admin",
-        "password": "admin"
+        "password": "admin",
     }
 
     with pytest.raises(MissingRequiredProperty) as err:
@@ -290,7 +290,7 @@ def test_parsing_output_details_missing_required_field():
 
 def test_parsing_output_details_missing_required_fields():
     output_details = {
-        "direction": "http"
+        "direction": "http",
     }
 
     with pytest.raises(MissingRequiredProperty) as err:

@@ -14,7 +14,7 @@ def default_config():
     return MimeoConfig({
         "vars": {
             "CUSTOM_VAR_1": 2,
-            "CUSTOM_VAR_2": "{CUSTOM_VAR_1}"
+            "CUSTOM_VAR_2": "{CUSTOM_VAR_1}",
         },
         "_templates_": [
             {
@@ -23,11 +23,11 @@ def default_config():
                     "SomeEntity": {
                         "ChildNode1": 1,
                         "ChildNode2": "value-2",
-                        "ChildNode3": True
-                    }
-                }
-            }
-        ]
+                        "ChildNode3": True,
+                    },
+                },
+            },
+        ],
     })
 
 
@@ -89,22 +89,22 @@ def test_is_raw_mimeo_util_false():
 
 def test_is_parametrized_mimeo_util_true():
     assert MimeoRenderer.is_parametrized_mimeo_util({
-        "_mimeo_util": {}
+        "_mimeo_util": {},
     })
 
 
 def test_is_parametrized_mimeo_util_false():
     assert not MimeoRenderer.is_parametrized_mimeo_util({
         "_mimeo_util": {},
-        "key": "value"
+        "key": "value",
     })
     assert not MimeoRenderer.is_parametrized_mimeo_util({
-        "_util": {}
+        "_util": {},
     })
     assert not MimeoRenderer.is_parametrized_mimeo_util([
         {
-            "_mimeo_util": {}
-        }
+            "_mimeo_util": {},
+        },
     ])
 
 
@@ -160,8 +160,8 @@ def test_parametrized_util_using_raw_mimeo_util(default_config):
             "_mimeo_util": {
                 "_name": "key",
                 "context": "SomeEntity",
-                "iteration": "{curr_iter}"
-            }
+                "iteration": "{curr_iter}",
+            },
         })
         assert key == key_outside_context
 
@@ -186,10 +186,10 @@ def test_parametrized_util_using_parametrized_mimeo_util(default_config):
                 "context": "SomeEntity",
                 "iteration": {
                     "_mimeo_util": {
-                        "_name": "curr_iter"
-                    }
-                }
-            }
+                        "_name": "curr_iter",
+                    },
+                },
+            },
         })
         assert key == key_outside_context
 
@@ -211,8 +211,8 @@ def test_util_parametrized_using_variable(default_config):
             "_mimeo_util": {
                 "_name": "key",
                 "context": "SomeEntity",
-                "iteration": "{CUSTOM_VAR_2}"
-            }
+                "iteration": "{CUSTOM_VAR_2}",
+            },
         })
         assert key == key_outside_context
 
@@ -220,9 +220,9 @@ def test_util_parametrized_using_variable(default_config):
 def test_vars_str():
     config = MimeoConfig({
         "vars": {
-            "CUSTOM_VAR_1": "custom-value-1"
+            "CUSTOM_VAR_1": "custom-value-1",
         },
-        "_templates_": []
+        "_templates_": [],
     })
     with MimeoContextManager(config):
         value = MimeoRenderer.render("{CUSTOM_VAR_1}")
@@ -232,9 +232,9 @@ def test_vars_str():
 def test_vars_int():
     config = MimeoConfig({
         "vars": {
-            "CUSTOM_VAR_1": 1
+            "CUSTOM_VAR_1": 1,
         },
-        "_templates_": []
+        "_templates_": [],
     })
     with MimeoContextManager(config):
         value = MimeoRenderer.render("{CUSTOM_VAR_1}")
@@ -244,9 +244,9 @@ def test_vars_int():
 def test_vars_bool():
     config = MimeoConfig({
         "vars": {
-            "CUSTOM_VAR_1": True
+            "CUSTOM_VAR_1": True,
         },
-        "_templates_": []
+        "_templates_": [],
     })
     with MimeoContextManager(config):
         value = MimeoRenderer.render("{CUSTOM_VAR_1}")
@@ -257,9 +257,9 @@ def test_vars_pointing_to_var():
     config = MimeoConfig({
         "vars": {
             "CUSTOM_VAR_1": "custom-value-1",
-            "CUSTOM_VAR_2": "{CUSTOM_VAR_1}"
+            "CUSTOM_VAR_2": "{CUSTOM_VAR_1}",
         },
-        "_templates_": []
+        "_templates_": [],
     })
     with MimeoContextManager(config):
         value = MimeoRenderer.render("{CUSTOM_VAR_2}")
@@ -269,9 +269,9 @@ def test_vars_pointing_to_var():
 def test_vars_pointing_to_non_existing_var():
     config = MimeoConfig({
         "vars": {
-            "CUSTOM_VAR_1": "{NON_EXISTING_VAR}"
+            "CUSTOM_VAR_1": "{NON_EXISTING_VAR}",
         },
-        "_templates_": []
+        "_templates_": [],
     })
     with MimeoContextManager(config):
         with pytest.raises(VarNotFound) as err:
@@ -285,11 +285,11 @@ def test_vars_pointing_to_funct():
             "CUSTOM_VAR_1": {
                 "_mimeo_util": {
                     "_name": "auto_increment",
-                    "pattern": "{}"
-                }
-            }
+                    "pattern": "{}",
+                },
+            },
         },
-        "_templates_": []
+        "_templates_": [],
     })
     with MimeoContextManager(config) as mimeo_manager:
         context = mimeo_manager.get_context("SomeEntity")
@@ -304,11 +304,11 @@ def test_vars_pointing_to_invalid_funct():
             "CUSTOM_VAR_1": {
                 "_mimeo_util": {
                     "_name": "auto_increment",
-                    "pattern": 1
-                }
-            }
+                    "pattern": 1,
+                },
+            },
         },
-        "_templates_": []
+        "_templates_": [],
     })
     with MimeoContextManager(config) as mimeo_manager:
         context = mimeo_manager.get_context("SomeEntity")
@@ -324,7 +324,7 @@ def test_vars_as_partial_values_single_beginning():
         "vars": {
             "URI_PREFIX": "/data",
         },
-        "_templates_": []
+        "_templates_": [],
     })
     with MimeoContextManager(config):
         value = MimeoRenderer.render("{URI_PREFIX}/1.xml")
@@ -336,7 +336,7 @@ def test_vars_as_partial_values_single_middle():
         "vars": {
             "FILE_NAME": "/1",
         },
-        "_templates_": []
+        "_templates_": [],
     })
     with MimeoContextManager(config):
         value = MimeoRenderer.render("/data{FILE_NAME}.xml")
@@ -346,9 +346,9 @@ def test_vars_as_partial_values_single_middle():
 def test_vars_as_partial_values_single_end():
     config = MimeoConfig({
         "vars": {
-            "URI_SUFFIX": ".xml"
+            "URI_SUFFIX": ".xml",
         },
-        "_templates_": []
+        "_templates_": [],
     })
     with MimeoContextManager(config):
         value = MimeoRenderer.render("/data/1{URI_SUFFIX}")
@@ -360,7 +360,7 @@ def test_vars_as_partial_values_repeated():
         "vars": {
             "FILE_NAME": "/1",
         },
-        "_templates_": []
+        "_templates_": [],
     })
     with MimeoContextManager(config):
         value = MimeoRenderer.render("/data{FILE_NAME}{FILE_NAME}.xml")
@@ -371,9 +371,9 @@ def test_vars_as_partial_values_multiple():
     config = MimeoConfig({
         "vars": {
             "URI_PREFIX": "/data",
-            "URI_SUFFIX": ".xml"
+            "URI_SUFFIX": ".xml",
         },
-        "_templates_": []
+        "_templates_": [],
     })
     with MimeoContextManager(config):
         value = MimeoRenderer.render("{URI_PREFIX}/1{URI_SUFFIX}")
@@ -385,7 +385,7 @@ def test_vars_as_partial_values_str():
         "vars": {
             "URI_PREFIX": "/data",
         },
-        "_templates_": []
+        "_templates_": [],
     })
     with MimeoContextManager(config):
         value = MimeoRenderer.render("{URI_PREFIX}/1.xml")
@@ -397,7 +397,7 @@ def test_vars_as_partial_values_int():
         "vars": {
             "NUM": 1,
         },
-        "_templates_": []
+        "_templates_": [],
     })
     with MimeoContextManager(config):
         value = MimeoRenderer.render("/data/{NUM}.xml")
@@ -409,7 +409,7 @@ def test_vars_as_partial_values_bool():
         "vars": {
             "VALIDATED": True,
         },
-        "_templates_": []
+        "_templates_": [],
     })
     with MimeoContextManager(config):
         value = MimeoRenderer.render("/data/{VALIDATED}/1.xml")

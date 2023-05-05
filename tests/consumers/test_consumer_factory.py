@@ -9,16 +9,16 @@ from mimeo.consumers import (ConsumerFactory, FileConsumer, HttpConsumer,
 def test_get_consumer_for_file_direction():
     config = {
         "output_details": {
-            "direction": "file"
+            "direction": "file",
         },
         "_templates_": [
             {
                 "count": 5,
                 "model": {
-                    "SomeEntity": {}
-                }
-            }
-        ]
+                    "SomeEntity": {},
+                },
+            },
+        ],
     }
     mimeo_config = MimeoConfig(config)
     generator = ConsumerFactory.get_consumer(mimeo_config)
@@ -28,16 +28,16 @@ def test_get_consumer_for_file_direction():
 def test_get_consumer_for_stdout_direction():
     config = {
         "output_details": {
-            "direction": "stdout"
+            "direction": "stdout",
         },
         "_templates_": [
             {
                 "count": 5,
                 "model": {
-                    "SomeEntity": {}
-                }
-            }
-        ]
+                    "SomeEntity": {},
+                },
+            },
+        ],
     }
     mimeo_config = MimeoConfig(config)
     generator = ConsumerFactory.get_consumer(mimeo_config)
@@ -52,16 +52,16 @@ def test_get_consumer_for_http_direction():
             "port": 8080,
             "endpoint": "/document",
             "username": "admin",
-            "password": "admin"
+            "password": "admin",
         },
         "_templates_": [
             {
                 "count": 5,
                 "model": {
-                    "SomeEntity": {}
-                }
-            }
-        ]
+                    "SomeEntity": {},
+                },
+            },
+        ],
     }
     mimeo_config = MimeoConfig(config)
     generator = ConsumerFactory.get_consumer(mimeo_config)
@@ -71,16 +71,16 @@ def test_get_consumer_for_http_direction():
 def test_get_consumer_for_unsupported_format():
     config = {
         "output_details": {
-            "direction": "stdout"
+            "direction": "stdout",
         },
         "_templates_": [
             {
                 "count": 5,
                 "model": {
-                    "SomeEntity": {}
-                }
-            }
-        ]
+                    "SomeEntity": {},
+                },
+            },
+        ],
     }
     mimeo_config = MimeoConfig(config)
     mimeo_config.output_details.direction = "unsupported_direction"

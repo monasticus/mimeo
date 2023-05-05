@@ -7,21 +7,21 @@ from mimeo.config.mimeo_config import MimeoConfig
 def test_str():
     config = {
         "output_details": {
-            "direction": "stdout"
+            "direction": "stdout",
         },
         "vars": {
-            "CUSTOM_KEY1": "custom value"
+            "CUSTOM_KEY1": "custom value",
         },
         "_templates_": [
             {
                 "count": 5,
                 "model": {
                     "SomeEntity": {
-                        "ChildNode": "value"
-                    }
-                }
-            }
-        ]
+                        "ChildNode": "value",
+                    },
+                },
+            },
+        ],
     }
 
     mimeo_config = MimeoConfig(config)
@@ -31,27 +31,27 @@ def test_str():
 def test_parsing_config():
     config = {
         "output_details": {
-            "direction": "stdout"
+            "direction": "stdout",
         },
         "vars": {
             "CUSTOM_KEY1": "custom value",
             "CUSTOM_KEY2": {
                 "_mimeo_util": {
                     "_name": "auto_increment",
-                    "pattern": "{}"
-                }
-            }
+                    "pattern": "{}",
+                },
+            },
         },
         "_templates_": [
             {
                 "count": 5,
                 "model": {
                     "SomeEntity": {
-                        "ChildNode": "value"
-                    }
-                }
-            }
-        ]
+                        "ChildNode": "value",
+                    },
+                },
+            },
+        ],
     }
 
     mimeo_config = MimeoConfig(config)
@@ -61,9 +61,9 @@ def test_parsing_config():
         "CUSTOM_KEY2": {
             "_mimeo_util": {
                 "_name": "auto_increment",
-                "pattern": "{}"
-            }
-        }
+                "pattern": "{}",
+            },
+        },
     }
 
 
@@ -74,11 +74,11 @@ def test_parsing_config_default():
                 "count": 5,
                 "model": {
                     "SomeEntity": {
-                        "ChildNode": "value"
-                    }
-                }
-            }
-        ]
+                        "ChildNode": "value",
+                    },
+                },
+            },
+        ],
     }
 
     mimeo_config = MimeoConfig(config)
@@ -90,8 +90,8 @@ def test_parsing_config_default():
 def test_parsing_config_without_templates():
     config = {
         "output_details": {
-            "direction": "stdout"
-        }
+            "direction": "stdout",
+        },
     }
 
     with pytest.raises(InvalidMimeoConfig) as err:
@@ -107,10 +107,10 @@ def test_parsing_config_with_templates_object():
             "count": 5,
             "model": {
                 "SomeEntity": {
-                    "ChildNode": "value"
-                }
-            }
-        }
+                    "ChildNode": "value",
+                },
+            },
+        },
     }
 
     with pytest.raises(InvalidMimeoConfig) as err:
@@ -124,18 +124,18 @@ def test_parsing_config_with_invalid_vars_forbidden_character():
     config = {
         "vars": {
             "CUSTOM_KEY1": "value1",
-            "CuSTOM_KEY2": "value2"
+            "CuSTOM_KEY2": "value2",
         },
         "_templates_": [
             {
                 "count": 5,
                 "model": {
                     "SomeEntity": {
-                        "ChildNode": "value"
-                    }
-                }
-            }
-        ]
+                        "ChildNode": "value",
+                    },
+                },
+            },
+        ],
     }
 
     with pytest.raises(InvalidVars) as err:
@@ -149,18 +149,18 @@ def test_parsing_config_with_invalid_vars_starting_with_digit():
     config = {
         "vars": {
             "CUSTOM_KEY1": "value1",
-            "2CUSTOM_KEY": "value2"
+            "2CUSTOM_KEY": "value2",
         },
         "_templates_": [
             {
                 "count": 5,
                 "model": {
                     "SomeEntity": {
-                        "ChildNode": "value"
-                    }
-                }
-            }
-        ]
+                        "ChildNode": "value",
+                    },
+                },
+            },
+        ],
     }
 
     with pytest.raises(InvalidVars) as err:
@@ -173,18 +173,18 @@ def test_parsing_config_with_invalid_vars_starting_with_digit():
 def test_parsing_config_with_invalid_vars_using_non_atomic_value_and_non_mimeo_util():
     config = {
         "vars": {
-            "CUSTOM_KEY1": {}
+            "CUSTOM_KEY1": {},
         },
         "_templates_": [
             {
                 "count": 5,
                 "model": {
                     "SomeEntity": {
-                        "ChildNode": "value"
-                    }
-                }
-            }
-        ]
+                        "ChildNode": "value",
+                    },
+                },
+            },
+        ],
     }
 
     with pytest.raises(InvalidVars) as err:
@@ -198,19 +198,19 @@ def test_parsing_config_invalid_vars_not_being_object():
         "vars": [
             {
                 "CUSTOM_KEY1": "value1",
-                "CuSTOM_KEY1": "value2"
-            }
+                "CuSTOM_KEY1": "value2",
+            },
         ],
         "_templates_": [
             {
                 "count": 5,
                 "model": {
                     "SomeEntity": {
-                        "ChildNode": "value"
-                    }
-                }
-            }
-        ]
+                        "ChildNode": "value",
+                    },
+                },
+            },
+        ],
     }
 
     with pytest.raises(InvalidVars) as err:

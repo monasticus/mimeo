@@ -48,7 +48,7 @@ class FirstName:
         """
         return str({
             "name": self.name,
-            "sex": self.sex
+            "sex": self.sex,
         })
 
     def __repr__(self) -> str:

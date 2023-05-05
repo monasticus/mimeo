@@ -27,11 +27,11 @@ def minimum_config():
                     "SomeEntity": {
                         "ChildNode1": 1,
                         "ChildNode2": "value-2",
-                        "ChildNode3": True
-                    }
-                }
-            }
-        ]
+                        "ChildNode3": True,
+                    },
+                },
+            },
+        ],
     }
 
 
@@ -44,7 +44,7 @@ def default_config():
             "indent": 4,
             "xml_declaration": True,
             "directory_path": "test_mimeo_cli-dir/output",
-            "file_name": "output-file"
+            "file_name": "output-file",
         },
         "_templates_": [
             {
@@ -53,11 +53,11 @@ def default_config():
                     "SomeEntity": {
                         "ChildNode1": 1,
                         "ChildNode2": "value-2",
-                        "ChildNode3": True
-                    }
-                }
-            }
-        ]
+                        "ChildNode3": True,
+                    },
+                },
+            },
+        ],
     }
 
 
@@ -73,7 +73,7 @@ def http_config():
             "endpoint": "/document",
             "auth": "digest",
             "username": "admin",
-            "password": "admin"
+            "password": "admin",
         },
         "_templates_": [
             {
@@ -82,11 +82,11 @@ def http_config():
                     "SomeEntity": {
                         "ChildNode1": 1,
                         "ChildNode2": "value-2",
-                        "ChildNode3": True
-                    }
-                }
-            }
-        ]
+                        "ChildNode3": True,
+                    },
+                },
+            },
+        ],
     }
 
 
@@ -99,8 +99,8 @@ def http_default_envs():
             "port": 8000,
             "auth": "basic",
             "username": "custom-username",
-            "password": "custom-password"
-        }
+            "password": "custom-password",
+        },
     }
 
 
@@ -113,8 +113,8 @@ def http_custom_envs():
             "port": 8000,
             "auth": "basic",
             "username": "custom-username",
-            "password": "custom-password"
-        }
+            "password": "custom-password",
+        },
     }
 
 
@@ -603,7 +603,7 @@ def test_custom_short_output_http_username():
         "http://localhost:8080/document",
         json={"success": True},
         status=HTTPStatus.OK,
-        match=[matchers.header_matcher({'Authorization': _generate_authorization("custom-user", "admin")})]
+        match=[matchers.header_matcher({'Authorization': _generate_authorization("custom-user", "admin")})],
     )
     MimeoCLI.main()
     # would throw a ConnectionError when any request call doesn't match registered mocks
@@ -618,7 +618,7 @@ def test_custom_long_output_http_username():
         "http://localhost:8080/document",
         json={"success": True},
         status=HTTPStatus.OK,
-        match=[matchers.header_matcher({'Authorization': _generate_authorization("custom-user", "admin")})]
+        match=[matchers.header_matcher({'Authorization': _generate_authorization("custom-user", "admin")})],
     )
     MimeoCLI.main()
     # would throw a ConnectionError when any request call doesn't match registered mocks
@@ -644,7 +644,7 @@ def test_custom_short_output_http_password():
         "http://localhost:8080/document",
         json={"success": True},
         status=HTTPStatus.OK,
-        match=[matchers.header_matcher({'Authorization': _generate_authorization("admin", "custom-password")})]
+        match=[matchers.header_matcher({'Authorization': _generate_authorization("admin", "custom-password")})],
     )
     MimeoCLI.main()
     # would throw a ConnectionError when any request call doesn't match registered mocks
@@ -661,7 +661,7 @@ def test_custom_long_output_http_password():
         "http://localhost:8080/document",
         json={"success": True},
         status=HTTPStatus.OK,
-        match=[matchers.header_matcher({'Authorization': _generate_authorization("admin", "custom-password")})]
+        match=[matchers.header_matcher({'Authorization': _generate_authorization("admin", "custom-password")})],
     )
     MimeoCLI.main()
     # would throw a ConnectionError when any request call doesn't match registered mocks
@@ -727,7 +727,7 @@ def test_custom_long_output_http_auth():
         "http://localhost:8080/document",
         json={"success": True},
         status=HTTPStatus.OK,
-        match=[matchers.header_matcher({'Authorization': _generate_authorization("admin", "admin")})]
+        match=[matchers.header_matcher({'Authorization': _generate_authorization("admin", "admin")})],
     )
     MimeoCLI.main()
     # would throw a ConnectionError when any request call doesn't match registered mocks
@@ -753,7 +753,7 @@ def test_custom_short_env():
         "https://11.111.11.111:8000/document",
         json={"success": True},
         status=HTTPStatus.OK,
-        match=[matchers.header_matcher({'Authorization': _generate_authorization("custom-username", "custom-password")})]
+        match=[matchers.header_matcher({'Authorization': _generate_authorization("custom-username", "custom-password")})],
     )
     MimeoCLI.main()
     # would throw a ConnectionError when any request call doesn't match registered mocks
@@ -768,7 +768,7 @@ def test_custom_long_env():
         "https://11.111.11.111:8000/document",
         json={"success": True},
         status=HTTPStatus.OK,
-        match=[matchers.header_matcher({'Authorization': _generate_authorization("custom-username", "custom-password")})]
+        match=[matchers.header_matcher({'Authorization': _generate_authorization("custom-username", "custom-password")})],
     )
     MimeoCLI.main()
     # would throw a ConnectionError when any request call doesn't match registered mocks
@@ -785,7 +785,7 @@ def test_custom_env_file():
         "https://11.111.11.111:8000/document",
         json={"success": True},
         status=HTTPStatus.OK,
-        match=[matchers.header_matcher({'Authorization': _generate_authorization("custom-username", "custom-password")})]
+        match=[matchers.header_matcher({'Authorization': _generate_authorization("custom-username", "custom-password")})],
     )
     MimeoCLI.main()
     # would throw a ConnectionError when any request call doesn't match registered mocks

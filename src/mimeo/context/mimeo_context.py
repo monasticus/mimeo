@@ -345,7 +345,7 @@ class MimeoContext:
             cities_indexes = random.sample(range(num_of_entries), num_of_entries)
             self._cities_indexes[country] = {
                 MimeoContext._INITIAL_COUNT: num_of_entries,
-                MimeoContext._INDEXES: cities_indexes
+                MimeoContext._INDEXES: cities_indexes,
             }
 
     def _initialize_first_names_indexes(self, sex: str):
@@ -369,7 +369,7 @@ class MimeoContext:
             first_names_indexes = random.sample(range(num_of_entries), num_of_entries)
             self._first_names_indexes[sex] = {
                 MimeoContext._INITIAL_COUNT: num_of_entries,
-                MimeoContext._INDEXES: first_names_indexes
+                MimeoContext._INDEXES: first_names_indexes,
             }
 
     def _initialize_last_names_indexes(self):

@@ -22,16 +22,16 @@ def test_consume():
             "direction": "file",
             "format": "xml",
             "directory_path": "test_file_consumer-dir",
-            "file_name": "test-output"
+            "file_name": "test-output",
         },
         "_templates_": [
             {
                 "count": 2,
                 "model": {
-                    "SomeEntity": {}
-                }
-            }
-        ]
+                    "SomeEntity": {},
+                },
+            },
+        ],
     }
     mimeo_config = MimeoConfig(config)
     consumer = ConsumerFactory.get_consumer(mimeo_config)

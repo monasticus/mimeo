@@ -9,9 +9,9 @@ def test_str():
       "count": 30,
       "model": {
         "SomeEntity": {
-          "ChildNode": "value"
-        }
-      }
+          "ChildNode": "value",
+        },
+      },
     }
 
     mimeo_template = MimeoTemplate(template)
@@ -23,16 +23,16 @@ def test_parsing_template():
       "count": 30,
       "model": {
         "SomeEntity": {
-          "ChildNode": "value"
-        }
-      }
+          "ChildNode": "value",
+        },
+      },
     }
 
     mimeo_template = MimeoTemplate(template)
     assert mimeo_template.count == 30
     assert mimeo_template.model.root_name == "SomeEntity"
     assert mimeo_template.model.root_data == {
-        "ChildNode": "value"
+        "ChildNode": "value",
     }
 
 
@@ -40,9 +40,9 @@ def test_parsing_template_without_count():
     template = {
       "model": {
         "SomeEntity": {
-          "ChildNode": "value"
-        }
-      }
+          "ChildNode": "value",
+        },
+      },
     }
 
     with pytest.raises(InvalidMimeoTemplate) as err:
@@ -54,7 +54,7 @@ def test_parsing_template_without_count():
 
 def test_parsing_template_with_multiple_roots():
     template = {
-      "count": 30
+      "count": 30,
     }
 
     with pytest.raises(InvalidMimeoTemplate) as err:

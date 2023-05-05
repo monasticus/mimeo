@@ -60,7 +60,7 @@ class City:
             "id": self.id,
             "name": self.name,
             "name_ascii": self.name_ascii,
-            "country": self.country
+            "country": self.country,
         })
 
     def __repr__(self) -> str:

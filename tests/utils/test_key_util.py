@@ -15,11 +15,11 @@ def default_config():
                     "SomeEntity": {
                         "ChildNode1": 1,
                         "ChildNode2": "value-2",
-                        "ChildNode3": True
-                    }
-                }
-            }
-        ]
+                        "ChildNode3": True,
+                    },
+                },
+            },
+        ],
     })
 
 
@@ -87,7 +87,7 @@ def test_key_parametrized_with_context(default_config):
         key_some_other_entity = UtilsRenderer.render_raw("key")
         key_some_entity_outside_context = UtilsRenderer.render_parametrized({
             "_name": "key",
-            "context": "SomeEntity"
+            "context": "SomeEntity",
         })
 
         assert key_some_entity == key_some_entity_outside_context
@@ -109,6 +109,6 @@ def test_key_parametrized_with_context_and_iteration(default_config):
         key_outside_context = UtilsRenderer.render_parametrized({
             "_name": "key",
             "context": "SomeEntity",
-            "iteration": 2
+            "iteration": 2,
         })
         assert key == key_outside_context

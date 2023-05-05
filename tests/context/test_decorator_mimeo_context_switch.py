@@ -27,20 +27,20 @@ def default_config():
                                                         "Details": {
                                                             "Detail1": 1,
                                                             "Detail2": "value-2",
-                                                            "Detail3": True
-                                                        }
-                                                    }
-                                                }
-                                            ]
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    }
-                }
-            }
-        ]
+                                                            "Detail3": True,
+                                                        },
+                                                    },
+                                                },
+                                            ],
+                                        },
+                                    },
+                                },
+                            ],
+                        },
+                    },
+                },
+            },
+        ],
     })
 
 
@@ -90,7 +90,7 @@ def test_context_switch(default_config: MimeoConfig):
         # "Details",  Not present as context are collected before and after switch
         "GrandChild",
         "SomeEntity",
-        None
+        None,
     ]
 
 

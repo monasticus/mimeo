@@ -8,8 +8,8 @@ def test_str():
     model = {
         "context": "My Context",
         "SomeEntity": {
-            "ChildNode": "value"
-        }
+            "ChildNode": "value",
+        },
     }
 
     mimeo_model = MimeoModel(model)
@@ -20,36 +20,36 @@ def test_parsing_model_with_context_name():
     model = {
         "context": "My Context",
         "SomeEntity": {
-            "ChildNode": "value"
-        }
+            "ChildNode": "value",
+        },
     }
 
     mimeo_model = MimeoModel(model)
     assert mimeo_model.context_name == "My Context"
     assert mimeo_model.root_name == "SomeEntity"
     assert mimeo_model.root_data == {
-        "ChildNode": "value"
+        "ChildNode": "value",
     }
 
 
 def test_parsing_raw_model():
     model = {
         "SomeEntity": {
-            "ChildNode": "value"
-        }
+            "ChildNode": "value",
+        },
     }
 
     mimeo_model = MimeoModel(model)
     assert mimeo_model.context_name == "SomeEntity"
     assert mimeo_model.root_name == "SomeEntity"
     assert mimeo_model.root_data == {
-        "ChildNode": "value"
+        "ChildNode": "value",
     }
 
 
 def test_parsing_model_without_root():
     model = {
-        "context": "My Context"
+        "context": "My Context",
     }
 
     with pytest.raises(InvalidMimeoModel) as err:
@@ -62,11 +62,11 @@ def test_parsing_model_without_root():
 def test_parsing_model_with_multiple_roots():
     model = {
         "SomeEntity": {
-            "ChildNode": "value"
+            "ChildNode": "value",
         },
         "SomeEntity2": {
-            "ChildNode": "value"
-        }
+            "ChildNode": "value",
+        },
     }
 
     with pytest.raises(InvalidMimeoModel) as err:
@@ -80,8 +80,8 @@ def test_parsing_model_with_non_str_context():
     model = {
         "context": 1,
         "SomeEntity": {
-            "ChildNode": "value"
-        }
+            "ChildNode": "value",
+        },
     }
 
     with pytest.raises(InvalidMimeoModel) as err:

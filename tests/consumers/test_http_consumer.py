@@ -18,16 +18,16 @@ def test_consume_post():
             "port": 8080,
             "endpoint": "/documents",
             "username": "admin",
-            "password": "admin"
+            "password": "admin",
         },
         "_templates_": [
             {
                 "count": 2,
                 "model": {
-                    "SomeEntity": {}
-                }
-            }
-        ]
+                    "SomeEntity": {},
+                },
+            },
+        ],
     }
     mimeo_config = MimeoConfig(config)
     consumer = ConsumerFactory.get_consumer(mimeo_config)
@@ -61,16 +61,16 @@ def test_consume_put():
             "endpoint": "/documents",
             "auth": "digest",
             "username": "admin",
-            "password": "admin"
+            "password": "admin",
         },
         "_templates_": [
             {
                 "count": 2,
                 "model": {
-                    "SomeEntity": {}
-                }
-            }
-        ]
+                    "SomeEntity": {},
+                },
+            },
+        ],
     }
     mimeo_config = MimeoConfig(config)
     consumer = ConsumerFactory.get_consumer(mimeo_config)
@@ -101,16 +101,16 @@ def test_consume_without_port():
             "host": "localhost",
             "endpoint": "/documents",
             "username": "admin",
-            "password": "admin"
+            "password": "admin",
         },
         "_templates_": [
             {
                 "count": 2,
                 "model": {
-                    "SomeEntity": {}
-                }
-            }
-        ]
+                    "SomeEntity": {},
+                },
+            },
+        ],
     }
     mimeo_config = MimeoConfig(config)
     consumer = ConsumerFactory.get_consumer(mimeo_config)

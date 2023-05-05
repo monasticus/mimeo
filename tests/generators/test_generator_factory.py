@@ -8,18 +8,18 @@ from mimeo.generators import GeneratorFactory, XMLGenerator
 def test_generator_factory_for_xml():
     config = {
         "output_details": {
-            "format": "xml"
+            "format": "xml",
         },
         "_templates_": [
             {
                 "count": 5,
                 "model": {
                     "SomeEntity": {
-                        "ChildNode": "value"
-                    }
-                }
-            }
-        ]
+                        "ChildNode": "value",
+                    },
+                },
+            },
+        ],
     }
     mimeo_config = MimeoConfig(config)
     generator = GeneratorFactory.get_generator(mimeo_config)
@@ -29,18 +29,18 @@ def test_generator_factory_for_xml():
 def test_generator_factory_for_unsupported_format():
     config = {
         "output_details": {
-            "format": "xml"
+            "format": "xml",
         },
         "_templates_": [
             {
                 "count": 5,
                 "model": {
                     "SomeEntity": {
-                        "ChildNode": "value"
-                    }
-                }
-            }
-        ]
+                        "ChildNode": "value",
+                    },
+                },
+            },
+        ],
     }
     mimeo_config = MimeoConfig(config)
     mimeo_config.output_details.format = "unsupported_format"
