@@ -229,13 +229,15 @@ class MimeoConfig(MimeoDTO):
         """
         variables = config.get(MimeoConfig.VARS_KEY, {})
         if not isinstance(variables, dict):
-            raise InvalidVars(f"vars property does not store an object: {variables}")
+            msg = f"vars property does not store an object: {variables}"
+            raise InvalidVars(msg)
         for var, val in variables.items():
             if not re.match(r"^[A-Z][A-Z_0-9]*$", var):
-                raise InvalidVars(f"Provided var [{var}] is invalid "
-                                  "(you can use upper-cased name with underscore and digits, starting with a letter)!")
+                msg = f"Provided var [{var}] is invalid (you can use upper-cased name with underscore and digits, starting with a letter)!"
+                raise InvalidVars(msg)
             if isinstance(val, list) or (isinstance(val, dict) and not MimeoConfig._is_mimeo_util_object(val)):
-                raise InvalidVars(f"Provided var [{var}] is invalid (you can use ony atomic values and Mimeo Utils)!")
+                msg = f"Provided var [{var}] is invalid (you can use ony atomic values and Mimeo Utils)!"
+                raise InvalidVars(msg)
         return variables
 
     @staticmethod
@@ -260,9 +262,11 @@ class MimeoConfig(MimeoDTO):
         """
         templates = config.get(MimeoConfig.TEMPLATES_KEY)
         if templates is None:
-            raise InvalidMimeoConfig(f"No templates in the Mimeo Config: {config}")
+            msg = f"No templates in the Mimeo Config: {config}"
+            raise InvalidMimeoConfig(msg)
         elif not isinstance(templates, list):
-            raise InvalidMimeoConfig(f"_templates_ property does not store an array: {config}")
+            msg = f"_templates_ property does not store an array: {config}"
+            raise InvalidMimeoConfig(msg)
         else:
             return [MimeoTemplate(template) for template in config.get(MimeoConfig.TEMPLATES_KEY)]
 
@@ -694,7 +698,8 @@ class MimeoOutputDetails(MimeoDTO):
                     missing_details.append(detail)
             if len(missing_details) > 0:
                 missing_details_str = ', '.join(missing_details)
-                raise MissingRequiredProperty(f"Missing required fields is HTTP output details: {missing_details_str}")
+                msg = f"Missing required fields is HTTP output details: {missing_details_str}"
+                raise MissingRequiredProperty(msg)
 
 
 class MimeoTemplate(MimeoDTO):
@@ -740,9 +745,11 @@ class MimeoTemplate(MimeoDTO):
             If the source config doesn't include count or model properties
         """
         if MimeoConfig.TEMPLATES_COUNT_KEY not in template:
-            raise InvalidMimeoTemplate(f"No count value in the Mimeo Template: {template}")
+            msg = f"No count value in the Mimeo Template: {template}"
+            raise InvalidMimeoTemplate(msg)
         if MimeoConfig.TEMPLATES_MODEL_KEY not in template:
-            raise InvalidMimeoTemplate(f"No model data in the Mimeo Template: {template}")
+            msg = f"No model data in the Mimeo Template: {template}"
+            raise InvalidMimeoTemplate(msg)
 
 
 class MimeoModel(MimeoDTO):
@@ -794,13 +801,15 @@ class MimeoModel(MimeoDTO):
         IncorrectMimeoModel
             If the source config has no or more than one root nodes
         """
-        model_keys = [key for key in filter(MimeoModel._is_not_configuration_key, iter(model))]
+        model_keys = list(filter(MimeoModel._is_not_configuration_key, iter(model)))
         if len(model_keys) == 1:
             return model_keys[0]
         if len(model_keys) == 0:
-            raise InvalidMimeoModel(f"No root data in Mimeo Model: {model}")
+            msg = f"No root data in Mimeo Model: {model}"
+            raise InvalidMimeoModel(msg)
         elif len(model_keys) > 1:
-            raise InvalidMimeoModel(f"Multiple root data in Mimeo Model: {model}")
+            msg = f"Multiple root data in Mimeo Model: {model}"
+            raise InvalidMimeoModel(msg)
 
     @staticmethod
     def _get_context_name(model: dict, root_name: str) -> str:
@@ -828,7 +837,8 @@ class MimeoModel(MimeoDTO):
         if isinstance(context_name, str):
             return context_name
         else:
-            raise InvalidMimeoModel(f"Invalid context name in Mimeo Model (not a string value): {model}")
+            msg = f"Invalid context name in Mimeo Model (not a string value): {model}"
+            raise InvalidMimeoModel(msg)
 
     @staticmethod
     def _is_not_configuration_key(dict_key: str) -> bool:

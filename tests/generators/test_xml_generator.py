@@ -626,7 +626,7 @@ def test_generate_multiple_templates():
 
     with MimeoContextManager(config):
         generator = XMLGenerator(config)
-        roots = [root for root in generator.generate(config.templates)]
+        roots = list(generator.generate(config.templates))
         template_1_roots = roots[:2]
         template_2_roots = roots[2:]
 
@@ -952,8 +952,8 @@ def test_generate_template_using_mimeo_util_parametrized_invalid():
             for _ in generator.generate(config.templates):
                 pass
 
-    assert err.value.args[0] == "The auto_increment Mimeo Util require a string value for the pattern parameter " \
-                                "and was: [1]."
+    assert err.value.args[0] == ("The auto_increment Mimeo Util require a string value for the pattern parameter "
+                                 "and was: [1].")
 
 
 def test_generate_template_using_auto_increment_util():
@@ -1645,7 +1645,7 @@ def test_generate_template_using_key_util_in_two_templates_with_customized_itera
 
     with MimeoContextManager(config):
         generator = XMLGenerator(config)
-        data = [data for data in generator.generate(config.templates)]
+        data = list(generator.generate(config.templates))
         some_entity_data = data[:5]
         some_other_entity_data = data[5:]
 
@@ -1715,7 +1715,7 @@ def test_generate_template_using_get_key_util_in_two_templates_with_customized_c
 
     with MimeoContextManager(config):
         generator = XMLGenerator(config)
-        data = [data for data in generator.generate(config.templates)]
+        data = list(generator.generate(config.templates))
         some_entity_data = data[:5]
         some_other_entity_data = data[5:]
 

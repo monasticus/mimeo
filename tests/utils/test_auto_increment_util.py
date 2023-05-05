@@ -67,8 +67,8 @@ def test_auto_increment_parametrized_with_non_str_pattern(default_config):
         with pytest.raises(InvalidValue) as err:
             UtilsRenderer.render_parametrized({"_name": "auto_increment", "pattern": 1})
 
-        assert err.value.args[0] == "The auto_increment Mimeo Util require a string value for the pattern parameter " \
-                                    "and was: [1]."
+        assert err.value.args[0] == ("The auto_increment Mimeo Util require a string value for the pattern parameter "
+                                     "and was: [1].")
 
 
 def test_auto_increment_for_different_context(default_config):

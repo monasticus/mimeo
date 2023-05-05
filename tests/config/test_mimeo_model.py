@@ -55,8 +55,8 @@ def test_parsing_model_without_root():
     with pytest.raises(InvalidMimeoModel) as err:
         MimeoModel(model)
 
-    assert err.value.args[0] == "No root data in Mimeo Model: " \
-                                "{'context': 'My Context'}"
+    assert err.value.args[0] == ("No root data in Mimeo Model: "
+                                 "{'context': 'My Context'}")
 
 
 def test_parsing_model_with_multiple_roots():
@@ -72,8 +72,8 @@ def test_parsing_model_with_multiple_roots():
     with pytest.raises(InvalidMimeoModel) as err:
         MimeoModel(model)
 
-    assert err.value.args[0] == "Multiple root data in Mimeo Model: " \
-                                "{'SomeEntity': {'ChildNode': 'value'}, 'SomeEntity2': {'ChildNode': 'value'}}"
+    assert err.value.args[0] == ("Multiple root data in Mimeo Model: "
+                                 "{'SomeEntity': {'ChildNode': 'value'}, 'SomeEntity2': {'ChildNode': 'value'}}")
 
 
 def test_parsing_model_with_non_str_context():
@@ -87,5 +87,5 @@ def test_parsing_model_with_non_str_context():
     with pytest.raises(InvalidMimeoModel) as err:
         MimeoModel(model)
 
-    assert err.value.args[0] == "Invalid context name in Mimeo Model (not a string value): " \
-                                "{'context': 1, 'SomeEntity': {'ChildNode': 'value'}}"
+    assert err.value.args[0] == ("Invalid context name in Mimeo Model (not a string value): "
+                                 "{'context': 1, 'SomeEntity': {'ChildNode': 'value'}}")

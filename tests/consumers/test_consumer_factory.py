@@ -88,5 +88,5 @@ def test_get_consumer_for_unsupported_format():
     with pytest.raises(UnsupportedPropertyValue) as err:
         ConsumerFactory.get_consumer(mimeo_config)
 
-    assert err.value.args[0] == "Provided direction [unsupported_direction] is not supported! " \
-                                "Supported values: [stdout, file, http]."
+    assert err.value.args[0] == ("Provided direction [unsupported_direction] is not supported! "
+                                 "Supported values: [stdout, file, http].")

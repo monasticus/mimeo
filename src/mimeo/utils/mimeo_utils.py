@@ -356,8 +356,8 @@ class AutoIncrementUtil(MimeoUtil):
             return self._pattern.format(identifier)
         except AttributeError:
             context.prev_id()
-            raise InvalidValue(f"The {self.KEY} Mimeo Util require a string value for the pattern parameter "
-                               f"and was: [{self._pattern}].") from AttributeError
+            msg = f'The {self.KEY} Mimeo Util require a string value for the pattern parameter and was: [{self._pattern}].'
+            raise InvalidValue(msg) from AttributeError
 
 
 class CurrentIterationUtil(MimeoUtil):
@@ -544,7 +544,8 @@ class CityUtil(MimeoUtil):
             country_cities = self._MIMEO_DB.get_cities_of(self._country)
             country_cities_count = len(country_cities)
             if country_cities_count == 0:
-                raise DataNotFound(f"Mimeo database does not contain any cities of provided country [{self._country}].")
+                msg = f'Mimeo database does not contain any cities of provided country [{self._country}].'
+                raise DataNotFound(msg)
 
             if self._unique:
                 index = context.next_city_index(self._country)
@@ -637,9 +638,8 @@ class CountryUtil(MimeoUtil):
         elif self._value == self.__VALUE_ISO2:
             return self._get_country(context).iso_2
         else:
-            raise InvalidValue(f"The `country` Mimeo Util does not support such value [{self._value}]. "
-                               f"Supported values are: "
-                               f"{self.__VALUE_NAME} (default), {self.__VALUE_ISO3}, {self.__VALUE_ISO2}.")
+            msg = f'The `country` Mimeo Util does not support such value [{self._value}]. Supported values are: {self.__VALUE_NAME} (default), {self.__VALUE_ISO3}, {self.__VALUE_ISO2}.'
+            raise InvalidValue(msg)
 
     def _get_country(self, context: MimeoContext) -> Country:
         if self._country is not None:
@@ -648,7 +648,8 @@ class CountryUtil(MimeoUtil):
             if country_found is not None:
                 return country_found
             else:
-                raise DataNotFound(f"Mimeo database does not contain such a country [{self._country}].")
+                msg = f'Mimeo database does not contain such a country [{self._country}].'
+                raise DataNotFound(msg)
         else:
             if self._unique:
                 index = context.next_country_index()

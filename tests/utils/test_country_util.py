@@ -198,5 +198,5 @@ def test_country_parametrized_with_invalid_value(default_config):
         with pytest.raises(InvalidValue) as err:
             UtilsRenderer.render_parametrized({"_name": "country", "value": "not_supported"})
 
-        assert err.value.args[0] == "The `country` Mimeo Util does not support such value [not_supported]. " \
-                                    "Supported values are: name (default), iso3, iso2."
+        assert err.value.args[0] == ("The `country` Mimeo Util does not support such value [not_supported]. "
+                                     "Supported values are: name (default), iso3, iso2.")

@@ -315,8 +315,8 @@ def test_vars_pointing_to_invalid_funct():
         mimeo_manager.set_current_context(context)
         with pytest.raises(InvalidValue) as err:
             MimeoRenderer.render("{CUSTOM_VAR_1}")
-        assert err.value.args[0] == "The auto_increment Mimeo Util require a string value for the pattern parameter " \
-                                    "and was: [1]."
+        assert err.value.args[0] == ("The auto_increment Mimeo Util require a string value for the pattern parameter "
+                                     "and was: [1].")
 
 
 def test_vars_as_partial_values_single_beginning():

@@ -97,8 +97,8 @@ def test_parsing_config_without_templates():
     with pytest.raises(InvalidMimeoConfig) as err:
         MimeoConfig(config)
 
-    assert err.value.args[0] == "No templates in the Mimeo Config: " \
-                                "{'output_details': {'direction': 'stdout'}}"
+    assert err.value.args[0] == ("No templates in the Mimeo Config: "
+                                 "{'output_details': {'direction': 'stdout'}}")
 
 
 def test_parsing_config_with_templates_object():
@@ -116,8 +116,8 @@ def test_parsing_config_with_templates_object():
     with pytest.raises(InvalidMimeoConfig) as err:
         MimeoConfig(config)
 
-    assert err.value.args[0] == "_templates_ property does not store an array: " \
-                                "{'_templates_': {'count': 5, 'model': {'SomeEntity': {'ChildNode': 'value'}}}}"
+    assert err.value.args[0] == ("_templates_ property does not store an array: "
+                                 "{'_templates_': {'count': 5, 'model': {'SomeEntity': {'ChildNode': 'value'}}}}")
 
 
 def test_parsing_config_with_invalid_vars_forbidden_character():
@@ -141,8 +141,8 @@ def test_parsing_config_with_invalid_vars_forbidden_character():
     with pytest.raises(InvalidVars) as err:
         MimeoConfig(config)
 
-    assert err.value.args[0] == "Provided var [CuSTOM_KEY2] is invalid " \
-                                "(you can use upper-cased name with underscore and digits, starting with a letter)!"
+    assert err.value.args[0] == ("Provided var [CuSTOM_KEY2] is invalid "
+                                 "(you can use upper-cased name with underscore and digits, starting with a letter)!")
 
 
 def test_parsing_config_with_invalid_vars_starting_with_digit():
@@ -166,8 +166,8 @@ def test_parsing_config_with_invalid_vars_starting_with_digit():
     with pytest.raises(InvalidVars) as err:
         MimeoConfig(config)
 
-    assert err.value.args[0] == "Provided var [2CUSTOM_KEY] is invalid " \
-                                "(you can use upper-cased name with underscore and digits, starting with a letter)!"
+    assert err.value.args[0] == ("Provided var [2CUSTOM_KEY] is invalid "
+                                 "(you can use upper-cased name with underscore and digits, starting with a letter)!")
 
 
 def test_parsing_config_with_invalid_vars_using_non_atomic_value_and_non_mimeo_util():
@@ -216,5 +216,5 @@ def test_parsing_config_invalid_vars_not_being_object():
     with pytest.raises(InvalidVars) as err:
         MimeoConfig(config)
 
-    assert err.value.args[0] == "vars property does not store an object: " \
-                                "[{'CUSTOM_KEY1': 'value1', 'CuSTOM_KEY1': 'value2'}]"
+    assert err.value.args[0] == ("vars property does not store an object: "
+                                 "[{'CUSTOM_KEY1': 'value1', 'CuSTOM_KEY1': 'value2'}]")

@@ -237,8 +237,8 @@ def test_parsing_output_details_unsupported_direction():
     with pytest.raises(UnsupportedPropertyValue) as err:
         MimeoOutputDetails(output_details)
 
-    assert err.value.args[0] == "Provided direction [unsupported_direction] is not supported! " \
-                                "Supported values: [stdout, file, http]."
+    assert err.value.args[0] == ("Provided direction [unsupported_direction] is not supported! "
+                                 "Supported values: [stdout, file, http].")
 
 
 def test_parsing_output_details_unsupported_auth_method():
@@ -270,8 +270,8 @@ def test_parsing_output_details_unsupported_request_method():
     with pytest.raises(UnsupportedPropertyValue) as err:
         MimeoOutputDetails(output_details)
 
-    assert err.value.args[0] == "Provided method [unsupported_request_method] is not supported! " \
-                                "Supported values: [POST, PUT]."
+    assert err.value.args[0] == ("Provided method [unsupported_request_method] is not supported! "
+                                 "Supported values: [POST, PUT].")
 
 
 def test_parsing_output_details_missing_required_field():

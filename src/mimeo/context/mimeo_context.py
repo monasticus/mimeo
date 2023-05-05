@@ -340,7 +340,8 @@ class MimeoContext:
                 country_cities = MimeoDB().get_cities_of(country)
                 num_of_entries = len(country_cities)
                 if num_of_entries == 0:
-                    raise DataNotFound(f"Mimeo database does not contain any cities of provided country [{country}].")
+                    msg = f"Mimeo database does not contain any cities of provided country [{country}]."
+                    raise DataNotFound(msg)
 
             cities_indexes = random.sample(range(num_of_entries), num_of_entries)
             self._cities_indexes[country] = {
@@ -391,7 +392,8 @@ class MimeoContext:
             If all countries' indexes have been consumed already
         """
         if len(self._countries_indexes) == 0:
-            raise OutOfStock(f"No more unique values, database contain only {MimeoDB.NUM_OF_COUNTRIES} countries.")
+            msg = f"No more unique values, database contain only {MimeoDB.NUM_OF_COUNTRIES} countries."
+            raise OutOfStock(msg)
 
     def _validate_cities(self, country: str):
         """Verify if all cities' indexes have been consumed.
@@ -404,9 +406,11 @@ class MimeoContext:
         if len(self._cities_indexes[country][MimeoContext._INDEXES]) == 0:
             init_count = self._cities_indexes[country][MimeoContext._INITIAL_COUNT]
             if country == MimeoContext._ALL:
-                raise OutOfStock(f"No more unique values, database contain only {init_count} cities.")
+                msg = f"No more unique values, database contain only {init_count} cities."
+                raise OutOfStock(msg)
             else:
-                raise OutOfStock(f"No more unique values, database contain only {init_count} cities of {country}.")
+                msg = f"No more unique values, database contain only {init_count} cities of {country}."
+                raise OutOfStock(msg)
 
     def _validate_first_names(self, sex: str):
         """Verify if all first names' indexes have been consumed.
@@ -419,10 +423,11 @@ class MimeoContext:
         if len(self._first_names_indexes[sex][MimeoContext._INDEXES]) == 0:
             init_count = self._first_names_indexes[sex][MimeoContext._INITIAL_COUNT]
             if sex == MimeoContext._ALL:
-                raise OutOfStock(f"No more unique values, database contain only {init_count} first names.")
+                msg = f"No more unique values, database contain only {init_count} first names."
+                raise OutOfStock(msg)
             else:
-                raise OutOfStock(f"No more unique values, database contain only {init_count} "
-                                 f"{'male' if sex == 'M' else 'female'} first names.")
+                msg = f"No more unique values, database contain only {init_count} {'male' if sex == 'M' else 'female'} first names."
+                raise OutOfStock(msg)
 
     def _validate_last_names(self):
         """Verify if all last names' indexes have been consumed.
@@ -433,4 +438,5 @@ class MimeoContext:
             If all last names' indexes have been consumed already
         """
         if len(self._last_names_indexes) == 0:
-            raise OutOfStock(f"No more unique values, database contain only {MimeoDB.NUM_OF_LAST_NAMES} last names.")
+            msg = f"No more unique values, database contain only {MimeoDB.NUM_OF_LAST_NAMES} last names."
+            raise OutOfStock(msg)

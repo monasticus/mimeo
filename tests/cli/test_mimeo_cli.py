@@ -197,11 +197,11 @@ def test_directory_path():
         assert path.exists(file_path)
 
         with open(file_path, "r") as file_content:
-            assert file_content.readline() == '<SomeEntity>' \
-                                              '<ChildNode1>1</ChildNode1>' \
-                                              '<ChildNode2>value-2</ChildNode2>' \
-                                              '<ChildNode3>true</ChildNode3>' \
-                                              '</SomeEntity>'
+            assert file_content.readline() == ('<SomeEntity>'
+                                               '<ChildNode1>1</ChildNode1>'
+                                               '<ChildNode2>value-2</ChildNode2>'
+                                               '<ChildNode3>true</ChildNode3>'
+                                               '</SomeEntity>')
 
 
 def test_custom_short_xml_declaration_false():
@@ -321,11 +321,11 @@ def test_custom_short_indent_zero():
 
         with open(file_path, "r") as file_content:
             assert file_content.readline() == "<?xml version='1.0' encoding='utf-8'?>\n"
-            assert file_content.readline() == '<SomeEntity>' \
-                                              '<ChildNode1>1</ChildNode1>' \
-                                              '<ChildNode2>value-2</ChildNode2>' \
-                                              '<ChildNode3>true</ChildNode3>' \
-                                              '</SomeEntity>'
+            assert file_content.readline() == ('<SomeEntity>'
+                                               '<ChildNode1>1</ChildNode1>'
+                                               '<ChildNode2>value-2</ChildNode2>'
+                                               '<ChildNode3>true</ChildNode3>'
+                                               '</SomeEntity>')
 
 
 def test_custom_long_indent_non_zero():
@@ -363,11 +363,11 @@ def test_custom_long_indent_zero():
 
         with open(file_path, "r") as file_content:
             assert file_content.readline() == "<?xml version='1.0' encoding='utf-8'?>\n"
-            assert file_content.readline() == '<SomeEntity>' \
-                                              '<ChildNode1>1</ChildNode1>' \
-                                              '<ChildNode2>value-2</ChildNode2>' \
-                                              '<ChildNode3>true</ChildNode3>' \
-                                              '</SomeEntity>'
+            assert file_content.readline() == ('<SomeEntity>'
+                                               '<ChildNode1>1</ChildNode1>'
+                                               '<ChildNode2>value-2</ChildNode2>'
+                                               '<ChildNode3>true</ChildNode3>'
+                                               '</SomeEntity>')
 
 
 def test_custom_short_output_direction():
