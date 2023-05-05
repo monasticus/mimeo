@@ -77,7 +77,7 @@ class Generator(metaclass=ABCMeta):
         Iterator[Any]
             Iterator for generated nodes
         """
-        pass
+        raise NotImplementedError
 
     @abstractmethod
     def stringify(
@@ -101,4 +101,4 @@ class Generator(metaclass=ABCMeta):
         str
             Stringified data unit
         """
-        pass
+        raise NotImplementedError
