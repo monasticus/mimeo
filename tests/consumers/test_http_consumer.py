@@ -1,6 +1,5 @@
 from http import HTTPStatus
 
-import pytest
 import responses
 
 from mimeo.config import MimeoConfig

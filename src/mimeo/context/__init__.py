@@ -28,3 +28,5 @@ To use this package, simply import the desired class:
 from .mimeo_iteration import MimeoIteration
 from .mimeo_context import MimeoContext
 from .mimeo_context_manager import MimeoContextManager
+
+__all__ = [MimeoIteration, MimeoContext, MimeoContextManager]

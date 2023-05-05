@@ -19,3 +19,5 @@ To use this package, simply import the desired class:
     from mimeo.meta import Alive, OnlyOneAlive
 """
 from .alive import Alive, OnlyOneAlive
+
+__all__ = [Alive, OnlyOneAlive]

@@ -2,7 +2,6 @@ import pytest
 
 from mimeo.config import MimeoConfig
 from mimeo.context import MimeoContextManager
-from mimeo.utils.exc import NotASpecialField
 from mimeo.utils.renderers import SpecialFieldsRenderer
 
 

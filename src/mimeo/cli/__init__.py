@@ -8,8 +8,8 @@ It contains the following modules:
 * exc
     The Mimeo CLI Exceptions module.
 
-The Mimeo CLI package exports classes responsible for preparation and
-executing a Mimeo processing job from the command line:
+The Mimeo CLI package exports classes responsible for preparation and executing a Mimeo
+processing job from the command line:
 * MimeoJob
     A class representing a single Mimeo processing job.
 * MimeoArgumentParser
@@ -18,8 +18,9 @@ executing a Mimeo processing job from the command line:
     A class parsing source Mimeo Configuration with Mimeo arguments.
 
 To use this package, simply import it:
-    from mimeo.config import MimeoConfig
-    from mimeo.config.exc import UnsupportedPropertyValue
+    from mimeo.cli import MimeoJob
 """
 from .parsers import MimeoArgumentParser, MimeoConfigParser
 from .job import MimeoJob
+
+__all__ = [MimeoJob, MimeoArgumentParser, MimeoConfigParser]

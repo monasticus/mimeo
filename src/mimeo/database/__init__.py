@@ -43,3 +43,5 @@ from .countries import CountriesDB, Country
 from .first_names import FirstName, FirstNamesDB
 from .last_names import LastNamesDB
 from .mimeo_db import MimeoDB
+
+__all__ = [City, Country, FirstName, CitiesDB, CountriesDB, FirstNamesDB, LastNamesDB, MimeoDB]

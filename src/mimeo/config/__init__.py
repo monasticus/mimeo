@@ -16,3 +16,5 @@ To use this package, simply import it:
     from mimeo.config.exc import UnsupportedPropertyValue
 """
 from .mimeo_config import MimeoConfig
+
+__all__ = [MimeoConfig]

@@ -30,8 +30,8 @@ dependencies = [
 requires-python = ">=3.8"
 
 [project.optional-dependencies]
-dev = ["bumpver", "build", "twine", "pylama", "isort", "pytest", "pytest-cov", "responses"]
-test = ["pylama", "pytest", "pytest-cov", "responses"]
+dev = ["bumpver", "build", "twine", "ruff", "isort", "pytest", "pytest-cov", "responses"]
+test = ["pytest", "pytest-cov", "responses"]
 
 [project.scripts]
 mimeo = "mimeo.__main__:main"
@@ -71,17 +71,21 @@ skip_glob=[
     "src/mimeo/generators/__init__.py"
 ]
 
-[tool.pylama]
-async = true
-linters = "mccabe,pycodestyle,pydocstyle,pyflakes"
+[tool.ruff]
+select = ["E", "F"]
+ignore = []
+exclude = [
+    ".git",
+    ".github",
+    ".idea",
+    ".pytest_cache",
+    ".ruff_cache",
+    ".venv",
+    "__pycache__",
+    "dist",
+    "venv",
+    "examples"
+]
 
-[tool.pylama.linter.pydocstyle]
+[tool.ruff.pydocstyle]
 convention = "numpy"
-
-[[tool.pylama.files]]
-path = "*/__init__.py"
-ignore = "W0611"
-
-[[tool.pylama.files]]
-path = "tests/*"
-linters = "mccabe,pycodestyle,pyflakes"

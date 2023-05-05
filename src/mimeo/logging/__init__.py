@@ -27,6 +27,8 @@ from mimeo import tools
 
 from .filters import DetailedFilter, RegularFilter
 
+__all__ = [DetailedFilter, RegularFilter]
+
 
 def setup_logging():
     """Set up customized logging configuration.
