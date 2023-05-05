@@ -1287,7 +1287,7 @@ def test_generate_templates_using_curr_iter_util_in_nested_templates_indicating_
             assert len(list(multiples_nodes_node)) == 4  # number of children
 
             nodes = multiples_nodes_node.findall("Node")
-            for nested_index, node in enumerate(nodes):
+            for _, node in enumerate(nodes):
                 assert node.tag == "Node"
                 assert node.attrib == {}
                 assert len(list(node)) == 1  # number of children
@@ -1359,7 +1359,7 @@ def test_generate_templates_using_curr_iter_util_in_nested_templates_indicating_
             assert len(list(multiples_nodes_node)) == 4  # number of children
 
             nodes = multiples_nodes_node.findall("Node")
-            for nested_index, node in enumerate(nodes):
+            for _, node in enumerate(nodes):
                 assert node.tag == "Node"
                 assert node.attrib == {}
                 assert len(list(node)) == 1  # number of children
@@ -1456,7 +1456,7 @@ def test_generate_template_using_key_util():
         generator = XMLGenerator(config)
         count = 0
         keys = []
-        for index, data in enumerate(generator.generate(config.templates)):
+        for _index, data in enumerate(generator.generate(config.templates)):
             assert data.tag == "SomeEntity"
             assert data.attrib == {}
             assert len(list(data)) == 3  # number of children
@@ -1519,7 +1519,7 @@ def test_generate_template_using_key_util_in_separated_contexts():
     with MimeoContextManager(config):
         generator = XMLGenerator(config)
         count = 0
-        for index, data in enumerate(generator.generate(config.templates)):
+        for _index, data in enumerate(generator.generate(config.templates)):
             assert data.tag == "SomeEntity"
             assert data.attrib == {}
             assert len(list(data)) == 2  # number of children
@@ -1583,7 +1583,7 @@ def test_generate_template_using_key_util_in_separated_contexts_indicating_one()
     with MimeoContextManager(config):
         generator = XMLGenerator(config)
         count = 0
-        for index, data in enumerate(generator.generate(config.templates)):
+        for _index, data in enumerate(generator.generate(config.templates)):
             assert data.tag == "SomeEntity"
             assert data.attrib == {}
             assert len(list(data)) == 2  # number of children
@@ -1768,7 +1768,7 @@ def test_generate_template_using_special_fields():
     with MimeoContextManager(config):
         generator = XMLGenerator(config)
         count = 0
-        for index, data in enumerate(generator.generate(config.templates)):
+        for _index, data in enumerate(generator.generate(config.templates)):
             assert data.tag == "SomeEntity"
             assert data.attrib == {}
             assert len(list(data)) == 2  # number of children
@@ -1816,7 +1816,7 @@ def test_generate_template_using_special_fields_as_partial_values():
     with MimeoContextManager(config):
         generator = XMLGenerator(config)
         count = 0
-        for index, data in enumerate(generator.generate(config.templates)):
+        for _index, data in enumerate(generator.generate(config.templates)):
             assert data.tag == "SomeEntity"
             assert data.attrib == {}
             assert len(list(data)) == 7  # number of children
@@ -1892,7 +1892,7 @@ def test_generate_template_using_special_fields_using_namespace():
     with MimeoContextManager(config):
         generator = XMLGenerator(config)
         count = 0
-        for index, data in enumerate(generator.generate(config.templates)):
+        for _index, data in enumerate(generator.generate(config.templates)):
             assert data.tag == "ns:SomeEntity"
             assert data.attrib == {
                 "xmlns:ns": "http://mimeo.arch.com/prefixed-namespace"
@@ -1938,7 +1938,7 @@ def test_generate_template_using_special_fields_recursive():
     with MimeoContextManager(config):
         generator = XMLGenerator(config)
         count = 0
-        for index, data in enumerate(generator.generate(config.templates)):
+        for _index, data in enumerate(generator.generate(config.templates)):
             assert data.tag == "SomeEntity"
             assert data.attrib == {}
             assert len(list(data)) == 3  # number of children

@@ -8,6 +8,7 @@ import json
 import logging
 from argparse import Namespace
 from os import path, walk
+from typing import List
 
 from mimeo import MimeoConfig, Mimeograph
 from mimeo.cli import MimeoArgumentParser, MimeoConfigParser
@@ -59,7 +60,7 @@ class MimeoJob:
             logging.getLogger("mimeo").setLevel(logging.FINE)
 
     @staticmethod
-    def _get_config_paths(paths: list) -> list:
+    def _get_config_paths(paths: List) -> list:
         """Collect Mimeo Configuration paths.
 
         This method traverses directory paths and collects all files

@@ -50,7 +50,7 @@ def test_valid_class_instantiation():
         ValidGenerator()
         assert True
     except TypeError:
-        assert False
+        raise AssertionError() from TypeError
 
 
 def test_invalid_class_instantiation():

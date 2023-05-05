@@ -70,7 +70,8 @@ class MimeoArgumentParser(ArgumentParser):
           --http-auth AUTH
                                 overwrite the output_details/auth property
           -e ENVIRONMENT, --http-env ENVIRONMENT
-                                overwrite the output_details http properties using a mimeo environment configuration
+                                overwrite the output_details http properties using a mimeo
+                                env configuration
           --http-envs-file PATH
                                 use a custom environments file (by default: mimeo.envs.json)
 
@@ -182,7 +183,7 @@ class MimeoArgumentParser(ArgumentParser):
             "--http-env",
             type=str,
             metavar="ENVIRONMENT",
-            help="overwrite the output_details http properties using a mimeo environment configuration")
+            help="overwrite the output_details http properties using a mimeo env configuration")
         mimeo_config_args.add_argument(
             "--http-envs-file",
             type=str,
@@ -222,49 +223,62 @@ class MimeoConfigParser:
                           MimeoConfig.OUTPUT_DETAILS_AUTH_KEY,
                           MimeoConfig.OUTPUT_DETAILS_USERNAME_KEY,
                           MimeoConfig.OUTPUT_DETAILS_PASSWORD_KEY]
-    
+
     _ENTRY_PATH_KEY = "entry_path"
     _GET_VALUE_KEY = "get_value"
     _ARGS_MAPPING = {
         "output": {
-            "entry_path": [MimeoConfig.OUTPUT_DETAILS_KEY, MimeoConfig.OUTPUT_DETAILS_DIRECTION_KEY]
+            "entry_path": [MimeoConfig.OUTPUT_DETAILS_KEY,
+                           MimeoConfig.OUTPUT_DETAILS_DIRECTION_KEY]
         },
         "xml_declaration": {
-            "entry_path": [MimeoConfig.OUTPUT_DETAILS_KEY, MimeoConfig.OUTPUT_DETAILS_XML_DECLARATION_KEY],
+            "entry_path": [MimeoConfig.OUTPUT_DETAILS_KEY,
+                           MimeoConfig.OUTPUT_DETAILS_XML_DECLARATION_KEY],
             "get_value": lambda arg: arg.lower() == "true"
         },
         "indent": {
-            "entry_path": [MimeoConfig.OUTPUT_DETAILS_KEY, MimeoConfig.OUTPUT_DETAILS_INDENT_KEY]
+            "entry_path": [MimeoConfig.OUTPUT_DETAILS_KEY,
+                           MimeoConfig.OUTPUT_DETAILS_INDENT_KEY]
         },
         "directory": {
-            "entry_path": [MimeoConfig.OUTPUT_DETAILS_KEY, MimeoConfig.OUTPUT_DETAILS_DIRECTORY_PATH_KEY]
+            "entry_path": [MimeoConfig.OUTPUT_DETAILS_KEY,
+                           MimeoConfig.OUTPUT_DETAILS_DIRECTORY_PATH_KEY]
         },
         "file": {
-            "entry_path": [MimeoConfig.OUTPUT_DETAILS_KEY, MimeoConfig.OUTPUT_DETAILS_FILE_NAME_KEY]
+            "entry_path": [MimeoConfig.OUTPUT_DETAILS_KEY,
+                           MimeoConfig.OUTPUT_DETAILS_FILE_NAME_KEY]
         },
         "http_method": {
-            "entry_path": [MimeoConfig.OUTPUT_DETAILS_KEY, MimeoConfig.OUTPUT_DETAILS_METHOD_KEY]
+            "entry_path": [MimeoConfig.OUTPUT_DETAILS_KEY,
+                           MimeoConfig.OUTPUT_DETAILS_METHOD_KEY]
         },
         "http_protocol": {
-            "entry_path": [MimeoConfig.OUTPUT_DETAILS_KEY, MimeoConfig.OUTPUT_DETAILS_PROTOCOL_KEY]
+            "entry_path": [MimeoConfig.OUTPUT_DETAILS_KEY,
+                           MimeoConfig.OUTPUT_DETAILS_PROTOCOL_KEY]
         },
         "http_auth": {
-            "entry_path": [MimeoConfig.OUTPUT_DETAILS_KEY, MimeoConfig.OUTPUT_DETAILS_AUTH_KEY]
+            "entry_path": [MimeoConfig.OUTPUT_DETAILS_KEY,
+                           MimeoConfig.OUTPUT_DETAILS_AUTH_KEY]
         },
         "http_host": {
-            "entry_path": [MimeoConfig.OUTPUT_DETAILS_KEY, MimeoConfig.OUTPUT_DETAILS_HOST_KEY]
+            "entry_path": [MimeoConfig.OUTPUT_DETAILS_KEY,
+                           MimeoConfig.OUTPUT_DETAILS_HOST_KEY]
         },
         "http_port": {
-            "entry_path": [MimeoConfig.OUTPUT_DETAILS_KEY, MimeoConfig.OUTPUT_DETAILS_PORT_KEY]
+            "entry_path": [MimeoConfig.OUTPUT_DETAILS_KEY,
+                           MimeoConfig.OUTPUT_DETAILS_PORT_KEY]
         },
         "http_endpoint": {
-            "entry_path": [MimeoConfig.OUTPUT_DETAILS_KEY, MimeoConfig.OUTPUT_DETAILS_ENDPOINT_KEY]
+            "entry_path": [MimeoConfig.OUTPUT_DETAILS_KEY,
+                           MimeoConfig.OUTPUT_DETAILS_ENDPOINT_KEY]
         },
         "http_user": {
-            "entry_path": [MimeoConfig.OUTPUT_DETAILS_KEY, MimeoConfig.OUTPUT_DETAILS_USERNAME_KEY]
+            "entry_path": [MimeoConfig.OUTPUT_DETAILS_KEY,
+                           MimeoConfig.OUTPUT_DETAILS_USERNAME_KEY]
         },
         "http_password": {
-            "entry_path": [MimeoConfig.OUTPUT_DETAILS_KEY, MimeoConfig.OUTPUT_DETAILS_PASSWORD_KEY]
+            "entry_path": [MimeoConfig.OUTPUT_DETAILS_KEY,
+                           MimeoConfig.OUTPUT_DETAILS_PASSWORD_KEY]
         }
     }
 

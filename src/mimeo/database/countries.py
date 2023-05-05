@@ -118,7 +118,7 @@ class CountriesDB:
         try:
             return countries[index]
         except IndexError:
-            raise InvalidIndex(index, CountriesDB.NUM_OF_RECORDS-1)
+            raise InvalidIndex(index, CountriesDB.NUM_OF_RECORDS-1) from IndexError
 
     def get_country_by_iso_3(self, iso_3: str) -> Country:
         """Get a country having a specific ISO3 code.

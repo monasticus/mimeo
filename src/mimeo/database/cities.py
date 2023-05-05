@@ -120,7 +120,7 @@ class CitiesDB:
         try:
             return cities[index]
         except IndexError:
-            raise InvalidIndex(index, CitiesDB.NUM_OF_RECORDS-1)
+            raise InvalidIndex(index, CitiesDB.NUM_OF_RECORDS-1) from IndexError
 
     def get_cities_of(self, country_iso3: str) -> List[City]:
         """Get cities of a specific country.

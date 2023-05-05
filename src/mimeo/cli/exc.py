@@ -11,8 +11,7 @@ It contains all custom exceptions related to Mimeo CLI:
 class EnvironmentNotFound(Exception):
     """A custom Exception class for not found environment.
 
-    Raised while attempting to access an environment that does not
-    exist.
+    Raised while attempting to access an environment that does not exist.
     """
 
     def __init__(self, env_name: str, envs_file_path: str):
@@ -33,8 +32,7 @@ class EnvironmentNotFound(Exception):
 class EnvironmentsFileNotFound(Exception):
     """A custom Exception class for not found environments file.
 
-    Raised while attempting to access an environments file that does
-    not exist.
+    Raised while attempting to access an environments file that does not exist.
     """
 
     def __init__(self, envs_file_path: str):

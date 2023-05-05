@@ -242,7 +242,7 @@ def test_next_first_name_index_non_existing_sex():
 
 def test_next_last_name_index():
     ctx = MimeoContext("SomeContext")
-    for i in range(MimeoDB.NUM_OF_LAST_NAMES):
+    for _ in range(MimeoDB.NUM_OF_LAST_NAMES):
         last_name_index = ctx.next_last_name_index()
         assert last_name_index >= 0
         assert last_name_index < MimeoDB.NUM_OF_LAST_NAMES

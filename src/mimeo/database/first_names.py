@@ -109,7 +109,7 @@ class FirstNamesDB:
         try:
             return first_names[index]
         except IndexError:
-            raise InvalidIndex(index, FirstNamesDB.NUM_OF_RECORDS-1)
+            raise InvalidIndex(index, FirstNamesDB.NUM_OF_RECORDS-1) from IndexError
 
     def get_first_names_by_sex(self, sex: str) -> List[FirstName]:
         """Get first names for a specific sex.

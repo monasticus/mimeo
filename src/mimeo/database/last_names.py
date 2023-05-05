@@ -52,7 +52,7 @@ class LastNamesDB:
         try:
             return last_names[index]
         except IndexError:
-            raise InvalidIndex(index, LastNamesDB.NUM_OF_RECORDS-1)
+            raise InvalidIndex(index, LastNamesDB.NUM_OF_RECORDS-1) from IndexError
 
     @classmethod
     def get_last_names(cls) -> List[str]:

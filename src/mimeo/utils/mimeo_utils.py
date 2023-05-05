@@ -303,7 +303,7 @@ class DateTimeUtil(MimeoUtil):
 
 class AutoIncrementUtil(MimeoUtil):
     """A MimeoUtil implementation rendering an auto incremented ID.
-    
+
     It is a Mimeo Context-dependent Mimeo Util. Rendered ID value is
     pulled from the Context.
 
@@ -335,7 +335,7 @@ class AutoIncrementUtil(MimeoUtil):
     @mimeo_context
     def render(self, context: MimeoContext = None) -> str:
         """Render an auto incremented identifier.
-        
+
         Parameters
         ----------
         context : MimeoContext, default None
@@ -345,7 +345,7 @@ class AutoIncrementUtil(MimeoUtil):
         -------
         str
             An auto incremented identifier in a parametrized format
-        
+
         Raises
         ------
         InvalidValue
@@ -357,7 +357,7 @@ class AutoIncrementUtil(MimeoUtil):
         except AttributeError:
             context.prev_id()
             raise InvalidValue(f"The {self.KEY} Mimeo Util require a string value for the pattern parameter "
-                               f"and was: [{self._pattern}].")
+                               f"and was: [{self._pattern}].") from AttributeError
 
 
 class CurrentIterationUtil(MimeoUtil):
@@ -394,7 +394,7 @@ class CurrentIterationUtil(MimeoUtil):
     @mimeo_context
     def render(self, context: MimeoContext = None) -> int:
         """Render a current iteration ID.
-        
+
         Parameters
         ----------
         context : MimeoContext, default None
@@ -447,7 +447,7 @@ class KeyUtil(MimeoUtil):
     @mimeo_context
     def render(self, context: MimeoContext = None) -> str:
         """Render a unique identifier.
-        
+
         By default, Key Mimeo Util renders identifier from the current
         iteration of the current Mimeo Context.
         If the context name is parametrized and iteration is not, then
@@ -455,7 +455,7 @@ class KeyUtil(MimeoUtil):
         context. If the iteration is parametrized, then the identifier
         is pulled from the specific iteration of Mimeo Context (current
         or parametrized).
-        
+
         Parameters
         ----------
         context : MimeoContext, default None
