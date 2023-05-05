@@ -29,4 +29,4 @@ jobs:
           badge-title: Code Coverage
           pytest-coverage-path: ./coverage.txt
           junitxml-path: ./pytest.xml
-          junitxml-title: Summary
+          junitxml-title: Test Results

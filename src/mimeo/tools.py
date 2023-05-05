@@ -5,16 +5,11 @@ non-Mimeo-specific operations. It exports the following functions:
     * get_resource(resource_name: str) -> TextIO
         Return a Mimeo resource.
 """
+import importlib.resources as pkg_resources
 from typing import TextIO
 
-from mimeo.resources.exc import ResourceNotFound
-
-try:
-    import importlib.resources as pkg_resources
-except ImportError:  # Python < 3.7
-    import importlib_resources as pkg_resources
-
 from mimeo import resources as data
+from mimeo.resources.exc import ResourceNotFound
 
 
 def get_resource(resource_name: str) -> TextIO:
