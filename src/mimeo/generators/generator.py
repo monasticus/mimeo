@@ -7,7 +7,7 @@ It exports only one class:
 from __future__ import annotations
 
 from abc import ABCMeta, abstractmethod
-from typing import Any, Iterator, Union
+from typing import Any, Iterator
 
 from mimeo.config.mimeo_config import MimeoConfig, MimeoTemplate
 
@@ -56,7 +56,7 @@ class Generator(metaclass=ABCMeta):
     @abstractmethod
     def generate(
             self,
-            templates: Union[list, Iterator[MimeoTemplate]],
+            templates: list | Iterator[MimeoTemplate],
             parent: Any = None,
     ) -> Iterator[Any]:
         """Generate data based on the Mimeo Configuration.

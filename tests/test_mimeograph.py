@@ -50,7 +50,7 @@ def test_produce():
             file_path = f"test_mimeograph-dir/output-{i}.xml"
             assert path.exists(file_path)
 
-            with open(file_path, "r") as file_content:
+            with open(file_path) as file_content:
                 assert file_content.readline() == '<?xml version="1.0" encoding="utf-8"?>\n'
                 assert file_content.readline() == '<SomeEntity>\n'
                 assert file_content.readline() == '    <ChildNode1>1</ChildNode1>\n'

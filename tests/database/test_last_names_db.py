@@ -16,7 +16,7 @@ def test_get_last_names():
 
 
 def test_get_last_name_at():
-    with open("src/mimeo/resources/surnames.txt", "r") as last_names:
+    with open("src/mimeo/resources/surnames.txt") as last_names:
         last_name_1_source = next(last_names).rstrip()
         last_name_2_source = next(last_names).rstrip()
 

@@ -875,7 +875,7 @@ def test_generate_template_using_mimeo_util_raw():
             child = data.find("ChildNode")
             assert child.tag == "ChildNode"
             assert child.attrib == {}
-            assert child.text == "{:05d}".format(index + 1)
+            assert child.text == f"{index + 1:05d}"
             assert len(list(child)) == 0  # number of children
 
             count += 1
@@ -984,7 +984,7 @@ def test_generate_template_using_auto_increment_util():
             child = data.find("ChildNode")
             assert child.tag == "ChildNode"
             assert child.attrib == {}
-            assert child.text == "{:05d}".format(index + 1)
+            assert child.text == f"{index + 1:05d}"
             assert len(list(child)) == 0  # number of children
 
             count += 1
@@ -1028,7 +1028,7 @@ def test_generate_template_using_auto_increment_util_in_two_templates():
             child = data.find("ChildNode")
             assert child.tag == "ChildNode"
             assert child.attrib == {}
-            assert child.text == "{:05d}".format(index + 1)
+            assert child.text == f"{index + 1:05d}"
             assert len(list(child)) == 0  # number of children
 
             count += 1
@@ -1074,7 +1074,7 @@ def test_generate_template_using_auto_increment_util_in_two_templates_with_custo
             child = data.find("ChildNode")
             assert child.tag == "ChildNode"
             assert child.attrib == {}
-            assert child.text == "{:05d}".format(expected_increment)
+            assert child.text == f"{expected_increment:05d}"
             assert len(list(child)) == 0  # number of children
 
             count += 1

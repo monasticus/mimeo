@@ -322,7 +322,7 @@ class MimeoConfigParser:
         config = self._parse_with_http_environment(config)
         config = self._parse_with_specific_args(config)
         mimeo_config = MimeoConfig(config)
-        logger.fine(f"Parsed Mimeo Configuration: [{mimeo_config}]")
+        logger.fine("Parsed Mimeo Configuration: [{config}]", extra={"config": mimeo_config})
         return mimeo_config
 
     def _parse_with_http_environment(self, config: dict) -> dict:
@@ -437,7 +437,7 @@ class MimeoConfigParser:
                 config_entry[direct_entry] = {}
             config_entry[direct_entry] = cls._overwrite_config_entry(config_entry[direct_entry], entry_path[1:], value)
         else:
-            logger.fine(f"Overwriting {direct_entry} to [{value}]")
+            logger.fine("Overwriting {entry} to [{val}]", extra={"entry": direct_entry, "val": value})
             config_entry[direct_entry] = value
         return config_entry
 
@@ -469,7 +469,10 @@ class MimeoConfigParser:
                 envs = json.load(envs_file)
                 if env_name in envs:
                     env = envs[env_name]
-                    logger.debug(f"Using environment [{env_name}] from file [{envs_path}]: [{env}]")
+                    logger.debug("Using environment [{env_name}] from file [{envs_path}]: [{env}]",
+                                 extra={"env_name": env_name,
+                                        "envs_path": envs_path,
+                                        "env": env})
                     return env
                 else:
                     raise EnvironmentNotFound(env_name, envs_path)

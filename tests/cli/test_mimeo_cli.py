@@ -159,7 +159,7 @@ def test_basic_use():
         file_path = f"test_mimeo_cli-dir/output/output-file-{i}.xml"
         assert path.exists(file_path)
 
-        with open(file_path, "r") as file_content:
+        with open(file_path) as file_content:
             assert file_content.readline() == '<?xml version="1.0" encoding="utf-8"?>\n'
             assert file_content.readline() == '<SomeEntity>\n'
             assert file_content.readline() == '    <ChildNode1>1</ChildNode1>\n'
@@ -183,7 +183,7 @@ def test_directory_path():
         file_path = f"test_mimeo_cli-dir/output/output-file-{i}.xml"
         assert path.exists(file_path)
 
-        with open(file_path, "r") as file_content:
+        with open(file_path) as file_content:
             assert file_content.readline() == '<?xml version="1.0" encoding="utf-8"?>\n'
             assert file_content.readline() == '<SomeEntity>\n'
             assert file_content.readline() == '    <ChildNode1>1</ChildNode1>\n'
@@ -196,7 +196,7 @@ def test_directory_path():
         file_path = f"mimeo-output/mimeo-output-{i}.xml"
         assert path.exists(file_path)
 
-        with open(file_path, "r") as file_content:
+        with open(file_path) as file_content:
             assert file_content.readline() == ('<SomeEntity>'
                                                '<ChildNode1>1</ChildNode1>'
                                                '<ChildNode2>value-2</ChildNode2>'
@@ -216,7 +216,7 @@ def test_custom_short_xml_declaration_false():
         file_path = f"test_mimeo_cli-dir/output/output-file-{i}.xml"
         assert path.exists(file_path)
 
-        with open(file_path, "r") as file_content:
+        with open(file_path) as file_content:
             assert file_content.readline() == '<SomeEntity>\n'
             assert file_content.readline() == '    <ChildNode1>1</ChildNode1>\n'
             assert file_content.readline() == '    <ChildNode2>value-2</ChildNode2>\n'
@@ -236,7 +236,7 @@ def test_custom_short_xml_declaration_true():
         file_path = f"test_mimeo_cli-dir/output/output-file-{i}.xml"
         assert path.exists(file_path)
 
-        with open(file_path, "r") as file_content:
+        with open(file_path) as file_content:
             assert file_content.readline() == '<?xml version="1.0" encoding="utf-8"?>\n'
             assert file_content.readline() == '<SomeEntity>\n'
             assert file_content.readline() == '    <ChildNode1>1</ChildNode1>\n'
@@ -257,7 +257,7 @@ def test_custom_long_xml_declaration_false():
         file_path = f"test_mimeo_cli-dir/output/output-file-{i}.xml"
         assert path.exists(file_path)
 
-        with open(file_path, "r") as file_content:
+        with open(file_path) as file_content:
             assert file_content.readline() == '<SomeEntity>\n'
             assert file_content.readline() == '    <ChildNode1>1</ChildNode1>\n'
             assert file_content.readline() == '    <ChildNode2>value-2</ChildNode2>\n'
@@ -277,7 +277,7 @@ def test_custom_long_xml_declaration_true():
         file_path = f"test_mimeo_cli-dir/output/output-file-{i}.xml"
         assert path.exists(file_path)
 
-        with open(file_path, "r") as file_content:
+        with open(file_path) as file_content:
             assert file_content.readline() == '<?xml version="1.0" encoding="utf-8"?>\n'
             assert file_content.readline() == '<SomeEntity>\n'
             assert file_content.readline() == '    <ChildNode1>1</ChildNode1>\n'
@@ -298,7 +298,7 @@ def test_custom_short_indent_non_zero():
         file_path = f"test_mimeo_cli-dir/output/output-file-{i}.xml"
         assert path.exists(file_path)
 
-        with open(file_path, "r") as file_content:
+        with open(file_path) as file_content:
             assert file_content.readline() == '<?xml version="1.0" encoding="utf-8"?>\n'
             assert file_content.readline() == '<SomeEntity>\n'
             assert file_content.readline() == '  <ChildNode1>1</ChildNode1>\n'
@@ -319,7 +319,7 @@ def test_custom_short_indent_zero():
         file_path = f"test_mimeo_cli-dir/output/output-file-{i}.xml"
         assert path.exists(file_path)
 
-        with open(file_path, "r") as file_content:
+        with open(file_path) as file_content:
             assert file_content.readline() == "<?xml version='1.0' encoding='utf-8'?>\n"
             assert file_content.readline() == ('<SomeEntity>'
                                                '<ChildNode1>1</ChildNode1>'
@@ -340,7 +340,7 @@ def test_custom_long_indent_non_zero():
         file_path = f"test_mimeo_cli-dir/output/output-file-{i}.xml"
         assert path.exists(file_path)
 
-        with open(file_path, "r") as file_content:
+        with open(file_path) as file_content:
             assert file_content.readline() == '<?xml version="1.0" encoding="utf-8"?>\n'
             assert file_content.readline() == '<SomeEntity>\n'
             assert file_content.readline() == '  <ChildNode1>1</ChildNode1>\n'
@@ -361,7 +361,7 @@ def test_custom_long_indent_zero():
         file_path = f"test_mimeo_cli-dir/output/output-file-{i}.xml"
         assert path.exists(file_path)
 
-        with open(file_path, "r") as file_content:
+        with open(file_path) as file_content:
             assert file_content.readline() == "<?xml version='1.0' encoding='utf-8'?>\n"
             assert file_content.readline() == ('<SomeEntity>'
                                                '<ChildNode1>1</ChildNode1>'
@@ -413,7 +413,7 @@ def test_custom_short_output_directory_path():
         file_path = f"test_mimeo_cli-dir/customized-output/output-file-{i}.xml"
         assert path.exists(file_path)
 
-        with open(file_path, "r") as file_content:
+        with open(file_path) as file_content:
             assert file_content.readline() == '<?xml version="1.0" encoding="utf-8"?>\n'
             assert file_content.readline() == '<SomeEntity>\n'
             assert file_content.readline() == '    <ChildNode1>1</ChildNode1>\n'
@@ -436,7 +436,7 @@ def test_custom_long_output_directory_path():
         file_path = f"test_mimeo_cli-dir/customized-output/output-file-{i}.xml"
         assert path.exists(file_path)
 
-        with open(file_path, "r") as file_content:
+        with open(file_path) as file_content:
             assert file_content.readline() == '<?xml version="1.0" encoding="utf-8"?>\n'
             assert file_content.readline() == '<SomeEntity>\n'
             assert file_content.readline() == '    <ChildNode1>1</ChildNode1>\n'
@@ -467,7 +467,7 @@ def test_custom_short_output_file_name():
         assert path.exists(file_path)
         assert not path.exists(f"test_mimeo_cli-dir/output/output-file-{i}.xml")
 
-        with open(file_path, "r") as file_content:
+        with open(file_path) as file_content:
             assert file_content.readline() == '<?xml version="1.0" encoding="utf-8"?>\n'
             assert file_content.readline() == '<SomeEntity>\n'
             assert file_content.readline() == '    <ChildNode1>1</ChildNode1>\n'
@@ -489,7 +489,7 @@ def test_custom_long_output_file_name():
         assert path.exists(file_path)
         assert not path.exists(f"test_mimeo_cli-dir/output/output-file-{i}.xml")
 
-        with open(file_path, "r") as file_content:
+        with open(file_path) as file_content:
             assert file_content.readline() == '<?xml version="1.0" encoding="utf-8"?>\n'
             assert file_content.readline() == '<SomeEntity>\n'
             assert file_content.readline() == '    <ChildNode1>1</ChildNode1>\n'
@@ -859,5 +859,5 @@ def test_logging_mode_fine():
 
 
 def _generate_authorization(username: str, password: str):
-    token = b64encode(f"{username}:{password}".encode('utf-8')).decode("ascii")
+    token = b64encode(f"{username}:{password}".encode()).decode("ascii")
     return f'Basic {token}'

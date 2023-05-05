@@ -104,7 +104,7 @@ class UtilsRenderer:
             If the First Name Mimeo Util has not supported `sex`
             parameter value assigned.
         """
-        logger.fine(f"Rendering a mimeo util [{mimeo_util_config}]")
+        logger.fine("Rendering a mimeo util [{util}]", extra={"util": mimeo_util_config})
         mimeo_util = cls._get_mimeo_util(mimeo_util_config)
         return mimeo_util.render()
 
@@ -251,7 +251,7 @@ class VarsRenderer:
         VarNotFound
             If the Mimeo Var with the `var` provided does not exist
         """
-        logger.fine(f"Rendering a variable [{var}]")
+        logger.fine("Rendering a variable [{var}]", extra={"var": var})
         return MimeoContextManager().get_var(var)
 
 
@@ -289,7 +289,7 @@ class SpecialFieldsRenderer:
         SpecialFieldNotFound
             If the special field does not exist.
         """
-        logger.fine(f"Rendering a special field [{field_name}]")
+        logger.fine("Rendering a special field [{field}]", extra={"field": field_name})
         return context.curr_iteration().get_special_field(field_name)
 
 
@@ -438,7 +438,7 @@ class MimeoRenderer:
             If the First Name Mimeo Util has not supported `sex`
             parameter value assigned.
         """
-        logger.fine(f"Rendering a value [{value}]")
+        logger.fine("Rendering a value [{val}]", extra={"val": value})
         try:
             if isinstance(value, str):
                 return cls._render_string_value(value)
@@ -448,7 +448,10 @@ class MimeoRenderer:
                 return value
         except Exception as err:
             error_name = type(err).__name__
-            logger.error(f"The [{error_name}] error occurred during rendering a value [{value}]: [{err}].")
+            logger.error("The [{error_name}] error occurred during rendering a value [{value}]: [{err}].",
+                         extra={"err_name": error_name,
+                                "val": value,
+                                "err": err})
             raise err
 
     @classmethod
@@ -505,7 +508,7 @@ class MimeoRenderer:
         match = next(cls._SPECIAL_FIELDS_PATTERN.finditer(value))
         wrapped_special_field = match.group(1)
         rendered_value = SpecialFieldsRenderer.render(wrapped_special_field[2:][:-2])
-        logger.fine(f"Rendered special field value [{rendered_value}]")
+        logger.fine("Rendered special field value [{val}]", extra={"val": rendered_value})
         if len(wrapped_special_field) != len(value):
             rendered_value = str(rendered_value).lower() if isinstance(rendered_value, bool) else str(rendered_value)
             rendered_value = value.replace(wrapped_special_field, str(rendered_value))
@@ -539,7 +542,7 @@ class MimeoRenderer:
         match = next(cls._VARS_PATTERN.finditer(value))
         wrapped_var = match.group(1)
         rendered_value = VarsRenderer.render(wrapped_var[1:][:-1])
-        logger.fine(f"Rendered variable value [{rendered_value}]")
+        logger.fine("Rendered variable value [{val}]", extra={"val": rendered_value})
         if cls.is_parametrized_mimeo_util(rendered_value):
             rendered_value = cls._render_parametrized_mimeo_util(rendered_value)
         if len(wrapped_var) != len(value):
@@ -602,7 +605,7 @@ class MimeoRenderer:
         """
         mimeo_util = value[MimeoConfig.MODEL_MIMEO_UTIL_KEY]
         mimeo_util = cls._render_mimeo_util_parameters(mimeo_util)
-        logger.fine(f"Pre-rendered mimeo util [{mimeo_util}]")
+        logger.fine("Pre-rendered mimeo util [{util}]", extra={"util": mimeo_util})
         rendered_value = UtilsRenderer.render_parametrized(mimeo_util)
         return cls.render(rendered_value)
 

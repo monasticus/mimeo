@@ -148,7 +148,7 @@ class XMLGenerator(Generator):
         List[ElemTree.Element]
             A list of generated data units
         """
-        logger.debug(f"Reading template [{template}]")
+        logger.debug("Reading template [{tmplt}]", extra={"tmplt": template})
         data_units = [cls._process_single_data_unit(template, parent) for _ in iter(range(template.count))]
         return data_units
 
@@ -227,11 +227,15 @@ class XMLGenerator(Generator):
         SpecialFieldNotFound
             If the special field does not exist.
         """
-        logger.fine(f"Rendering element - "
-                    f"parent [{parent if parent is None else parent.tag}], "
-                    f"element_tag [{element_tag}], "
-                    f"element_value [{element_value}], "
-                    f"attributes [{attributes}]")
+        logger.fine("Rendering element - "
+                    "parent [{parent}], element_tag [{tag}], "
+                    "element_value [{val}], attributes [{attrs}]",
+                    extra={
+                        "parent": parent if parent is None else parent.tag,
+                        "tag": element_tag,
+                        "val": element_value,
+                        "attrs": attributes,
+                    })
         attributes = attributes if attributes is not None else {}
         if element_tag == MimeoConfig.TEMPLATES_KEY:
             templates = (MimeoTemplate(template) for template in element_value)
@@ -275,7 +279,7 @@ class XMLGenerator(Generator):
 
                 value_str = str(value) if value is not None else ""
                 element.text = value_str.lower() if isinstance(value, bool) else value_str
-                logger.fine(f"Rendered value [{element.text}]")
+                logger.fine("Rendered value [{txt}]", extra={"txt": element.text})
 
             if parent is None:
                 return element
