@@ -10,7 +10,7 @@ data:
 	@./scripts/collect_surnames_data.py
 
 test:
-	pytest --cov=src --cov-report term-missing:skip-covered tests/
+	pytest --cov=src tests/
 
 latest_tag:
 	@git tag --sort=committerdate --list '[0-9]*' | tail -1

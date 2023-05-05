@@ -50,8 +50,25 @@ push            = false
 "src/mimeo/cli/parsers.py" = ["{version}"]
 
 [tool.pytest.ini_options]
-pythonpath = [
-    "."
+pythonpath = ["."]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true
+exclude_lines = [
+    # Don't complain if non-runnable code isn't run:
+    "if __name__ == .__main__.",
+    # Don't complain about abstract methods, they aren't run:
+    "@abstractmethod"
+]
+
+[tool.isort]
+skip_glob=[
+    # Disable imports' sorting when the import order is important
+    "src/mimeo/cli/__init__.py",
+    "src/mimeo/consumers/__init__.py",
+    "src/mimeo/context/__init__.py",
+    "src/mimeo/generators/__init__.py"
 ]
 
 [tool.pylama]
