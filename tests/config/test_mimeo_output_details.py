@@ -1,8 +1,8 @@
-import pytest
 
 from mimeo.config.exc import (InvalidIndent, MissingRequiredProperty,
                               UnsupportedPropertyValue)
 from mimeo.config.mimeo_config import MimeoOutputDetails
+from tests.test_tools import assert_throws
 
 
 def test_str():
@@ -207,40 +207,42 @@ def test_parsing_output_details_http_customized():
     assert mimeo_output_details.file_name_tmplt is None
 
 
+@assert_throws(err_type=InvalidIndent,
+               message="Provided indent [{indent}] is negative!",
+               params={"indent": -1})
 def test_parsing_output_details_with_invalid_indent():
     output_details = {
         "indent": -1,
     }
-
-    with pytest.raises(InvalidIndent) as err:
-        MimeoOutputDetails(output_details)
-
-    assert err.value.args[0] == "Provided indent [-1] is negative!"
+    MimeoOutputDetails(output_details)
 
 
+@assert_throws(err_type=UnsupportedPropertyValue,
+               message="Provided format [{format}] is not supported! Supported values: [{values}].",
+               params={"format": "unsupported_format",
+                       "values": "xml"})
 def test_parsing_output_details_with_unsupported_format():
     output_details = {
         "format": "unsupported_format",
     }
-
-    with pytest.raises(UnsupportedPropertyValue) as err:
-        MimeoOutputDetails(output_details)
-
-    assert err.value.args[0] == "Provided format [unsupported_format] is not supported! Supported values: [xml]."
+    MimeoOutputDetails(output_details)
 
 
+@assert_throws(err_type=UnsupportedPropertyValue,
+               message="Provided direction [{direction}] is not supported! Supported values: [{values}].",
+               params={"direction": "unsupported_direction",
+                       "values": "stdout, file, http"})
 def test_parsing_output_details_unsupported_direction():
     output_details = {
         "direction": "unsupported_direction",
     }
-
-    with pytest.raises(UnsupportedPropertyValue) as err:
-        MimeoOutputDetails(output_details)
-
-    assert err.value.args[0] == ("Provided direction [unsupported_direction] is not supported! "
-                                 "Supported values: [stdout, file, http].")
+    MimeoOutputDetails(output_details)
 
 
+@assert_throws(err_type=UnsupportedPropertyValue,
+               message="Provided auth [{auth}] is not supported! Supported values: [{values}].",
+               params={"auth": "unsupported_auth",
+                       "values": "basic, digest"})
 def test_parsing_output_details_unsupported_auth_method():
     output_details = {
         "direction": "http",
@@ -250,13 +252,13 @@ def test_parsing_output_details_unsupported_auth_method():
         "username": "admin",
         "password": "admin",
     }
-
-    with pytest.raises(UnsupportedPropertyValue) as err:
-        MimeoOutputDetails(output_details)
-
-    assert err.value.args[0] == "Provided auth [unsupported_auth] is not supported! Supported values: [basic, digest]."
+    MimeoOutputDetails(output_details)
 
 
+@assert_throws(err_type=UnsupportedPropertyValue,
+               message="Provided method [{method}] is not supported! Supported values: [{values}].",
+               params={"method": "unsupported_request_method",
+                       "values": "POST, PUT"})
 def test_parsing_output_details_unsupported_request_method():
     output_details = {
         "direction": "http",
@@ -266,14 +268,12 @@ def test_parsing_output_details_unsupported_request_method():
         "username": "admin",
         "password": "admin",
     }
-
-    with pytest.raises(UnsupportedPropertyValue) as err:
-        MimeoOutputDetails(output_details)
-
-    assert err.value.args[0] == ("Provided method [unsupported_request_method] is not supported! "
-                                 "Supported values: [POST, PUT].")
+    MimeoOutputDetails(output_details)
 
 
+@assert_throws(err_type=MissingRequiredProperty,
+               message="Missing required fields is HTTP output details: {fields}",
+               params={"fields": "endpoint"})
 def test_parsing_output_details_missing_required_field():
     output_details = {
         "direction": "http",
@@ -281,19 +281,14 @@ def test_parsing_output_details_missing_required_field():
         "username": "admin",
         "password": "admin",
     }
-
-    with pytest.raises(MissingRequiredProperty) as err:
-        MimeoOutputDetails(output_details)
-
-    assert err.value.args[0] == "Missing required fields is HTTP output details: endpoint"
+    MimeoOutputDetails(output_details)
 
 
+@assert_throws(err_type=MissingRequiredProperty,
+               message="Missing required fields is HTTP output details: {fields}",
+               params={"fields": "host, endpoint, username, password"})
 def test_parsing_output_details_missing_required_fields():
     output_details = {
         "direction": "http",
     }
-
-    with pytest.raises(MissingRequiredProperty) as err:
-        MimeoOutputDetails(output_details)
-
-    assert err.value.args[0] == "Missing required fields is HTTP output details: host, endpoint, username, password"
+    MimeoOutputDetails(output_details)

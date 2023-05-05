@@ -13,8 +13,10 @@ import responses
 from responses import matchers
 
 import mimeo.__main__ as MimeoCLI
-from mimeo.cli.exc import EnvironmentNotFound, EnvironmentsFileNotFound
+from mimeo.cli.exc import (EnvironmentNotFoundError,
+                           EnvironmentsFileNotFoundError)
 from mimeo.config.exc import MissingRequiredProperty
+from tests.test_tools import assert_throws
 
 
 @pytest.fixture(autouse=True)
@@ -791,15 +793,14 @@ def test_custom_env_file():
     # would throw a ConnectionError when any request call doesn't match registered mocks
 
 
+@assert_throws(err_type=EnvironmentsFileNotFoundError,
+               message="Environments file not found [{file}]",
+               params={"file": "non-existing-environments-file.json"})
 def test_custom_env_file_does_throw_error_when_file_does_not_exist():
     sys.argv = ["mimeo", "test_mimeo_cli-dir/http-config.json",
                 "--http-envs-file", "non-existing-environments-file.json",
                 "-e", "custom"]
-
-    with pytest.raises(EnvironmentsFileNotFound) as err:
-        MimeoCLI.main()
-
-    assert err.value.args[0] == "Environments file not found [non-existing-environments-file.json]"
+    MimeoCLI.main()
 
 
 def test_custom_env_does_not_throw_key_error_when_output_details_does_not_exist():
@@ -813,13 +814,12 @@ def test_custom_env_does_not_throw_key_error_when_output_details_does_not_exist(
         raise AssertionError() from KeyError
 
 
+@assert_throws(err_type=EnvironmentNotFoundError,
+               message="No such env [{env}] in environments file [{file}]",
+               params={"env": "non-existing", "file": "mimeo.envs.json"})
 def test_custom_env_does_throw_error_when_environment_does_not_exist():
     sys.argv = ["mimeo", "test_mimeo_cli-dir/minimum-config.json", "-o", "http", "-e", "non-existing"]
-
-    with pytest.raises(EnvironmentNotFound) as err:
-        MimeoCLI.main()
-
-    assert err.value.args[0] == "No such env [non-existing] in environments file [mimeo.envs.json]"
+    MimeoCLI.main()
 
 
 def test_logging_mode_default():

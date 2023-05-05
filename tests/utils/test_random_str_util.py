@@ -8,12 +8,14 @@ def test_random_str_raw():
 
 
 def test_random_str_parametrized_default():
-    random_str = UtilsRenderer.render_parametrized({"_name": "random_str"})
+    mimeo_util = {"_name": "random_str"}
+    random_str = UtilsRenderer.render_parametrized(mimeo_util)
     assert isinstance(random_str, str)
     assert len(random_str) == 20
 
 
 def test_random_str_parametrized_custom():
-    random_str = UtilsRenderer.render_parametrized({"_name": "random_str", "length": 3})
+    mimeo_util = {"_name": "random_str", "length": 3}
+    random_str = UtilsRenderer.render_parametrized(mimeo_util)
     assert isinstance(random_str, str)
     assert len(random_str) == 3

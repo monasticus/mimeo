@@ -14,7 +14,8 @@ from os import path
 from typing import Union
 
 from mimeo import MimeoConfig
-from mimeo.cli.exc import EnvironmentNotFound, EnvironmentsFileNotFound
+from mimeo.cli.exc import (EnvironmentNotFoundError,
+                           EnvironmentsFileNotFoundError)
 
 logger = logging.getLogger(__name__)
 
@@ -312,9 +313,9 @@ class MimeoConfigParser:
 
         Raises
         ------
-        EnvironmentsFileNotFound
+        EnvironmentsFileNotFoundError
             If environments file does not exist.
-        EnvironmentNotFound
+        EnvironmentNotFoundError
             If the http environment is not defined in the environments file
         """
         logger.info("Parsing Mimeo Configuration")
@@ -345,9 +346,9 @@ class MimeoConfigParser:
 
         Raises
         ------
-        EnvironmentsFileNotFound
+        EnvironmentsFileNotFoundError
             If environments file does not exist.
-        EnvironmentNotFound
+        EnvironmentNotFoundError
             If the http environment is not defined in the environments file
         """
         if self._args.http_env is not None:
@@ -459,9 +460,9 @@ class MimeoConfigParser:
 
         Raises
         ------
-        EnvironmentsFileNotFound
+        EnvironmentsFileNotFoundError
             If environments file does not exist.
-        EnvironmentNotFound
+        EnvironmentNotFoundError
             If the http environment is not defined in the environments file
         """
         if path.exists(envs_path):
@@ -475,6 +476,6 @@ class MimeoConfigParser:
                                         "env": env})
                     return env
                 else:
-                    raise EnvironmentNotFound(env_name, envs_path)
+                    raise EnvironmentNotFoundError(env_name, envs_path)
         else:
-            raise EnvironmentsFileNotFound(envs_path)
+            raise EnvironmentsFileNotFoundError(envs_path)

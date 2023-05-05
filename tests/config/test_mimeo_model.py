@@ -1,7 +1,7 @@
-import pytest
 
 from mimeo.config.exc import InvalidMimeoModel
 from mimeo.config.mimeo_config import MimeoModel
+from tests.test_tools import assert_throws
 
 
 def test_str():
@@ -47,18 +47,20 @@ def test_parsing_raw_model():
     }
 
 
+@assert_throws(err_type=InvalidMimeoModel,
+               message="No root data in Mimeo Model: {model}",
+               params={"model": "{'context': 'My Context'}"})
 def test_parsing_model_without_root():
     model = {
         "context": "My Context",
     }
-
-    with pytest.raises(InvalidMimeoModel) as err:
-        MimeoModel(model)
-
-    assert err.value.args[0] == ("No root data in Mimeo Model: "
-                                 "{'context': 'My Context'}")
+    MimeoModel(model)
 
 
+@assert_throws(err_type=InvalidMimeoModel,
+               message="Multiple root data in Mimeo Model: {model}",
+               params={"model": "{'SomeEntity': {'ChildNode': 'value'}, "
+                                "'SomeEntity2': {'ChildNode': 'value'}}"})
 def test_parsing_model_with_multiple_roots():
     model = {
         "SomeEntity": {
@@ -68,14 +70,12 @@ def test_parsing_model_with_multiple_roots():
             "ChildNode": "value",
         },
     }
-
-    with pytest.raises(InvalidMimeoModel) as err:
-        MimeoModel(model)
-
-    assert err.value.args[0] == ("Multiple root data in Mimeo Model: "
-                                 "{'SomeEntity': {'ChildNode': 'value'}, 'SomeEntity2': {'ChildNode': 'value'}}")
+    MimeoModel(model)
 
 
+@assert_throws(err_type=InvalidMimeoModel,
+               message="Invalid context name in Mimeo Model (not a string value): {model}",
+               params={"model": "{'context': 1, 'SomeEntity': {'ChildNode': 'value'}}"})
 def test_parsing_model_with_non_str_context():
     model = {
         "context": 1,
@@ -83,9 +83,4 @@ def test_parsing_model_with_non_str_context():
             "ChildNode": "value",
         },
     }
-
-    with pytest.raises(InvalidMimeoModel) as err:
-        MimeoModel(model)
-
-    assert err.value.args[0] == ("Invalid context name in Mimeo Model (not a string value): "
-                                 "{'context': 1, 'SomeEntity': {'ChildNode': 'value'}}")
+    MimeoModel(model)

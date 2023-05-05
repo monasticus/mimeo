@@ -1,7 +1,6 @@
-import pytest
-
 from mimeo.database import CountriesDB
 from mimeo.database.exc import InvalidIndex
+from tests.test_tools import assert_throws
 
 
 def test_get_countries():
@@ -34,13 +33,12 @@ def test_get_country_at():
     assert country_2.name == country_2_cols[2]
 
 
+@assert_throws(err_type=InvalidIndex,
+               message="Provided index [{i}] is out or the range: 0-238!",
+               params={"i": 999})
 def test_get_country_at_out_of_range():
     db = CountriesDB()
-
-    with pytest.raises(InvalidIndex) as err:
-        db.get_country_at(999)
-
-    assert err.value.args[0] == "Provided index [999] is out or the range: 0-238!"
+    db.get_country_at(999)
 
 
 def test_get_country_by_iso_3():

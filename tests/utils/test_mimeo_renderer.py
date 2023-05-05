@@ -7,6 +7,7 @@ from mimeo.context import MimeoContextManager
 from mimeo.context.exc import VarNotFound
 from mimeo.utils import MimeoRenderer
 from mimeo.utils.exc import InvalidValue, NotASpecialField
+from tests.test_tools import assert_throws
 
 
 @pytest.fixture(autouse=True)
@@ -62,11 +63,10 @@ def test_get_special_field_name_using_namespace():
     assert MimeoRenderer.get_special_field_name("{:ns:SomeField:}") == "ns:SomeField"
 
 
+@assert_throws(err_type=NotASpecialField,
+               message="Provided field [{:SomeField}] is not a special one (use {:NAME:})!")
 def test_get_special_field_name_when_invalid():
-    with pytest.raises(NotASpecialField) as err:
-        MimeoRenderer.get_special_field_name("{:SomeField}")
-
-    assert err.value.args[0] == "Provided field [{:SomeField}] is not a special one (use {:NAME:})!"
+    MimeoRenderer.get_special_field_name("{:SomeField}")
 
 
 def test_is_raw_mimeo_util_true():
@@ -132,12 +132,23 @@ def test_raw_mimeo_util(default_config):
 
 
 def test_parametrized_mimeo_util_default(default_config):
-    date_value = MimeoRenderer.render({"_mimeo_util": {"_name": "date"}})
+    mimeo_util = {
+        "_mimeo_util": {
+            "_name": "date",
+        },
+    }
+    date_value = MimeoRenderer.render(mimeo_util)
     assert date_value == date.today().strftime("%Y-%m-%d")
 
 
 def test_parametrized_mimeo_util_custom(default_config):
-    date_value = MimeoRenderer.render({"_mimeo_util": {"_name": "date", "days_delta": 5}})
+    mimeo_util = {
+        "_mimeo_util": {
+            "_name": "date",
+            "days_delta": 5,
+        },
+    }
+    date_value = MimeoRenderer.render(mimeo_util)
     expected_date_value = date.today() + timedelta(5)
     assert date_value == expected_date_value.strftime("%Y-%m-%d")
 
@@ -156,13 +167,14 @@ def test_parametrized_util_using_raw_mimeo_util(default_config):
         mimeo_manager.set_current_context(context2)
         context2.next_iteration()
         context2.next_iteration()
-        key_outside_context = MimeoRenderer.render({
+        mimeo_util = {
             "_mimeo_util": {
                 "_name": "key",
                 "context": "SomeEntity",
                 "iteration": "{curr_iter}",
             },
-        })
+        }
+        key_outside_context = MimeoRenderer.render(mimeo_util)
         assert key == key_outside_context
 
 
@@ -180,7 +192,7 @@ def test_parametrized_util_using_parametrized_mimeo_util(default_config):
         mimeo_manager.set_current_context(context2)
         context2.next_iteration()
         context2.next_iteration()
-        key_outside_context = MimeoRenderer.render({
+        mimeo_util = {
             "_mimeo_util": {
                 "_name": "key",
                 "context": "SomeEntity",
@@ -190,7 +202,8 @@ def test_parametrized_util_using_parametrized_mimeo_util(default_config):
                     },
                 },
             },
-        })
+        }
+        key_outside_context = MimeoRenderer.render(mimeo_util)
         assert key == key_outside_context
 
 
@@ -207,13 +220,14 @@ def test_util_parametrized_using_variable(default_config):
 
         mimeo_manager.set_current_context(context2)
         context2.next_iteration()
-        key_outside_context = MimeoRenderer.render({
+        mimeo_util = {
             "_mimeo_util": {
                 "_name": "key",
                 "context": "SomeEntity",
                 "iteration": "{CUSTOM_VAR_2}",
             },
-        })
+        }
+        key_outside_context = MimeoRenderer.render(mimeo_util)
         assert key == key_outside_context
 
 
@@ -266,6 +280,9 @@ def test_vars_pointing_to_var():
         assert value == "custom-value-1"
 
 
+@assert_throws(err_type=VarNotFound,
+               message="Provided variable [{var}] is not defined!",
+               params={"var": "NON_EXISTING_VAR"})
 def test_vars_pointing_to_non_existing_var():
     config = MimeoConfig({
         "vars": {
@@ -274,9 +291,7 @@ def test_vars_pointing_to_non_existing_var():
         "_templates_": [],
     })
     with MimeoContextManager(config):
-        with pytest.raises(VarNotFound) as err:
-            MimeoRenderer.render("{CUSTOM_VAR_1}")
-        assert err.value.args[0] == "Provided variable [NON_EXISTING_VAR] is not defined!"
+        MimeoRenderer.render("{CUSTOM_VAR_1}")
 
 
 def test_vars_pointing_to_funct():
@@ -298,6 +313,10 @@ def test_vars_pointing_to_funct():
         assert value == "1"
 
 
+@assert_throws(err_type=InvalidValue,
+               message="The auto_increment Mimeo Util require a string value for "
+                       "the pattern parameter and was: [{pattern}].",
+               params={"pattern": 1})
 def test_vars_pointing_to_invalid_funct():
     config = MimeoConfig({
         "vars": {
@@ -313,10 +332,7 @@ def test_vars_pointing_to_invalid_funct():
     with MimeoContextManager(config) as mimeo_manager:
         context = mimeo_manager.get_context("SomeEntity")
         mimeo_manager.set_current_context(context)
-        with pytest.raises(InvalidValue) as err:
-            MimeoRenderer.render("{CUSTOM_VAR_1}")
-        assert err.value.args[0] == ("The auto_increment Mimeo Util require a string value for the pattern parameter "
-                                     "and was: [1].")
+        MimeoRenderer.render("{CUSTOM_VAR_1}")
 
 
 def test_vars_as_partial_values_single_beginning():
@@ -423,7 +439,8 @@ def test_special_fields_render_str(default_config):
         context.next_iteration()
         context.curr_iteration().add_special_field("ChildNode1", "custom-value")
 
-        assert MimeoRenderer.render("{:ChildNode1:}") == "custom-value"
+        rendered_field = MimeoRenderer.render("{:ChildNode1:}")
+        assert rendered_field == "custom-value"
 
 
 def test_special_fields_render_int(default_config):
@@ -433,7 +450,8 @@ def test_special_fields_render_int(default_config):
         context.next_iteration()
         context.curr_iteration().add_special_field("ChildNode1", 1)
 
-        assert MimeoRenderer.render("{:ChildNode1:}") == 1
+        rendered_field = MimeoRenderer.render("{:ChildNode1:}")
+        assert rendered_field == 1
 
 
 def test_special_fields_render_bool(default_config):
@@ -443,7 +461,8 @@ def test_special_fields_render_bool(default_config):
         context.next_iteration()
         context.curr_iteration().add_special_field("ChildNode1", True)
 
-        assert MimeoRenderer.render("{:ChildNode1:}") is True
+        rendered_field = MimeoRenderer.render("{:ChildNode1:}")
+        assert rendered_field is True
 
 
 def test_special_fields_as_partial_values_single_beginning(default_config):
@@ -453,7 +472,8 @@ def test_special_fields_as_partial_values_single_beginning(default_config):
         context.next_iteration()
         context.curr_iteration().add_special_field("ChildNode1", "custom-value")
 
-        assert MimeoRenderer.render("{:ChildNode1:}-1") == "custom-value-1"
+        rendered_field = MimeoRenderer.render("{:ChildNode1:}-1")
+        assert rendered_field == "custom-value-1"
 
 
 def test_special_fields_as_partial_values_single_middle(default_config):
@@ -463,7 +483,8 @@ def test_special_fields_as_partial_values_single_middle(default_config):
         context.next_iteration()
         context.curr_iteration().add_special_field("ChildNode1", "custom-value")
 
-        assert MimeoRenderer.render("_{:ChildNode1:}_") == "_custom-value_"
+        rendered_field = MimeoRenderer.render("_{:ChildNode1:}_")
+        assert rendered_field == "_custom-value_"
 
 
 def test_special_fields_as_partial_values_single_end(default_config):
@@ -473,7 +494,8 @@ def test_special_fields_as_partial_values_single_end(default_config):
         context.next_iteration()
         context.curr_iteration().add_special_field("ChildNode1", "custom-value")
 
-        assert MimeoRenderer.render("my-{:ChildNode1:}") == "my-custom-value"
+        rendered_field = MimeoRenderer.render("my-{:ChildNode1:}")
+        assert rendered_field == "my-custom-value"
 
 
 def test_special_fields_as_partial_values_single_repeated(default_config):
@@ -483,7 +505,8 @@ def test_special_fields_as_partial_values_single_repeated(default_config):
         context.next_iteration()
         context.curr_iteration().add_special_field("ChildNode1", "custom-value")
 
-        assert MimeoRenderer.render("{:ChildNode1:}-and-{:ChildNode1:}") == "custom-value-and-custom-value"
+        rendered_field = MimeoRenderer.render("{:ChildNode1:}-and-{:ChildNode1:}")
+        assert rendered_field == "custom-value-and-custom-value"
 
 
 def test_special_fields_as_partial_values_multiple(default_config):
@@ -494,7 +517,8 @@ def test_special_fields_as_partial_values_multiple(default_config):
         context.curr_iteration().add_special_field("ChildNode1", "prefix-to")
         context.curr_iteration().add_special_field("ChildNode2", "my-custom-value")
 
-        assert MimeoRenderer.render("{:ChildNode1:}-{:ChildNode2:}") == "prefix-to-my-custom-value"
+        rendered_field = MimeoRenderer.render("{:ChildNode1:}-{:ChildNode2:}")
+        assert rendered_field == "prefix-to-my-custom-value"
 
 
 def test_special_fields_as_partial_values_str(default_config):
@@ -504,7 +528,8 @@ def test_special_fields_as_partial_values_str(default_config):
         context.next_iteration()
         context.curr_iteration().add_special_field("ChildNode1", "custom-value")
 
-        assert MimeoRenderer.render("{:ChildNode1:}-1") == "custom-value-1"
+        rendered_field = MimeoRenderer.render("{:ChildNode1:}-1")
+        assert rendered_field == "custom-value-1"
 
 
 def test_special_fields_as_partial_values_int(default_config):
@@ -514,7 +539,8 @@ def test_special_fields_as_partial_values_int(default_config):
         context.next_iteration()
         context.curr_iteration().add_special_field("ChildNode1", 1)
 
-        assert MimeoRenderer.render("custom-value-{:ChildNode1:}") == "custom-value-1"
+        rendered_field = MimeoRenderer.render("custom-value-{:ChildNode1:}")
+        assert rendered_field == "custom-value-1"
 
 
 def test_special_fields_as_partial_values_bool(default_config):
@@ -524,4 +550,5 @@ def test_special_fields_as_partial_values_bool(default_config):
         context.next_iteration()
         context.curr_iteration().add_special_field("ChildNode1", True)
 
-        assert MimeoRenderer.render("custom-{:ChildNode1:}-value") == "custom-true-value"
+        rendered_field = MimeoRenderer.render("custom-{:ChildNode1:}-value")
+        assert rendered_field == "custom-true-value"

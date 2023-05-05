@@ -110,7 +110,12 @@ def remove_file(file_path: str):
         os.remove(file_path)
 
 
-def adjust_data(source_data_path: str, target_db: str, target_file_name: str, modify: Callable):
+def adjust_data(
+        source_data_path: str,
+        target_db: str,
+        target_file_name: str,
+        modify: Callable,
+):
     """Adjust source data for Mimeo usage.
 
     Once data is modified, it saves it and overwrites number of records
@@ -167,7 +172,8 @@ def overwrite_num_of_records(mimeo_db: str, data_frame: pandas.DataFrame):
     """
     print(f"Updating number of records in {mimeo_db}")
     num_of_records = len(data_frame.index)
-    if mimeo_db in [MIMEO_DB_CITIES, MIMEO_DB_COUNTRIES, MIMEO_DB_FORENAMES, MIMEO_DB_SURNAMES]:
+    if mimeo_db in [MIMEO_DB_CITIES, MIMEO_DB_COUNTRIES,
+                    MIMEO_DB_FORENAMES, MIMEO_DB_SURNAMES]:
         mimeo_db_path = f"{MIMEO_DB_PACKAGE}/{mimeo_db}"
         with open(mimeo_db_path) as module_file:
             module = module_file.read()
@@ -176,9 +182,13 @@ def overwrite_num_of_records(mimeo_db: str, data_frame: pandas.DataFrame):
         if int(curr_num_of_records) == num_of_records:
             print(f"Number of records [{num_of_records}] has not been changed.")
         else:
-            module = re.sub(r"NUM_OF_RECORDS = .*", f"NUM_OF_RECORDS = {num_of_records}", module)
+            module = re.sub(r"NUM_OF_RECORDS = .*",
+                            f"NUM_OF_RECORDS = {num_of_records}",
+                            module)
             with open(mimeo_db_path, "w") as module_file:
                 module_file.write(module)
-            print(f"Number of records has been updated [{curr_num_of_records} -> {num_of_records}].")
+            print("Number of records has been updated "
+                  f"[{curr_num_of_records} -> {num_of_records}].")
     else:
-        print(f"Number of records has not been overwritten as {mimeo_db} is not a registered Mimeo Database.")
+        print("Number of records has not been overwritten "
+              f"as {mimeo_db} is not a registered Mimeo Database.")

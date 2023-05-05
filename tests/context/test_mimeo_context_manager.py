@@ -4,6 +4,7 @@ from mimeo.config import MimeoConfig
 from mimeo.context import MimeoContextManager
 from mimeo.context.exc import VarNotFound
 from mimeo.meta.exc import InstanceNotAlive
+from tests.test_tools import assert_throws
 
 
 @pytest.fixture(autouse=True)
@@ -76,11 +77,11 @@ def test_get_var(default_config):
         assert mimeo_manager.get_var("CUSTOM_VAR_3") is True
 
 
+@assert_throws(err_type=VarNotFound,
+               message="Provided variable [{var}] is not defined!",
+               params={"var": "NON_EXISTING_VAR"})
 def test_get_non_existing_var(default_config):
     with MimeoContextManager(default_config) as mimeo_manager:
-        with pytest.raises(VarNotFound) as err:
-            mimeo_manager.get_var("NON_EXISTING_VAR")
-
-    assert err.value.args[0] == "Provided variable [NON_EXISTING_VAR] is not defined!"
+        mimeo_manager.get_var("NON_EXISTING_VAR")
 
 

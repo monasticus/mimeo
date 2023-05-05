@@ -1,9 +1,8 @@
-import pytest
-
 from mimeo.config import MimeoConfig
 from mimeo.context import MimeoContextManager
 from mimeo.generators import XMLGenerator
 from mimeo.utils.exc import InvalidValue
+from tests.test_tools import assert_throws
 
 
 def test_generate_single_template_model_without_attributes():
@@ -924,6 +923,10 @@ def test_generate_template_using_mimeo_util_parametrized():
         assert count == 5
 
 
+@assert_throws(err_type=InvalidValue,
+               message="The auto_increment Mimeo Util require a string value for "
+                       "the pattern parameter and was: [{pattern}].",
+               params={"pattern": 1})
 def test_generate_template_using_mimeo_util_parametrized_invalid():
     config = MimeoConfig({
         "output_details": {
@@ -948,12 +951,8 @@ def test_generate_template_using_mimeo_util_parametrized_invalid():
 
     with MimeoContextManager(config):
         generator = XMLGenerator(config)
-        with pytest.raises(InvalidValue) as err:
-            for _ in generator.generate(config.templates):
-                pass
-
-    assert err.value.args[0] == ("The auto_increment Mimeo Util require a string value for the pattern parameter "
-                                 "and was: [1].")
+        for _ in generator.generate(config.templates):
+            pass
 
 
 def test_generate_template_using_auto_increment_util():

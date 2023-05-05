@@ -42,7 +42,8 @@ def test_last_name_parametrized_default(default_config):
         context = mimeo_manager.get_context("SomeEntity")
         mimeo_manager.set_current_context(context)
 
-        last_name = UtilsRenderer.render_parametrized({"_name": "last_name"})
+        mimeo_util = {"_name": "last_name"}
+        last_name = UtilsRenderer.render_parametrized(mimeo_util)
         assert last_name in last_names
 
 
@@ -53,5 +54,6 @@ def test_last_name_parametrized_with_unique(default_config):
         context = mimeo_manager.get_context("SomeEntity")
         mimeo_manager.set_current_context(context)
 
-        last_name = UtilsRenderer.render_parametrized({"_name": "last_name", "unique": False})
+        mimeo_util = {"_name": "last_name", "unique": False}
+        last_name = UtilsRenderer.render_parametrized(mimeo_util)
         assert last_name in last_names

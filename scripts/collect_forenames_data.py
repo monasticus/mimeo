@@ -18,7 +18,10 @@ def main():
     """Get forenames data."""
     print("Getting forenames data.")
     source_data_path = utils.download_file(SOURCE_URL)
-    utils.adjust_data(source_data_path, utils.MIMEO_DB_FORENAMES, utils.MIMEO_RESOURCES_FORENAMES, _modify_source_data)
+    utils.adjust_data(source_data_path,
+                      utils.MIMEO_DB_FORENAMES,
+                      utils.MIMEO_RESOURCES_FORENAMES,
+                      _modify_source_data)
 
 
 def _modify_source_data(source_df: pandas.DataFrame) -> pandas.DataFrame:

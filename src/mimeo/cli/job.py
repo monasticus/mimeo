@@ -107,9 +107,9 @@ class MimeoJob:
 
         Raises
         ------
-        EnvironmentsFileNotFound
+        EnvironmentsFileNotFoundError
             If environments file does not exist.
-        EnvironmentNotFound
+        EnvironmentNotFoundError
             If the http environment is not defined in the environments file
         """
         config = cls._get_raw_config(config_path)

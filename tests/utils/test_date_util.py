@@ -9,17 +9,20 @@ def test_date_raw():
 
 
 def test_date_parametrized_default():
-    date_value = UtilsRenderer.render_parametrized({"_name": "date"})
+    mimeo_util = {"_name": "date"}
+    date_value = UtilsRenderer.render_parametrized(mimeo_util)
     assert date_value == date.today().strftime("%Y-%m-%d")
 
 
 def test_date_parametrized_with_positive_days_delta():
-    date_value = UtilsRenderer.render_parametrized({"_name": "date", "days_delta": 5})
+    mimeo_util = {"_name": "date", "days_delta": 5}
+    date_value = UtilsRenderer.render_parametrized(mimeo_util)
     expected_date_value = date.today() + timedelta(5)
     assert date_value == expected_date_value.strftime("%Y-%m-%d")
 
 
 def test_date_parametrized_with_negative_days_delta():
-    date_value = UtilsRenderer.render_parametrized({"_name": "date", "days_delta": -5})
+    mimeo_util = {"_name": "date", "days_delta": -5}
+    date_value = UtilsRenderer.render_parametrized(mimeo_util)
     expected_date_value = date.today() + timedelta(-5)
     assert date_value == expected_date_value.strftime("%Y-%m-%d")

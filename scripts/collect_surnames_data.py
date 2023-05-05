@@ -18,7 +18,10 @@ def main():
     """Get surnames data."""
     print("Getting surnames data.")
     source_data_path = utils.download_file(SOURCE_URL)
-    utils.adjust_data(source_data_path, utils.MIMEO_DB_SURNAMES, utils.MIMEO_RESOURCES_SURNAMES, _modify_source_data)
+    utils.adjust_data(source_data_path,
+                      utils.MIMEO_DB_SURNAMES,
+                      utils.MIMEO_RESOURCES_SURNAMES,
+                      _modify_source_data)
 
 
 def _modify_source_data(source_df: pandas.DataFrame) -> pandas.DataFrame:

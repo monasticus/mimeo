@@ -41,13 +41,14 @@ def test_curr_iter_parametrized_default(default_config):
     with MimeoContextManager(default_config) as mimeo_manager:
         context = mimeo_manager.get_context("SomeEntity")
         mimeo_manager.set_current_context(context)
+        mimeo_util = {"_name": "curr_iter"}
 
         context.next_iteration()
-        curr_iter = UtilsRenderer.render_parametrized({"_name": "curr_iter"})
+        curr_iter = UtilsRenderer.render_parametrized(mimeo_util)
         assert curr_iter == 1
 
         context.next_iteration()
-        curr_iter = UtilsRenderer.render_parametrized({"_name": "curr_iter"})
+        curr_iter = UtilsRenderer.render_parametrized(mimeo_util)
         assert curr_iter == 2
 
 
@@ -65,5 +66,6 @@ def test_curr_iter_parametrized_with_context(default_config):
         assert curr_iter == 2
 
         context2.next_iteration()
-        curr_iter = UtilsRenderer.render_parametrized({"_name": "curr_iter", "context": "SomeOtherEntity"})
+        mimeo_util = {"_name": "curr_iter", "context": "SomeOtherEntity"}
+        curr_iter = UtilsRenderer.render_parametrized(mimeo_util)
         assert curr_iter == 1

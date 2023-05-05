@@ -6,6 +6,7 @@ from mimeo.database import MimeoDB
 from mimeo.database.exc import DataNotFound
 from mimeo.utils.exc import InvalidValue
 from mimeo.utils.renderers import UtilsRenderer
+from tests.test_tools import assert_throws
 
 
 @pytest.fixture(autouse=True)
@@ -44,7 +45,8 @@ def test_country_parametrized_default(default_config):
         context = mimeo_manager.get_context("SomeEntity")
         mimeo_manager.set_current_context(context)
 
-        country = UtilsRenderer.render_parametrized({"_name": "country"})
+        mimeo_util = {"_name": "country"}
+        country = UtilsRenderer.render_parametrized(mimeo_util)
         assert country in country_names
 
 
@@ -55,7 +57,8 @@ def test_country_parametrized_with_unique(default_config):
         context = mimeo_manager.get_context("SomeEntity")
         mimeo_manager.set_current_context(context)
 
-        country = UtilsRenderer.render_parametrized({"_name": "country", "unique": False})
+        mimeo_util = {"_name": "country", "unique": False}
+        country = UtilsRenderer.render_parametrized(mimeo_util)
         assert country in country_names
 
 
@@ -64,7 +67,8 @@ def test_country_parametrized_with_country_iso3(default_config):
         context = mimeo_manager.get_context("SomeEntity")
         mimeo_manager.set_current_context(context)
 
-        country = UtilsRenderer.render_parametrized({"_name": "country", "country": "GBR"})
+        mimeo_util = {"_name": "country", "country": "GBR"}
+        country = UtilsRenderer.render_parametrized(mimeo_util)
         assert country == "United Kingdom"
 
 
@@ -73,19 +77,21 @@ def test_country_parametrized_with_country_iso2(default_config):
         context = mimeo_manager.get_context("SomeEntity")
         mimeo_manager.set_current_context(context)
 
-        country = UtilsRenderer.render_parametrized({"_name": "country", "country": "GB"})
+        mimeo_util = {"_name": "country", "country": "GB"}
+        country = UtilsRenderer.render_parametrized(mimeo_util)
         assert country == "United Kingdom"
 
 
+@assert_throws(err_type=DataNotFound,
+               message="Mimeo database does not contain such a country [{country}].",
+               params={"country": "NEC"})
 def test_country_parametrized_with_non_existing_country(default_config):
     with MimeoContextManager(default_config) as mimeo_manager:
         context = mimeo_manager.get_context("SomeEntity")
         mimeo_manager.set_current_context(context)
 
-        with pytest.raises(DataNotFound) as err:
-            UtilsRenderer.render_parametrized({"_name": "country", "country": "NEC"})
-
-        assert err.value.args[0] == "Mimeo database does not contain such a country [NEC]."
+        mimeo_util = {"_name": "country", "country": "NEC"}
+        UtilsRenderer.render_parametrized(mimeo_util)
 
 
 def test_country_parametrized_with_value_iso3(default_config):
@@ -95,7 +101,8 @@ def test_country_parametrized_with_value_iso3(default_config):
         context = mimeo_manager.get_context("SomeEntity")
         mimeo_manager.set_current_context(context)
 
-        country = UtilsRenderer.render_parametrized({"_name": "country", "value": "iso3"})
+        mimeo_util = {"_name": "country", "value": "iso3"}
+        country = UtilsRenderer.render_parametrized(mimeo_util)
         assert country in countries_iso3
 
 
@@ -106,7 +113,8 @@ def test_country_parametrized_with_value_iso3_and_unique(default_config):
         context = mimeo_manager.get_context("SomeEntity")
         mimeo_manager.set_current_context(context)
 
-        country = UtilsRenderer.render_parametrized({"_name": "country", "value": "iso3", "unique": False})
+        mimeo_util = {"_name": "country", "value": "iso3", "unique": False}
+        country = UtilsRenderer.render_parametrized(mimeo_util)
         assert country in countries_iso3
 
 
@@ -115,7 +123,8 @@ def test_country_parametrized_with_value_iso3_and_country_name(default_config):
         context = mimeo_manager.get_context("SomeEntity")
         mimeo_manager.set_current_context(context)
 
-        country = UtilsRenderer.render_parametrized({"_name": "country", "value": "iso3", "country": "United Kingdom"})
+        mimeo_util = {"_name": "country", "value": "iso3", "country": "United Kingdom"}
+        country = UtilsRenderer.render_parametrized(mimeo_util)
         assert country == "GBR"
 
 
@@ -124,19 +133,21 @@ def test_country_parametrized_with_value_iso3_and_country_iso2(default_config):
         context = mimeo_manager.get_context("SomeEntity")
         mimeo_manager.set_current_context(context)
 
-        country = UtilsRenderer.render_parametrized({"_name": "country", "value": "iso3", "country": "GB"})
+        mimeo_util = {"_name": "country", "value": "iso3", "country": "GB"}
+        country = UtilsRenderer.render_parametrized(mimeo_util)
         assert country == "GBR"
 
 
+@assert_throws(err_type=DataNotFound,
+               message="Mimeo database does not contain such a country [{country}].",
+               params={"country": "NEC"})
 def test_country_parametrized_with_value_iso3_and_non_existing_country(default_config):
     with MimeoContextManager(default_config) as mimeo_manager:
         context = mimeo_manager.get_context("SomeEntity")
         mimeo_manager.set_current_context(context)
 
-        with pytest.raises(DataNotFound) as err:
-            UtilsRenderer.render_parametrized({"_name": "country", "value": "iso3", "country": "NEC"})
-
-        assert err.value.args[0] == "Mimeo database does not contain such a country [NEC]."
+        mimeo_util = {"_name": "country", "value": "iso3", "country": "NEC"}
+        UtilsRenderer.render_parametrized(mimeo_util)
 
 
 def test_country_parametrized_with_value_iso2(default_config):
@@ -146,7 +157,8 @@ def test_country_parametrized_with_value_iso2(default_config):
         context = mimeo_manager.get_context("SomeEntity")
         mimeo_manager.set_current_context(context)
 
-        country = UtilsRenderer.render_parametrized({"_name": "country", "value": "iso2"})
+        mimeo_util = {"_name": "country", "value": "iso2"}
+        country = UtilsRenderer.render_parametrized(mimeo_util)
         assert country in countries_iso2
 
 
@@ -157,7 +169,8 @@ def test_country_parametrized_with_value_iso2_and_unique(default_config):
         context = mimeo_manager.get_context("SomeEntity")
         mimeo_manager.set_current_context(context)
 
-        country = UtilsRenderer.render_parametrized({"_name": "country", "value": "iso2", "unique": False})
+        mimeo_util = {"_name": "country", "value": "iso2", "unique": False}
+        country = UtilsRenderer.render_parametrized(mimeo_util)
         assert country in countries_iso2
 
 
@@ -166,7 +179,8 @@ def test_country_parametrized_with_value_iso2_and_country_name(default_config):
         context = mimeo_manager.get_context("SomeEntity")
         mimeo_manager.set_current_context(context)
 
-        country = UtilsRenderer.render_parametrized({"_name": "country", "value": "iso2", "country": "United Kingdom"})
+        mimeo_util = {"_name": "country", "value": "iso2", "country": "United Kingdom"}
+        country = UtilsRenderer.render_parametrized(mimeo_util)
         assert country == "GB"
 
 
@@ -175,28 +189,31 @@ def test_country_parametrized_with_value_iso2_and_country_iso3(default_config):
         context = mimeo_manager.get_context("SomeEntity")
         mimeo_manager.set_current_context(context)
 
-        country = UtilsRenderer.render_parametrized({"_name": "country", "value": "iso2", "country": "GBR"})
+        mimeo_util = {"_name": "country", "value": "iso2", "country": "GBR"}
+        country = UtilsRenderer.render_parametrized(mimeo_util)
         assert country == "GB"
 
 
+@assert_throws(err_type=DataNotFound,
+               message="Mimeo database does not contain such a country [{country}].",
+               params={"country": "NEC"})
 def test_country_parametrized_with_value_iso2_and_non_existing_country(default_config):
     with MimeoContextManager(default_config) as mimeo_manager:
         context = mimeo_manager.get_context("SomeEntity")
         mimeo_manager.set_current_context(context)
 
-        with pytest.raises(DataNotFound) as err:
-            UtilsRenderer.render_parametrized({"_name": "country", "value": "iso2", "country": "NEC"})
-
-        assert err.value.args[0] == "Mimeo database does not contain such a country [NEC]."
+        mimeo_util = {"_name": "country", "value": "iso2", "country": "NEC"}
+        UtilsRenderer.render_parametrized(mimeo_util)
 
 
+@assert_throws(err_type=InvalidValue,
+               message="The `country` Mimeo Util does not support such value [{val}]. "
+                       "Supported values are: name (default), iso3, iso2.",
+               params={"val": "not_supported"})
 def test_country_parametrized_with_invalid_value(default_config):
     with MimeoContextManager(default_config) as mimeo_manager:
         context = mimeo_manager.get_context("SomeEntity")
         mimeo_manager.set_current_context(context)
 
-        with pytest.raises(InvalidValue) as err:
-            UtilsRenderer.render_parametrized({"_name": "country", "value": "not_supported"})
-
-        assert err.value.args[0] == ("The `country` Mimeo Util does not support such value [not_supported]. "
-                                     "Supported values are: name (default), iso3, iso2.")
+        mimeo_util = {"_name": "country", "value": "not_supported"}
+        UtilsRenderer.render_parametrized(mimeo_util)
