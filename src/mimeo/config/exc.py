@@ -50,8 +50,6 @@ class MissingRequiredPropertyError(Exception):
     property.
     """
 
-    pass
-
 
 class InvalidIndentError(Exception):
     """A custom Exception class for invalid indent configuration.
@@ -78,16 +76,12 @@ class InvalidVarsError(Exception):
     Raised when vars are not configured properly.
     """
 
-    pass
-
 
 class InvalidMimeoModelError(Exception):
     """A custom Exception class for invalid model configuration.
 
     Raised when a Mimeo Model is not configured properly.
     """
-
-    pass
 
 
 class InvalidMimeoTemplateError(Exception):
@@ -96,13 +90,9 @@ class InvalidMimeoTemplateError(Exception):
     Raised when a Mimeo Template is not configured properly.
     """
 
-    pass
-
 
 class InvalidMimeoConfigError(Exception):
     """A custom Exception class for invalid mimeo configuration.
 
     Raised when a Mimeo Configuration is not configured properly.
     """
-
-    pass

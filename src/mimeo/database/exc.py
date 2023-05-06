@@ -60,8 +60,6 @@ class DataNotFoundError(Exception):
     does not match any row.
     """
 
-    pass
-
 
 class OutOfStockError(Exception):
     """A custom Exception class for consuming all data.
@@ -69,5 +67,3 @@ class OutOfStockError(Exception):
     Raised while attempting to get next unique value when all were
     consumed already.
     """
-
-    pass

@@ -17,16 +17,12 @@ class InvalidMimeoUtilError(Exception):
     does not match any Mimeo Util.
     """
 
-    pass
-
 
 class InvalidValueError(Exception):
     """A custom Exception class for an invalid value in Mimeo Util.
 
     Raised when Mimeo Util node is incorrectly parametrized.
     """
-
-    pass
 
 
 class NotASpecialFieldError(Exception):
