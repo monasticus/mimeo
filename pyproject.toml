@@ -72,7 +72,7 @@ skip_glob=[
 ]
 
 [tool.ruff]
-select = ["F", "E", "C90", "N", "D", "UP", "B", "A", "COM", "C4", "EM", "EXE", "ISC", "G", "PIE"]
+select = ["F", "E", "C90", "N", "D", "UP", "B", "A", "COM", "C4", "EM", "EXE", "ISC", "G", "PIE", "T20"]
 ignore = []
 exclude = [
     ".git",
@@ -95,12 +95,18 @@ convention = "numpy"
 max-complexity = 100
 
 [tool.ruff.per-file-ignores]
+"scripts/*" = [
+    "T20" # allow for print in scripts
+]
 "tests/*" = [
     "D" # disable pydocstyle for tests
 ]
-"tests/utils/test_mimeo_util.py" = [
-    "N802" # the test scenario requires uppercased function name
+"src/mimeo/consumers/raw_consumer.py" = [
+    "T20" # allow for print in raw consumer
 ]
 "src/mimeo/logging/filters.py" = [
     "A003" # an external superclass
+]
+"tests/utils/test_mimeo_util.py" = [
+    "N802" # the test scenario requires uppercased function name
 ]

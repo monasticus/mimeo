@@ -1150,7 +1150,6 @@ def test_generate_using_curr_iter_util_in_two_templates():
         for index, data in enumerate(generator.generate(config.templates)):
             # from 6th item it is the second template
             curr_iter = index + 1 if index < 5 else index - 5 + 1
-            print(generator.stringify(data, config))
             assert data.tag == "SomeEntity"
             assert data.attrib == {}
             assert len(list(data)) == 1  # number of children

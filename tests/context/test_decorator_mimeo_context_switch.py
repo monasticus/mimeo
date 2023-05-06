@@ -101,7 +101,6 @@ def test_context_switch_with_named_param(default_config: MimeoConfig):
         for template in default_config.templates:
             bucket.collect_with_switch(template=template)
 
-    print(bucket.CONTEXTS)
     assert bucket.CONTEXTS == [
         # None,       Not present as using annotated function directly in this scenario
         "SomeEntity",
