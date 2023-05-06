@@ -101,7 +101,9 @@ class MimeoDB:
         List[City]
             List of cities filtered by country
         """
-        country = next(filter(lambda c: country in [c.iso_3, c.iso_2, c.name], self.get_countries()), None)
+        countries = filter(lambda c: country in [c.iso_3, c.iso_2, c.name],
+                           self.get_countries())
+        country = next(countries, None)
         if country is None:
             return []
         else:
@@ -122,7 +124,7 @@ class MimeoDB:
 
         Raises
         ------
-        InvalidIndex
+        InvalidIndexError
             If the provided `index` is out of bounds
         """
         return self.__cities_db.get_city_at(index)
@@ -152,7 +154,7 @@ class MimeoDB:
 
         Raises
         ------
-        InvalidIndex
+        InvalidIndexError
             If the provided `index` is out of bounds
         """
         return self.__countries_db.get_country_at(index)
@@ -227,7 +229,7 @@ class MimeoDB:
 
         Raises
         ------
-        InvalidSex
+        InvalidSexError
             If the provided `sex` value is not supported
         """
         return self.__first_names_db.get_first_names_by_sex(sex)
@@ -247,7 +249,7 @@ class MimeoDB:
 
         Raises
         ------
-        InvalidIndex
+        InvalidIndexError
             If the provided `index` is out of bounds
         """
         return self.__first_names_db.get_first_name_at(index)
@@ -277,7 +279,7 @@ class MimeoDB:
 
         Raises
         ------
-        InvalidIndex
+        InvalidIndexError
             If the provided `index` is out of bounds
         """
         return self.__last_names_db.get_last_name_at(index)

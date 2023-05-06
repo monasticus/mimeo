@@ -11,7 +11,7 @@ from typing import List
 import pandas
 
 from mimeo import tools
-from mimeo.database.exc import InvalidIndex
+from mimeo.database.exc import InvalidIndexError
 
 
 class City:
@@ -71,7 +71,11 @@ class City:
         str
             A python representation of the City instance
         """
-        return f"City('{self.id}', '{self.name}', '{self.name_ascii}', '{self.country}')"
+        return (f"City("
+                f"'{self.id}', "
+                f"'{self.name}', "
+                f"'{self.name_ascii}', "
+                f"'{self.country}')")
 
 
 class CitiesDB:
@@ -113,14 +117,15 @@ class CitiesDB:
 
         Raises
         ------
-        InvalidIndex
+        InvalidIndexError
             If the provided `index` is out of bounds
         """
         cities = self._get_cities()
         try:
             return cities[index]
         except IndexError:
-            raise InvalidIndex(index, CitiesDB.NUM_OF_RECORDS-1) from IndexError
+            last_index = CitiesDB.NUM_OF_RECORDS-1
+            raise InvalidIndexError(index, last_index) from IndexError
 
     def get_cities_of(self, country_iso3: str) -> List[City]:
         """Get cities of a specific country.
@@ -167,7 +172,8 @@ class CitiesDB:
         """
         if country_iso3 not in cls._COUNTRY_CITIES:
             cities = cls._get_cities()
-            cls._COUNTRY_CITIES[country_iso3] = list(filter(lambda city: city.country == country_iso3, cities))
+            cities = filter(lambda c: c.country == country_iso3, cities)
+            cls._COUNTRY_CITIES[country_iso3] = list(cities)
         return cls._COUNTRY_CITIES[country_iso3]
 
     @classmethod
@@ -191,5 +197,6 @@ class CitiesDB:
     def _get_cities_df(cls) -> pandas.DataFrame:
         """Load cities CSV data and save in internal class attribute."""
         if cls._CITIES_DF is None:
-            cls._CITIES_DF = pandas.read_csv(tools.get_resource(CitiesDB._CITIES_DB))
+            data = tools.get_resource(CitiesDB._CITIES_DB)
+            cls._CITIES_DF = pandas.read_csv(data)
         return cls._CITIES_DF

@@ -36,7 +36,7 @@ The Mimeo Context package exports the following classes:
 
 To use this package, simply import the desired class:
     from mimeo.database import MimeoDB
-    from mimeo.database.exc import DataNotFound
+    from mimeo.database.exc import DataNotFoundError
 """
 from .cities import CitiesDB, City
 from .countries import CountriesDB, Country
@@ -44,4 +44,13 @@ from .first_names import FirstName, FirstNamesDB
 from .last_names import LastNamesDB
 from .mimeo_db import MimeoDB
 
-__all__ = [City, Country, FirstName, CitiesDB, CountriesDB, FirstNamesDB, LastNamesDB, MimeoDB]
+__all__ = [
+    City,
+    Country,
+    FirstName,
+    CitiesDB,
+    CountriesDB,
+    FirstNamesDB,
+    LastNamesDB,
+    MimeoDB,
+]

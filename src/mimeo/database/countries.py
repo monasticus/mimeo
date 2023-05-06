@@ -12,7 +12,7 @@ from typing import List
 import pandas
 
 from mimeo import tools
-from mimeo.database.exc import InvalidIndex
+from mimeo.database.exc import InvalidIndexError
 
 
 class Country:
@@ -66,7 +66,10 @@ class Country:
         str
             A python representation of the Country instance
         """
-        return f"Country('{self.iso_3}', '{self.iso_2}', '{self.name}')"
+        return (f"Country("
+                f"'{self.iso_3}', "
+                f"'{self.iso_2}', "
+                f"'{self.name}')")
 
 
 class CountriesDB:
@@ -111,14 +114,15 @@ class CountriesDB:
 
         Raises
         ------
-        InvalidIndex
+        InvalidIndexError
             If the provided `index` is out of bounds
         """
         countries = self._get_countries()
         try:
             return countries[index]
         except IndexError:
-            raise InvalidIndex(index, CountriesDB.NUM_OF_RECORDS-1) from IndexError
+            last_index = CountriesDB.NUM_OF_RECORDS-1
+            raise InvalidIndexError(index, last_index) from IndexError
 
     def get_country_by_iso_3(self, iso_3: str) -> Country:
         """Get a country having a specific ISO3 code.
@@ -200,5 +204,6 @@ class CountriesDB:
     def _get_countries_df(cls) -> pandas.DataFrame:
         """Load countries CSV data and save in internal class attribute."""
         if cls._COUNTRIES_DF is None:
-            cls._COUNTRIES_DF = pandas.read_csv(tools.get_resource(CountriesDB._COUNTRIES_DB))
+            data = tools.get_resource(CountriesDB._COUNTRIES_DB)
+            cls._COUNTRIES_DF = pandas.read_csv(data)
         return cls._COUNTRIES_DF

@@ -11,7 +11,7 @@ from typing import List
 import pandas
 
 from mimeo import tools
-from mimeo.database.exc import InvalidIndex, InvalidSex
+from mimeo.database.exc import InvalidIndexError, InvalidSexError
 
 
 class FirstName:
@@ -59,7 +59,9 @@ class FirstName:
         str
             A python representation of the FirstName instance
         """
-        return f"FirstName('{self.name}', '{self.sex}')"
+        return (f"FirstName("
+                f"'{self.name}', "
+                f"'{self.sex}')")
 
 
 class FirstNamesDB:
@@ -102,14 +104,15 @@ class FirstNamesDB:
 
         Raises
         ------
-        InvalidIndex
+        InvalidIndexError
             If the provided `index` is out of bounds
         """
         first_names = self.__get_first_names()
         try:
             return first_names[index]
         except IndexError:
-            raise InvalidIndex(index, FirstNamesDB.NUM_OF_RECORDS-1) from IndexError
+            last_index = FirstNamesDB.NUM_OF_RECORDS-1
+            raise InvalidIndexError(index, last_index) from IndexError
 
     def get_first_names_by_sex(self, sex: str) -> List[FirstName]:
         """Get first names for a specific sex.
@@ -126,13 +129,13 @@ class FirstNamesDB:
 
         Raises
         ------
-        InvalidSex
+        InvalidSexError
             If the provided `sex` value is not supported
         """
         if sex in FirstNamesDB.__SUPPORTED_SEX:
             return self.__get_first_names_by_sex(sex).copy()
         else:
-            raise InvalidSex(FirstNamesDB.__SUPPORTED_SEX)
+            raise InvalidSexError(FirstNamesDB.__SUPPORTED_SEX)
 
     @classmethod
     def get_first_names(cls) -> List[FirstName]:
@@ -164,7 +167,7 @@ class FirstNamesDB:
         """
         if sex not in cls.__NAMES_FOR_SEX:
             first_names = cls.__get_first_names()
-            cls.__NAMES_FOR_SEX[sex] = list(filter(lambda first_name: first_name.sex == sex, first_names))
+            cls.__NAMES_FOR_SEX[sex] = list(filter(lambda n: n.sex == sex, first_names))
         return cls.__NAMES_FOR_SEX[sex]
 
     @classmethod
@@ -188,5 +191,6 @@ class FirstNamesDB:
     def __get_first_names_df(cls) -> pandas.DataFrame:
         """Load forenames CSV data and save in internal class attribute."""
         if cls.__FIRST_NAMES_DF is None:
-            cls.__FIRST_NAMES_DF = pandas.read_csv(tools.get_resource(FirstNamesDB.__FIRST_NAMES_DB))
+            data = tools.get_resource(FirstNamesDB.__FIRST_NAMES_DB)
+            cls.__FIRST_NAMES_DF = pandas.read_csv(data)
         return cls.__FIRST_NAMES_DF

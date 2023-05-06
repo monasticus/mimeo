@@ -7,7 +7,7 @@ It exports a class related to surnames CSV data:
 from typing import List
 
 from mimeo import tools
-from mimeo.database.exc import InvalidIndex
+from mimeo.database.exc import InvalidIndexError
 
 
 class LastNamesDB:
@@ -45,14 +45,15 @@ class LastNamesDB:
 
         Raises
         ------
-        InvalidIndex
+        InvalidIndexError
             If the provided `index` is out of bounds
         """
         last_names = self.__get_last_names()
         try:
             return last_names[index]
         except IndexError:
-            raise InvalidIndex(index, LastNamesDB.NUM_OF_RECORDS-1) from IndexError
+            last_index = LastNamesDB.NUM_OF_RECORDS-1
+            raise InvalidIndexError(index, last_index) from IndexError
 
     @classmethod
     def get_last_names(cls) -> List[str]:
