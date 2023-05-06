@@ -102,7 +102,7 @@ class UtilsRenderer:
             existing Mimeo Util.
         InvalidValue
             If a Mimeo Util is incorrectly parametrized.
-        InvalidSex
+        InvalidSexError
             If the First Name Mimeo Util has not supported `sex`
             parameter value assigned.
         """
@@ -435,11 +435,11 @@ class MimeoRenderer:
             does not match any Mimeo Util.
         InvalidValue
             If Mimeo Util node is incorrectly parametrized
-        OutOfStock
+        OutOfStockError
             If all unique values have been consumed already
-        DataNotFound
+        DataNotFoundError
             If database does not contain the expected value
-        InvalidSex
+        InvalidSexError
             If the First Name Mimeo Util has not supported `sex`
             parameter value assigned.
         """
@@ -571,9 +571,9 @@ class MimeoRenderer:
 
         Raises
         ------
-        OutOfStock
+        OutOfStockError
             If all unique values have been consumed already
-        DataNotFound
+        DataNotFoundError
             If database does not contain the expected value
         """
         rendered_value = UtilsRenderer.render_raw(value[1:][:-1])
@@ -600,11 +600,11 @@ class MimeoRenderer:
         ------
         InvalidValue
             If a Mimeo Util is incorrectly parametrized.
-        OutOfStock
+        OutOfStockError
             If all unique values have been consumed already
-        DataNotFound
+        DataNotFoundError
             If database does not contain the expected value
-        InvalidSex
+        InvalidSexError
             If the First Name Mimeo Util has not supported `sex`
             parameter value assigned.
         """
@@ -632,11 +632,11 @@ class MimeoRenderer:
         ------
         InvalidValue
             If a Mimeo Util is incorrectly parametrized.
-        OutOfStock
+        OutOfStockError
             If all unique values have been consumed already
-        DataNotFound
+        DataNotFoundError
             If database does not contain the expected value
-        InvalidSex
+        InvalidSexError
             If the First Name Mimeo Util has not supported `sex`
             parameter value assigned.
         """

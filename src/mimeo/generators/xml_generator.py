@@ -105,17 +105,19 @@ class XMLGenerator(Generator):
             Stringified data unit
         """
         if self.__indent is None or self.__indent == 0:
-            return ElemTree.tostring(data_unit,
-                                     encoding="utf-8",
-                                     method="xml",
-                                     xml_declaration=self.__xml_declaration).decode('ascii')
+            node_str = ElemTree.tostring(data_unit,
+                                         encoding="utf-8",
+                                         method="xml",
+                                         xml_declaration=self.__xml_declaration)
         else:
             xml_string = ElemTree.tostring(data_unit)
             xml_minidom = minidom.parseString(xml_string)
-            if self.__xml_declaration:
-                return xml_minidom.toprettyxml(indent=" " * self.__indent, encoding="utf-8").decode('ascii')
-            else:
-                return xml_minidom.childNodes[0].toprettyxml(indent=" " * self.__indent, encoding="utf-8").decode('ascii')
+
+            if self.__xml_declaration is False:
+                xml_minidom = xml_minidom.childNodes[0]
+            node_str = xml_minidom.toprettyxml(indent=" " * self.__indent,
+                                               encoding="utf-8")
+        return node_str.decode('ascii')
 
     @classmethod
     @mimeo_context_switch
@@ -149,7 +151,8 @@ class XMLGenerator(Generator):
             A list of generated data units
         """
         logger.debug("Reading template [{tmplt}]", extra={"tmplt": template})
-        data_units = [cls._process_single_data_unit(template, parent) for _ in iter(range(template.count))]
+        data_units = [cls._process_single_data_unit(template, parent)
+                      for _ in iter(range(template.count))]
         return data_units
 
     @classmethod
@@ -184,7 +187,9 @@ class XMLGenerator(Generator):
             iteration. If the `parent` is not None it will not return
             any value.
         """
-        return cls._process_node(parent, template.model.root_name, template.model.root_data)
+        return cls._process_node(parent,
+                                 template.model.root_name,
+                                 template.model.root_data)
 
     @classmethod
     @mimeo_context
@@ -248,11 +253,13 @@ class XMLGenerator(Generator):
 
             element = cls._create_xml_element(parent, element_tag, attributes)
 
-            if isinstance(element_value, dict) and not MimeoRenderer.is_parametrized_mimeo_util(element_value):
+            if (isinstance(element_value, dict) and
+                    not MimeoRenderer.is_parametrized_mimeo_util(element_value)):
                 if MimeoConfig.MODEL_ATTRIBUTES_KEY in element_value:
-                    element_value_copy = dict(element_value)
-                    attrs = element_value_copy.pop(MimeoConfig.MODEL_ATTRIBUTES_KEY)
-                    value = element_value_copy.get(MimeoConfig.MODEL_VALUE_KEY, element_value_copy)
+                    element_value = dict(element_value)
+                    attrs = element_value.pop(MimeoConfig.MODEL_ATTRIBUTES_KEY)
+                    value = element_value.get(MimeoConfig.MODEL_VALUE_KEY,
+                                              element_value)
                     if parent is not None:
                         parent.remove(element)
                         cls._process_node(parent, element_tag, value, attrs)
@@ -262,7 +269,8 @@ class XMLGenerator(Generator):
                     for child_tag, child_value in element_value.items():
                         cls._process_node(element, child_tag, child_value)
             elif isinstance(element_value, list):
-                has_only_atomic_values = all(not isinstance(child, (list, dict)) for child in element_value)
+                has_only_atomic_values = all(not isinstance(child, (list, dict))
+                                             for child in element_value)
                 if has_only_atomic_values:
                     parent.remove(element)
                     for child in element_value:
@@ -277,8 +285,8 @@ class XMLGenerator(Generator):
                 if is_special_field:
                     context.curr_iteration().add_special_field(element_tag, value)
 
-                value_str = str(value) if value is not None else ""
-                element.text = value_str.lower() if isinstance(value, bool) else value_str
+                val_str = str(value) if value is not None else ""
+                element.text = val_str.lower() if isinstance(value, bool) else val_str
                 logger.fine("Rendered value [{txt}]", extra={"txt": element.text})
 
             if parent is None:

@@ -39,7 +39,7 @@ from typing import Any
 from mimeo.context import MimeoContext, MimeoContextManager
 from mimeo.context.decorators import mimeo_context
 from mimeo.database import Country, MimeoDB
-from mimeo.database.exc import DataNotFound, InvalidSex
+from mimeo.database.exc import DataNotFoundError, InvalidSexError
 from mimeo.utils.exc import InvalidValueError
 
 
@@ -537,9 +537,9 @@ class CityUtil(MimeoUtil):
 
         Raises
         ------
-        OutOfStock
+        OutOfStockError
             If all unique cities have been consumed already
-        DataNotFound
+        DataNotFoundError
             If database does not contain any cities for the provided
             `country`
         """
@@ -555,7 +555,7 @@ class CityUtil(MimeoUtil):
             if country_cities_count == 0:
                 msg = (f"Mimeo database doesn't contain any cities "
                        f"of provided country [{self._country}].")
-                raise DataNotFound(msg)
+                raise DataNotFoundError(msg)
 
             if self._unique:
                 index = context.next_city_index(self._country)
@@ -642,9 +642,9 @@ class CountryUtil(MimeoUtil):
         ------
         InvalidValue
             If the `country` parameter value is not supported
-        OutOfStock
+        OutOfStockError
             If all unique countries have been consumed already
-        DataNotFound
+        DataNotFoundError
             If database does not contain the provided `country`
         """
         if self._value == self.__VALUE_NAME:
@@ -671,7 +671,7 @@ class CountryUtil(MimeoUtil):
                 return country_found
             else:
                 msg = f"Mimeo database doesn't contain a country [{self._country}]."
-                raise DataNotFound(msg)
+                raise DataNotFoundError(msg)
         else:
             if self._unique:
                 index = context.next_country_index()
@@ -739,9 +739,9 @@ class FirstNameUtil(MimeoUtil):
 
         Raises
         ------
-        OutOfStock
+        OutOfStockError
             If all unique first names have been consumed already
-        InvalidSex
+        InvalidSexError
             If the `sex` parameter value is not supported
         """
         if self._sex is None:
@@ -771,7 +771,7 @@ class FirstNameUtil(MimeoUtil):
         elif sex.upper() in ["F", "FEMALE"]:
             return "F"
         else:
-            raise InvalidSex(("M", "F", "Male", "Female"))
+            raise InvalidSexError(("M", "F", "Male", "Female"))
 
 
 class LastNameUtil(MimeoUtil):
@@ -826,7 +826,7 @@ class LastNameUtil(MimeoUtil):
 
         Raises
         ------
-        OutOfStock
+        OutOfStockError
             If all unique last names have been consumed already
         """
         if self._unique:
