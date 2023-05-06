@@ -1,7 +1,7 @@
 
 from mimeo.meta import Alive, OnlyOneAlive
 from mimeo.meta.exc import InstanceNotAlive
-from tests.test_tools import assert_throws
+from tests.utils import assert_throws
 
 
 class SomeClass(Alive, metaclass=OnlyOneAlive):

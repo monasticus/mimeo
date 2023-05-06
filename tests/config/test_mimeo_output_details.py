@@ -2,7 +2,7 @@
 from mimeo.config.exc import (InvalidIndent, MissingRequiredProperty,
                               UnsupportedPropertyValue)
 from mimeo.config.mimeo_config import MimeoOutputDetails
-from tests.test_tools import assert_throws
+from tests.utils import assert_throws
 
 
 def test_str():

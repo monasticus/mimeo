@@ -5,7 +5,7 @@ import tests.utils as test_utils
 from mimeo.config import MimeoConfig
 from mimeo.config.mimeo_config import MimeoTemplate
 from mimeo.generators import Generator
-from tests.test_tools import assert_throws
+from tests.utils import assert_throws
 
 
 class ValidGenerator(Generator):

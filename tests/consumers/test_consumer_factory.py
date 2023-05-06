@@ -2,7 +2,7 @@ from mimeo.config import MimeoConfig
 from mimeo.config.exc import UnsupportedPropertyValue
 from mimeo.consumers import (ConsumerFactory, FileConsumer, HttpConsumer,
                              RawConsumer)
-from tests.test_tools import assert_throws
+from tests.utils import assert_throws
 
 
 def test_get_consumer_for_file_direction():

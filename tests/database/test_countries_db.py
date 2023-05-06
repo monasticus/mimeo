@@ -1,6 +1,6 @@
 from mimeo.database import CountriesDB
 from mimeo.database.exc import InvalidIndex
-from tests.test_tools import assert_throws
+from tests.utils import assert_throws
 
 
 def test_get_countries():

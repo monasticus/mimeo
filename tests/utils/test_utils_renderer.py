@@ -1,7 +1,7 @@
 
 from mimeo.utils.exc import InvalidMimeoUtil
 from mimeo.utils.renderers import UtilsRenderer
-from tests.test_tools import assert_throws
+from tests.utils import assert_throws
 
 
 @assert_throws(err_type=InvalidMimeoUtil,

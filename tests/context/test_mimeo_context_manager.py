@@ -4,7 +4,7 @@ from mimeo.config import MimeoConfig
 from mimeo.context import MimeoContextManager
 from mimeo.context.exc import VarNotFound
 from mimeo.meta.exc import InstanceNotAlive
-from tests.test_tools import assert_throws
+from tests.utils import assert_throws
 
 
 @pytest.fixture(autouse=True)

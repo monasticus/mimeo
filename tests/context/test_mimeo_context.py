@@ -4,7 +4,7 @@ from mimeo.context.exc import (ContextIterationNotFound,
                                UninitializedContextIteration)
 from mimeo.database import MimeoDB
 from mimeo.database.exc import DataNotFound, InvalidSex, OutOfStock
-from tests.test_tools import assert_throws
+from tests.utils import assert_throws
 
 
 def test_next_id():
@@ -166,7 +166,8 @@ def test_next_city_index_custom_country_out_of_stock():
 
 
 @assert_throws(err_type=DataNotFound,
-               message="Mimeo database does not contain any cities of provided country [{country}].",
+               message="Mimeo database does not contain any cities of provided "
+                       "country [{country}].",
                params={"country": "NEC"})
 def test_next_city_index_non_existing_country():
     ctx = MimeoContext("SomeContext")

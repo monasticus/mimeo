@@ -1,7 +1,7 @@
 from mimeo.config import MimeoConfig
 from mimeo.config.exc import UnsupportedPropertyValue
 from mimeo.generators import GeneratorFactory, XMLGenerator
-from tests.test_tools import assert_throws
+from tests.utils import assert_throws
 
 
 def test_generator_factory_for_xml():

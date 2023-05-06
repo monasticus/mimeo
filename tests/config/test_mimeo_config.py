@@ -1,7 +1,7 @@
 
 from mimeo.config.exc import InvalidMimeoConfig, InvalidVars
 from mimeo.config.mimeo_config import MimeoConfig
-from tests.test_tools import assert_throws
+from tests.utils import assert_throws
 
 
 def test_str():

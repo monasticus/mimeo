@@ -1,7 +1,7 @@
 from mimeo.context import MimeoIteration
 from mimeo.context.exc import (InvalidSpecialFieldName,
                                InvalidSpecialFieldValue, SpecialFieldNotFound)
-from tests.test_tools import assert_throws
+from tests.utils import assert_throws
 
 
 def test_iteration_id():

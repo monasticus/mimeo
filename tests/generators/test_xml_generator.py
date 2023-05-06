@@ -2,7 +2,7 @@ from mimeo.config import MimeoConfig
 from mimeo.context import MimeoContextManager
 from mimeo.generators import XMLGenerator
 from mimeo.utils.exc import InvalidValue
-from tests.test_tools import assert_throws
+from tests.utils import assert_throws
 
 
 def test_generate_single_template_model_without_attributes():

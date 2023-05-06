@@ -5,7 +5,7 @@ from mimeo.context import MimeoContextManager
 from mimeo.database import MimeoDB
 from mimeo.database.exc import DataNotFound
 from mimeo.utils.renderers import UtilsRenderer
-from tests.test_tools import assert_throws
+from tests.utils import assert_throws
 
 
 @pytest.fixture(autouse=True)
@@ -62,7 +62,8 @@ def test_city_parametrized_with_unique(default_config):
 
 
 @assert_throws(err_type=DataNotFound,
-               message="Mimeo database does not contain any cities of provided country [{country}].",
+               message="Mimeo database does not contain any cities of provided "
+                       "country [{country}].",
                params={"country": "NEC"})
 def test_city_parametrized_with_unique_and_non_existing_country(default_config):
     with MimeoContextManager(default_config) as mimeo_manager:
@@ -86,7 +87,8 @@ def test_city_parametrized_with_unique_and_country(default_config):
 
 
 @assert_throws(err_type=DataNotFound,
-               message="Mimeo database does not contain any cities of provided country [{country}].",
+               message="Mimeo database does not contain any cities of provided "
+                       "country [{country}].",
                params={"country": "NEC"})
 def test_city_parametrized_with_non_existing_country(default_config):
     with MimeoContextManager(default_config) as mimeo_manager:

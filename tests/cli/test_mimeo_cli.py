@@ -16,7 +16,7 @@ import mimeo.__main__ as MimeoCLI
 from mimeo.cli.exc import (EnvironmentNotFoundError,
                            EnvironmentsFileNotFoundError)
 from mimeo.config.exc import MissingRequiredProperty
-from tests.test_tools import assert_throws
+from tests.utils import assert_throws
 
 
 @pytest.fixture(autouse=True)

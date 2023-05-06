@@ -7,7 +7,7 @@ from mimeo.context import MimeoContextManager
 from mimeo.context.exc import VarNotFound
 from mimeo.utils import MimeoRenderer
 from mimeo.utils.exc import InvalidValue, NotASpecialField
-from tests.test_tools import assert_throws
+from tests.utils import assert_throws
 
 
 @pytest.fixture(autouse=True)
@@ -64,7 +64,8 @@ def test_get_special_field_name_using_namespace():
 
 
 @assert_throws(err_type=NotASpecialField,
-               message="Provided field [{:SomeField}] is not a special one (use {:NAME:})!")
+               message="Provided field [{:SomeField}] is not a special one "
+                       "(use {:NAME:})!")
 def test_get_special_field_name_when_invalid():
     MimeoRenderer.get_special_field_name("{:SomeField}")
 

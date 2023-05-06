@@ -1,6 +1,6 @@
 import tests.utils as test_utils
 from mimeo.consumers import Consumer
-from tests.test_tools import assert_throws
+from tests.utils import assert_throws
 
 
 class ValidConsumer(Consumer):

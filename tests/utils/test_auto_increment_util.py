@@ -4,7 +4,7 @@ from mimeo.config import MimeoConfig
 from mimeo.context import MimeoContextManager
 from mimeo.utils.exc import InvalidValue
 from mimeo.utils.renderers import UtilsRenderer
-from tests.test_tools import assert_throws
+from tests.utils import assert_throws
 
 
 @pytest.fixture(autouse=True)

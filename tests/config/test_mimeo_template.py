@@ -1,6 +1,6 @@
 from mimeo.config.exc import InvalidMimeoTemplate
 from mimeo.config.mimeo_config import MimeoTemplate
-from tests.test_tools import assert_throws
+from tests.utils import assert_throws
 
 
 def test_str():
