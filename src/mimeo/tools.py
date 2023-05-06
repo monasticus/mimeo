@@ -9,7 +9,7 @@ import importlib.resources as pkg_resources
 from typing import TextIO
 
 from mimeo import resources as data
-from mimeo.resources.exc import ResourceNotFound
+from mimeo.resources.exc import ResourceNotFoundError
 
 
 def get_resource(resource_name: str) -> TextIO:
@@ -36,4 +36,4 @@ def get_resource(resource_name: str) -> TextIO:
     try:
         return pkg_resources.open_text(data, resource_name)
     except FileNotFoundError:
-        raise ResourceNotFound(resource_name) from FileNotFoundError
+        raise ResourceNotFoundError(resource_name) from FileNotFoundError

@@ -37,7 +37,7 @@ with SomeClass({'x': 1}) as alive_1:
 """
 from __future__ import annotations
 
-from mimeo.meta.exc import InstanceNotAlive
+from mimeo.meta.exc import InstanceNotAliveError
 
 
 class OnlyOneAlive(type):
@@ -56,7 +56,7 @@ class OnlyOneAlive(type):
         if cls not in cls._INSTANCES:
             cls._INSTANCES[cls] = []
 
-        alive_instance = next((instance for instance in cls._INSTANCES[cls] if instance.is_alive()), None)
+        alive_instance = next((i for i in cls._INSTANCES[cls] if i.is_alive()), None)
         if alive_instance is not None:
             return alive_instance
         else:
@@ -133,7 +133,7 @@ class Alive:
             If the instance is not alive
         """
         if not self.is_alive():
-            raise InstanceNotAlive()
+            raise InstanceNotAliveError()
         return self.is_alive()
 
     def is_alive(self) -> bool:

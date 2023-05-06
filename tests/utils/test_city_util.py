@@ -62,7 +62,7 @@ def test_city_parametrized_with_unique(default_config):
 
 
 @assert_throws(err_type=DataNotFound,
-               msg="Mimeo database does not contain any cities of provided "
+               msg="Mimeo database doesn't contain any cities of provided "
                    "country [{country}].",
                params={"country": "NEC"})
 def test_city_parametrized_with_unique_and_non_existing_country(default_config):
@@ -87,7 +87,7 @@ def test_city_parametrized_with_unique_and_country(default_config):
 
 
 @assert_throws(err_type=DataNotFound,
-               msg="Mimeo database does not contain any cities of provided "
+               msg="Mimeo database doesn't contain any cities of provided "
                    "country [{country}].",
                params={"country": "NEC"})
 def test_city_parametrized_with_non_existing_country(default_config):

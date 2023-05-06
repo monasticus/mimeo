@@ -3,7 +3,7 @@ import pytest
 from mimeo.config import MimeoConfig
 from mimeo.context import MimeoContextManager
 from mimeo.context.exc import VarNotFound
-from mimeo.meta.exc import InstanceNotAlive
+from mimeo.meta.exc import InstanceNotAliveError
 from tests.utils import assert_throws
 
 
@@ -32,7 +32,7 @@ def default_config():
 
 def test_get_context_not_initialized(default_config):
     mimeo_manager = MimeoContextManager(default_config)
-    with pytest.raises(InstanceNotAlive) as err:
+    with pytest.raises(InstanceNotAliveError) as err:
         mimeo_manager.get_context("SomeContext")
 
     assert err.value.args[0] == "The instance is not alive!"
@@ -40,7 +40,7 @@ def test_get_context_not_initialized(default_config):
     with MimeoContextManager(default_config) as mimeo_manager:
         mimeo_manager.get_context("SomeContext")
 
-    with pytest.raises(InstanceNotAlive) as err:
+    with pytest.raises(InstanceNotAliveError) as err:
         mimeo_manager.get_context("SomeContext")
 
     assert err.value.args[0] == "The instance is not alive!"

@@ -22,7 +22,7 @@ from mimeo.utils import (AutoIncrementUtil, CityUtil, CountryUtil,
                          CurrentIterationUtil, DateTimeUtil, DateUtil,
                          FirstNameUtil, KeyUtil, LastNameUtil, MimeoUtil,
                          RandomIntegerUtil, RandomItemUtil, RandomStringUtil)
-from mimeo.utils.exc import InvalidMimeoUtil, NotASpecialField
+from mimeo.utils.exc import InvalidMimeoUtilError, NotASpecialFieldError
 
 logger = logging.getLogger(__name__)
 
@@ -76,7 +76,9 @@ class UtilsRenderer:
             If the Mimeo Util name does not match any existing Mimeo
             Util.
         """
-        return cls.render_parametrized({MimeoConfig.MODEL_MIMEO_UTIL_NAME_KEY: mimeo_util_key})
+        return cls.render_parametrized({
+            MimeoConfig.MODEL_MIMEO_UTIL_NAME_KEY: mimeo_util_key,
+        })
 
     @classmethod
     def render_parametrized(cls, mimeo_util_config: dict) -> Any:
@@ -104,12 +106,13 @@ class UtilsRenderer:
             If the First Name Mimeo Util has not supported `sex`
             parameter value assigned.
         """
-        logger.fine("Rendering a mimeo util [{util}]", extra={"util": mimeo_util_config})
+        logger.fine("Rendering a mimeo util [{util}]",
+                    extra={"util": mimeo_util_config})
         mimeo_util = cls._get_mimeo_util(mimeo_util_config)
         return mimeo_util.render()
 
     @classmethod
-    def _get_mimeo_util(cls, mimeo_util_config: dict) -> MimeoUtil:
+    def _get_mimeo_util(cls, config: dict) -> MimeoUtil:
         """Get a Mimeo Util instance based on the configuration.
 
         All instances are cached to not re-create a Util with the same
@@ -118,7 +121,7 @@ class UtilsRenderer:
 
         Parameters
         ----------
-        mimeo_util_config : dict
+        config : dict
             A Mimeo Util configuration
 
         Returns
@@ -133,14 +136,14 @@ class UtilsRenderer:
             Util name, or the parametrized name does not match any
             existing Mimeo Util.
         """
-        cache_key = cls._generate_cache_key(mimeo_util_config)
+        cache_key = cls._generate_cache_key(config)
         if cache_key not in cls._INSTANCES:
-            return cls._instantiate_mimeo_util(cache_key, mimeo_util_config)
+            return cls._instantiate_mimeo_util(cache_key, config)
         else:
             return cls._INSTANCES.get(cache_key)
 
     @staticmethod
-    def _generate_cache_key(mimeo_util_config: dict) -> str:
+    def _generate_cache_key(config: dict) -> str:
         """Generate an internal Mimeo Util key from its parameters.
 
         This method ensures that Mimeo Util instances are cached
@@ -148,7 +151,7 @@ class UtilsRenderer:
 
         Parameters
         ----------
-        mimeo_util_config : dict
+        config : dict
             A Mimeo Util configuration
 
         Returns
@@ -156,7 +159,7 @@ class UtilsRenderer:
         str
             An internal Mimeo Util cache key
         """
-        return "-".join(":".join([key, str(val)]) for key, val in mimeo_util_config.items())
+        return "-".join(":".join([key, str(val)]) for key, val in config.items())
 
     @classmethod
     def _instantiate_mimeo_util(cls, cache_key: str, config: dict) -> MimeoUtil:
@@ -189,12 +192,12 @@ class UtilsRenderer:
         return mimeo_util
 
     @classmethod
-    def get_mimeo_util_name(cls, mimeo_util_config: dict) -> str:
+    def get_mimeo_util_name(cls, config: dict) -> str:
         """Return a verified Mimeo Util name.
 
         Parameters
         ----------
-        mimeo_util_config : dict
+        config : dict
             A Mimeo Util configuration
 
         Returns
@@ -209,13 +212,13 @@ class UtilsRenderer:
             Util name, or the parametrized name does not match any
             existing Mimeo Util.
         """
-        mimeo_util_name = mimeo_util_config.get(MimeoConfig.MODEL_MIMEO_UTIL_NAME_KEY)
+        mimeo_util_name = config.get(MimeoConfig.MODEL_MIMEO_UTIL_NAME_KEY)
         if mimeo_util_name is None:
-            msg = f"Missing Mimeo Util name in configuration [{mimeo_util_config}]!"
-            raise InvalidMimeoUtil(msg)
+            msg = f"Missing Mimeo Util name in configuration [{config}]!"
+            raise InvalidMimeoUtilError(msg)
         elif mimeo_util_name not in cls.MIMEO_UTILS:
             msg = f"No such Mimeo Util [{mimeo_util_name}]!"
-            raise InvalidMimeoUtil(msg)
+            raise InvalidMimeoUtilError(msg)
         return mimeo_util_name
 
 
@@ -268,12 +271,12 @@ class SpecialFieldsRenderer:
 
     @classmethod
     @mimeo_context
-    def render(cls, field_name: str, context: MimeoContext = None) -> Union[str, int, bool]:
+    def render(cls, field: str, context: MimeoContext = None) -> Union[str, int, bool]:
         """Render a Mimeo Special Field.
 
         Parameters
         ----------
-        field_name : str
+        field : str
             A special field name
         context : MimeoContext, default None
             A current Mimeo Context injected by a decorator
@@ -289,8 +292,8 @@ class SpecialFieldsRenderer:
         SpecialFieldNotFound
             If the special field does not exist.
         """
-        logger.fine("Rendering a special field [{field}]", extra={"field": field_name})
-        return context.curr_iteration().get_special_field(field_name)
+        logger.fine("Rendering a special field [{field}]", extra={"field": field})
+        return context.curr_iteration().get_special_field(field)
 
 
 class MimeoRenderer:
@@ -337,7 +340,7 @@ class MimeoRenderer:
             If the `wrapped_field_name` is not of form {:FIELD_NAME:}
         """
         if not cls.is_special_field(wrapped_field_name):
-            raise NotASpecialField(wrapped_field_name)
+            raise NotASpecialFieldError(wrapped_field_name)
 
         return wrapped_field_name[2:][:-2]
 
@@ -392,7 +395,9 @@ class MimeoRenderer:
             True if the value is a dictionary having only one key,
             "_mimeo_util". Otherwise, False.
         """
-        return isinstance(value, dict) and len(value) == 1 and MimeoConfig.MODEL_MIMEO_UTIL_KEY in value
+        return (isinstance(value, dict) and
+                len(value) == 1 and
+                MimeoConfig.MODEL_MIMEO_UTIL_KEY in value)
 
     @classmethod
     def render(cls, value: Any) -> Any:
@@ -448,10 +453,10 @@ class MimeoRenderer:
                 return value
         except Exception as err:
             error_name = type(err).__name__
-            logger.error("The [{error_name}] error occurred during rendering a value [{value}]: [{err}].",
+            logger.error("Error [{error_name}]: [{err}] occurred for [{value}].",
                          extra={"err_name": error_name,
-                                "val": value,
-                                "err": err})
+                                "err": err,
+                                "val": value})
             raise err
 
     @classmethod
@@ -507,12 +512,12 @@ class MimeoRenderer:
         """
         match = next(cls._SPECIAL_FIELDS_PATTERN.finditer(value))
         wrapped_special_field = match.group(1)
-        rendered_value = SpecialFieldsRenderer.render(wrapped_special_field[2:][:-2])
-        logger.fine("Rendered special field value [{val}]", extra={"val": rendered_value})
+        r_val = SpecialFieldsRenderer.render(wrapped_special_field[2:][:-2])
+        logger.fine("Rendered special field value [{val}]", extra={"val": r_val})
         if len(wrapped_special_field) != len(value):
-            rendered_value = str(rendered_value).lower() if isinstance(rendered_value, bool) else str(rendered_value)
-            rendered_value = value.replace(wrapped_special_field, str(rendered_value))
-        return cls.render(rendered_value)
+            r_val = str(r_val).lower() if isinstance(r_val, bool) else str(r_val)
+            r_val = value.replace(wrapped_special_field, str(r_val))
+        return cls.render(r_val)
 
     @classmethod
     def _render_var(cls, value: str) -> Any:
@@ -541,14 +546,14 @@ class MimeoRenderer:
         """
         match = next(cls._VARS_PATTERN.finditer(value))
         wrapped_var = match.group(1)
-        rendered_value = VarsRenderer.render(wrapped_var[1:][:-1])
-        logger.fine("Rendered variable value [{val}]", extra={"val": rendered_value})
-        if cls.is_parametrized_mimeo_util(rendered_value):
-            rendered_value = cls._render_parametrized_mimeo_util(rendered_value)
+        r_val = VarsRenderer.render(wrapped_var[1:][:-1])
+        logger.fine("Rendered variable value [{val}]", extra={"val": r_val})
+        if cls.is_parametrized_mimeo_util(r_val):
+            r_val = cls._render_parametrized_mimeo_util(r_val)
         if len(wrapped_var) != len(value):
-            rendered_value = str(rendered_value).lower() if isinstance(rendered_value, bool) else str(rendered_value)
-            rendered_value = value.replace(wrapped_var, str(rendered_value))
-        return cls.render(rendered_value)
+            r_val = str(r_val).lower() if isinstance(r_val, bool) else str(r_val)
+            r_val = value.replace(wrapped_var, str(r_val))
+        return cls.render(r_val)
 
     @classmethod
     def _render_raw_mimeo_util(cls, value: str) -> Any:
@@ -606,8 +611,8 @@ class MimeoRenderer:
         mimeo_util = value[MimeoConfig.MODEL_MIMEO_UTIL_KEY]
         mimeo_util = cls._render_mimeo_util_parameters(mimeo_util)
         logger.fine("Pre-rendered mimeo util [{util}]", extra={"util": mimeo_util})
-        rendered_value = UtilsRenderer.render_parametrized(mimeo_util)
-        return cls.render(rendered_value)
+        r_val = UtilsRenderer.render_parametrized(mimeo_util)
+        return cls.render(r_val)
 
     @classmethod
     def _render_mimeo_util_parameters(cls, mimeo_util_config: dict) -> dict:
@@ -636,4 +641,5 @@ class MimeoRenderer:
             parameter value assigned.
         """
         logger.fine("Rendering mimeo util parameters")
-        return {key: cls.render(value) if key != "_name" else value for key, value in mimeo_util_config.items()}
+        return {key: cls.render(value) if key != "_name" else value
+                for key, value in mimeo_util_config.items()}

@@ -171,7 +171,7 @@ def test_next_city_index_custom_country_out_of_stock():
 
 
 @assert_throws(err_type=DataNotFound,
-               msg="Mimeo database does not contain any cities of provided "
+               msg="Mimeo database doesn't contain any cities of provided "
                    "country [{country}].",
                params={"country": "NEC"})
 def test_next_city_index_non_existing_country():

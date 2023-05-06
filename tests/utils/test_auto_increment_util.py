@@ -2,7 +2,7 @@ import pytest
 
 from mimeo.config import MimeoConfig
 from mimeo.context import MimeoContextManager
-from mimeo.utils.exc import InvalidValue
+from mimeo.utils.exc import InvalidValueError
 from mimeo.utils.renderers import UtilsRenderer
 from tests.utils import assert_throws
 
@@ -64,7 +64,7 @@ def test_auto_increment_parametrized_with_pattern(default_config):
         assert identifier == "MYID_0000000003"
 
 
-@assert_throws(err_type=InvalidValue,
+@assert_throws(err_type=InvalidValueError,
                msg="The auto_increment Mimeo Util require a string value "
                    "for the pattern parameter and was: [{pattern}].",
                params={"pattern": 1})

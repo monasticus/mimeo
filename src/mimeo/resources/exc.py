@@ -6,14 +6,14 @@ It contains all custom exceptions related to Mimeo resources:
 """
 
 
-class ResourceNotFound(Exception):
+class ResourceNotFoundError(Exception):
     """A custom Exception class for a not found resource.
 
     Raised while attempting to get a resource that does exist.
     """
 
     def __init__(self, resource_name: str):
-        """Initialize ResourceNotFound exception with details.
+        """Initialize ResourceNotFoundError exception with details.
 
         Extends Exception constructor with a custom message.
 

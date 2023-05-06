@@ -6,7 +6,7 @@ from mimeo.config import MimeoConfig
 from mimeo.context import MimeoContextManager
 from mimeo.context.exc import VarNotFound
 from mimeo.utils import MimeoRenderer
-from mimeo.utils.exc import InvalidValue, NotASpecialField
+from mimeo.utils.exc import InvalidValueError, NotASpecialFieldError
 from tests.utils import assert_throws
 
 
@@ -63,7 +63,7 @@ def test_get_special_field_name_using_namespace():
     assert MimeoRenderer.get_special_field_name("{:ns:SomeField:}") == "ns:SomeField"
 
 
-@assert_throws(err_type=NotASpecialField,
+@assert_throws(err_type=NotASpecialFieldError,
                msg="Provided field [{:SomeField}] is not a special one (use {:NAME:})!")
 def test_get_special_field_name_when_invalid():
     MimeoRenderer.get_special_field_name("{:SomeField}")
@@ -313,7 +313,7 @@ def test_vars_pointing_to_funct():
         assert value == "1"
 
 
-@assert_throws(err_type=InvalidValue,
+@assert_throws(err_type=InvalidValueError,
                msg="The auto_increment Mimeo Util require a string value "
                    "for the pattern parameter and was: [{pattern}].",
                params={"pattern": 1})

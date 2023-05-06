@@ -40,7 +40,7 @@ from mimeo.context import MimeoContext, MimeoContextManager
 from mimeo.context.decorators import mimeo_context
 from mimeo.database import Country, MimeoDB
 from mimeo.database.exc import DataNotFound, InvalidSex
-from mimeo.utils.exc import InvalidValue
+from mimeo.utils.exc import InvalidValueError
 
 
 class MimeoUtil(metaclass=ABCMeta):
@@ -240,7 +240,10 @@ class DateUtil(MimeoUtil):
         str
             A stringified date value in format %Y-%m-%d
         """
-        date_value = date.today() if self._days_delta == 0 else date.today() + timedelta(days=self._days_delta)
+        if self._days_delta == 0:
+            date_value = date.today()
+        else:
+            date_value = date.today() + timedelta(days=self._days_delta)
         return date_value.strftime("%Y-%m-%d")
 
 
@@ -356,8 +359,9 @@ class AutoIncrementUtil(MimeoUtil):
             return self._pattern.format(identifier)
         except AttributeError:
             context.prev_id()
-            msg = f'The {self.KEY} Mimeo Util require a string value for the pattern parameter and was: [{self._pattern}].'
-            raise InvalidValue(msg) from AttributeError
+            msg = (f"The {self.KEY} Mimeo Util require a string value for the pattern "
+                   f"parameter and was: [{self._pattern}].")
+            raise InvalidValueError(msg) from AttributeError
 
 
 class CurrentIterationUtil(MimeoUtil):
@@ -405,7 +409,8 @@ class CurrentIterationUtil(MimeoUtil):
         int
             A specific Mimeo Context's current iteration ID
         """
-        context = context if self._context_name is None else MimeoContextManager().get_context(self._context_name)
+        if self._context_name is not None:
+            context = MimeoContextManager().get_context(self._context_name)
         return context.curr_iteration().id
 
 
@@ -466,8 +471,12 @@ class KeyUtil(MimeoUtil):
         str
             A unique identifier
         """
-        context = context if self._context_name is None else MimeoContextManager().get_context(self._context_name)
-        iteration = context.curr_iteration() if self._iteration is None else context.get_iteration(self._iteration)
+        if self._context_name is not None:
+            context = MimeoContextManager().get_context(self._context_name)
+        if self._iteration is None:
+            iteration = context.curr_iteration()
+        else:
+            iteration = context.get_iteration(self._iteration)
         return iteration.key
 
 
@@ -544,7 +553,8 @@ class CityUtil(MimeoUtil):
             country_cities = self._MIMEO_DB.get_cities_of(self._country)
             country_cities_count = len(country_cities)
             if country_cities_count == 0:
-                msg = f'Mimeo database does not contain any cities of provided country [{self._country}].'
+                msg = (f"Mimeo database doesn't contain any cities "
+                       f"of provided country [{self._country}].")
                 raise DataNotFound(msg)
 
             if self._unique:
@@ -580,7 +590,13 @@ class CountryUtil(MimeoUtil):
     __VALUE_ISO2 = "iso2"
     __MIMEO_DB = MimeoDB()
 
-    def __init__(self, value: str = None, unique: bool = True, country: str = None, **kwargs):
+    def __init__(
+            self,
+            value: str = None,
+            unique: bool = True,
+            country: str = None,
+            **kwargs,
+    ):
         """Initialize CountryUtil class.
 
         Parameters
@@ -638,17 +654,23 @@ class CountryUtil(MimeoUtil):
         elif self._value == self.__VALUE_ISO2:
             return self._get_country(context).iso_2
         else:
-            msg = f'The `country` Mimeo Util does not support such value [{self._value}]. Supported values are: {self.__VALUE_NAME} (default), {self.__VALUE_ISO3}, {self.__VALUE_ISO2}.'
-            raise InvalidValue(msg)
+            msg = (f"The country Mimeo Util does not support a value [{self._value}]. "
+                   f"Supported values are: {self.__VALUE_NAME} (default), "
+                   f"{self.__VALUE_ISO3}, {self.__VALUE_ISO2}.")
+            raise InvalidValueError(msg)
 
     def _get_country(self, context: MimeoContext) -> Country:
         if self._country is not None:
             countries = self.__MIMEO_DB.get_countries()
-            country_found = next(filter(lambda c: self._country in [c.name, c.iso_3, c.iso_2], countries), None)
+            country_found = next(
+                filter(lambda c: self._country in [c.name, c.iso_3, c.iso_2],
+                       countries),
+                None,
+            )
             if country_found is not None:
                 return country_found
             else:
-                msg = f'Mimeo database does not contain such a country [{self._country}].'
+                msg = f"Mimeo database doesn't contain a country [{self._country}]."
                 raise DataNotFound(msg)
         else:
             if self._unique:

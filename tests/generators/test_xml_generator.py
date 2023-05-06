@@ -1,7 +1,7 @@
 from mimeo.config import MimeoConfig
 from mimeo.context import MimeoContextManager
 from mimeo.generators import XMLGenerator
-from mimeo.utils.exc import InvalidValue
+from mimeo.utils.exc import InvalidValueError
 from tests.utils import assert_throws
 
 
@@ -923,7 +923,7 @@ def test_generate_using_mimeo_util_parametrized():
         assert count == 5
 
 
-@assert_throws(err_type=InvalidValue,
+@assert_throws(err_type=InvalidValueError,
                msg="The auto_increment Mimeo Util require a string value "
                    "for the pattern parameter and was: [{pattern}].",
                params={"pattern": 1})
