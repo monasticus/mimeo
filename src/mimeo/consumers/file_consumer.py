@@ -59,7 +59,8 @@ class FileConsumer(Consumer):
         """
         logger.fine("Consuming data [{data}]", extra={"data": data})
         if not Path(self.directory).exists():
-            logger.info("Creating output directory [{dir}]", extra={"dir": self.directory})
+            logger.info("Creating output directory [{dir}]",
+                        extra={"dir": self.directory})
             Path(self.directory).mkdir(parents=True, exist_ok=True)
 
         self.__count += 1
