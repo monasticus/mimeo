@@ -34,7 +34,10 @@ def test_consume_post():
     assert consumer.method == "POST"
     assert consumer.url == "http://localhost:8080/documents"
 
-    responses.add(responses.POST, consumer.url, json={"success": True}, status=HTTPStatus.OK)
+    responses.add(responses.POST,
+                  consumer.url,
+                  json={"success": True},
+                  status=HTTPStatus.OK)
 
     with MimeoContextManager(mimeo_config):
         generator = GeneratorFactory.get_generator(mimeo_config)
@@ -77,7 +80,10 @@ def test_consume_put():
     assert consumer.method == "PUT"
     assert consumer.url == "http://localhost:8080/documents"
 
-    responses.add(responses.PUT, consumer.url, json={"success": True}, status=HTTPStatus.OK)
+    responses.add(responses.PUT,
+                  consumer.url,
+                  json={"success": True},
+                  status=HTTPStatus.OK)
 
     with MimeoContextManager(mimeo_config):
         generator = GeneratorFactory.get_generator(mimeo_config)
@@ -117,7 +123,10 @@ def test_consume_without_port():
     assert consumer.method == "POST"
     assert consumer.url == "http://localhost/documents"
 
-    responses.add(responses.POST, consumer.url, json={"success": True}, status=HTTPStatus.OK)
+    responses.add(responses.POST,
+                  consumer.url,
+                  json={"success": True},
+                  status=HTTPStatus.OK)
 
     with MimeoContextManager(mimeo_config):
         generator = GeneratorFactory.get_generator(mimeo_config)

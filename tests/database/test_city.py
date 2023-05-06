@@ -11,9 +11,11 @@ def test_city():
 
 def test_str():
     city = City('1234', 'London', 'London', 'GBR')
-    assert city.__str__() == "{'id': 1234, 'name': 'London', 'name_ascii': 'London', 'country': 'GBR'}"
+    exp_str = "{'id': 1234, 'name': 'London', 'name_ascii': 'London', 'country': 'GBR'}"
+    assert city.__str__() == exp_str
 
 
 def test_repr():
     city = City('1234', 'London', 'London', 'GBR')
-    assert city.__repr__() == "City('1234', 'London', 'London', 'GBR')"
+    exp_repr = "City('1234', 'London', 'London', 'GBR')"
+    assert city.__repr__() == exp_repr

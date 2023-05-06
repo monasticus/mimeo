@@ -36,7 +36,7 @@ def test_get_city_at():
 
 
 @assert_throws(err_type=InvalidIndex,
-               message="Provided index [{i}] is out or the range: 0-42904!",
+               msg="Provided index [{i}] is out or the range: 0-42904!",
                params={"i": 999999})
 def test_get_city_at_out_of_range():
     db = CitiesDB()

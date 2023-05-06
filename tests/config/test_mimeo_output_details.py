@@ -208,7 +208,7 @@ def test_parsing_output_details_http_customized():
 
 
 @assert_throws(err_type=InvalidIndent,
-               message="Provided indent [{indent}] is negative!",
+               msg="Provided indent [{indent}] is negative!",
                params={"indent": -1})
 def test_parsing_output_details_with_invalid_indent():
     output_details = {
@@ -218,7 +218,8 @@ def test_parsing_output_details_with_invalid_indent():
 
 
 @assert_throws(err_type=UnsupportedPropertyValue,
-               message="Provided format [{format}] is not supported! Supported values: [{values}].",
+               msg="Provided format [{format}] is not supported! "
+                   "Supported values: [{values}].",
                params={"format": "unsupported_format",
                        "values": "xml"})
 def test_parsing_output_details_with_unsupported_format():
@@ -229,7 +230,8 @@ def test_parsing_output_details_with_unsupported_format():
 
 
 @assert_throws(err_type=UnsupportedPropertyValue,
-               message="Provided direction [{direction}] is not supported! Supported values: [{values}].",
+               msg="Provided direction [{direction}] is not supported! "
+                   "Supported values: [{values}].",
                params={"direction": "unsupported_direction",
                        "values": "stdout, file, http"})
 def test_parsing_output_details_unsupported_direction():
@@ -240,7 +242,8 @@ def test_parsing_output_details_unsupported_direction():
 
 
 @assert_throws(err_type=UnsupportedPropertyValue,
-               message="Provided auth [{auth}] is not supported! Supported values: [{values}].",
+               msg="Provided auth [{auth}] is not supported! "
+                   "Supported values: [{values}].",
                params={"auth": "unsupported_auth",
                        "values": "basic, digest"})
 def test_parsing_output_details_unsupported_auth_method():
@@ -256,7 +259,8 @@ def test_parsing_output_details_unsupported_auth_method():
 
 
 @assert_throws(err_type=UnsupportedPropertyValue,
-               message="Provided method [{method}] is not supported! Supported values: [{values}].",
+               msg="Provided method [{method}] is not supported! "
+                   "Supported values: [{values}].",
                params={"method": "unsupported_request_method",
                        "values": "POST, PUT"})
 def test_parsing_output_details_unsupported_request_method():
@@ -272,7 +276,7 @@ def test_parsing_output_details_unsupported_request_method():
 
 
 @assert_throws(err_type=MissingRequiredProperty,
-               message="Missing required fields is HTTP output details: {fields}",
+               msg="Missing required fields is HTTP output details: {fields}",
                params={"fields": "endpoint"})
 def test_parsing_output_details_missing_required_field():
     output_details = {
@@ -285,7 +289,7 @@ def test_parsing_output_details_missing_required_field():
 
 
 @assert_throws(err_type=MissingRequiredProperty,
-               message="Missing required fields is HTTP output details: {fields}",
+               msg="Missing required fields is HTTP output details: {fields}",
                params={"fields": "host, endpoint, username, password"})
 def test_parsing_output_details_missing_required_fields():
     output_details = {

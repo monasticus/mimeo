@@ -32,30 +32,30 @@ def test_iteration_special_fields():
 
 
 @assert_throws(err_type=InvalidSpecialFieldName,
-               message="A special field name needs to be a string value!")
+               msg="A special field name needs to be a string value!")
 def test_iteration_add_special_field_not_allowed_name():
     iteration = MimeoIteration(1)
     iteration.add_special_field(1, 1)
 
 
 @assert_throws(err_type=InvalidSpecialFieldValue,
-               message="Provided field value [{val}] is invalid (use any atomic value)!",
-               params={"val": "{}"})
-def test_iteration_add_special_field_not_allowed_values():
+               msg="Provided field value [{v}] is invalid (use any atomic value)!",
+               params={"v": "{}"})
+def test_iteration_add_special_field_dict():
     iteration = MimeoIteration(1)
     iteration.add_special_field("SomeField", {})
 
 
 @assert_throws(err_type=InvalidSpecialFieldValue,
-               message="Provided field value [{val}] is invalid (use any atomic value)!",
-               params={"val": "[]"})
-def test_iteration_add_special_field_not_allowed_values():
+               msg="Provided field value [{v}] is invalid (use any atomic value)!",
+               params={"v": "[]"})
+def test_iteration_add_special_field_list():
     iteration = MimeoIteration(1)
     iteration.add_special_field("SomeField", [])
 
 
 @assert_throws(err_type=SpecialFieldNotFound,
-               message="Special Field [{field}] has not been found!",
+               msg="Special Field [{field}] has not been found!",
                params={"field": "SomeField"})
 def test_iteration_get_special_field_not_found():
     iteration = MimeoIteration(1)

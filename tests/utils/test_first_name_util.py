@@ -62,7 +62,7 @@ def test_first_name_parametrized_with_unique(default_config):
 
 
 @assert_throws(err_type=InvalidSex,
-               message="Invalid sex (use M / F / Male / Female)!")
+               msg="Invalid sex (use M / F / Male / Female)!")
 def test_first_name_parametrized_with_unique_and_invalid_sex(default_config):
     with MimeoContextManager(default_config) as mimeo_manager:
         context = mimeo_manager.get_context("SomeEntity")
@@ -121,7 +121,7 @@ def test_first_name_parametrized_with_unique_and_sex_female(default_config):
 
 
 @assert_throws(err_type=InvalidSex,
-               message="Invalid sex (use M / F / Male / Female)!")
+               msg="Invalid sex (use M / F / Male / Female)!")
 def test_first_name_parametrized_with_invalid_sex(default_config):
     with MimeoContextManager(default_config) as mimeo_manager:
         context = mimeo_manager.get_context("SomeEntity")

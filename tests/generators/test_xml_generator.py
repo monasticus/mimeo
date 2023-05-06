@@ -846,7 +846,7 @@ def test_stringify_without_indent_and_xml_declaration():
                                 '</SomeEntity>')
 
 
-def test_generate_template_using_mimeo_util_raw():
+def test_generate_using_mimeo_util_raw():
     config = MimeoConfig({
         "output_details": {
             "format": "xml",
@@ -882,7 +882,7 @@ def test_generate_template_using_mimeo_util_raw():
         assert count == 5
 
 
-def test_generate_template_using_mimeo_util_parametrized():
+def test_generate_using_mimeo_util_parametrized():
     config = MimeoConfig({
         "output_details": {
             "format": "xml",
@@ -924,10 +924,10 @@ def test_generate_template_using_mimeo_util_parametrized():
 
 
 @assert_throws(err_type=InvalidValue,
-               message="The auto_increment Mimeo Util require a string value for "
-                       "the pattern parameter and was: [{pattern}].",
+               msg="The auto_increment Mimeo Util require a string value "
+                   "for the pattern parameter and was: [{pattern}].",
                params={"pattern": 1})
-def test_generate_template_using_mimeo_util_parametrized_invalid():
+def test_generate_using_mimeo_util_parametrized_invalid():
     config = MimeoConfig({
         "output_details": {
             "format": "xml",
@@ -955,7 +955,7 @@ def test_generate_template_using_mimeo_util_parametrized_invalid():
             pass
 
 
-def test_generate_template_using_auto_increment_util():
+def test_generate_using_auto_increment():
     config = MimeoConfig({
         "output_details": {
             "format": "xml",
@@ -991,7 +991,7 @@ def test_generate_template_using_auto_increment_util():
         assert count == 5
 
 
-def test_generate_template_using_auto_increment_util_in_two_templates():
+def test_generate_using_auto_increment_in_two_templates():
     config = MimeoConfig({
         "output_details": {
             "format": "xml",
@@ -1035,7 +1035,7 @@ def test_generate_template_using_auto_increment_util_in_two_templates():
         assert count == 8
 
 
-def test_generate_template_using_auto_increment_util_in_two_templates_with_customized_context_name():
+def test_generate_using_auto_increment_in_two_templates_with_customized_context_name():
     config = MimeoConfig({
         "output_details": {
             "format": "xml",
@@ -1065,7 +1065,8 @@ def test_generate_template_using_auto_increment_util_in_two_templates_with_custo
         generator = XMLGenerator(config)
         count = 0
         for index, data in enumerate(generator.generate(config.templates)):
-            expected_increment = index + 1 if index < 5 else index - 5 + 1  # from 6th item it is the second template
+            # from 6th item it is the second template
+            expected_increment = index + 1 if index < 5 else index - 5 + 1
             assert data.tag == "SomeEntity"
             assert data.attrib == {}
             assert len(list(data)) == 1  # number of children
@@ -1081,7 +1082,7 @@ def test_generate_template_using_auto_increment_util_in_two_templates_with_custo
         assert count == 8
 
 
-def test_generate_template_using_curr_iter_util():
+def test_generate_using_curr_iter_util():
     config = MimeoConfig({
         "output_details": {
             "format": "xml",
@@ -1118,7 +1119,7 @@ def test_generate_template_using_curr_iter_util():
         assert count == 5
 
 
-def test_generate_template_using_curr_iter_util_in_two_templates():
+def test_generate_using_curr_iter_util_in_two_templates():
     config = MimeoConfig({
         "output_details": {
             "format": "xml",
@@ -1147,7 +1148,8 @@ def test_generate_template_using_curr_iter_util_in_two_templates():
         generator = XMLGenerator(config)
         count = 0
         for index, data in enumerate(generator.generate(config.templates)):
-            curr_iter = index + 1 if index < 5 else index - 5 + 1  # from 6th item it is the second template
+            # from 6th item it is the second template
+            curr_iter = index + 1 if index < 5 else index - 5 + 1
             print(generator.stringify(data, config))
             assert data.tag == "SomeEntity"
             assert data.attrib == {}
@@ -1164,7 +1166,7 @@ def test_generate_template_using_curr_iter_util_in_two_templates():
         assert count == 8
 
 
-def test_generate_templates_using_curr_iter_util_in_nested_templates():
+def test_generates_using_curr_iter_util_in_nested_templates():
     config = MimeoConfig({
         "output_details": {
             "format": "xml",
@@ -1231,7 +1233,7 @@ def test_generate_templates_using_curr_iter_util_in_nested_templates():
         assert count == 5
 
 
-def test_generate_templates_using_curr_iter_util_in_nested_templates_indicating_one():
+def test_generates_using_curr_iter_util_in_nested_templates_indicating_one():
     config = MimeoConfig({
         "output_details": {
             "format": "xml",
@@ -1302,7 +1304,7 @@ def test_generate_templates_using_curr_iter_util_in_nested_templates_indicating_
         assert count == 5
 
 
-def test_generate_templates_using_curr_iter_util_in_nested_templates_indicating_customized_one():
+def test_generates_using_curr_iter_util_in_nested_templates_indicating_customized_one():
     config = MimeoConfig({
         "output_details": {
             "format": "xml",
@@ -1374,7 +1376,7 @@ def test_generate_templates_using_curr_iter_util_in_nested_templates_indicating_
         assert count == 5
 
 
-def test_generate_template_using_curr_iter_and_auto_increment_utils():
+def test_generate_using_curr_iter_and_auto_increment_utils():
     config = MimeoConfig({
         "output_details": {
             "format": "xml",
@@ -1432,7 +1434,7 @@ def test_generate_template_using_curr_iter_and_auto_increment_utils():
         assert count == 5
 
 
-def test_generate_template_using_key_util():
+def test_generate_using_key_util():
     config = MimeoConfig({
         "output_details": {
             "format": "xml",
@@ -1488,7 +1490,7 @@ def test_generate_template_using_key_util():
         assert len(set(keys)) == len(keys)
 
 
-def test_generate_template_using_key_util_in_separated_contexts():
+def test_generate_using_key_util_in_separated_contexts():
     config = MimeoConfig({
         "output_details": {
             "format": "xml",
@@ -1547,7 +1549,7 @@ def test_generate_template_using_key_util_in_separated_contexts():
         assert count == 5
 
 
-def test_generate_template_using_key_util_in_separated_contexts_indicating_one():
+def test_generate_using_key_util_in_separated_contexts_indicating_one():
     config = MimeoConfig({
         "output_details": {
             "format": "xml",
@@ -1611,7 +1613,7 @@ def test_generate_template_using_key_util_in_separated_contexts_indicating_one()
         assert count == 5
 
 
-def test_generate_template_using_key_util_in_two_templates_with_customized_iteration():
+def test_generate_using_key_util_in_two_templates_with_customized_iteration():
     config = MimeoConfig({
         "output_details": {
             "format": "xml",
@@ -1680,7 +1682,7 @@ def test_generate_template_using_key_util_in_two_templates_with_customized_itera
             assert some_entity_keys[i] == some_other_entity_keys[i]
 
 
-def test_generate_template_using_get_key_util_in_two_templates_with_customized_context_name():
+def test_generate_using_get_key_util_in_two_templates_with_customized_context_name():
     config = MimeoConfig({
         "output_details": {
             "format": "xml",
@@ -1746,7 +1748,7 @@ def test_generate_template_using_get_key_util_in_two_templates_with_customized_c
             assert len(list(child)) == 0  # number of children
 
 
-def test_generate_template_using_special_fields():
+def test_generate_using_special_fields():
     config = MimeoConfig({
         "output_details": {
             "format": "xml",
@@ -1789,7 +1791,7 @@ def test_generate_template_using_special_fields():
         assert count == 5
 
 
-def test_generate_template_using_special_fields_as_partial_values():
+def test_generate_using_special_fields_as_partial_values():
     config = MimeoConfig({
         "output_details": {
             "format": "xml",
@@ -1867,7 +1869,7 @@ def test_generate_template_using_special_fields_as_partial_values():
         assert count == 5
 
 
-def test_generate_template_using_special_fields_using_namespace():
+def test_generate_using_special_fields_using_namespace():
     config = MimeoConfig({
         "output_details": {
             "format": "xml",
@@ -1915,7 +1917,7 @@ def test_generate_template_using_special_fields_using_namespace():
         assert count == 5
 
 
-def test_generate_template_using_special_fields_recursive():
+def test_generate_using_special_fields_recursive():
     config = MimeoConfig({
         "output_details": {
             "format": "xml",
@@ -1965,7 +1967,7 @@ def test_generate_template_using_special_fields_recursive():
         assert count == 5
 
 
-def test_generate_template_using_special_fields_in_template_context():
+def test_generate_using_special_fields_in_template_context():
     config = MimeoConfig({
         "output_details": {
             "format": "xml",

@@ -52,13 +52,13 @@ class ContextBucket:
         self.CONTEXTS = []
 
     def collect_contexts(self, template: MimeoTemplate):
-        prev_context = MimeoContextManager().get_current_context()
-        self.CONTEXTS.append(prev_context if prev_context is None else prev_context.name)
+        prev_ctx = MimeoContextManager().get_current_context()
+        self.CONTEXTS.append(prev_ctx if prev_ctx is None else prev_ctx.name)
 
         self.collect_with_switch(template)
 
-        next_context = MimeoContextManager().get_current_context()
-        self.CONTEXTS.append(next_context if next_context is None else next_context.name)
+        next_ctx = MimeoContextManager().get_current_context()
+        self.CONTEXTS.append(next_ctx if next_ctx is None else next_ctx.name)
 
     @mimeo_context_switch
     def collect_with_switch(self, template: MimeoTemplate):

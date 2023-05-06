@@ -26,7 +26,8 @@ def test_generator_factory_for_xml():
 
 
 @assert_throws(err_type=UnsupportedPropertyValue,
-               message="Provided format [{format}] is not supported! Supported values: [{values}].",
+               msg="Provided format [{format}] is not supported! "
+                   "Supported values: [{values}].",
                params={"format": "unsupported_format",
                        "values": "xml"})
 def test_generator_factory_for_unsupported_format():

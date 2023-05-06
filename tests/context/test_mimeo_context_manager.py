@@ -78,7 +78,7 @@ def test_get_var(default_config):
 
 
 @assert_throws(err_type=VarNotFound,
-               message="Provided variable [{var}] is not defined!",
+               msg="Provided variable [{var}] is not defined!",
                params={"var": "NON_EXISTING_VAR"})
 def test_get_non_existing_var(default_config):
     with MimeoContextManager(default_config) as mimeo_manager:

@@ -46,7 +46,7 @@ def test_assert_alive_true():
 
 
 @assert_throws(err_type=InstanceNotAlive,
-               message="The instance is not alive!")
+               msg="The instance is not alive!")
 def test_assert_alive_false():
     instance = SomeClass()
     instance.assert_alive()

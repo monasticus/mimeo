@@ -56,7 +56,7 @@ def test_valid_class_instantiation():
 
 
 @assert_throws(err_type=TypeError,
-               message=test_utils.get_class_impl_error_msg(
+               msg=test_utils.get_class_impl_error_msg(
                    "InvalidMimeoUtilWithoutRender",
                    ["render"],
                ))

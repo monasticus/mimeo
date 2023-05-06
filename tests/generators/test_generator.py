@@ -53,27 +53,27 @@ def test_valid_class_instantiation():
 
 
 @assert_throws(err_type=TypeError,
-               message=test_utils.get_class_impl_error_msg(
+               msg=test_utils.get_class_impl_error_msg(
                    "InvalidGenerator1",
-                   ["stringify"]
+                   ["stringify"],
                ))
 def test_invalid_class_instantiation_1():
     InvalidGenerator1()
 
 
 @assert_throws(err_type=TypeError,
-               message=test_utils.get_class_impl_error_msg(
+               msg=test_utils.get_class_impl_error_msg(
                    "InvalidGenerator2",
-                   ["generate"]
+                   ["generate"],
                ))
 def test_invalid_class_instantiation_2():
     InvalidGenerator2()
 
 
 @assert_throws(err_type=TypeError,
-               message=test_utils.get_class_impl_error_msg(
+               msg=test_utils.get_class_impl_error_msg(
                    "InvalidGenerator3",
-                   ["generate", "stringify"]
+                   ["generate", "stringify"],
                ))
-def test_invalid_class_instantiation_2():
+def test_invalid_class_instantiation_3():
     InvalidGenerator3()

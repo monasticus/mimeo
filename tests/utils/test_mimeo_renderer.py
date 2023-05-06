@@ -64,8 +64,7 @@ def test_get_special_field_name_using_namespace():
 
 
 @assert_throws(err_type=NotASpecialField,
-               message="Provided field [{:SomeField}] is not a special one "
-                       "(use {:NAME:})!")
+               msg="Provided field [{:SomeField}] is not a special one (use {:NAME:})!")
 def test_get_special_field_name_when_invalid():
     MimeoRenderer.get_special_field_name("{:SomeField}")
 
@@ -282,7 +281,7 @@ def test_vars_pointing_to_var():
 
 
 @assert_throws(err_type=VarNotFound,
-               message="Provided variable [{var}] is not defined!",
+               msg="Provided variable [{var}] is not defined!",
                params={"var": "NON_EXISTING_VAR"})
 def test_vars_pointing_to_non_existing_var():
     config = MimeoConfig({
@@ -315,8 +314,8 @@ def test_vars_pointing_to_funct():
 
 
 @assert_throws(err_type=InvalidValue,
-               message="The auto_increment Mimeo Util require a string value for "
-                       "the pattern parameter and was: [{pattern}].",
+               msg="The auto_increment Mimeo Util require a string value "
+                   "for the pattern parameter and was: [{pattern}].",
                params={"pattern": 1})
 def test_vars_pointing_to_invalid_funct():
     config = MimeoConfig({

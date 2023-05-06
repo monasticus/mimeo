@@ -48,7 +48,7 @@ def test_parsing_raw_model():
 
 
 @assert_throws(err_type=InvalidMimeoModel,
-               message="No root data in Mimeo Model: {model}",
+               msg="No root data in Mimeo Model: {model}",
                params={"model": "{'context': 'My Context'}"})
 def test_parsing_model_without_root():
     model = {
@@ -58,7 +58,7 @@ def test_parsing_model_without_root():
 
 
 @assert_throws(err_type=InvalidMimeoModel,
-               message="Multiple root data in Mimeo Model: {model}",
+               msg="Multiple root data in Mimeo Model: {model}",
                params={"model": "{'SomeEntity': {'ChildNode': 'value'}, "
                                 "'SomeEntity2': {'ChildNode': 'value'}}"})
 def test_parsing_model_with_multiple_roots():
@@ -74,7 +74,7 @@ def test_parsing_model_with_multiple_roots():
 
 
 @assert_throws(err_type=InvalidMimeoModel,
-               message="Invalid context name in Mimeo Model (not a string value): {model}",
+               msg="Invalid context name in Mimeo Model (not a string value): {model}",
                params={"model": "{'context': 1, 'SomeEntity': {'ChildNode': 'value'}}"})
 def test_parsing_model_with_non_str_context():
     model = {

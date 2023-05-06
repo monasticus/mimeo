@@ -83,7 +83,7 @@ def test_country_parametrized_with_country_iso2(default_config):
 
 
 @assert_throws(err_type=DataNotFound,
-               message="Mimeo database does not contain such a country [{country}].",
+               msg="Mimeo database does not contain such a country [{country}].",
                params={"country": "NEC"})
 def test_country_parametrized_with_non_existing_country(default_config):
     with MimeoContextManager(default_config) as mimeo_manager:
@@ -139,7 +139,7 @@ def test_country_parametrized_with_value_iso3_and_country_iso2(default_config):
 
 
 @assert_throws(err_type=DataNotFound,
-               message="Mimeo database does not contain such a country [{country}].",
+               msg="Mimeo database does not contain such a country [{country}].",
                params={"country": "NEC"})
 def test_country_parametrized_with_value_iso3_and_non_existing_country(default_config):
     with MimeoContextManager(default_config) as mimeo_manager:
@@ -195,7 +195,7 @@ def test_country_parametrized_with_value_iso2_and_country_iso3(default_config):
 
 
 @assert_throws(err_type=DataNotFound,
-               message="Mimeo database does not contain such a country [{country}].",
+               msg="Mimeo database does not contain such a country [{country}].",
                params={"country": "NEC"})
 def test_country_parametrized_with_value_iso2_and_non_existing_country(default_config):
     with MimeoContextManager(default_config) as mimeo_manager:
@@ -207,8 +207,8 @@ def test_country_parametrized_with_value_iso2_and_non_existing_country(default_c
 
 
 @assert_throws(err_type=InvalidValue,
-               message="The `country` Mimeo Util does not support such value [{val}]. "
-                       "Supported values are: name (default), iso3, iso2.",
+               msg="The `country` Mimeo Util does not support such value [{val}]. "
+                   "Supported values are: name (default), iso3, iso2.",
                params={"val": "not_supported"})
 def test_country_parametrized_with_invalid_value(default_config):
     with MimeoContextManager(default_config) as mimeo_manager:

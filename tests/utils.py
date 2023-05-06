@@ -7,7 +7,7 @@ import pytest
 
 def assert_throws(
         err_type: Type[Exception],
-        message: str,
+        msg: str,
         params: dict = None,
 ) -> Callable:
 
@@ -17,7 +17,7 @@ def assert_throws(
         def test_wrapper(*args, **kwargs):
             with pytest.raises(err_type) as err:
                 func(*args, **kwargs)
-            expected_msg = message if params is None else message.format(**params)
+            expected_msg = msg if params is None else msg.format(**params)
             assert err.value.args[0] == expected_msg
         return test_wrapper
 

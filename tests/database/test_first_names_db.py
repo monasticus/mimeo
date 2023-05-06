@@ -32,7 +32,7 @@ def test_get_first_name_at():
 
 
 @assert_throws(err_type=InvalidIndex,
-               message="Provided index [{i}] is out or the range: 0-7454!",
+               msg="Provided index [{i}] is out or the range: 0-7454!",
                params={"i": 9999})
 def test_get_first_name_at_out_of_range():
     db = FirstNamesDB()
@@ -48,6 +48,6 @@ def test_get_first_names_by_sex():
 
 
 @assert_throws(err_type=InvalidSex,
-               message="Invalid sex (use M / F)!")
+               msg="Invalid sex (use M / F)!")
 def test_get_first_names_by_sex_invalid():
     FirstNamesDB().get_first_names_by_sex('N')
