@@ -19,7 +19,7 @@ from mimeo.cli.exc import (EnvironmentNotFoundError,
 
 logger = logging.getLogger(__name__)
 
-DEFAULT_ENVS_FILE_PATH = "mimeo.envs.json"
+DEFAULT_ENVS_PATH = "mimeo.envs.json"
 
 
 class MimeoArgumentParser(ArgumentParser):
@@ -74,7 +74,8 @@ class MimeoArgumentParser(ArgumentParser):
                                 overwrite the output http properties using a mimeo
                                 env configuration
           --http-envs-file PATH
-                                use a custom environments file (by default: mimeo.envs.json)
+                                use a custom environments file
+                                (by default: mimeo.envs.json)
 
         Logging arguments:
           --silent              disable INFO logs
@@ -189,7 +190,7 @@ class MimeoArgumentParser(ArgumentParser):
             "--http-envs-file",
             type=str,
             metavar="PATH",
-            help=f"use a custom environments file (by default: {DEFAULT_ENVS_FILE_PATH})")
+            help=f"use a custom environments file (by default: {DEFAULT_ENVS_PATH})")
 
     def _add_logging_arguments(self):
         """Add arguments customizing logs producing."""
@@ -323,7 +324,8 @@ class MimeoConfigParser:
         config = self._parse_with_http_environment(config)
         config = self._parse_with_specific_args(config)
         mimeo_config = MimeoConfig(config)
-        logger.fine("Parsed Mimeo Configuration: [{config}]", extra={"config": mimeo_config})
+        logger.fine("Parsed Mimeo Configuration: [{config}]",
+                    extra={"config": mimeo_config})
         return mimeo_config
 
     def _parse_with_http_environment(self, config: dict) -> dict:
@@ -351,11 +353,14 @@ class MimeoConfigParser:
         EnvironmentNotFoundError
             If the http environment is not defined in the environments file
         """
-        if self._args.http_env is not None:
-            envs_file_path = self._args.http_envs_file if self._args.http_envs_file is not None else DEFAULT_ENVS_FILE_PATH
-            env = self._get_environment(envs_file_path, self._args.http_env)
-            self._overwrite_output_with_env(config, env)
-        return config
+        if self._args.http_env is None:
+            return config
+
+        if self._args.http_envs_file is None:
+            env = self._get_environment(DEFAULT_ENVS_PATH, self._args.http_env)
+        else:
+            env = self._get_environment(self._args.http_envs_file, self._args.http_env)
+        return self._overwrite_output_with_env(config, env)
 
     def _parse_with_specific_args(self, config: dict) -> dict:
         """Parse Mimeo Configuration with Mimeo Configuration args.
@@ -376,10 +381,11 @@ class MimeoConfigParser:
             the source one, without any modification.
         """
         for arg_name, mapping in self._ARGS_MAPPING.items():
-            if hasattr(self._args, arg_name) and getattr(self._args, arg_name) is not None:
+            arg = getattr(self._args, arg_name, None)
+            if arg is not None:
                 entry_path = mapping.get(self._ENTRY_PATH_KEY, arg_name)
-                get_value = mapping.get(self._GET_VALUE_KEY, lambda arg: arg)
-                value = get_value(getattr(self._args, arg_name))
+                get_value = mapping.get(self._GET_VALUE_KEY, lambda a: a)
+                value = get_value(arg)
                 config = self._overwrite_config_entry(config, entry_path, value)
         return config
 
@@ -407,7 +413,12 @@ class MimeoConfigParser:
         return config
 
     @classmethod
-    def _overwrite_config_entry(cls, config_entry: dict, entry_path: list, value: Union[str, int, bool]) -> dict:
+    def _overwrite_config_entry(
+            cls,
+            config_entry: dict,
+            entry_path: list,
+            value: Union[str, int, bool],
+    ) -> dict:
         """Overwrite a Mimeo Configuration entry.
 
         Recursively finds an entry using `entry_path` list. If any of
@@ -436,10 +447,13 @@ class MimeoConfigParser:
         if len(entry_path) > 1:
             if config_entry.get(direct_entry) is None:
                 config_entry[direct_entry] = {}
-            config_entry[direct_entry] = cls._overwrite_config_entry(config_entry[direct_entry], entry_path[1:], value)
+            value = cls._overwrite_config_entry(config_entry[direct_entry],
+                                                entry_path[1:],
+                                                value)
         else:
-            logger.fine("Overwriting {entry} to [{val}]", extra={"entry": direct_entry, "val": value})
-            config_entry[direct_entry] = value
+            logger.fine("Overwriting {entry} to [{val}]",
+                        extra={"entry": direct_entry, "val": value})
+        config_entry[direct_entry] = value
         return config_entry
 
     @staticmethod
@@ -465,17 +479,17 @@ class MimeoConfigParser:
         EnvironmentNotFoundError
             If the http environment is not defined in the environments file
         """
-        if path.exists(envs_path):
-            with open(envs_path) as envs_file:
-                envs = json.load(envs_file)
-                if env_name in envs:
-                    env = envs[env_name]
-                    logger.debug("Using environment [{env_name}] from file [{envs_path}]: [{env}]",
-                                 extra={"env_name": env_name,
-                                        "envs_path": envs_path,
-                                        "env": env})
-                    return env
-                else:
-                    raise EnvironmentNotFoundError(env_name, envs_path)
-        else:
+        if not path.exists(envs_path):
             raise EnvironmentsFileNotFoundError(envs_path)
+
+        with open(envs_path) as envs_file:
+            envs = json.load(envs_file)
+            if env_name not in envs:
+                raise EnvironmentNotFoundError(env_name, envs_path)
+
+        env = envs[env_name]
+        logger.debug("Using environment [{env_name}] from file [{envs_path}]: [{env}]",
+                     extra={"env_name": env_name,
+                            "envs_path": envs_path,
+                            "env": env})
+        return env
