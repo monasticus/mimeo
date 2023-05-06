@@ -3,7 +3,7 @@ import pytest
 from mimeo.config import MimeoConfig
 from mimeo.context import MimeoContextManager
 from mimeo.database import MimeoDB
-from mimeo.database.exc import InvalidSex
+from mimeo.database.exc import InvalidSexError
 from mimeo.utils.renderers import UtilsRenderer
 from tests.utils import assert_throws
 
@@ -61,7 +61,7 @@ def test_first_name_parametrized_with_unique(default_config):
         assert first_name in first_names
 
 
-@assert_throws(err_type=InvalidSex,
+@assert_throws(err_type=InvalidSexError,
                msg="Invalid sex (use M / F / Male / Female)!")
 def test_first_name_parametrized_with_unique_and_invalid_sex(default_config):
     with MimeoContextManager(default_config) as mimeo_manager:
@@ -120,7 +120,7 @@ def test_first_name_parametrized_with_unique_and_sex_female(default_config):
         assert first_name in gbr_first_names
 
 
-@assert_throws(err_type=InvalidSex,
+@assert_throws(err_type=InvalidSexError,
                msg="Invalid sex (use M / F / Male / Female)!")
 def test_first_name_parametrized_with_invalid_sex(default_config):
     with MimeoContextManager(default_config) as mimeo_manager:

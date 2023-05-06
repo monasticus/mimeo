@@ -7,8 +7,8 @@ It exports only one class:
 import uuid
 from typing import Union
 
-from mimeo.context.exc import (InvalidSpecialFieldName,
-                               InvalidSpecialFieldValue, SpecialFieldNotFound)
+from mimeo.context.exc import (InvalidSpecialFieldNameError,
+                               InvalidSpecialFieldValueError, SpecialFieldNotFoundError)
 
 
 class MimeoIteration:
@@ -57,15 +57,15 @@ class MimeoIteration:
 
         Raises
         ------
-        InvalidSpecialFieldName
+        InvalidSpecialFieldNameError
             If the special field name is not a string
-        InvalidSpecialFieldValue
+        InvalidSpecialFieldValueError
             If the special field value is dict or list
         """
         if not isinstance(field_name, str):
-            raise InvalidSpecialFieldName()
+            raise InvalidSpecialFieldNameError()
         if isinstance(field_value, dict) or isinstance(field_value, list):
-            raise InvalidSpecialFieldValue(field_value)
+            raise InvalidSpecialFieldValueError(field_value)
 
         self._special_fields[field_name] = field_value
 
@@ -84,10 +84,10 @@ class MimeoIteration:
 
         Raises
         ------
-        SpecialFieldNotFound
+        SpecialFieldNotFoundError
             If the special field does not exist.
         """
         if field_name not in self._special_fields:
-            raise SpecialFieldNotFound(field_name)
+            raise SpecialFieldNotFoundError(field_name)
 
         return self._special_fields.get(field_name)

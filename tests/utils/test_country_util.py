@@ -3,7 +3,7 @@ import pytest
 from mimeo.config import MimeoConfig
 from mimeo.context import MimeoContextManager
 from mimeo.database import MimeoDB
-from mimeo.database.exc import DataNotFound
+from mimeo.database.exc import DataNotFoundError
 from mimeo.utils.exc import InvalidValueError
 from mimeo.utils.renderers import UtilsRenderer
 from tests.utils import assert_throws
@@ -82,7 +82,7 @@ def test_country_parametrized_with_country_iso2(default_config):
         assert country == "United Kingdom"
 
 
-@assert_throws(err_type=DataNotFound,
+@assert_throws(err_type=DataNotFoundError,
                msg="Mimeo database doesn't contain a country [{country}].",
                params={"country": "NEC"})
 def test_country_parametrized_with_non_existing_country(default_config):
@@ -138,7 +138,7 @@ def test_country_parametrized_with_value_iso3_and_country_iso2(default_config):
         assert country == "GBR"
 
 
-@assert_throws(err_type=DataNotFound,
+@assert_throws(err_type=DataNotFoundError,
                msg="Mimeo database doesn't contain a country [{country}].",
                params={"country": "NEC"})
 def test_country_parametrized_with_value_iso3_and_non_existing_country(default_config):
@@ -194,7 +194,7 @@ def test_country_parametrized_with_value_iso2_and_country_iso3(default_config):
         assert country == "GB"
 
 
-@assert_throws(err_type=DataNotFound,
+@assert_throws(err_type=DataNotFoundError,
                msg="Mimeo database doesn't contain a country [{country}].",
                params={"country": "NEC"})
 def test_country_parametrized_with_value_iso2_and_non_existing_country(default_config):

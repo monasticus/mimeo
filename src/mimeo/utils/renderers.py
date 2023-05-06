@@ -251,7 +251,7 @@ class VarsRenderer:
         ------
         InstanceNotAlive
             If the MimeoContextManager instance is not alive
-        VarNotFound
+        VarNotFoundError
             If the Mimeo Var with the `var` provided does not exist
         """
         logger.fine("Rendering a variable [{var}]", extra={"var": var})
@@ -287,9 +287,9 @@ class SpecialFieldsRenderer:
 
         Raises
         ------
-        UninitializedContextIteration
+        UninitializedContextIterationError
             If no iteration has been initialized yet for the context
-        SpecialFieldNotFound
+        SpecialFieldNotFoundError
             If the special field does not exist.
         """
         logger.fine("Rendering a special field [{field}]", extra={"field": field})
@@ -426,9 +426,9 @@ class MimeoRenderer:
         ------
         InstanceNotAlive
             If the MimeoContextManager instance is not alive
-        UninitializedContextIteration
+        UninitializedContextIterationError
             If no iteration has been initialized yet for the context
-        VarNotFound
+        VarNotFoundError
             If the Mimeo Var does not exist
         InvalidMimeoUtil
             If the Mimeo Util node has missing _name property, or it
@@ -505,9 +505,9 @@ class MimeoRenderer:
 
         Raises
         ------
-        UninitializedContextIteration
+        UninitializedContextIterationError
             If no iteration has been initialized yet for the context
-        SpecialFieldNotFound
+        SpecialFieldNotFoundError
             If the special field does not exist.
         """
         match = next(cls._SPECIAL_FIELDS_PATTERN.finditer(value))
@@ -541,7 +541,7 @@ class MimeoRenderer:
         ------
         InstanceNotAlive
             If the MimeoContextManager instance is not alive
-        VarNotFound
+        VarNotFoundError
             If the Mimeo Var with the `var` provided does not exist
         """
         match = next(cls._VARS_PATTERN.finditer(value))

@@ -1,5 +1,5 @@
 from mimeo.database import CitiesDB
-from mimeo.database.exc import InvalidIndex
+from mimeo.database.exc import InvalidIndexError
 from tests.utils import assert_throws
 
 
@@ -35,7 +35,7 @@ def test_get_city_at():
     assert city_2.country == city_2_cols[3]
 
 
-@assert_throws(err_type=InvalidIndex,
+@assert_throws(err_type=InvalidIndexError,
                msg="Provided index [{i}] is out or the range: 0-42904!",
                params={"i": 999999})
 def test_get_city_at_out_of_range():

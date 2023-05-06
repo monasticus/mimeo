@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from mimeo.config import MimeoConfig
 from mimeo.context import MimeoContext
-from mimeo.context.exc import VarNotFound
+from mimeo.context.exc import VarNotFoundError
 from mimeo.meta import Alive, OnlyOneAlive
 
 
@@ -161,7 +161,7 @@ class MimeoContextManager(Alive, metaclass=OnlyOneAlive):
         ------
         InstanceNotAlive
             If the MimeoContextManager instance is not alive
-        VarNotFound
+        VarNotFoundError
             If the Mimeo Var with the `variable_name` provided does not
             exist
         """
@@ -170,4 +170,4 @@ class MimeoContextManager(Alive, metaclass=OnlyOneAlive):
         if value is not None:
             return value
         else:
-            raise VarNotFound(variable_name)
+            raise VarNotFoundError(variable_name)

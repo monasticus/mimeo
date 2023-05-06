@@ -3,7 +3,7 @@ import pytest
 from mimeo.config import MimeoConfig
 from mimeo.context import MimeoContextManager
 from mimeo.database import MimeoDB
-from mimeo.database.exc import DataNotFound
+from mimeo.database.exc import DataNotFoundError
 from mimeo.utils.renderers import UtilsRenderer
 from tests.utils import assert_throws
 
@@ -61,7 +61,7 @@ def test_city_parametrized_with_unique(default_config):
         assert city in cities
 
 
-@assert_throws(err_type=DataNotFound,
+@assert_throws(err_type=DataNotFoundError,
                msg="Mimeo database doesn't contain any cities of provided "
                    "country [{country}].",
                params={"country": "NEC"})
@@ -86,7 +86,7 @@ def test_city_parametrized_with_unique_and_country(default_config):
         assert city in gbr_cities
 
 
-@assert_throws(err_type=DataNotFound,
+@assert_throws(err_type=DataNotFoundError,
                msg="Mimeo database doesn't contain any cities of provided "
                    "country [{country}].",
                params={"country": "NEC"})

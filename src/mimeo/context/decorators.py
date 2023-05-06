@@ -44,7 +44,8 @@ def mimeo_context(func: Callable) -> Callable:
         if any(isinstance(arg, MimeoContext) for arg in args) or "context" in kwargs:
             result = func(*args, **kwargs)
         else:
-            result = func(*args, **kwargs, context=MimeoContextManager().get_current_context())
+            current_ctx = MimeoContextManager().get_current_context()
+            result = func(*args, **kwargs, context=current_ctx)
         return result
 
     return inject_context

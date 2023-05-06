@@ -4,7 +4,7 @@ import pytest
 
 from mimeo.config import MimeoConfig
 from mimeo.context import MimeoContextManager
-from mimeo.context.exc import VarNotFound
+from mimeo.context.exc import VarNotFoundError
 from mimeo.utils import MimeoRenderer
 from mimeo.utils.exc import InvalidValueError, NotASpecialFieldError
 from tests.utils import assert_throws
@@ -280,7 +280,7 @@ def test_vars_pointing_to_var():
         assert value == "custom-value-1"
 
 
-@assert_throws(err_type=VarNotFound,
+@assert_throws(err_type=VarNotFoundError,
                msg="Provided variable [{var}] is not defined!",
                params={"var": "NON_EXISTING_VAR"})
 def test_vars_pointing_to_non_existing_var():

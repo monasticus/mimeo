@@ -227,9 +227,9 @@ class XMLGenerator(Generator):
 
         Raises
         ------
-        InvalidSpecialFieldValue
+        InvalidSpecialFieldValueError
             If the special field value is dict or list
-        SpecialFieldNotFound
+        SpecialFieldNotFoundError
             If the special field does not exist.
         """
         logger.fine("Rendering element - "
