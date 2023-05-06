@@ -18,7 +18,7 @@ def teardown():
 
 def test_produce():
     config = {
-        "output_details": {
+        "output": {
             "direction": "file",
             "format": "xml",
             "indent": 4,

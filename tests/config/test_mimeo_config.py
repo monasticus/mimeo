@@ -1,12 +1,12 @@
 
-from mimeo.config.exc import InvalidMimeoConfig, InvalidVars
+from mimeo.config.exc import InvalidMimeoConfigError, InvalidVarsError
 from mimeo.config.mimeo_config import MimeoConfig
 from tests.utils import assert_throws
 
 
 def test_str():
     config = {
-        "output_details": {
+        "output": {
             "direction": "stdout",
         },
         "vars": {
@@ -30,7 +30,7 @@ def test_str():
 
 def test_parsing_config():
     config = {
-        "output_details": {
+        "output": {
             "direction": "stdout",
         },
         "vars": {
@@ -55,7 +55,7 @@ def test_parsing_config():
     }
 
     mimeo_config = MimeoConfig(config)
-    assert mimeo_config.output_details.direction == "stdout"
+    assert mimeo_config.output.direction == "stdout"
     assert mimeo_config.vars == {
         "CUSTOM_KEY1": "custom value",
         "CUSTOM_KEY2": {
@@ -82,24 +82,24 @@ def test_parsing_config_default():
     }
 
     mimeo_config = MimeoConfig(config)
-    assert mimeo_config.output_details.direction == "file"
-    assert mimeo_config.output_details.directory_path == "mimeo-output"
-    assert mimeo_config.output_details.file_name_tmplt == "mimeo-output-{}.xml"
+    assert mimeo_config.output.direction == "file"
+    assert mimeo_config.output.directory_path == "mimeo-output"
+    assert mimeo_config.output.file_name == "mimeo-output-{}.xml"
 
 
-@assert_throws(err_type=InvalidMimeoConfig,
+@assert_throws(err_type=InvalidMimeoConfigError,
                msg="No templates in the Mimeo Config: {config}",
-               params={"config": "{'output_details': {'direction': 'stdout'}}"})
+               params={"config": "{'output': {'direction': 'stdout'}}"})
 def test_parsing_config_without_templates():
     config = {
-        "output_details": {
+        "output": {
             "direction": "stdout",
         },
     }
     MimeoConfig(config)
 
 
-@assert_throws(err_type=InvalidMimeoConfig,
+@assert_throws(err_type=InvalidMimeoConfigError,
                msg="_templates_ property does not store an array: {config}",
                params={"config": "{'_templates_': {'count': 5, 'model': "
                                  "{'SomeEntity': {'ChildNode': 'value'}}}}"})
@@ -117,7 +117,7 @@ def test_parsing_config_with_templates_object():
     MimeoConfig(config)
 
 
-@assert_throws(err_type=InvalidVars,
+@assert_throws(err_type=InvalidVarsError,
                msg="Provided var [{var}] is invalid (you can use upper-cased name "
                    "with underscore and digits, starting with a letter)!",
                params={"var": "CuSTOM_KEY2"})
@@ -141,7 +141,7 @@ def test_parsing_config_with_invalid_vars_forbidden_character():
     MimeoConfig(config)
 
 
-@assert_throws(err_type=InvalidVars,
+@assert_throws(err_type=InvalidVarsError,
                msg="Provided var [{var}] is invalid (you can use upper-cased name "
                    "with underscore and digits, starting with a letter)!",
                params={"var": "2CUSTOM_KEY"})
@@ -165,7 +165,7 @@ def test_parsing_config_with_invalid_vars_starting_with_digit():
     MimeoConfig(config)
 
 
-@assert_throws(err_type=InvalidVars,
+@assert_throws(err_type=InvalidVarsError,
                msg="Provided var [{var}] is invalid (you can use ony atomic values "
                    "and Mimeo Utils)!",
                params={"var": "CUSTOM_KEY1"})
@@ -188,7 +188,7 @@ def test_parsing_config_with_invalid_vars_using_non_atomic_value_and_non_mimeo_u
     MimeoConfig(config)
 
 
-@assert_throws(err_type=InvalidVars,
+@assert_throws(err_type=InvalidVarsError,
                msg="vars property does not store an object: {vars}",
                params={"vars": "[{'CUSTOM_KEY1': 'value1', 'CuSTOM_KEY1': 'value2'}]"})
 def test_parsing_config_invalid_vars_not_being_object():

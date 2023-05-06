@@ -18,7 +18,7 @@ def teardown():
 
 def test_consume():
     config = {
-        "output_details": {
+        "output": {
             "direction": "file",
             "format": "xml",
             "directory_path": "test_file_consumer-dir",

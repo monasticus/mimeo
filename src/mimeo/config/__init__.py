@@ -13,7 +13,7 @@ root Mimeo Configuration component:
 
 To use this package, simply import it:
     from mimeo.config import MimeoConfig
-    from mimeo.config.exc import UnsupportedPropertyValue
+    from mimeo.config.exc import UnsupportedPropertyValueError
 """
 from .mimeo_config import MimeoConfig
 

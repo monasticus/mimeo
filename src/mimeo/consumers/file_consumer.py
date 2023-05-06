@@ -7,7 +7,7 @@ It exports only one class:
 import logging
 from pathlib import Path
 
-from mimeo.config.mimeo_config import MimeoOutputDetails
+from mimeo.config.mimeo_config import MimeoOutput
 from mimeo.consumers import Consumer
 
 logger = logging.getLogger(__name__)
@@ -33,16 +33,16 @@ class FileConsumer(Consumer):
         (every file has its index inside the actual path)
     """
 
-    def __init__(self, output_details: MimeoOutputDetails):
+    def __init__(self, output: MimeoOutput):
         """Initialize FileConsumer class.
 
         Parameters
         ----------
-        output_details : MimeoOutputDetails
+        output : MimeoOutput
             Configured Mimeo Output Details
         """
-        self.directory = output_details.directory_path
-        self.output_path_tmplt = f"{self.directory}/{output_details.file_name_tmplt}"
+        self.directory = output.directory_path
+        self.output_path_tmplt = f"{self.directory}/{output.file_name}"
         self.__count = 0
 
     def consume(self, data: str) -> None:

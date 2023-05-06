@@ -15,7 +15,7 @@ from responses import matchers
 import mimeo.__main__ as mimeo_cli
 from mimeo.cli.exc import (EnvironmentNotFoundError,
                            EnvironmentsFileNotFoundError)
-from mimeo.config.exc import MissingRequiredProperty
+from mimeo.config.exc import MissingRequiredPropertyError
 from tests.utils import assert_throws
 
 
@@ -40,7 +40,7 @@ def minimum_config():
 @pytest.fixture(autouse=True)
 def default_config():
     return {
-        "output_details": {
+        "output": {
             "direction": "file",
             "format": "xml",
             "indent": 4,
@@ -66,7 +66,7 @@ def default_config():
 @pytest.fixture(autouse=True)
 def http_config():
     return {
-        "output_details": {
+        "output": {
             "direction": "http",
             "method": "POST",
             "protocol": "http",
@@ -408,7 +408,7 @@ def test_custom_long_direction():
     assert not path.exists("test_mimeo_cli-dir/output")
 
 
-def test_custom_direction_does_not_throw_error_when_output_details_is_none():
+def test_custom_direction_does_not_throw_error_when_output_is_none():
     sys.argv = ["mimeo", "test_mimeo_cli-dir/minimum-config.json",
                 "-o", "stdout"]
 
@@ -466,7 +466,7 @@ def test_custom_long_directory_path():
             assert file_content.readline() == '</SomeEntity>\n'
 
 
-def test_custom_directory_path_does_not_throw_error_when_output_details_is_none():
+def test_custom_directory_path_does_not_throw_error_when_output_is_none():
     sys.argv = ["mimeo", "test_mimeo_cli-dir/minimum-config.json",
                 "-d", "test_mimeo_cli-dir/customized-output"]
 
@@ -522,7 +522,7 @@ def test_custom_long_file_name():
             assert file_content.readline() == '</SomeEntity>\n'
 
 
-def test_custom_file_name_does_not_throw_error_when_output_details_is_none():
+def test_custom_file_name_does_not_throw_error_when_output_is_none():
     sys.argv = ["mimeo", "test_mimeo_cli-dir/minimum-config.json",
                 "-f", "customized-output-file"]
 
@@ -558,14 +558,14 @@ def test_custom_long_http_host():
     # would throw a ConnectionError when any request call doesn't match registered mocks
 
 
-def test_custom_http_host_does_not_throw_error_when_output_details_is_none():
+def test_custom_http_host_does_not_throw_error_when_output_is_none():
     sys.argv = ["mimeo", "test_mimeo_cli-dir/minimum-config.json",
                 "-o", "http",
                 "-H", "198.168.1.1"]
 
     try:
         mimeo_cli.main()
-    except MissingRequiredProperty:
+    except MissingRequiredPropertyError:
         assert True
     except KeyError:
         raise AssertionError() from KeyError
@@ -597,14 +597,14 @@ def test_custom_long_http_port():
     # would throw a ConnectionError when any request call doesn't match registered mocks
 
 
-def test_custom_http_port_does_not_throw_error_when_output_details_is_none():
+def test_custom_http_port_does_not_throw_error_when_output_is_none():
     sys.argv = ["mimeo", "test_mimeo_cli-dir/minimum-config.json",
                 "-o", "http",
                 "-p", "8081"]
 
     try:
         mimeo_cli.main()
-    except MissingRequiredProperty:
+    except MissingRequiredPropertyError:
         assert True
     except KeyError:
         raise AssertionError() from KeyError
@@ -636,14 +636,14 @@ def test_custom_long_http_endpoint():
     # would throw a ConnectionError when any request call doesn't match registered mocks
 
 
-def test_custom_http_endpoint_does_not_throw_error_when_output_details_is_none():
+def test_custom_http_endpoint_does_not_throw_error_when_output_is_none():
     sys.argv = ["mimeo", "test_mimeo_cli-dir/minimum-config.json",
                 "-o", "http",
                 "-E", "/v2/document"]
 
     try:
         mimeo_cli.main()
-    except MissingRequiredProperty:
+    except MissingRequiredPropertyError:
         assert True
     except KeyError:
         raise AssertionError() from KeyError
@@ -685,14 +685,14 @@ def test_custom_long_http_username():
     # would throw a ConnectionError when any request call doesn't match registered mocks
 
 
-def test_custom_http_username_does_not_throw_error_when_output_details_is_none():
+def test_custom_http_username_does_not_throw_error_when_output_is_none():
     sys.argv = ["mimeo", "test_mimeo_cli-dir/minimum-config.json",
                 "-o", "http",
                 "-U", "custom-user"]
 
     try:
         mimeo_cli.main()
-    except MissingRequiredProperty:
+    except MissingRequiredPropertyError:
         assert True
     except KeyError:
         raise AssertionError() from KeyError
@@ -734,14 +734,14 @@ def test_custom_long_http_password():
     # would throw a ConnectionError when any request call doesn't match registered mocks
 
 
-def test_custom_http_password_does_not_throw_error_when_output_details_is_none():
+def test_custom_http_password_does_not_throw_error_when_output_is_none():
     sys.argv = ["mimeo", "test_mimeo_cli-dir/minimum-config.json",
                 "-o", "http",
                 "-P", "custom-password"]
 
     try:
         mimeo_cli.main()
-    except MissingRequiredProperty:
+    except MissingRequiredPropertyError:
         assert True
     except KeyError:
         raise AssertionError() from KeyError
@@ -760,14 +760,14 @@ def test_custom_long_http_method():
     # would throw a ConnectionError when any request call doesn't match registered mocks
 
 
-def test_custom_http_method_does_not_throw_error_when_output_details_is_none():
+def test_custom_http_method_does_not_throw_error_when_output_is_none():
     sys.argv = ["mimeo", "test_mimeo_cli-dir/minimum-config.json",
                 "-o", "http",
                 "--http-method", "PUT"]
 
     try:
         mimeo_cli.main()
-    except MissingRequiredProperty:
+    except MissingRequiredPropertyError:
         assert True
     except KeyError:
         raise AssertionError() from KeyError
@@ -786,14 +786,14 @@ def test_custom_long_http_protocol():
     # would throw a ConnectionError when any request call doesn't match registered mocks
 
 
-def test_custom_http_protocol_does_not_throw_error_when_output_details_is_none():
+def test_custom_http_protocol_does_not_throw_error_when_output_is_none():
     sys.argv = ["mimeo", "test_mimeo_cli-dir/minimum-config.json",
                 "-o", "http",
                 "--http-protocol", "https"]
 
     try:
         mimeo_cli.main()
-    except MissingRequiredProperty:
+    except MissingRequiredPropertyError:
         assert True
     except KeyError:
         raise AssertionError() from KeyError
@@ -816,14 +816,14 @@ def test_custom_long_http_auth():
     # would throw a ConnectionError when any request call doesn't match registered mocks
 
 
-def test_custom_http_auth_does_not_throw_error_when_output_details_is_none():
+def test_custom_http_auth_does_not_throw_error_when_output_is_none():
     sys.argv = ["mimeo", "test_mimeo_cli-dir/minimum-config.json",
                 "-o", "http",
                 "--http-auth", "basic"]
 
     try:
         mimeo_cli.main()
-    except MissingRequiredProperty:
+    except MissingRequiredPropertyError:
         assert True
     except KeyError:
         raise AssertionError() from KeyError
@@ -891,14 +891,14 @@ def test_custom_env_file_does_throw_error_when_file_does_not_exist():
     mimeo_cli.main()
 
 
-def test_custom_env_does_not_throw_error_when_output_details_is_none():
+def test_custom_env_does_not_throw_error_when_output_is_none():
     sys.argv = ["mimeo", "test_mimeo_cli-dir/minimum-config.json",
                 "-o", "http",
                 "-e", "default"]
 
     try:
         mimeo_cli.main()
-    except MissingRequiredProperty:
+    except MissingRequiredPropertyError:
         assert True
     except KeyError:
         raise AssertionError() from KeyError

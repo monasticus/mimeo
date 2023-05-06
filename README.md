@@ -127,23 +127,23 @@ Mimeo exposes several functions for data generation that will make it more usefu
 
 When using Mimeo command line tool you can overwrite Mimeo Configuration properties:
 
-| Short option | Long option         | Description                                                                          |
-|:------------:|:--------------------|:-------------------------------------------------------------------------------------|
-|     `-o`     | `--output`          | overwrite the `output_details/direction` property                                    |
-|     `-x`     | `--xml-declaration` | overwrite the `output_details/xml_declaration` property                              |
-|     `-i`     | `--indent`          | overwrite the `output_details/indent` property                                       |
-|     `-d`     | `--directory`       | overwrite the `output_details/directory_path` property                               |
-|     `-f`     | `--file`            | overwrite the `output_details/file_name` property                                    |
-|     `-H`     | `--http-host`       | overwrite the `output_details/host` property                                         |
-|     `-p`     | `--http-port`       | overwrite the `output_details/port` property                                         |
-|     `-E`     | `--http-endpoint`   | overwrite the `output_details/endpoint` property                                     |
-|     `-U`     | `--http-user`       | overwrite the `output_details/username` property                                     |
-|     `-P`     | `--http-password`   | overwrite the `output_details/password` property                                     |
-|              | `--http-method`     | overwrite the `output_details/method` property                                       |
-|              | `--http-protocol`   | overwrite the `output_details/protocol` property                                     |
-|              | `--http-auth`       | overwrite the `output_details/auth` property                                         |
-|     `-e`     | `--http-env`        | overwrite the output_details http properties using a mimeo environment configuration |
-|              | `--http-envs-file`  | use a custom environments file (by default: mimeo.envs.json)                         |
+| Short option | Long option         | Description                                                                  |
+|:------------:|:--------------------|:-----------------------------------------------------------------------------|
+|     `-o`     | `--output`          | overwrite the `output/direction` property                            |
+|     `-x`     | `--xml-declaration` | overwrite the `output/xml_declaration` property                      |
+|     `-i`     | `--indent`          | overwrite the `output/indent` property                               |
+|     `-d`     | `--directory`       | overwrite the `output/directory_path` property                       |
+|     `-f`     | `--file`            | overwrite the `output/file_name` property                            |
+|     `-H`     | `--http-host`       | overwrite the `output/host` property                                 |
+|     `-p`     | `--http-port`       | overwrite the `output/port` property                                 |
+|     `-E`     | `--http-endpoint`   | overwrite the `output/endpoint` property                             |
+|     `-U`     | `--http-user`       | overwrite the `output/username` property                             |
+|     `-P`     | `--http-password`   | overwrite the `output/password` property                             |
+|              | `--http-method`     | overwrite the `output/method` property                               |
+|              | `--http-protocol`   | overwrite the `output/protocol` property                             |
+|              | `--http-auth`       | overwrite the `output/auth` property                                 |
+|     `-e`     | `--http-env`        | overwrite the output http properties using a mimeo env configuration |
+|              | `--http-envs-file`  | use a custom environments file (by default: mimeo.envs.json)                 |
 
 #### Logging arguments
 
@@ -159,21 +159,21 @@ Mimeo configuration is defined in a JSON file using internal settings and data t
 
 | Key                              |  Level   |      Required      |     Supported values     |    Default     | Description                                                                                                                                             |
 |:---------------------------------|:--------:|:------------------:|:------------------------:|:--------------:|---------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `output_details`                 |  Config  |        :x:         |          object          |      ---       | Defines output details on how it will be consumed                                                                                                       |
-| `output_details/direction`       |  Config  |        :x:         | `file`, `stdout`, `http` |     `file`     | Defines how output will be consumed                                                                                                                     |
-| `output_details/format`          |  Config  |        :x:         |          `xml`           |     `xml`      | Defines output data format                                                                                                                              |
-| `output_details/indent`          |  Config  |        :x:         |         integer          |     `null`     | Defines indent applied in output data                                                                                                                   |
-| `output_details/xml_declaration` |  Config  |        :x:         |         boolean          |    `false`     | Indicates whether an xml declaration should be added to output data                                                                                     |
-| `output_details/directory_path`  |  Config  |        :x:         |          string          | `mimeo-output` | For `file` direction - defines an output directory                                                                                                      |
-| `output_details/file_name`       |  Config  |        :x:         |          string          | `mimeo-output` | For `file` direction - defines an output file name                                                                                                      |
-| `output_details/method`          |  Config  |        :x:         |      `POST`, `PUT`       |     `POST`     | For `http` direction - defines a request method                                                                                                         |
-| `output_details/protocol`        |  Config  |        :x:         |     `http`, `https`      |     `http`     | For `http` direction - defines a url protocol                                                                                                           |
-| `output_details/host`            |  Config  | :heavy_check_mark: |          string          |      ---       | For `http` direction - defines a url host                                                                                                               |
-| `output_details/port`            |  Config  |        :x:         |         integer          |     `null`     | For `http` direction - defines a url port (can be empty)                                                                                                |
-| `output_details/endpoint`        |  Config  | :heavy_check_mark: |          string          |      ---       | For `http` direction - defines a url endpoint                                                                                                           |
-| `output_details/auth`            |  Config  |        :x:         |    `basic`, `digest`     |    `basic`     | For `http` direction - defines a auth method                                                                                                            |
-| `output_details/username`        |  Config  | :heavy_check_mark: |          string          |      ---       | For `http` direction - defines a username                                                                                                               |
-| `output_details/password`        |  Config  | :heavy_check_mark: |          string          |      ---       | For `http` direction - defines a password                                                                                                               |
+| `output`                 |  Config  |        :x:         |          object          |      ---       | Defines output details on how it will be consumed                                                                                                       |
+| `output/direction`       |  Config  |        :x:         | `file`, `stdout`, `http` |     `file`     | Defines how output will be consumed                                                                                                                     |
+| `output/format`          |  Config  |        :x:         |          `xml`           |     `xml`      | Defines output data format                                                                                                                              |
+| `output/indent`          |  Config  |        :x:         |         integer          |     `null`     | Defines indent applied in output data                                                                                                                   |
+| `output/xml_declaration` |  Config  |        :x:         |         boolean          |    `false`     | Indicates whether an xml declaration should be added to output data                                                                                     |
+| `output/directory_path`  |  Config  |        :x:         |          string          | `mimeo-output` | For `file` direction - defines an output directory                                                                                                      |
+| `output/file_name`       |  Config  |        :x:         |          string          | `mimeo-output` | For `file` direction - defines an output file name                                                                                                      |
+| `output/method`          |  Config  |        :x:         |      `POST`, `PUT`       |     `POST`     | For `http` direction - defines a request method                                                                                                         |
+| `output/protocol`        |  Config  |        :x:         |     `http`, `https`      |     `http`     | For `http` direction - defines a url protocol                                                                                                           |
+| `output/host`            |  Config  | :heavy_check_mark: |          string          |      ---       | For `http` direction - defines a url host                                                                                                               |
+| `output/port`            |  Config  |        :x:         |         integer          |     `null`     | For `http` direction - defines a url port (can be empty)                                                                                                |
+| `output/endpoint`        |  Config  | :heavy_check_mark: |          string          |      ---       | For `http` direction - defines a url endpoint                                                                                                           |
+| `output/auth`            |  Config  |        :x:         |    `basic`, `digest`     |    `basic`     | For `http` direction - defines a auth method                                                                                                            |
+| `output/username`        |  Config  | :heavy_check_mark: |          string          |      ---       | For `http` direction - defines a username                                                                                                               |
+| `output/password`        |  Config  | :heavy_check_mark: |          string          |      ---       | For `http` direction - defines a password                                                                                                               |
 | `vars`                           |  Config  |        :x:         |          object          |      ---       | Defines variables to be used in a Mimeo Template (read more in next section)                                                                            |
 | `_templates_`                    |  Config  | :heavy_check_mark: |          array           |      ---       | Stores templates for data generation                                                                                                                    |
 | `count`                          | Template | :heavy_check_mark: |         integer          |      ---       | Indicates number of copies                                                                                                                              |

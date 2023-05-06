@@ -12,7 +12,7 @@ from mimeo.generators import GeneratorFactory
 def test_consume_post():
     config = {
         "format": "xml",
-        "output_details": {
+        "output": {
             "direction": "http",
             "host": "localhost",
             "port": 8080,
@@ -56,7 +56,7 @@ def test_consume_post():
 def test_consume_put():
     config = {
         "format": "xml",
-        "output_details": {
+        "output": {
             "direction": "http",
             "method": "PUT",
             "host": "localhost",
@@ -102,7 +102,7 @@ def test_consume_put():
 def test_consume_without_port():
     config = {
         "format": "xml",
-        "output_details": {
+        "output": {
             "direction": "http",
             "host": "localhost",
             "endpoint": "/documents",

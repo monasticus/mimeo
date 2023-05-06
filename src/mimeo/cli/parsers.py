@@ -45,33 +45,33 @@ class MimeoArgumentParser(ArgumentParser):
 
         Mimeo Configuration arguments:
           -o {file,stdout,http}, --output {file,stdout,http}
-                                overwrite the output_details/direction property
+                                overwrite the output/direction property
           -x {true,false}, --xml-declaration {true,false}
-                                overwrite the output_details/xml_declaration property
+                                overwrite the output/xml_declaration property
           -i INDENT, --indent INDENT
-                                overwrite the output_details/indent property
+                                overwrite the output/indent property
           -d DIRECTORY_PATH, --directory DIRECTORY_PATH
-                                overwrite the output_details/directory_path property
+                                overwrite the output/directory_path property
           -f FILE_NAME, --file FILE_NAME
-                                overwrite the output_details/file_name property
+                                overwrite the output/file_name property
           -H HOST, --http-host HOST
-                                overwrite the output_details/host property
+                                overwrite the output/host property
           -p PORT, --http-port PORT
-                                overwrite the output_details/port property
+                                overwrite the output/port property
           -E ENDPOINT, --http-endpoint ENDPOINT
-                                overwrite the output_details/endpoint property
+                                overwrite the output/endpoint property
           -U USERNAME, --http-user USERNAME
-                                overwrite the output_details/username property
+                                overwrite the output/username property
           -P PASSWORD, --http-password PASSWORD
-                                overwrite the output_details/password property
+                                overwrite the output/password property
           --http-method METHOD
-                                overwrite the output_details/method property
+                                overwrite the output/method property
           --http-protocol PROTOCOL
-                                overwrite the output_details/protocol property
+                                overwrite the output/protocol property
           --http-auth AUTH
-                                overwrite the output_details/auth property
+                                overwrite the output/auth property
           -e ENVIRONMENT, --http-env ENVIRONMENT
-                                overwrite the output_details http properties using a mimeo
+                                overwrite the output http properties using a mimeo
                                 env configuration
           --http-envs-file PATH
                                 use a custom environments file (by default: mimeo.envs.json)
@@ -110,81 +110,81 @@ class MimeoArgumentParser(ArgumentParser):
             "--output",
             type=str,
             choices=["file", "stdout", "http"],
-            help="overwrite the output_details/direction property")
+            help="overwrite the output/direction property")
         mimeo_config_args.add_argument(
             "-x",
             "--xml-declaration",
             type=str,
             choices=["true", "false"],
-            help="overwrite the output_details/xml_declaration property")
+            help="overwrite the output/xml_declaration property")
         mimeo_config_args.add_argument(
             "-i",
             "--indent",
             type=int,
-            help="overwrite the output_details/indent property")
+            help="overwrite the output/indent property")
         mimeo_config_args.add_argument(
             "-d",
             "--directory",
             type=str,
             metavar="DIRECTORY_PATH",
-            help="overwrite the output_details/directory_path property")
+            help="overwrite the output/directory_path property")
         mimeo_config_args.add_argument(
             "-f",
             "--file",
             type=str,
             metavar="FILE_NAME",
-            help="overwrite the output_details/file_name property")
+            help="overwrite the output/file_name property")
         mimeo_config_args.add_argument(
             "-H",
             "--http-host",
             type=str,
             metavar="HOST",
-            help="overwrite the output_details/host property")
+            help="overwrite the output/host property")
         mimeo_config_args.add_argument(
             "-p",
             "--http-port",
             type=str,
             metavar="PORT",
-            help="overwrite the output_details/port property")
+            help="overwrite the output/port property")
         mimeo_config_args.add_argument(
             "-E",
             "--http-endpoint",
             type=str,
             metavar="ENDPOINT",
-            help="overwrite the output_details/endpoint property")
+            help="overwrite the output/endpoint property")
         mimeo_config_args.add_argument(
             "-U",
             "--http-user",
             type=str,
             metavar="USERNAME",
-            help="overwrite the output_details/username property")
+            help="overwrite the output/username property")
         mimeo_config_args.add_argument(
             "-P",
             "--http-password",
             type=str,
             metavar="PASSWORD",
-            help="overwrite the output_details/password property")
+            help="overwrite the output/password property")
         mimeo_config_args.add_argument(
             "--http-method",
             type=str,
             metavar="METHOD",
-            help="overwrite the output_details/method property")
+            help="overwrite the output/method property")
         mimeo_config_args.add_argument(
             "--http-protocol",
             type=str,
             metavar="PROTOCOL",
-            help="overwrite the output_details/protocol property")
+            help="overwrite the output/protocol property")
         mimeo_config_args.add_argument(
             "--http-auth",
             type=str,
             metavar="AUTH",
-            help="overwrite the output_details/auth property")
+            help="overwrite the output/auth property")
         mimeo_config_args.add_argument(
             "-e",
             "--http-env",
             type=str,
             metavar="ENVIRONMENT",
-            help="overwrite the output_details http properties using a mimeo env configuration")
+            help="overwrite the output http properties using a mimeo env configuration")
         mimeo_config_args.add_argument(
             "--http-envs-file",
             type=str,
@@ -218,68 +218,68 @@ class MimeoConfigParser:
         Parse a Mimeo Configuration using Mimeo arguments.
     """
 
-    _ENVIRONMENT_PROPS = [MimeoConfig.OUTPUT_DETAILS_PROTOCOL_KEY,
-                          MimeoConfig.OUTPUT_DETAILS_HOST_KEY,
-                          MimeoConfig.OUTPUT_DETAILS_PORT_KEY,
-                          MimeoConfig.OUTPUT_DETAILS_AUTH_KEY,
-                          MimeoConfig.OUTPUT_DETAILS_USERNAME_KEY,
-                          MimeoConfig.OUTPUT_DETAILS_PASSWORD_KEY]
+    _ENVIRONMENT_PROPS = [MimeoConfig.OUTPUT_PROTOCOL_KEY,
+                          MimeoConfig.OUTPUT_HOST_KEY,
+                          MimeoConfig.OUTPUT_PORT_KEY,
+                          MimeoConfig.OUTPUT_AUTH_KEY,
+                          MimeoConfig.OUTPUT_USERNAME_KEY,
+                          MimeoConfig.OUTPUT_PASSWORD_KEY]
 
     _ENTRY_PATH_KEY = "entry_path"
     _GET_VALUE_KEY = "get_value"
     _ARGS_MAPPING = {
         "output": {
-            "entry_path": [MimeoConfig.OUTPUT_DETAILS_KEY,
-                           MimeoConfig.OUTPUT_DETAILS_DIRECTION_KEY],
+            "entry_path": [MimeoConfig.OUTPUT_KEY,
+                           MimeoConfig.OUTPUT_DIRECTION_KEY],
         },
         "xml_declaration": {
-            "entry_path": [MimeoConfig.OUTPUT_DETAILS_KEY,
-                           MimeoConfig.OUTPUT_DETAILS_XML_DECLARATION_KEY],
+            "entry_path": [MimeoConfig.OUTPUT_KEY,
+                           MimeoConfig.OUTPUT_XML_DECLARATION_KEY],
             "get_value": lambda arg: arg.lower() == "true",
         },
         "indent": {
-            "entry_path": [MimeoConfig.OUTPUT_DETAILS_KEY,
-                           MimeoConfig.OUTPUT_DETAILS_INDENT_KEY],
+            "entry_path": [MimeoConfig.OUTPUT_KEY,
+                           MimeoConfig.OUTPUT_INDENT_KEY],
         },
         "directory": {
-            "entry_path": [MimeoConfig.OUTPUT_DETAILS_KEY,
-                           MimeoConfig.OUTPUT_DETAILS_DIRECTORY_PATH_KEY],
+            "entry_path": [MimeoConfig.OUTPUT_KEY,
+                           MimeoConfig.OUTPUT_DIRECTORY_PATH_KEY],
         },
         "file": {
-            "entry_path": [MimeoConfig.OUTPUT_DETAILS_KEY,
-                           MimeoConfig.OUTPUT_DETAILS_FILE_NAME_KEY],
+            "entry_path": [MimeoConfig.OUTPUT_KEY,
+                           MimeoConfig.OUTPUT_FILE_NAME_KEY],
         },
         "http_method": {
-            "entry_path": [MimeoConfig.OUTPUT_DETAILS_KEY,
-                           MimeoConfig.OUTPUT_DETAILS_METHOD_KEY],
+            "entry_path": [MimeoConfig.OUTPUT_KEY,
+                           MimeoConfig.OUTPUT_METHOD_KEY],
         },
         "http_protocol": {
-            "entry_path": [MimeoConfig.OUTPUT_DETAILS_KEY,
-                           MimeoConfig.OUTPUT_DETAILS_PROTOCOL_KEY],
+            "entry_path": [MimeoConfig.OUTPUT_KEY,
+                           MimeoConfig.OUTPUT_PROTOCOL_KEY],
         },
         "http_auth": {
-            "entry_path": [MimeoConfig.OUTPUT_DETAILS_KEY,
-                           MimeoConfig.OUTPUT_DETAILS_AUTH_KEY],
+            "entry_path": [MimeoConfig.OUTPUT_KEY,
+                           MimeoConfig.OUTPUT_AUTH_KEY],
         },
         "http_host": {
-            "entry_path": [MimeoConfig.OUTPUT_DETAILS_KEY,
-                           MimeoConfig.OUTPUT_DETAILS_HOST_KEY],
+            "entry_path": [MimeoConfig.OUTPUT_KEY,
+                           MimeoConfig.OUTPUT_HOST_KEY],
         },
         "http_port": {
-            "entry_path": [MimeoConfig.OUTPUT_DETAILS_KEY,
-                           MimeoConfig.OUTPUT_DETAILS_PORT_KEY],
+            "entry_path": [MimeoConfig.OUTPUT_KEY,
+                           MimeoConfig.OUTPUT_PORT_KEY],
         },
         "http_endpoint": {
-            "entry_path": [MimeoConfig.OUTPUT_DETAILS_KEY,
-                           MimeoConfig.OUTPUT_DETAILS_ENDPOINT_KEY],
+            "entry_path": [MimeoConfig.OUTPUT_KEY,
+                           MimeoConfig.OUTPUT_ENDPOINT_KEY],
         },
         "http_user": {
-            "entry_path": [MimeoConfig.OUTPUT_DETAILS_KEY,
-                           MimeoConfig.OUTPUT_DETAILS_USERNAME_KEY],
+            "entry_path": [MimeoConfig.OUTPUT_KEY,
+                           MimeoConfig.OUTPUT_USERNAME_KEY],
         },
         "http_password": {
-            "entry_path": [MimeoConfig.OUTPUT_DETAILS_KEY,
-                           MimeoConfig.OUTPUT_DETAILS_PASSWORD_KEY],
+            "entry_path": [MimeoConfig.OUTPUT_KEY,
+                           MimeoConfig.OUTPUT_PASSWORD_KEY],
         },
     }
 
@@ -354,7 +354,7 @@ class MimeoConfigParser:
         if self._args.http_env is not None:
             envs_file_path = self._args.http_envs_file if self._args.http_envs_file is not None else DEFAULT_ENVS_FILE_PATH
             env = self._get_environment(envs_file_path, self._args.http_env)
-            self._overwrite_output_details_with_env(config, env)
+            self._overwrite_output_with_env(config, env)
         return config
 
     def _parse_with_specific_args(self, config: dict) -> dict:
@@ -384,7 +384,7 @@ class MimeoConfigParser:
         return config
 
     @classmethod
-    def _overwrite_output_details_with_env(cls, config: dict, env: dict) -> dict:
+    def _overwrite_output_with_env(cls, config: dict, env: dict) -> dict:
         """Overwrite Mimeo Output Details with an environment config.
 
         Parameters
@@ -402,7 +402,7 @@ class MimeoConfigParser:
         for prop in cls._ENVIRONMENT_PROPS:
             value = env.get(prop)
             if value is not None:
-                config_entry_path = [MimeoConfig.OUTPUT_DETAILS_KEY, prop]
+                config_entry_path = [MimeoConfig.OUTPUT_KEY, prop]
                 config = cls._overwrite_config_entry(config, config_entry_path, value)
         return config
 
@@ -421,7 +421,7 @@ class MimeoConfigParser:
             A Mimeo Configuration entry to get its direct child
         entry_path : list
             A list of Mimeo Configuration nested properties, e.g.
-            ['output_details', 'direction'] points to the direction
+            ['output', 'direction'] points to the direction
             property under output details entry.
         value
             An overwriting value when `entry_path` contains only one

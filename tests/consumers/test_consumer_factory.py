@@ -1,5 +1,5 @@
 from mimeo.config import MimeoConfig
-from mimeo.config.exc import UnsupportedPropertyValue
+from mimeo.config.exc import UnsupportedPropertyValueError
 from mimeo.consumers import (ConsumerFactory, FileConsumer, HttpConsumer,
                              RawConsumer)
 from tests.utils import assert_throws
@@ -7,7 +7,7 @@ from tests.utils import assert_throws
 
 def test_get_consumer_for_file_direction():
     config = {
-        "output_details": {
+        "output": {
             "direction": "file",
         },
         "_templates_": [
@@ -26,7 +26,7 @@ def test_get_consumer_for_file_direction():
 
 def test_get_consumer_for_stdout_direction():
     config = {
-        "output_details": {
+        "output": {
             "direction": "stdout",
         },
         "_templates_": [
@@ -45,7 +45,7 @@ def test_get_consumer_for_stdout_direction():
 
 def test_get_consumer_for_http_direction():
     config = {
-        "output_details": {
+        "output": {
             "direction": "http",
             "host": "localhost",
             "port": 8080,
@@ -67,14 +67,14 @@ def test_get_consumer_for_http_direction():
     assert isinstance(generator, HttpConsumer)
 
 
-@assert_throws(err_type=UnsupportedPropertyValue,
+@assert_throws(err_type=UnsupportedPropertyValueError,
                msg="Provided direction [{direction}] is not supported! "
                    "Supported values: [{values}].",
                params={"direction": "unsupported_direction",
                        "values": "stdout, file, http"})
 def test_get_consumer_for_unsupported_format():
     config = {
-        "output_details": {
+        "output": {
             "direction": "stdout",
         },
         "_templates_": [
@@ -87,6 +87,6 @@ def test_get_consumer_for_unsupported_format():
         ],
     }
     mimeo_config = MimeoConfig(config)
-    mimeo_config.output_details.direction = "unsupported_direction"
+    mimeo_config.output.direction = "unsupported_direction"
 
     ConsumerFactory.get_consumer(mimeo_config)

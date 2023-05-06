@@ -1,4 +1,4 @@
-from mimeo.config.exc import InvalidMimeoTemplate
+from mimeo.config.exc import InvalidMimeoTemplateError
 from mimeo.config.mimeo_config import MimeoTemplate
 from tests.utils import assert_throws
 
@@ -35,7 +35,7 @@ def test_parsing_template():
     }
 
 
-@assert_throws(err_type=InvalidMimeoTemplate,
+@assert_throws(err_type=InvalidMimeoTemplateError,
                msg="No count value in the Mimeo Template: {tmplt}",
                params={"tmplt": "{'model': {'SomeEntity': {'ChildNode': 'value'}}}"})
 def test_parsing_template_without_count():
@@ -49,7 +49,7 @@ def test_parsing_template_without_count():
     MimeoTemplate(template)
 
 
-@assert_throws(err_type=InvalidMimeoTemplate,
+@assert_throws(err_type=InvalidMimeoTemplateError,
                msg="No model data in the Mimeo Template: {tmplt}",
                params={"tmplt": "{'count': 30}"})
 def test_parsing_template_with_multiple_roots():

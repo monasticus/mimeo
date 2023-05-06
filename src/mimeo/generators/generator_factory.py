@@ -4,7 +4,7 @@ It exports only one class:
     * GeneratorFactory
         A Factory class instantiating a Generator based on Mimeo Config.
 """
-from mimeo.config.exc import UnsupportedPropertyValue
+from mimeo.config.exc import UnsupportedPropertyValueError
 from mimeo.config.mimeo_config import MimeoConfig
 from mimeo.generators import Generator, XMLGenerator
 
@@ -44,13 +44,13 @@ class GeneratorFactory:
 
         Raises
         ------
-        UnsupportedPropertyValue
+        UnsupportedPropertyValueError
             If the output format is not supported
         """
-        output_format = mimeo_config.output_details.format
+        output_format = mimeo_config.output.format
         if output_format == GeneratorFactory.XML:
             return XMLGenerator(mimeo_config)
         else:
-            raise UnsupportedPropertyValue(MimeoConfig.OUTPUT_DETAILS_FORMAT_KEY,
+            raise UnsupportedPropertyValueError(MimeoConfig.OUTPUT_FORMAT_KEY,
                                            output_format,
                                            MimeoConfig.SUPPORTED_OUTPUT_FORMATS)
