@@ -74,7 +74,7 @@ def test_first_name_parametrized_with_unique_and_invalid_sex(default_config):
 
 def test_first_name_parametrized_with_unique_and_sex_m(default_config):
     mimeo_db = MimeoDB()
-    gbr_first_names = [n.name for n in mimeo_db.get_first_names_by_sex('M')]
+    gbr_first_names = [n.name for n in mimeo_db.get_first_names_by_sex("M")]
     with MimeoContextManager(default_config) as mimeo_manager:
         context = mimeo_manager.get_context("SomeEntity")
         mimeo_manager.set_current_context(context)
@@ -86,7 +86,7 @@ def test_first_name_parametrized_with_unique_and_sex_m(default_config):
 
 def test_first_name_parametrized_with_unique_and_sex_f(default_config):
     mimeo_db = MimeoDB()
-    gbr_first_names = [n.name for n in mimeo_db.get_first_names_by_sex('F')]
+    gbr_first_names = [n.name for n in mimeo_db.get_first_names_by_sex("F")]
     with MimeoContextManager(default_config) as mimeo_manager:
         context = mimeo_manager.get_context("SomeEntity")
         mimeo_manager.set_current_context(context)
@@ -98,7 +98,7 @@ def test_first_name_parametrized_with_unique_and_sex_f(default_config):
 
 def test_first_name_parametrized_with_unique_and_sex_male(default_config):
     mimeo_db = MimeoDB()
-    gbr_first_names = [n.name for n in mimeo_db.get_first_names_by_sex('M')]
+    gbr_first_names = [n.name for n in mimeo_db.get_first_names_by_sex("M")]
     with MimeoContextManager(default_config) as mimeo_manager:
         context = mimeo_manager.get_context("SomeEntity")
         mimeo_manager.set_current_context(context)
@@ -110,7 +110,7 @@ def test_first_name_parametrized_with_unique_and_sex_male(default_config):
 
 def test_first_name_parametrized_with_unique_and_sex_female(default_config):
     mimeo_db = MimeoDB()
-    gbr_first_names = [n.name for n in mimeo_db.get_first_names_by_sex('F')]
+    gbr_first_names = [n.name for n in mimeo_db.get_first_names_by_sex("F")]
     with MimeoContextManager(default_config) as mimeo_manager:
         context = mimeo_manager.get_context("SomeEntity")
         mimeo_manager.set_current_context(context)
@@ -133,7 +133,7 @@ def test_first_name_parametrized_with_invalid_sex(default_config):
 
 def test_first_name_parametrized_with_sex(default_config):
     mimeo_db = MimeoDB()
-    gbr_first_names = [n.name for n in mimeo_db.get_first_names_by_sex('M')]
+    gbr_first_names = [n.name for n in mimeo_db.get_first_names_by_sex("M")]
     with MimeoContextManager(default_config) as mimeo_manager:
         context = mimeo_manager.get_context("SomeEntity")
         mimeo_manager.set_current_context(context)

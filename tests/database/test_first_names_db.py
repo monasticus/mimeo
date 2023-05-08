@@ -41,13 +41,13 @@ def test_get_first_name_at_out_of_range():
 
 def test_get_first_names_by_sex():
     db = FirstNamesDB()
-    male_first_names = db.get_first_names_by_sex('M')
+    male_first_names = db.get_first_names_by_sex("M")
 
     for name in male_first_names:
-        assert name.sex == 'M'
+        assert name.sex == "M"
 
 
 @assert_throws(err_type=InvalidSexError,
                msg="Invalid sex (use M / F)!")
 def test_get_first_names_by_sex_invalid():
-    FirstNamesDB().get_first_names_by_sex('N')
+    FirstNamesDB().get_first_names_by_sex("N")

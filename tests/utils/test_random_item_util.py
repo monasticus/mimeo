@@ -19,7 +19,7 @@ def test_random_item_parametrized_with_empty_items():
 
 
 def test_random_item_parametrized_with_non_empty_items():
-    items = ['a', 1, True]
+    items = ["a", 1, True]
     mimeo_util = {"_name": "random_item", "items": items}
     for _ in range(100):
         random_item = UtilsRenderer.render_parametrized(mimeo_util)

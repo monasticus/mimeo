@@ -117,7 +117,7 @@ class XMLGenerator(Generator):
                 xml_minidom = xml_minidom.childNodes[0]
             node_str = xml_minidom.toprettyxml(indent=" " * self.__indent,
                                                encoding="utf-8")
-        return node_str.decode('ascii')
+        return node_str.decode("ascii")
 
     @classmethod
     @mimeo_context_switch

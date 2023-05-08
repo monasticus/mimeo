@@ -76,7 +76,7 @@ def test_city_parametrized_with_unique_and_non_existing_country(default_config):
 
 def test_city_parametrized_with_unique_and_country(default_config):
     mimeo_db = MimeoDB()
-    gbr_cities = [city.name_ascii for city in iter(mimeo_db.get_cities_of('GBR'))]
+    gbr_cities = [city.name_ascii for city in iter(mimeo_db.get_cities_of("GBR"))]
     with MimeoContextManager(default_config) as mimeo_manager:
         context = mimeo_manager.get_context("SomeEntity")
         mimeo_manager.set_current_context(context)
@@ -101,7 +101,7 @@ def test_city_parametrized_with_non_existing_country(default_config):
 
 def test_city_parametrized_with_country(default_config):
     mimeo_db = MimeoDB()
-    gbr_cities = [city.name_ascii for city in iter(mimeo_db.get_cities_of('GBR'))]
+    gbr_cities = [city.name_ascii for city in iter(mimeo_db.get_cities_of("GBR"))]
     with MimeoContextManager(default_config) as mimeo_manager:
         context = mimeo_manager.get_context("SomeEntity")
         mimeo_manager.set_current_context(context)

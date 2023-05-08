@@ -43,35 +43,35 @@ def test_get_country_at_out_of_range():
 
 def test_get_country_by_iso_3():
     db = CountriesDB()
-    country = db.get_country_by_iso_3('GBR')
-    assert country.iso_3 == 'GBR'
-    assert country.iso_2 == 'GB'
-    assert country.name == 'United Kingdom'
+    country = db.get_country_by_iso_3("GBR")
+    assert country.iso_3 == "GBR"
+    assert country.iso_2 == "GB"
+    assert country.name == "United Kingdom"
 
 
 def test_get_country_by_iso_2():
     db = CountriesDB()
-    country = db.get_country_by_iso_2('GB')
-    assert country.iso_3 == 'GBR'
-    assert country.iso_2 == 'GB'
-    assert country.name == 'United Kingdom'
+    country = db.get_country_by_iso_2("GB")
+    assert country.iso_3 == "GBR"
+    assert country.iso_2 == "GB"
+    assert country.name == "United Kingdom"
 
 
 def test_get_country_by_name():
     db = CountriesDB()
-    country = db.get_country_by_name('United Kingdom')
-    assert country.iso_3 == 'GBR'
-    assert country.iso_2 == 'GB'
-    assert country.name == 'United Kingdom'
+    country = db.get_country_by_name("United Kingdom")
+    assert country.iso_3 == "GBR"
+    assert country.iso_2 == "GB"
+    assert country.name == "United Kingdom"
 
 
 def test_get_non_existing_country():
     db = CountriesDB()
-    country = db.get_country_by_iso_3('NEC')
+    country = db.get_country_by_iso_3("NEC")
     assert country is None
 
-    country = db.get_country_by_iso_2('NN')
+    country = db.get_country_by_iso_2("NN")
     assert country is None
 
-    country = db.get_country_by_name('Non Existing Country')
+    country = db.get_country_by_name("Non Existing Country")
     assert country is None

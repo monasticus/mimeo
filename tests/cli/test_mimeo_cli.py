@@ -121,7 +121,7 @@ def http_custom_envs():
 
 
 @pytest.fixture(autouse=True)
-def setup_and_teardown(
+def _setup_and_teardown(
         minimum_config,
         default_config,
         http_config,
@@ -169,11 +169,11 @@ def test_basic_use():
 
         with open(file_path) as file_content:
             assert file_content.readline() == '<?xml version="1.0" encoding="utf-8"?>\n'
-            assert file_content.readline() == '<SomeEntity>\n'
-            assert file_content.readline() == '    <ChildNode1>1</ChildNode1>\n'
-            assert file_content.readline() == '    <ChildNode2>value-2</ChildNode2>\n'
-            assert file_content.readline() == '    <ChildNode3>true</ChildNode3>\n'
-            assert file_content.readline() == '</SomeEntity>\n'
+            assert file_content.readline() == "<SomeEntity>\n"
+            assert file_content.readline() == "    <ChildNode1>1</ChildNode1>\n"
+            assert file_content.readline() == "    <ChildNode2>value-2</ChildNode2>\n"
+            assert file_content.readline() == "    <ChildNode3>true</ChildNode3>\n"
+            assert file_content.readline() == "</SomeEntity>\n"
 
 
 @responses.activate
@@ -193,11 +193,11 @@ def test_directory_path():
 
         with open(file_path) as file_content:
             assert file_content.readline() == '<?xml version="1.0" encoding="utf-8"?>\n'
-            assert file_content.readline() == '<SomeEntity>\n'
-            assert file_content.readline() == '    <ChildNode1>1</ChildNode1>\n'
-            assert file_content.readline() == '    <ChildNode2>value-2</ChildNode2>\n'
-            assert file_content.readline() == '    <ChildNode3>true</ChildNode3>\n'
-            assert file_content.readline() == '</SomeEntity>\n'
+            assert file_content.readline() == "<SomeEntity>\n"
+            assert file_content.readline() == "    <ChildNode1>1</ChildNode1>\n"
+            assert file_content.readline() == "    <ChildNode2>value-2</ChildNode2>\n"
+            assert file_content.readline() == "    <ChildNode3>true</ChildNode3>\n"
+            assert file_content.readline() == "</SomeEntity>\n"
 
     assert path.exists("mimeo-output")
     for i in range(1, 11):
@@ -205,11 +205,11 @@ def test_directory_path():
         assert path.exists(file_path)
 
         with open(file_path) as file_content:
-            assert file_content.readline() == ('<SomeEntity>'
-                                               '<ChildNode1>1</ChildNode1>'
-                                               '<ChildNode2>value-2</ChildNode2>'
-                                               '<ChildNode3>true</ChildNode3>'
-                                               '</SomeEntity>')
+            assert file_content.readline() == ("<SomeEntity>"
+                                               "<ChildNode1>1</ChildNode1>"
+                                               "<ChildNode2>value-2</ChildNode2>"
+                                               "<ChildNode3>true</ChildNode3>"
+                                               "</SomeEntity>")
 
 
 def test_custom_short_xml_declaration_false():
@@ -226,11 +226,11 @@ def test_custom_short_xml_declaration_false():
         assert path.exists(file_path)
 
         with open(file_path) as file_content:
-            assert file_content.readline() == '<SomeEntity>\n'
-            assert file_content.readline() == '    <ChildNode1>1</ChildNode1>\n'
-            assert file_content.readline() == '    <ChildNode2>value-2</ChildNode2>\n'
-            assert file_content.readline() == '    <ChildNode3>true</ChildNode3>\n'
-            assert file_content.readline() == '</SomeEntity>\n'
+            assert file_content.readline() == "<SomeEntity>\n"
+            assert file_content.readline() == "    <ChildNode1>1</ChildNode1>\n"
+            assert file_content.readline() == "    <ChildNode2>value-2</ChildNode2>\n"
+            assert file_content.readline() == "    <ChildNode3>true</ChildNode3>\n"
+            assert file_content.readline() == "</SomeEntity>\n"
 
 
 def test_custom_short_xml_declaration_true():
@@ -248,11 +248,11 @@ def test_custom_short_xml_declaration_true():
 
         with open(file_path) as file_content:
             assert file_content.readline() == '<?xml version="1.0" encoding="utf-8"?>\n'
-            assert file_content.readline() == '<SomeEntity>\n'
-            assert file_content.readline() == '    <ChildNode1>1</ChildNode1>\n'
-            assert file_content.readline() == '    <ChildNode2>value-2</ChildNode2>\n'
-            assert file_content.readline() == '    <ChildNode3>true</ChildNode3>\n'
-            assert file_content.readline() == '</SomeEntity>\n'
+            assert file_content.readline() == "<SomeEntity>\n"
+            assert file_content.readline() == "    <ChildNode1>1</ChildNode1>\n"
+            assert file_content.readline() == "    <ChildNode2>value-2</ChildNode2>\n"
+            assert file_content.readline() == "    <ChildNode3>true</ChildNode3>\n"
+            assert file_content.readline() == "</SomeEntity>\n"
 
 
 def test_custom_long_xml_declaration_false():
@@ -269,11 +269,11 @@ def test_custom_long_xml_declaration_false():
         assert path.exists(file_path)
 
         with open(file_path) as file_content:
-            assert file_content.readline() == '<SomeEntity>\n'
-            assert file_content.readline() == '    <ChildNode1>1</ChildNode1>\n'
-            assert file_content.readline() == '    <ChildNode2>value-2</ChildNode2>\n'
-            assert file_content.readline() == '    <ChildNode3>true</ChildNode3>\n'
-            assert file_content.readline() == '</SomeEntity>\n'
+            assert file_content.readline() == "<SomeEntity>\n"
+            assert file_content.readline() == "    <ChildNode1>1</ChildNode1>\n"
+            assert file_content.readline() == "    <ChildNode2>value-2</ChildNode2>\n"
+            assert file_content.readline() == "    <ChildNode3>true</ChildNode3>\n"
+            assert file_content.readline() == "</SomeEntity>\n"
 
 
 def test_custom_long_xml_declaration_true():
@@ -291,11 +291,11 @@ def test_custom_long_xml_declaration_true():
 
         with open(file_path) as file_content:
             assert file_content.readline() == '<?xml version="1.0" encoding="utf-8"?>\n'
-            assert file_content.readline() == '<SomeEntity>\n'
-            assert file_content.readline() == '    <ChildNode1>1</ChildNode1>\n'
-            assert file_content.readline() == '    <ChildNode2>value-2</ChildNode2>\n'
-            assert file_content.readline() == '    <ChildNode3>true</ChildNode3>\n'
-            assert file_content.readline() == '</SomeEntity>\n'
+            assert file_content.readline() == "<SomeEntity>\n"
+            assert file_content.readline() == "    <ChildNode1>1</ChildNode1>\n"
+            assert file_content.readline() == "    <ChildNode2>value-2</ChildNode2>\n"
+            assert file_content.readline() == "    <ChildNode3>true</ChildNode3>\n"
+            assert file_content.readline() == "</SomeEntity>\n"
 
 
 def test_custom_short_indent_non_zero():
@@ -313,11 +313,11 @@ def test_custom_short_indent_non_zero():
 
         with open(file_path) as file_content:
             assert file_content.readline() == '<?xml version="1.0" encoding="utf-8"?>\n'
-            assert file_content.readline() == '<SomeEntity>\n'
-            assert file_content.readline() == '  <ChildNode1>1</ChildNode1>\n'
-            assert file_content.readline() == '  <ChildNode2>value-2</ChildNode2>\n'
-            assert file_content.readline() == '  <ChildNode3>true</ChildNode3>\n'
-            assert file_content.readline() == '</SomeEntity>\n'
+            assert file_content.readline() == "<SomeEntity>\n"
+            assert file_content.readline() == "  <ChildNode1>1</ChildNode1>\n"
+            assert file_content.readline() == "  <ChildNode2>value-2</ChildNode2>\n"
+            assert file_content.readline() == "  <ChildNode3>true</ChildNode3>\n"
+            assert file_content.readline() == "</SomeEntity>\n"
 
 
 def test_custom_short_indent_zero():
@@ -335,11 +335,11 @@ def test_custom_short_indent_zero():
 
         with open(file_path) as file_content:
             assert file_content.readline() == "<?xml version='1.0' encoding='utf-8'?>\n"
-            assert file_content.readline() == ('<SomeEntity>'
-                                               '<ChildNode1>1</ChildNode1>'
-                                               '<ChildNode2>value-2</ChildNode2>'
-                                               '<ChildNode3>true</ChildNode3>'
-                                               '</SomeEntity>')
+            assert file_content.readline() == ("<SomeEntity>"
+                                               "<ChildNode1>1</ChildNode1>"
+                                               "<ChildNode2>value-2</ChildNode2>"
+                                               "<ChildNode3>true</ChildNode3>"
+                                               "</SomeEntity>")
 
 
 def test_custom_long_indent_non_zero():
@@ -357,11 +357,11 @@ def test_custom_long_indent_non_zero():
 
         with open(file_path) as file_content:
             assert file_content.readline() == '<?xml version="1.0" encoding="utf-8"?>\n'
-            assert file_content.readline() == '<SomeEntity>\n'
-            assert file_content.readline() == '  <ChildNode1>1</ChildNode1>\n'
-            assert file_content.readline() == '  <ChildNode2>value-2</ChildNode2>\n'
-            assert file_content.readline() == '  <ChildNode3>true</ChildNode3>\n'
-            assert file_content.readline() == '</SomeEntity>\n'
+            assert file_content.readline() == "<SomeEntity>\n"
+            assert file_content.readline() == "  <ChildNode1>1</ChildNode1>\n"
+            assert file_content.readline() == "  <ChildNode2>value-2</ChildNode2>\n"
+            assert file_content.readline() == "  <ChildNode3>true</ChildNode3>\n"
+            assert file_content.readline() == "</SomeEntity>\n"
 
 
 def test_custom_long_indent_zero():
@@ -379,11 +379,11 @@ def test_custom_long_indent_zero():
 
         with open(file_path) as file_content:
             assert file_content.readline() == "<?xml version='1.0' encoding='utf-8'?>\n"
-            assert file_content.readline() == ('<SomeEntity>'
-                                               '<ChildNode1>1</ChildNode1>'
-                                               '<ChildNode2>value-2</ChildNode2>'
-                                               '<ChildNode3>true</ChildNode3>'
-                                               '</SomeEntity>')
+            assert file_content.readline() == ("<SomeEntity>"
+                                               "<ChildNode1>1</ChildNode1>"
+                                               "<ChildNode2>value-2</ChildNode2>"
+                                               "<ChildNode3>true</ChildNode3>"
+                                               "</SomeEntity>")
 
 
 def test_custom_short_direction():
@@ -435,11 +435,11 @@ def test_custom_short_directory_path():
 
         with open(file_path) as file_content:
             assert file_content.readline() == '<?xml version="1.0" encoding="utf-8"?>\n'
-            assert file_content.readline() == '<SomeEntity>\n'
-            assert file_content.readline() == '    <ChildNode1>1</ChildNode1>\n'
-            assert file_content.readline() == '    <ChildNode2>value-2</ChildNode2>\n'
-            assert file_content.readline() == '    <ChildNode3>true</ChildNode3>\n'
-            assert file_content.readline() == '</SomeEntity>\n'
+            assert file_content.readline() == "<SomeEntity>\n"
+            assert file_content.readline() == "    <ChildNode1>1</ChildNode1>\n"
+            assert file_content.readline() == "    <ChildNode2>value-2</ChildNode2>\n"
+            assert file_content.readline() == "    <ChildNode3>true</ChildNode3>\n"
+            assert file_content.readline() == "</SomeEntity>\n"
 
 
 def test_custom_long_directory_path():
@@ -459,11 +459,11 @@ def test_custom_long_directory_path():
 
         with open(file_path) as file_content:
             assert file_content.readline() == '<?xml version="1.0" encoding="utf-8"?>\n'
-            assert file_content.readline() == '<SomeEntity>\n'
-            assert file_content.readline() == '    <ChildNode1>1</ChildNode1>\n'
-            assert file_content.readline() == '    <ChildNode2>value-2</ChildNode2>\n'
-            assert file_content.readline() == '    <ChildNode3>true</ChildNode3>\n'
-            assert file_content.readline() == '</SomeEntity>\n'
+            assert file_content.readline() == "<SomeEntity>\n"
+            assert file_content.readline() == "    <ChildNode1>1</ChildNode1>\n"
+            assert file_content.readline() == "    <ChildNode2>value-2</ChildNode2>\n"
+            assert file_content.readline() == "    <ChildNode3>true</ChildNode3>\n"
+            assert file_content.readline() == "</SomeEntity>\n"
 
 
 def test_custom_directory_path_does_not_throw_error_when_output_is_none():
@@ -492,11 +492,11 @@ def test_custom_short_file_name():
 
         with open(file_path) as file_content:
             assert file_content.readline() == '<?xml version="1.0" encoding="utf-8"?>\n'
-            assert file_content.readline() == '<SomeEntity>\n'
-            assert file_content.readline() == '    <ChildNode1>1</ChildNode1>\n'
-            assert file_content.readline() == '    <ChildNode2>value-2</ChildNode2>\n'
-            assert file_content.readline() == '    <ChildNode3>true</ChildNode3>\n'
-            assert file_content.readline() == '</SomeEntity>\n'
+            assert file_content.readline() == "<SomeEntity>\n"
+            assert file_content.readline() == "    <ChildNode1>1</ChildNode1>\n"
+            assert file_content.readline() == "    <ChildNode2>value-2</ChildNode2>\n"
+            assert file_content.readline() == "    <ChildNode3>true</ChildNode3>\n"
+            assert file_content.readline() == "</SomeEntity>\n"
 
 
 def test_custom_long_file_name():
@@ -515,11 +515,11 @@ def test_custom_long_file_name():
 
         with open(file_path) as file_content:
             assert file_content.readline() == '<?xml version="1.0" encoding="utf-8"?>\n'
-            assert file_content.readline() == '<SomeEntity>\n'
-            assert file_content.readline() == '    <ChildNode1>1</ChildNode1>\n'
-            assert file_content.readline() == '    <ChildNode2>value-2</ChildNode2>\n'
-            assert file_content.readline() == '    <ChildNode3>true</ChildNode3>\n'
-            assert file_content.readline() == '</SomeEntity>\n'
+            assert file_content.readline() == "<SomeEntity>\n"
+            assert file_content.readline() == "    <ChildNode1>1</ChildNode1>\n"
+            assert file_content.readline() == "    <ChildNode2>value-2</ChildNode2>\n"
+            assert file_content.readline() == "    <ChildNode3>true</ChildNode3>\n"
+            assert file_content.readline() == "</SomeEntity>\n"
 
 
 def test_custom_file_name_does_not_throw_error_when_output_is_none():
@@ -661,7 +661,7 @@ def test_custom_short_http_username():
         "http://localhost:8080/document",
         json={"success": True},
         status=HTTPStatus.OK,
-        match=[matchers.header_matcher({'Authorization': auth})],
+        match=[matchers.header_matcher({"Authorization": auth})],
     )
     mimeo_cli.main()
     # would throw a ConnectionError when any request call doesn't match registered mocks
@@ -679,7 +679,7 @@ def test_custom_long_http_username():
         "http://localhost:8080/document",
         json={"success": True},
         status=HTTPStatus.OK,
-        match=[matchers.header_matcher({'Authorization': auth})],
+        match=[matchers.header_matcher({"Authorization": auth})],
     )
     mimeo_cli.main()
     # would throw a ConnectionError when any request call doesn't match registered mocks
@@ -710,7 +710,7 @@ def test_custom_short_http_password():
         "http://localhost:8080/document",
         json={"success": True},
         status=HTTPStatus.OK,
-        match=[matchers.header_matcher({'Authorization': auth})],
+        match=[matchers.header_matcher({"Authorization": auth})],
     )
     mimeo_cli.main()
     # would throw a ConnectionError when any request call doesn't match registered mocks
@@ -728,7 +728,7 @@ def test_custom_long_http_password():
         "http://localhost:8080/document",
         json={"success": True},
         status=HTTPStatus.OK,
-        match=[matchers.header_matcher({'Authorization': auth})],
+        match=[matchers.header_matcher({"Authorization": auth})],
     )
     mimeo_cli.main()
     # would throw a ConnectionError when any request call doesn't match registered mocks
@@ -810,7 +810,7 @@ def test_custom_long_http_auth():
         "http://localhost:8080/document",
         json={"success": True},
         status=HTTPStatus.OK,
-        match=[matchers.header_matcher({'Authorization': auth})],
+        match=[matchers.header_matcher({"Authorization": auth})],
     )
     mimeo_cli.main()
     # would throw a ConnectionError when any request call doesn't match registered mocks
@@ -840,7 +840,7 @@ def test_custom_short_env():
         "https://11.111.11.111:8000/document",
         json={"success": True},
         status=HTTPStatus.OK,
-        match=[matchers.header_matcher({'Authorization': auth})],
+        match=[matchers.header_matcher({"Authorization": auth})],
     )
     mimeo_cli.main()
     # would throw a ConnectionError when any request call doesn't match registered mocks
@@ -857,7 +857,7 @@ def test_custom_long_env():
         "https://11.111.11.111:8000/document",
         json={"success": True},
         status=HTTPStatus.OK,
-        match=[matchers.header_matcher({'Authorization': auth})],
+        match=[matchers.header_matcher({"Authorization": auth})],
     )
     mimeo_cli.main()
     # would throw a ConnectionError when any request call doesn't match registered mocks
@@ -875,7 +875,7 @@ def test_custom_env_file():
         "https://11.111.11.111:8000/document",
         json={"success": True},
         status=HTTPStatus.OK,
-        match=[matchers.header_matcher({'Authorization': auth})],
+        match=[matchers.header_matcher({"Authorization": auth})],
     )
     mimeo_cli.main()
     # would throw a ConnectionError when any request call doesn't match registered mocks
@@ -955,4 +955,4 @@ def test_logging_mode_fine():
 
 def _generate_authorization(username: str, password: str):
     token = b64encode(f"{username}:{password}".encode()).decode("ascii")
-    return f'Basic {token}'
+    return f"Basic {token}"

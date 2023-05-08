@@ -35,7 +35,7 @@ class Consumer(metaclass=ABCMeta):
         bool
             True if the subclass includes the consume method
         """
-        return 'consume' in subclass.__dict__ and callable(subclass.consume)
+        return "consume" in subclass.__dict__ and callable(subclass.consume)
 
     @abstractmethod
     def consume(self, data: str):

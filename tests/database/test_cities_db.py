@@ -45,14 +45,14 @@ def test_get_city_at_out_of_range():
 
 def test_get_city_of():
     db = CitiesDB()
-    gbr_cities = db.get_cities_of('GBR')
+    gbr_cities = db.get_cities_of("GBR")
 
     for city in gbr_cities:
-        assert city.country == 'GBR'
+        assert city.country == "GBR"
 
 
 def test_get_city_of_non_existing_country():
     db = CitiesDB()
-    gbr_cities = db.get_cities_of('NEC')
+    gbr_cities = db.get_cities_of("NEC")
 
     assert len(gbr_cities) == 0

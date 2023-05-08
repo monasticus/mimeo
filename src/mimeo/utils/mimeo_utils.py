@@ -69,9 +69,9 @@ class MimeoUtil(metaclass=ABCMeta):
             True if the subclass includes the render method and KEY
             attribute
         """
-        return ('KEY' in subclass.__dict__ and
+        return ("KEY" in subclass.__dict__ and
                 not callable(subclass.KEY) and
-                'render' in subclass.__dict__ and
+                "render" in subclass.__dict__ and
                 callable(subclass.render))
 
     @abstractmethod

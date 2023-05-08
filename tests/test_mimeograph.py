@@ -10,7 +10,7 @@ from mimeo.context import MimeoContextManager
 
 
 @pytest.fixture(autouse=True)
-def teardown():
+def _teardown():
     yield
     # Teardown
     shutil.rmtree("test_mimeograph-dir")
@@ -52,11 +52,11 @@ def test_produce():
 
             with open(file_path) as file:
                 assert file.readline() == '<?xml version="1.0" encoding="utf-8"?>\n'
-                assert file.readline() == '<SomeEntity>\n'
-                assert file.readline() == '    <ChildNode1>1</ChildNode1>\n'
-                assert file.readline() == '    <ChildNode2>value-2</ChildNode2>\n'
-                assert file.readline() == '    <ChildNode3>true</ChildNode3>\n'
-                assert file.readline() == '</SomeEntity>\n'
+                assert file.readline() == "<SomeEntity>\n"
+                assert file.readline() == "    <ChildNode1>1</ChildNode1>\n"
+                assert file.readline() == "    <ChildNode2>value-2</ChildNode2>\n"
+                assert file.readline() == "    <ChildNode3>true</ChildNode3>\n"
+                assert file.readline() == "</SomeEntity>\n"
 
 
 

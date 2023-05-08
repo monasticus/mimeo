@@ -50,8 +50,8 @@ class Generator(metaclass=ABCMeta):
             True if the subclass includes the generate and stringify
             methods
         """
-        return ('generate' in subclass.__dict__ and callable(subclass.generate) and
-                'stringify' in subclass.__dict__ and callable(subclass.stringify))
+        return ("generate" in subclass.__dict__ and callable(subclass.generate) and
+                "stringify" in subclass.__dict__ and callable(subclass.stringify))
 
     @abstractmethod
     def generate(

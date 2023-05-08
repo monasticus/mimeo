@@ -174,7 +174,7 @@ def _modify_source_data_for_countries(source_df: pandas.DataFrame) -> pandas.Dat
 
 def _ascii_encoding(value: str):
     """Apply ASCII encoding."""
-    return unicodedata.normalize('NFKD', value).encode('ascii', 'ignore').decode()
+    return unicodedata.normalize("NFKD", value).encode("ascii", "ignore").decode()
 
 
 if __name__ == "__main__":

@@ -434,7 +434,7 @@ class MimeoContext:
                 msg = (f"No more unique values, "
                        f"database contain only {init_count} first names.")
             else:
-                sex_info = 'male' if sex == 'M' else 'female'
+                sex_info = "male" if sex == "M" else "female"
                 msg = (f"No more unique values, "
                        f"database contain only {init_count} {sex_info} first names.")
             raise OutOfStockError(msg)

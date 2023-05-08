@@ -25,7 +25,7 @@ def assert_throws(
 
 
 def get_class_impl_error_msg(cls: str, methods_list: List[str]) -> str:
-    methods = ', '.join(methods_list)
+    methods = ", ".join(methods_list)
     plural = sys.version_info < (3, 9) or len(methods_list) > 1
     method = "methods" if plural else "method"
     return f"Can't instantiate abstract class {cls} with abstract {method} {methods}"
