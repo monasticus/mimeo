@@ -9,3 +9,8 @@ dist/
 
 # PyCharm
 .idea
+
+# Custom
+tmp/
+coverage.xml
+pytest.xml

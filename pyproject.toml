@@ -84,7 +84,8 @@ exclude = [
     "__pycache__",
     "dist",
     "venv",
-    "examples"
+    "examples",
+    "tmp"
 ]
 ignore-init-module-imports = true
 
