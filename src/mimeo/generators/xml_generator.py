@@ -6,7 +6,7 @@ It exports only one class:
 """
 import logging
 import xml.etree.ElementTree as ElemTree
-from typing import Iterator, List, Union
+from typing import Iterator, List, Union, Optional
 from xml.dom import minidom
 
 from mimeo.config.mimeo_config import MimeoConfig, MimeoTemplate
@@ -151,9 +151,8 @@ class XMLGenerator(Generator):
             A list of generated data units
         """
         logger.debug("Reading template [{tmplt}]", extra={"tmplt": template})
-        data_units = [cls._process_single_data_unit(template, parent)
-                      for _ in iter(range(template.count))]
-        return data_units
+        return [cls._process_single_data_unit(template, parent)
+                for _ in iter(range(template.count))]
 
     @classmethod
     @mimeo_next_iteration
@@ -200,7 +199,7 @@ class XMLGenerator(Generator):
             element_value: Union[dict, list, str, int, float, bool],
             attributes: dict = None,
             context: MimeoContext = None,
-    ) -> ElemTree.Element:
+    ) -> Optional[ElemTree.Element]:
         """Process a single template's node.
 
         This is a recursive function that traverses Mimeo Template
@@ -291,6 +290,7 @@ class XMLGenerator(Generator):
 
             if parent is None:
                 return element
+        return None
 
     @classmethod
     def _create_xml_element(
@@ -318,5 +318,4 @@ class XMLGenerator(Generator):
         """
         if parent is None:
             return ElemTree.Element(element_tag, attrib=attributes)
-        else:
-            return ElemTree.SubElement(parent, element_tag, attrib=attributes)
+        return ElemTree.SubElement(parent, element_tag, attrib=attributes)

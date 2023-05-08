@@ -57,12 +57,11 @@ class OnlyOneAlive(type):
             cls._INSTANCES[cls] = []
 
         alive_instance = next((i for i in cls._INSTANCES[cls] if i.is_alive()), None)
-        if alive_instance is not None:
-            return alive_instance
-        else:
+        if alive_instance is None:
             instance = super().__call__(*args, **kwargs)
             cls._INSTANCES[cls].append(instance)
             return instance
+        return alive_instance
 
 
 class Alive:
@@ -117,7 +116,7 @@ class Alive:
             A None value
         """
         self._alive = False
-        return None
+        return
 
     def assert_alive(self) -> bool:
         """Assert the instance is alive.

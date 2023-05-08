@@ -132,10 +132,9 @@ class FirstNamesDB:
         InvalidSexError
             If the provided `sex` value is not supported
         """
-        if sex in FirstNamesDB.__SUPPORTED_SEX:
-            return self.__get_first_names_by_sex(sex).copy()
-        else:
+        if sex not in FirstNamesDB.__SUPPORTED_SEX:
             raise InvalidSexError(FirstNamesDB.__SUPPORTED_SEX)
+        return self.__get_first_names_by_sex(sex).copy()
 
     @classmethod
     def get_first_names(cls) -> List[FirstName]:

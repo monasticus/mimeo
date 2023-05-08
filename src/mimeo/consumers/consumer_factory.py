@@ -55,11 +55,10 @@ class ConsumerFactory:
         direction = mimeo_config.output.direction
         if direction == ConsumerFactory.STD_OUT_DIRECTION:
             return RawConsumer()
-        elif direction == ConsumerFactory.FILE_DIRECTION:
+        if direction == ConsumerFactory.FILE_DIRECTION:
             return FileConsumer(mimeo_config.output)
-        elif direction == ConsumerFactory.HTTP_DIRECTION:
+        if direction == ConsumerFactory.HTTP_DIRECTION:
             return HttpConsumer(mimeo_config.output)
-        else:
-            raise UnsupportedPropertyValueError(MimeoConfig.OUTPUT_DIRECTION_KEY,
-                                           direction,
-                                           MimeoConfig.SUPPORTED_OUTPUT_DIRECTIONS)
+        raise UnsupportedPropertyValueError(MimeoConfig.OUTPUT_DIRECTION_KEY,
+                                            direction,
+                                            MimeoConfig.SUPPORTED_OUTPUT_DIRECTIONS)

@@ -85,7 +85,7 @@ class MimeoContextManager(Alive, metaclass=OnlyOneAlive):
         super().__exit__(exc_type, exc_val, exc_tb)
         self._vars = None
         self._contexts = None
-        return None
+        return
 
     def get_context(self, context: str) -> MimeoContext:
         """Return a Mimeo Context with a specific name.
@@ -167,7 +167,6 @@ class MimeoContextManager(Alive, metaclass=OnlyOneAlive):
         """
         super().assert_alive()
         value = self._vars.get(variable_name)
-        if value is not None:
-            return value
-        else:
+        if value is None:
             raise VarNotFoundError(variable_name)
+        return value

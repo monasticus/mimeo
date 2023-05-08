@@ -139,8 +139,7 @@ class UtilsRenderer:
         cache_key = cls._generate_cache_key(config)
         if cache_key not in cls._INSTANCES:
             return cls._instantiate_mimeo_util(cache_key, config)
-        else:
-            return cls._INSTANCES.get(cache_key)
+        return cls._INSTANCES.get(cache_key)
 
     @staticmethod
     def _generate_cache_key(config: dict) -> str:
@@ -216,7 +215,7 @@ class UtilsRenderer:
         if mimeo_util_name is None:
             msg = f"Missing Mimeo Util name in configuration [{config}]!"
             raise InvalidMimeoUtilError(msg)
-        elif mimeo_util_name not in cls.MIMEO_UTILS:
+        if mimeo_util_name not in cls.MIMEO_UTILS:
             msg = f"No such Mimeo Util [{mimeo_util_name}]!"
             raise InvalidMimeoUtilError(msg)
         return mimeo_util_name
@@ -447,10 +446,9 @@ class MimeoRenderer:
         try:
             if isinstance(value, str):
                 return cls._render_string_value(value)
-            elif cls.is_parametrized_mimeo_util(value):
+            if cls.is_parametrized_mimeo_util(value):
                 return cls._render_parametrized_mimeo_util(value)
-            else:
-                return value
+            return value
         except Exception as err:
             error_name = type(err).__name__
             logger.error("Error [{error_name}]: [{err}] occurred for [{value}].",
@@ -478,12 +476,11 @@ class MimeoRenderer:
         """
         if cls._SPECIAL_FIELDS_PATTERN.match(value):
             return cls._render_special_field(value)
-        elif cls._VARS_PATTERN.match(value):
+        if cls._VARS_PATTERN.match(value):
             return cls._render_var(value)
-        elif cls.is_raw_mimeo_util(value):
+        if cls.is_raw_mimeo_util(value):
             return cls._render_raw_mimeo_util(value)
-        else:
-            return value
+        return value
 
     @classmethod
     def _render_special_field(cls, value: str) -> Any:

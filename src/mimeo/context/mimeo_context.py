@@ -117,11 +117,10 @@ class MimeoContext:
         MinimumIdentifierReachedError
             If the current identifier (before decrement) equals 0
         """
-        if self._id > 0:
-            self._id -= 1
-            return self.curr_id()
-        else:
+        if self._id == 0:
             raise MinimumIdentifierReachedError
+        self._id -= 1
+        return self.curr_id()
 
     def next_iteration(self) -> MimeoIteration:
         """Initialize a next iteration within the context.
@@ -155,10 +154,9 @@ class MimeoContext:
         UninitializedContextIterationError
             If no iteration has been initialized yet for the context
         """
-        if len(self._iterations) > 0:
-            return self._iterations[-1]
-        else:
+        if len(self._iterations) == 0:
             raise UninitializedContextIterationError(self.name)
+        return self._iterations[-1]
 
     def get_iteration(self, iteration_id: int) -> MimeoIteration:
         """Return a specific iteration from the context.
@@ -175,10 +173,9 @@ class MimeoContext:
             provided
         """
         iteration = next(filter(lambda i: i.id == iteration_id, self._iterations), None)
-        if iteration is not None:
-            return iteration
-        else:
+        if iteration is None:
             raise ContextIterationNotFoundError(iteration_id, self.name)
+        return iteration
 
     def clear_iterations(self):
         """Clear out all context iterations.

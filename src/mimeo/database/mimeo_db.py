@@ -106,8 +106,7 @@ class MimeoDB:
         country = next(countries, None)
         if country is None:
             return []
-        else:
-            return self.__cities_db.get_cities_of(country.iso_3)
+        return self.__cities_db.get_cities_of(country.iso_3)
 
     def get_city_at(self, index: int) -> City:
         """Get a city at `index` position.

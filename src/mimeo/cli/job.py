@@ -122,5 +122,4 @@ class MimeoJob:
         logger.info("Reading Mimeo Configuration: {config}",
                     extra={"config": config_path})
         with open(config_path) as config_file:
-            config = json.load(config_file)
-        return config
+            return json.load(config_file)

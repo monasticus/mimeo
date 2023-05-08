@@ -88,5 +88,4 @@ class HttpConsumer(Consumer):
         """
         if output.port is None:
             return f"{output.protocol}://{output.host}{output.endpoint}"
-        else:
-            return f"{output.protocol}://{output.host}:{output.port}{output.endpoint}"
+        return f"{output.protocol}://{output.host}:{output.port}{output.endpoint}"

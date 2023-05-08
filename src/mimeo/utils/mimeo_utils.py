@@ -649,15 +649,14 @@ class CountryUtil(MimeoUtil):
         """
         if self._value == self.__VALUE_NAME:
             return self._get_country(context).name
-        elif self._value == self.__VALUE_ISO3:
+        if self._value == self.__VALUE_ISO3:
             return self._get_country(context).iso_3
-        elif self._value == self.__VALUE_ISO2:
+        if self._value == self.__VALUE_ISO2:
             return self._get_country(context).iso_2
-        else:
-            msg = (f"The country Mimeo Util does not support a value [{self._value}]. "
-                   f"Supported values are: {self.__VALUE_NAME} (default), "
-                   f"{self.__VALUE_ISO3}, {self.__VALUE_ISO2}.")
-            raise InvalidValueError(msg)
+        msg = (f"The country Mimeo Util does not support a value [{self._value}]. "
+               f"Supported values are: {self.__VALUE_NAME} (default), "
+               f"{self.__VALUE_ISO3}, {self.__VALUE_ISO2}.")
+        raise InvalidValueError(msg)
 
     def _get_country(self, context: MimeoContext) -> Country:
         if self._country is not None:
@@ -667,19 +666,16 @@ class CountryUtil(MimeoUtil):
                        countries),
                 None,
             )
-            if country_found is not None:
-                return country_found
-            else:
+            if country_found is None:
                 msg = f"Mimeo database doesn't contain a country [{self._country}]."
                 raise DataNotFoundError(msg)
-        else:
-            if self._unique:
-                index = context.next_country_index()
-            else:
-                index = random.randrange(MimeoDB.NUM_OF_COUNTRIES)
+            return country_found
 
-            country = self.__MIMEO_DB.get_country_at(index)
-            return country
+        if self._unique:
+            index = context.next_country_index()
+        else:
+            index = random.randrange(MimeoDB.NUM_OF_COUNTRIES)
+        return self.__MIMEO_DB.get_country_at(index)
 
 
 class FirstNameUtil(MimeoUtil):
@@ -766,12 +762,11 @@ class FirstNameUtil(MimeoUtil):
     def _standardize_sex(cls, sex: str):
         if sex is None:
             return sex
-        elif sex.upper() in ["M", "MALE"]:
+        if sex.upper() in ["M", "MALE"]:
             return "M"
-        elif sex.upper() in ["F", "FEMALE"]:
+        if sex.upper() in ["F", "FEMALE"]:
             return "F"
-        else:
-            raise InvalidSexError(("M", "F", "Male", "Female"))
+        raise InvalidSexError(("M", "F", "Male", "Female"))
 
 
 class LastNameUtil(MimeoUtil):
@@ -833,6 +828,4 @@ class LastNameUtil(MimeoUtil):
             index = context.next_first_name_index()
         else:
             index = random.randrange(MimeoDB.NUM_OF_FIRST_NAMES)
-        last_name = self.__MIMEO_DB.get_last_name_at(index)
-
-        return last_name
+        return self.__MIMEO_DB.get_last_name_at(index)
