@@ -17,8 +17,9 @@ import re
 from typing import Optional
 
 from mimeo.config.exc import (InvalidIndentError, InvalidMimeoConfigError,
-                              InvalidMimeoModelError, InvalidMimeoTemplateError,
-                              InvalidVarsError, MissingRequiredPropertyError,
+                              InvalidMimeoModelError,
+                              InvalidMimeoTemplateError, InvalidVarsError,
+                              MissingRequiredPropertyError,
                               UnsupportedPropertyValueError)
 from mimeo.logging import setup_logging
 

@@ -6,7 +6,7 @@ It exports only one class:
 """
 import logging
 import xml.etree.ElementTree as ElemTree
-from typing import Iterator, List, Union, Optional
+from typing import Iterator, List, Optional, Union
 from xml.dom import minidom
 
 from mimeo.config.mimeo_config import MimeoConfig, MimeoTemplate

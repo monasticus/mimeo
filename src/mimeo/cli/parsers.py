@@ -10,7 +10,7 @@ It exports two parser classes:
 import json
 import logging
 from argparse import ArgumentParser, Namespace
-from os import path
+from pathlib import Path
 from typing import Union
 
 from mimeo import MimeoConfig
@@ -479,10 +479,10 @@ class MimeoConfigParser:
         EnvironmentNotFoundError
             If the http environment is not defined in the environments file
         """
-        if not path.exists(envs_path):
+        if not Path(envs_path).exists():
             raise EnvironmentsFileNotFoundError(envs_path)
 
-        with open(envs_path) as envs_file:
+        with Path(envs_path).open() as envs_file:
             envs = json.load(envs_file)
             if env_name not in envs:
                 raise EnvironmentNotFoundError(env_name, envs_path)

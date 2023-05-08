@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from mimeo.database import FirstNamesDB
 from mimeo.database.exc import InvalidIndexError, InvalidSexError
 from tests.utils import assert_throws
@@ -15,7 +17,7 @@ def test_get_first_names():
 
 
 def test_get_first_name_at():
-    with open("src/mimeo/resources/forenames.csv") as first_names:
+    with Path("src/mimeo/resources/forenames.csv").open() as first_names:
         next(first_names)
         first_name_1_cols = next(first_names).rstrip().split(",")
         first_name_2_cols = next(first_names).rstrip().split(",")

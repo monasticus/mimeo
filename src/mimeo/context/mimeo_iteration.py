@@ -8,7 +8,8 @@ import uuid
 from typing import Union
 
 from mimeo.context.exc import (InvalidSpecialFieldNameError,
-                               InvalidSpecialFieldValueError, SpecialFieldNotFoundError)
+                               InvalidSpecialFieldValueError,
+                               SpecialFieldNotFoundError)
 
 
 class MimeoIteration:

@@ -67,5 +67,5 @@ class FileConsumer(Consumer):
         file_name = self.output_path_tmplt.format(self.__count)
 
         logger.info("Writing data into file [{file}]", extra={"file": file_name})
-        with open(file_name, "w") as output_file:
+        with Path(file_name).open("w") as output_file:
             output_file.write(data)

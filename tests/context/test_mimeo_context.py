@@ -3,7 +3,8 @@ from mimeo.context.exc import (ContextIterationNotFoundError,
                                MinimumIdentifierReachedError,
                                UninitializedContextIterationError)
 from mimeo.database import MimeoDB
-from mimeo.database.exc import DataNotFoundError, InvalidSexError, OutOfStockError
+from mimeo.database.exc import (DataNotFoundError, InvalidSexError,
+                                OutOfStockError)
 from tests.utils import assert_throws
 
 

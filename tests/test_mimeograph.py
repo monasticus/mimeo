@@ -1,6 +1,6 @@
 
 import shutil
-from os import path
+from pathlib import Path
 
 import pytest
 
@@ -43,14 +43,14 @@ def test_produce():
     with MimeoContextManager(mimeo_config):
         mimeo = Mimeograph(mimeo_config)
 
-        assert not path.exists("test_mimeograph-dir")
+        assert not Path("test_mimeograph-dir").exists()
         mimeo.process()
-        assert path.exists("test_mimeograph-dir")
+        assert Path("test_mimeograph-dir").exists()
         for i in range(1, 11):
             file_path = f"test_mimeograph-dir/output-{i}.xml"
-            assert path.exists(file_path)
+            assert Path(file_path).exists()
 
-            with open(file_path) as file:
+            with Path(file_path).open() as file:
                 assert file.readline() == '<?xml version="1.0" encoding="utf-8"?>\n'
                 assert file.readline() == "<SomeEntity>\n"
                 assert file.readline() == "    <ChildNode1>1</ChildNode1>\n"

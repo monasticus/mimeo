@@ -7,7 +7,8 @@ It exports a single class:
 import json
 import logging
 from argparse import Namespace
-from os import path, walk
+from os import walk
+from pathlib import Path
 from typing import List
 
 from mimeo import MimeoConfig, Mimeograph
@@ -78,11 +79,11 @@ class MimeoJob:
         """
         file_paths = []
         for file_path in paths:
-            if path.isdir(file_path):
+            if Path(file_path).is_dir():
                 for dir_path, _, file_names in walk(file_path):
                     for file_name in file_names:
                         file_paths.append(f"{dir_path}/{file_name}")
-            elif path.isfile(file_path):
+            elif Path(file_path).is_file():
                 file_paths.append(file_path)
         return file_paths
 
@@ -121,5 +122,5 @@ class MimeoJob:
         """Load configuration file to a dictionary."""
         logger.info("Reading Mimeo Configuration: {config}",
                     extra={"config": config_path})
-        with open(config_path) as config_file:
+        with Path(config_path).open() as config_file:
             return json.load(config_file)

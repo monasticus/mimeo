@@ -1,5 +1,5 @@
 import shutil
-from os import path
+from pathlib import Path
 
 import pytest
 
@@ -43,18 +43,18 @@ def test_consume():
         data = [generator.stringify(root)
                 for root in generator.generate(mimeo_config.templates)]
 
-        assert not path.exists("test_file_consumer-dir")
+        assert not Path("test_file_consumer-dir").exists()
 
         consumer.consume(data[0])
-        assert path.exists("test_file_consumer-dir")
-        assert path.exists("test_file_consumer-dir/test-output-1.xml")
-        assert not path.exists("test_file_consumer-dir/test-output-2.xml")
+        assert Path("test_file_consumer-dir").exists()
+        assert Path("test_file_consumer-dir/test-output-1.xml").exists()
+        assert not Path("test_file_consumer-dir/test-output-2.xml").exists()
 
         consumer.consume(data[1])
-        assert path.exists("test_file_consumer-dir/test-output-2.xml")
+        assert Path("test_file_consumer-dir/test-output-2.xml").exists()
 
         for i in range(1, 3):
             file_path = f"test_file_consumer-dir/test-output-{i}.xml"
-            with open(file_path) as file_content:
+            with Path(file_path).open() as file_content:
                 assert file_content.readline() == "<SomeEntity />"
 

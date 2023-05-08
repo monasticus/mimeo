@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from mimeo.database import CountriesDB
 from mimeo.database.exc import InvalidIndexError
 from tests.utils import assert_throws
@@ -15,7 +17,7 @@ def test_get_countries():
 
 
 def test_get_country_at():
-    with open("src/mimeo/resources/countries.csv") as countries:
+    with Path("src/mimeo/resources/countries.csv").open() as countries:
         next(countries)
         country_1_cols = next(countries).rstrip().split(",")
         country_2_cols = next(countries).rstrip().split(",")

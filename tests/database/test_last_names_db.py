@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from mimeo.database import LastNamesDB
 from mimeo.database.exc import InvalidIndexError
 from tests.utils import assert_throws
@@ -15,7 +17,7 @@ def test_get_last_names():
 
 
 def test_get_last_name_at():
-    with open("src/mimeo/resources/surnames.txt") as last_names:
+    with Path("src/mimeo/resources/surnames.txt").open() as last_names:
         last_name_1_source = next(last_names).rstrip()
         last_name_2_source = next(last_names).rstrip()
 

@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from mimeo.database import CitiesDB
 from mimeo.database.exc import InvalidIndexError
 from tests.utils import assert_throws
@@ -15,7 +17,7 @@ def test_get_cities():
 
 
 def test_get_city_at():
-    with open("src/mimeo/resources/cities.csv") as cities:
+    with Path("src/mimeo/resources/cities.csv").open() as cities:
         next(cities)
         city_1_cols = next(cities).rstrip().split(",")
         city_2_cols = next(cities).rstrip().split(",")
