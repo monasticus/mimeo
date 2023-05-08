@@ -445,17 +445,15 @@ class MimeoRenderer:
         logger.fine("Rendering a value [{val}]", extra={"val": value})
         try:
             if isinstance(value, str):
-                return cls._render_string_value(value)
+                value = cls._render_string_value(value)
             if cls.is_parametrized_mimeo_util(value):
-                return cls._render_parametrized_mimeo_util(value)
-            return value
+                value = cls._render_parametrized_mimeo_util(value)
         except Exception as err:
             error_name = type(err).__name__
-            logger.error("Error [{error_name}]: [{err}] occurred for [{value}].",
-                         extra={"err_name": error_name,
-                                "err": err,
-                                "val": value})
-            raise err
+            logger.exception("Error [{error_name}]: [{err}] occurred for [{value}].",
+                             extra={"err_name": error_name, "err": err, "val": value})
+            raise
+        return value
 
     @classmethod
     def _render_string_value(cls, value: str) -> Any:
