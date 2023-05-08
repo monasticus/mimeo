@@ -83,7 +83,7 @@ def test_context_switch(default_config: MimeoConfig):
         for template in default_config.templates:
             bucket.collect_contexts(template)
 
-    assert bucket.CONTEXTS == [
+    assert [
         None,
         "SomeEntity",
         "GrandChild",
@@ -91,7 +91,7 @@ def test_context_switch(default_config: MimeoConfig):
         "GrandChild",
         "SomeEntity",
         None,
-    ]
+    ] == bucket.CONTEXTS
 
 
 def test_context_switch_with_named_param(default_config: MimeoConfig):
@@ -101,7 +101,7 @@ def test_context_switch_with_named_param(default_config: MimeoConfig):
         for template in default_config.templates:
             bucket.collect_with_switch(template=template)
 
-    assert bucket.CONTEXTS == [
+    assert [
         # None,       Not present as using annotated function directly in this scenario
         "SomeEntity",
         "GrandChild",
@@ -109,4 +109,4 @@ def test_context_switch_with_named_param(default_config: MimeoConfig):
         "GrandChild",
         "SomeEntity",
         # None        Not present as using annotated function directly in this scenario
-    ]
+    ] == bucket.CONTEXTS

@@ -203,8 +203,8 @@ class MimeoConfig(MimeoDTO):
         """
         super().__init__(config)
         self.output = MimeoOutput(config.get(self.OUTPUT_KEY, {}))
-        self.vars = MimeoConfig._get_vars(config)
-        self.templates = MimeoConfig._get_templates(config)
+        self.vars = self._get_vars(config)
+        self.templates = self._get_templates(config)
 
     @classmethod
     def _get_vars(cls, config: dict) -> dict:
@@ -342,21 +342,21 @@ class MimeoOutput(MimeoDTO):
             A source config output details dictionary
         """
         super().__init__(output)
-        self.direction = MimeoOutput._get_direction(output)
-        MimeoOutput._validate_output(self.direction, output)
-        self.format = MimeoOutput._get_format(output)
+        self.direction = self._get_direction(output)
+        self._validate_output(self.direction, output)
+        self.format = self._get_format(output)
         self.xml_declaration = output.get(MimeoConfig.OUTPUT_XML_DECLARATION_KEY, False)
-        self.indent = MimeoOutput._get_indent(output)
-        self.directory_path = MimeoOutput._get_directory_path(self.direction, output)
-        self.file_name = MimeoOutput._get_file_name(self.direction, output, self.format)
-        self.method = MimeoOutput._get_method(self.direction, output)
-        self.protocol = MimeoOutput._get_protocol(self.direction, output)
-        self.host = MimeoOutput._get_host(self.direction, output)
-        self.port = MimeoOutput._get_port(self.direction, output)
-        self.endpoint = MimeoOutput._get_endpoint(self.direction, output)
-        self.auth = MimeoOutput._get_auth(self.direction, output)
-        self.username = MimeoOutput._get_username(self.direction, output)
-        self.password = MimeoOutput._get_password(self.direction, output)
+        self.indent = self._get_indent(output)
+        self.directory_path = self._get_directory_path(self.direction, output)
+        self.file_name = self._get_file_name(self.direction, output, self.format)
+        self.method = self._get_method(self.direction, output)
+        self.protocol = self._get_protocol(self.direction, output)
+        self.host = self._get_host(self.direction, output)
+        self.port = self._get_port(self.direction, output)
+        self.endpoint = self._get_endpoint(self.direction, output)
+        self.auth = self._get_auth(self.direction, output)
+        self.username = self._get_username(self.direction, output)
+        self.password = self._get_password(self.direction, output)
 
     @staticmethod
     def _get_direction(output: dict) -> str:
@@ -744,7 +744,7 @@ class MimeoTemplate(MimeoDTO):
             A source config template dictionary
         """
         super().__init__(template)
-        MimeoTemplate._validate_template(template)
+        self._validate_template(template)
         self.count = template.get(MimeoConfig.TEMPLATES_COUNT_KEY)
         self.model = MimeoModel(template.get(MimeoConfig.TEMPLATES_MODEL_KEY))
 

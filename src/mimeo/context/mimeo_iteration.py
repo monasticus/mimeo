@@ -64,7 +64,7 @@ class MimeoIteration:
         """
         if not isinstance(field_name, str):
             raise InvalidSpecialFieldNameError
-        if isinstance(field_value, dict) or isinstance(field_value, list):
+        if isinstance(field_value, (dict, list)):
             raise InvalidSpecialFieldValueError(field_value)
 
         self._special_fields[field_name] = field_value
