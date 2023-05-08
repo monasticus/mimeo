@@ -121,7 +121,7 @@ class MimeoContext:
             self._id -= 1
             return self.curr_id()
         else:
-            raise MinimumIdentifierReachedError()
+            raise MinimumIdentifierReachedError
 
     def next_iteration(self) -> MimeoIteration:
         """Initialize a next iteration within the context.

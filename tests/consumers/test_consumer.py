@@ -25,7 +25,7 @@ def test_valid_class_instantiation():
         ValidConsumer()
         assert True
     except TypeError:
-        raise AssertionError() from TypeError
+        raise AssertionError from TypeError
 
 
 @assert_throws(err_type=TypeError,

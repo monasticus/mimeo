@@ -72,7 +72,7 @@ skip_glob=[
 ]
 
 [tool.ruff]
-select = ["F", "E", "C90", "N", "D", "UP", "B", "A", "COM", "C4", "EM", "EXE", "ISC", "G", "PIE", "T20", "PT", "Q"]
+select = ["F", "E", "C90", "N", "D", "UP", "B", "A", "COM", "C4", "EM", "EXE", "ISC", "G", "PIE", "T20", "PT", "Q", "RSE"]
 ignore = []
 exclude = [
     ".git",

@@ -133,7 +133,7 @@ class Alive:
             If the instance is not alive
         """
         if not self.is_alive():
-            raise InstanceNotAliveError()
+            raise InstanceNotAliveError
         return self.is_alive()
 
     def is_alive(self) -> bool:

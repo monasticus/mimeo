@@ -415,7 +415,7 @@ def test_custom_direction_does_not_throw_error_when_output_is_none():
     try:
         mimeo_cli.main()
     except KeyError:
-        raise AssertionError() from KeyError
+        raise AssertionError from KeyError
 
 
 def test_custom_short_directory_path():
@@ -473,7 +473,7 @@ def test_custom_directory_path_does_not_throw_error_when_output_is_none():
     try:
         mimeo_cli.main()
     except KeyError:
-        raise AssertionError() from KeyError
+        raise AssertionError from KeyError
 
 
 def test_custom_short_file_name():
@@ -529,7 +529,7 @@ def test_custom_file_name_does_not_throw_error_when_output_is_none():
     try:
         mimeo_cli.main()
     except KeyError:
-        raise AssertionError() from KeyError
+        raise AssertionError from KeyError
 
 
 @responses.activate
@@ -568,7 +568,7 @@ def test_custom_http_host_does_not_throw_error_when_output_is_none():
     except MissingRequiredPropertyError:
         assert True
     except KeyError:
-        raise AssertionError() from KeyError
+        raise AssertionError from KeyError
 
 
 @responses.activate
@@ -607,7 +607,7 @@ def test_custom_http_port_does_not_throw_error_when_output_is_none():
     except MissingRequiredPropertyError:
         assert True
     except KeyError:
-        raise AssertionError() from KeyError
+        raise AssertionError from KeyError
 
 
 @responses.activate
@@ -646,7 +646,7 @@ def test_custom_http_endpoint_does_not_throw_error_when_output_is_none():
     except MissingRequiredPropertyError:
         assert True
     except KeyError:
-        raise AssertionError() from KeyError
+        raise AssertionError from KeyError
 
 
 @responses.activate
@@ -695,7 +695,7 @@ def test_custom_http_username_does_not_throw_error_when_output_is_none():
     except MissingRequiredPropertyError:
         assert True
     except KeyError:
-        raise AssertionError() from KeyError
+        raise AssertionError from KeyError
 
 
 @responses.activate
@@ -744,7 +744,7 @@ def test_custom_http_password_does_not_throw_error_when_output_is_none():
     except MissingRequiredPropertyError:
         assert True
     except KeyError:
-        raise AssertionError() from KeyError
+        raise AssertionError from KeyError
 
 
 @responses.activate
@@ -770,7 +770,7 @@ def test_custom_http_method_does_not_throw_error_when_output_is_none():
     except MissingRequiredPropertyError:
         assert True
     except KeyError:
-        raise AssertionError() from KeyError
+        raise AssertionError from KeyError
 
 
 @responses.activate
@@ -796,7 +796,7 @@ def test_custom_http_protocol_does_not_throw_error_when_output_is_none():
     except MissingRequiredPropertyError:
         assert True
     except KeyError:
-        raise AssertionError() from KeyError
+        raise AssertionError from KeyError
 
 
 @responses.activate
@@ -826,7 +826,7 @@ def test_custom_http_auth_does_not_throw_error_when_output_is_none():
     except MissingRequiredPropertyError:
         assert True
     except KeyError:
-        raise AssertionError() from KeyError
+        raise AssertionError from KeyError
 
 
 @responses.activate
@@ -901,7 +901,7 @@ def test_custom_env_does_not_throw_error_when_output_is_none():
     except MissingRequiredPropertyError:
         assert True
     except KeyError:
-        raise AssertionError() from KeyError
+        raise AssertionError from KeyError
 
 
 @assert_throws(err_type=EnvironmentNotFoundError,
