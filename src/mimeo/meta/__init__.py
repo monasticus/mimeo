@@ -20,4 +20,4 @@ To use this package, simply import the desired class:
 """
 from .alive import Alive, OnlyOneAlive
 
-__all__ = [Alive, OnlyOneAlive]
+__all__ = ["Alive", "OnlyOneAlive"]

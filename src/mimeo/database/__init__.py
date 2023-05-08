@@ -45,12 +45,12 @@ from .last_names import LastNamesDB
 from .mimeo_db import MimeoDB
 
 __all__ = [
-    City,
-    Country,
-    FirstName,
-    CitiesDB,
-    CountriesDB,
-    FirstNamesDB,
-    LastNamesDB,
-    MimeoDB,
+    "City",
+    "Country",
+    "FirstName",
+    "CitiesDB",
+    "CountriesDB",
+    "FirstNamesDB",
+    "LastNamesDB",
+    "MimeoDB",
 ]

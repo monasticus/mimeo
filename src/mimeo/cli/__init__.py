@@ -23,4 +23,4 @@ To use this package, simply import it:
 from .parsers import MimeoArgumentParser, MimeoConfigParser
 from .job import MimeoJob
 
-__all__ = [MimeoJob, MimeoArgumentParser, MimeoConfigParser]
+__all__ = ["MimeoJob", "MimeoArgumentParser", "MimeoConfigParser"]

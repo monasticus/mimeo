@@ -17,4 +17,4 @@ To use this package, simply import it:
 """
 from .mimeo_config import MimeoConfig
 
-__all__ = [MimeoConfig]
+__all__ = ["MimeoConfig"]

@@ -116,7 +116,6 @@ class Alive:
             A None value
         """
         self._alive = False
-        return
 
     def assert_alive(self) -> bool:
         """Assert the instance is alive.

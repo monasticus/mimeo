@@ -85,7 +85,6 @@ class MimeoContextManager(Alive, metaclass=OnlyOneAlive):
         super().__exit__(exc_type, exc_val, exc_tb)
         self._vars = None
         self._contexts = None
-        return
 
     def get_context(self, context: str) -> MimeoContext:
         """Return a Mimeo Context with a specific name.

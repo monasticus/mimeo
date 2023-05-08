@@ -72,7 +72,7 @@ skip_glob=[
 ]
 
 [tool.ruff]
-select = ["F", "E", "C90", "N", "D", "UP", "B", "A", "COM", "C4", "EM", "EXE", "ISC", "G", "PIE", "T20", "PT", "Q", "RSE", "RET", "SLF", "SIM", "ARG", "PTH"]
+select = ["F", "E", "C90", "N", "D", "UP", "B", "A", "COM", "C4", "EM", "EXE", "ISC", "G", "PIE", "T20", "PT", "Q", "RSE", "RET", "SLF", "SIM", "ARG", "PTH", "ERA", "PD", "PGH", "PL"]
 ignore = []
 exclude = [
     ".git",
@@ -99,7 +99,9 @@ max-complexity = 10
     "T20" # allow for print in scripts
 ]
 "tests/*" = [
-    "D" # disable pydocstyle for tests
+    "D", # disable pydocstyle for tests
+    "PLC1901", # allow comparison to blank string in tests
+    "PLR2004" # allow magic values in tests
 ]
 "src/mimeo/consumers/raw_consumer.py" = [
     "T20" # allow for print in raw consumer
