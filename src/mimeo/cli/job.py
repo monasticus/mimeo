@@ -120,7 +120,6 @@ class MimeoJob:
     @staticmethod
     def _get_raw_config(config_path: str) -> dict:
         """Load configuration file to a dictionary."""
-        logger.info("Reading Mimeo Configuration: {config}",
-                    extra={"config": config_path})
+        logger.info("Reading Mimeo Configuration: %s", config_path)
         with Path(config_path).open() as config_file:
             return json.load(config_file)
