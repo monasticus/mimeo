@@ -735,7 +735,7 @@ def test_stringify_with_indent_and_xml_declaration():
     with MimeoContextManager(config):
         generator = XMLGenerator(config)
         for data in generator.generate(config.templates):
-            data_str = generator.stringify(data, config)
+            data_str = generator.stringify(data)
             assert data_str == ('<?xml version="1.0" encoding="utf-8"?>\n'
                                 '<SomeEntity'
                                 ' xmlns="http://mimeo.arch.com/default-namespace"'
@@ -770,7 +770,7 @@ def test_stringify_with_indent_and_without_xml_declaration():
     with MimeoContextManager(config):
         generator = XMLGenerator(config)
         for data in generator.generate(config.templates):
-            data_str = generator.stringify(data, config)
+            data_str = generator.stringify(data)
             assert data_str == ('<SomeEntity'
                                 ' xmlns="http://mimeo.arch.com/default-namespace"'
                                 ' xmlns:pn="http://mimeo.arch.com/prefixed-namespace">\n'
@@ -803,7 +803,7 @@ def test_stringify_without_indent_and_with_xml_declaration():
     with MimeoContextManager(config):
         generator = XMLGenerator(config)
         for data in generator.generate(config.templates):
-            data_str = generator.stringify(data, config)
+            data_str = generator.stringify(data)
             # Notice no new line at the end of string chunks
             assert data_str == ("<?xml version='1.0' encoding='utf-8'?>\n"
                                 '<SomeEntity'
@@ -837,7 +837,7 @@ def test_stringify_without_indent_and_xml_declaration():
     with MimeoContextManager(config):
         generator = XMLGenerator(config)
         for data in generator.generate(config.templates):
-            data_str = generator.stringify(data, config)
+            data_str = generator.stringify(data)
             # Notice no new line at the end of string chunks
             assert data_str == ('<SomeEntity'
                                 ' xmlns="http://mimeo.arch.com/default-namespace"'

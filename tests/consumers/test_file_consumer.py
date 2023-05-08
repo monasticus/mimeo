@@ -40,7 +40,7 @@ def test_consume():
 
     with MimeoContextManager(mimeo_config):
         generator = GeneratorFactory.get_generator(mimeo_config)
-        data = [generator.stringify(root, mimeo_config)
+        data = [generator.stringify(root)
                 for root in generator.generate(mimeo_config.templates)]
 
         assert not path.exists("test_file_consumer-dir")

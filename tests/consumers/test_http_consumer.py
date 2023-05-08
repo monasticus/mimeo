@@ -41,7 +41,7 @@ def test_consume_post():
 
     with MimeoContextManager(mimeo_config):
         generator = GeneratorFactory.get_generator(mimeo_config)
-        data = (generator.stringify(root, mimeo_config)
+        data = (generator.stringify(root)
                 for root in generator.generate(mimeo_config.templates))
 
         for root in data:
@@ -87,7 +87,7 @@ def test_consume_put():
 
     with MimeoContextManager(mimeo_config):
         generator = GeneratorFactory.get_generator(mimeo_config)
-        data = (generator.stringify(root, mimeo_config)
+        data = (generator.stringify(root)
                 for root in generator.generate(mimeo_config.templates))
 
         for root in data:
@@ -130,7 +130,7 @@ def test_consume_without_port():
 
     with MimeoContextManager(mimeo_config):
         generator = GeneratorFactory.get_generator(mimeo_config)
-        data = (generator.stringify(root, mimeo_config)
+        data = (generator.stringify(root)
                 for root in generator.generate(mimeo_config.templates))
 
         for root in data:

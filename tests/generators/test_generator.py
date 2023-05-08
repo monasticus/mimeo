@@ -2,7 +2,6 @@ import xml.etree.ElementTree as ElemTree
 from typing import Any, Iterator, Union
 
 import tests.utils as test_utils
-from mimeo.config import MimeoConfig
 from mimeo.config.mimeo_config import MimeoTemplate
 from mimeo.generators import Generator
 from tests.utils import assert_throws
@@ -14,7 +13,7 @@ class ValidGenerator(Generator):
                  parent: Any = None) -> Iterator[ElemTree.Element]:
         pass
 
-    def stringify(self, data: ElemTree.Element, mimeo_config: MimeoConfig) -> str:
+    def stringify(self, data: ElemTree.Element) -> str:
         pass
 
 
@@ -26,7 +25,7 @@ class InvalidGenerator1(Generator):
 
 
 class InvalidGenerator2(Generator):
-    def stringify(self, data: ElemTree.Element, mimeo_config: MimeoConfig) -> str:
+    def stringify(self, data: ElemTree.Element) -> str:
         pass
 
 

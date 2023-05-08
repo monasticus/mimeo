@@ -126,12 +126,12 @@ def test_render_value_bool_value(default_config):
         assert value is True
 
 
-def test_raw_mimeo_util(default_config):
+def test_raw_mimeo_util():
     date_value = MimeoRenderer.render("{date}")
     assert date_value == date.today().strftime("%Y-%m-%d")
 
 
-def test_parametrized_mimeo_util_default(default_config):
+def test_parametrized_mimeo_util_default():
     mimeo_util = {
         "_mimeo_util": {
             "_name": "date",
@@ -141,7 +141,7 @@ def test_parametrized_mimeo_util_default(default_config):
     assert date_value == date.today().strftime("%Y-%m-%d")
 
 
-def test_parametrized_mimeo_util_custom(default_config):
+def test_parametrized_mimeo_util_custom():
     mimeo_util = {
         "_mimeo_util": {
             "_name": "date",
