@@ -12,7 +12,7 @@ from __future__ import annotations
 
 
 class EnvironmentNotFoundError(Exception):
-    """A custom Exception class for not found environment.
+    """A custom Exception class for not found environment
 
     Raised while attempting to access an environment that does not exist.
     """
