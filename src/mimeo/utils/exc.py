@@ -10,6 +10,9 @@ It contains all custom exceptions related to Mimeo Utils:
 """
 
 
+from __future__ import annotations
+
+
 class InvalidMimeoUtilError(Exception):
     """A custom Exception class for an invalid Mimeo Util.
 

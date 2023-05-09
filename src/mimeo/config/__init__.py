@@ -15,6 +15,8 @@ To use this package, simply import it:
     from mimeo.config import MimeoConfig
     from mimeo.config.exc import UnsupportedPropertyValueError
 """
+from __future__ import annotations
+
 from .mimeo_config import MimeoConfig
 
 __all__ = ["MimeoConfig"]

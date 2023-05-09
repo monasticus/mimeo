@@ -146,7 +146,7 @@ class XMLGenerator(Generator):
 
         Returns
         -------
-        List[ElemTree.Element]
+        list[ElemTree.Element]
             A list of generated data units
         """
         logger.debug("Reading template [%s]", template)
@@ -322,7 +322,7 @@ class XMLGenerator(Generator):
 
         Parameters
         ----------
-        parent : Optional[ElemTree.Element]
+        parent : ElemTree.Element | None
             A parent node
         element_meta : dict
             Element's metadata
@@ -360,7 +360,7 @@ class XMLGenerator(Generator):
 
         Parameters
         ----------
-        parent : Optional[ElemTree.Element]
+        parent : ElemTree.Element | None
             A parent node
         element_meta : dict
             Element's metadata
@@ -408,7 +408,7 @@ class XMLGenerator(Generator):
 
         Parameters
         ----------
-        parent : Optional[ElemTree.Element]
+        parent : ElemTree.Element | None
             A parent node
         element_meta : dict
             Element's metadata
@@ -444,7 +444,7 @@ class XMLGenerator(Generator):
 
         Parameters
         ----------
-        parent : Optional[ElemTree.Element]
+        parent : ElemTree.Element | None
             A parent node
         element_meta : dict
             Element's metadata
@@ -492,7 +492,7 @@ class XMLGenerator(Generator):
 
         Parameters
         ----------
-        parent : Optional[ElemTree.Element]
+        parent : ElemTree.Element | None
             A parent node
         element_meta : dict
             Element's metadata
@@ -550,7 +550,7 @@ class XMLGenerator(Generator):
 
         Parameters
         ----------
-        parent : Optional[ElemTree.Element]
+        parent : ElemTree.Element | None
             A parent node
         element_meta : dict
             Element's metadata
@@ -614,7 +614,7 @@ class XMLGenerator(Generator):
 
         Parameters
         ----------
-        parent : Optional[ElemTree.Element]
+        parent : ElemTree.Element | None
             A parent node
         element_meta : dict
             Element's metadata
@@ -669,11 +669,12 @@ class XMLGenerator(Generator):
         tag : str
             An element's tag
         value : dict | list | str | int | float | bool
-        attrs : Optional[dict] = None
+            An element's value
+        attrs : dict | None, default None
             An element's attributes
-        is_mimeo_util : Optional[bool] = None
+        is_mimeo_util : bool | None, default None
             A is-mimeo-util flag
-        is_special_field : Optional[bool] = None
+        is_special_field : bool | None, default None
             A is-special-field flag
 
         Returns

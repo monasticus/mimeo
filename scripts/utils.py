@@ -37,6 +37,8 @@ It exports the following functions:
     * overwrite_num_of_records
         Overwrite a number of records in Mimeo Database package.
 """
+from __future__ import annotations
+
 import re
 import zipfile
 from pathlib import Path

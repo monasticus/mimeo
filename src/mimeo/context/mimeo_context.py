@@ -4,6 +4,8 @@ It exports only one class:
     * MimeoContext
         A class managing Mimeo-Template-dependent utilities.
 """
+from __future__ import annotations
+
 import random
 
 from mimeo.context import MimeoIteration

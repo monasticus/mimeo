@@ -38,6 +38,8 @@ To use this package, simply import the desired class:
     from mimeo.database import MimeoDB
     from mimeo.database.exc import DataNotFoundError
 """
+from __future__ import annotations
+
 from .cities import CitiesDB, City
 from .countries import CountriesDB, Country
 from .first_names import FirstName, FirstNamesDB

@@ -3,6 +3,7 @@ init:
 
 imports:
 	@isort .
+	@isort -a "from __future__ import annotations" src scripts
 
 data:
 	@./scripts/collect_cities_and_countries_data.py

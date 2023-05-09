@@ -8,6 +8,8 @@ Result of this script is src/mimeo/resources/surnames.txt file
 and number of records updated in src/mimeo/database/last_names.py.
 All source files are removed.
 """
+from __future__ import annotations
+
 import pandas
 import utils
 

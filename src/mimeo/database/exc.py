@@ -12,6 +12,9 @@ It contains all custom exceptions related to Mimeo Context:
 """
 
 
+from __future__ import annotations
+
+
 class InvalidIndexError(Exception):
     """A custom Exception class for invalid row index.
 

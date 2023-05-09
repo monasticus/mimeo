@@ -6,6 +6,9 @@ It contains all custom exceptions related to useful abstract classes:
 """
 
 
+from __future__ import annotations
+
+
 class InstanceNotAliveError(Exception):
     """A custom Exception class for using non-alive instance.
 

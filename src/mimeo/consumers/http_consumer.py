@@ -4,6 +4,8 @@ It exports only one class:
     * HttpConsumer
         A Consumer implementation sending data in HTTP requests.
 """
+from __future__ import annotations
+
 import logging
 
 from requests import Response, Session

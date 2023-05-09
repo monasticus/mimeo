@@ -13,8 +13,9 @@ at all levels. All of them are Data Transfer Objects:
     * MimeoModel
         A MimeoDTO class representing Mimeo Model
 """
+from __future__ import annotations
+
 import re
-from typing import Optional
 
 from mimeo.config.exc import (InvalidIndentError, InvalidMimeoConfigError,
                               InvalidMimeoModelError,
@@ -466,7 +467,7 @@ class MimeoOutput(MimeoDTO):
     def _get_directory_path(
             direction: str,
             output: dict,
-    ) -> Optional[str]:
+    ) -> str | None:
         """Extract an output directory path from the source dictionary.
 
         It is extracted only when the output direction is 'file'.
@@ -480,7 +481,7 @@ class MimeoOutput(MimeoDTO):
 
         Returns
         -------
-        Optional[str]
+        str | None
             The configured output directory path when the output direction is 'file'.
             Otherwise, None. If the 'directory_path' setting is missing returns
             'mimeo-output' by default.
@@ -494,7 +495,7 @@ class MimeoOutput(MimeoDTO):
             direction: str,
             output: dict,
             output_format: str,
-    ) -> Optional[str]:
+    ) -> str | None:
         """Generate an output file name template based on the source dictionary.
 
         It is generated only when the output direction is 'file'.
@@ -508,7 +509,7 @@ class MimeoOutput(MimeoDTO):
 
         Returns
         -------
-        Optional[str]
+        str | None
             The configured output file name template when the output direction is
             'file'. Otherwise, None. If the 'file_name' setting is missing returns
             'mimeo-output-{}.{output_format}' by default.
@@ -522,7 +523,7 @@ class MimeoOutput(MimeoDTO):
     def _get_method(
             direction: str,
             output: dict,
-    ) -> Optional[str]:
+    ) -> str | None:
         """Extract an HTTP request method from the source dictionary.
 
         It is extracted only when the output direction is 'http'.
@@ -536,7 +537,7 @@ class MimeoOutput(MimeoDTO):
 
         Returns
         -------
-        method: Optional[str]
+        method: str | None
             The configured HTTP request method when the output direction is 'http'.
             Otherwise, None. If the 'method' setting is missing returns
             'POST' by default.
@@ -555,7 +556,7 @@ class MimeoOutput(MimeoDTO):
     def _get_protocol(
             direction: str,
             output: dict,
-    ) -> Optional[str]:
+    ) -> str | None:
         """Extract an HTTP protocol from the source dictionary.
 
         It is extracted only when the output direction is 'http'.
@@ -569,7 +570,7 @@ class MimeoOutput(MimeoDTO):
 
         Returns
         -------
-        Optional[str]
+        str | None
             The configured HTTP request method when the output direction is 'http'.
             Otherwise, None. If the 'protocol' setting is missing returns
             'http' by default.
@@ -583,7 +584,7 @@ class MimeoOutput(MimeoDTO):
     def _get_host(
             direction: str,
             output: dict,
-    ) -> Optional[str]:
+    ) -> str | None:
         """Extract an HTTP host from the source dictionary.
 
         It is extracted only when the output direction is 'http'.
@@ -597,7 +598,7 @@ class MimeoOutput(MimeoDTO):
 
         Returns
         -------
-        Optional[str]
+        str | None
             The configured HTTP host when the output direction is 'http'.
             Otherwise, None.
         """
@@ -609,7 +610,7 @@ class MimeoOutput(MimeoDTO):
     def _get_port(
             direction: str,
             output: dict,
-    ) -> Optional[str]:
+    ) -> str | None:
         """Extract an HTTP port from the source dictionary.
 
         It is extracted only when the output direction is 'http'.
@@ -623,7 +624,7 @@ class MimeoOutput(MimeoDTO):
 
         Returns
         -------
-        Optional[str]
+        str | None
             The configured HTTP port when the output direction is 'http'.
             Otherwise, None.
         """
@@ -635,7 +636,7 @@ class MimeoOutput(MimeoDTO):
     def _get_endpoint(
             direction: str,
             output: dict,
-    ) -> Optional[str]:
+    ) -> str | None:
         """Extract an HTTP endpoint from the source dictionary.
 
         It is extracted only when the output direction is 'http'.
@@ -649,7 +650,7 @@ class MimeoOutput(MimeoDTO):
 
         Returns
         -------
-        Optional[str]
+        str | None
             The configured HTTP request method when the output direction is 'http'.
             Otherwise, None.
         """
@@ -661,7 +662,7 @@ class MimeoOutput(MimeoDTO):
     def _get_auth(
             direction: str,
             output: dict,
-    ) -> Optional[str]:
+    ) -> str | None:
         """Extract an HTTP auth method from the source dictionary.
 
         It is extracted only when the output direction is 'http'.
@@ -675,7 +676,7 @@ class MimeoOutput(MimeoDTO):
 
         Returns
         -------
-        auth: Optional[str]
+        auth: str | None
             The configured HTTP auth method when the output direction is 'http'.
             Otherwise, None. If the 'auth' setting is missing returns
             'basic' by default.
@@ -694,7 +695,7 @@ class MimeoOutput(MimeoDTO):
     def _get_username(
             direction: str,
             output: dict,
-    ) -> Optional[str]:
+    ) -> str | None:
         """Extract a username from the source dictionary.
 
         It is extracted only when the output direction is 'http'.
@@ -708,7 +709,7 @@ class MimeoOutput(MimeoDTO):
 
         Returns
         -------
-        Optional[str]
+        str | None
             The configured username when the output direction is 'http'.
             Otherwise, None.
         """
@@ -720,7 +721,7 @@ class MimeoOutput(MimeoDTO):
     def _get_password(
             direction: str,
             output: dict,
-    ) -> Optional[str]:
+    ) -> str | None:
         """Extract a password from the source dictionary.
 
         It is extracted only when the output direction is 'http'.
@@ -734,7 +735,7 @@ class MimeoOutput(MimeoDTO):
 
         Returns
         -------
-        Optional[str]
+        str | None
             The configured password when the output direction is 'http'.
             Otherwise, None.
         """

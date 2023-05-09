@@ -7,6 +7,8 @@ It exports the following filters:
     * DetailedFilter
         A Filter subclass filtering out log records above DEBUG level.
 """
+from __future__ import annotations
+
 from logging import DEBUG, INFO, Filter, LogRecord
 
 

@@ -5,6 +5,8 @@ non-Mimeo-specific operations. It exports the following functions:
     * get_resource(resource_name: str) -> TextIO
         Return a Mimeo resource.
 """
+from __future__ import annotations
+
 import importlib.resources as pkg_resources
 from typing import TextIO
 

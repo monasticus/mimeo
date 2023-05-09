@@ -6,6 +6,9 @@ It contains all custom exceptions related to Mimeo resources:
 """
 
 
+from __future__ import annotations
+
+
 class ResourceNotFoundError(Exception):
     """A custom Exception class for a not found resource.
 

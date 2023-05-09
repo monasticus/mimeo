@@ -8,6 +8,9 @@ It contains all custom exceptions related to Mimeo CLI:
 """
 
 
+from __future__ import annotations
+
+
 class EnvironmentNotFoundError(Exception):
     """A custom Exception class for not found environment.
 

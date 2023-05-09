@@ -4,7 +4,7 @@ It exports a class related to all Mimeo CSV data:
     * MimeoDB
         Facade class exposing READ operations on all Mimeo CSV data.
 """
-from typing import List
+from __future__ import annotations
 
 from mimeo.database import (CitiesDB, City, CountriesDB, Country, FirstName,
                             FirstNamesDB, LastNamesDB)
@@ -33,13 +33,13 @@ class MimeoDB:
 
     Methods
     -------
-    get_cities() -> List[City]
+    get_cities() -> list[City]
         Get all cities.
-    get_cities_of(country: str) -> List[City]
+    get_cities_of(country: str) -> list[City]
         Get cities of a specific country.
     get_city_at(index: int) -> City
         Get a city at `index` position.
-    get_countries() -> List[Country]
+    get_countries() -> list[Country]
         Get all countries.
     get_country_at(index: int) -> Country
         Get a country at `index` position.
@@ -49,13 +49,13 @@ class MimeoDB:
         Get a country having a specific ISO2 code.
     get_country_by_name(name: str) -> Country
         Get a country having a specific name.
-    get_first_names() -> List[FirstName]
+    get_first_names() -> list[FirstName]
         Get all first names.
-    get_first_names_by_sex(sex: str) -> List[FirstName]
+    get_first_names_by_sex(sex: str) -> list[FirstName]
         Get first names for a specific sex.
     get_first_name_at(index: int) -> FirstName
         Get a first name at `index` position.
-    get_last_names() -> List[str]
+    get_last_names() -> list[str]
         Get all last names.
     get_last_name_at(index: int) -> str
         Get a last name at `index` position.
@@ -76,12 +76,12 @@ class MimeoDB:
 
     def get_cities(
             self,
-    ) -> List[City]:
+    ) -> list[City]:
         """Get all cities.
 
         Returns
         -------
-        List[City]
+        list[City]
             List of all cities
         """
         return self.__cities_db.get_cities()
@@ -89,7 +89,7 @@ class MimeoDB:
     def get_cities_of(
             self,
             country: str,
-    ) -> List[City]:
+    ) -> list[City]:
         """Get cities of a specific country.
 
         In contrast to CitiesDB.get_cities_of() method it combines
@@ -105,7 +105,7 @@ class MimeoDB:
 
         Returns
         -------
-        List[City]
+        list[City]
             List of cities filtered by country
         """
         countries = filter(lambda c: country in [c.iso_3, c.iso_2, c.name],
@@ -140,12 +140,12 @@ class MimeoDB:
 
     def get_countries(
             self,
-    ) -> List[Country]:
+    ) -> list[Country]:
         """Get all countries.
 
         Returns
         -------
-        List[Country]
+        list[Country]
             List of all countries
         """
         return self.__countries_db.get_countries()
@@ -229,12 +229,12 @@ class MimeoDB:
 
     def get_first_names(
             self,
-    ) -> List[FirstName]:
+    ) -> list[FirstName]:
         """Get all first names.
 
         Returns
         -------
-        List[FirstName]
+        list[FirstName]
             List of all first names
         """
         return self.__first_names_db.get_first_names()
@@ -242,7 +242,7 @@ class MimeoDB:
     def get_first_names_by_sex(
             self,
             sex: str,
-    ) -> List[FirstName]:
+    ) -> list[FirstName]:
         """Get first names for a specific sex.
 
         Parameters
@@ -252,7 +252,7 @@ class MimeoDB:
 
         Returns
         -------
-        List[FirstName]
+        list[FirstName]
             List of first names filtered by sex
 
         Raises
@@ -287,12 +287,12 @@ class MimeoDB:
 
     def get_last_names(
             self,
-    ) -> List[str]:
+    ) -> list[str]:
         """Get all last names.
 
         Returns
         -------
-        List[str]
+        list[str]
             List of all last names
         """
         return self.__last_names_db.get_last_names()

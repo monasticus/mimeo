@@ -4,6 +4,8 @@ It exports only one class:
     * FileConsumer
         A Consumer implementation saving data in the filesystem.
 """
+from __future__ import annotations
+
 import logging
 from pathlib import Path
 

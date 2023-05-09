@@ -18,6 +18,9 @@ It contains all custom exceptions related to Mimeo Configuration:
 """
 
 
+from __future__ import annotations
+
+
 class UnsupportedPropertyValueError(Exception):
     """A custom Exception class for unsupported properties' values.
 

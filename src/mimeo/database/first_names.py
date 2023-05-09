@@ -6,7 +6,7 @@ It exports classes related to forenames CSV data:
     * FirstNamesDB
         Class exposing READ operations on forenames CSV data.
 """
-from typing import List
+from __future__ import annotations
 
 import pandas
 
@@ -82,9 +82,9 @@ class FirstNamesDB:
 
     Methods
     -------
-    get_first_names() -> List[FirstName]
+    get_first_names() -> list[FirstName]
         Get all first names.
-    get_first_names_by_sex(sex: str) -> List[FirstName]
+    get_first_names_by_sex(sex: str) -> list[FirstName]
         Get first names for a specific sex.
     get_first_name_at(index: int) -> FirstName
         Get a first name at `index` position.
@@ -128,7 +128,7 @@ class FirstNamesDB:
     def get_first_names_by_sex(
             self,
             sex: str,
-    ) -> List[FirstName]:
+    ) -> list[FirstName]:
         """Get first names for a specific sex.
 
         Parameters
@@ -138,7 +138,7 @@ class FirstNamesDB:
 
         Returns
         -------
-        List[FirstName]
+        list[FirstName]
             List of first names filtered by sex
 
         Raises
@@ -153,12 +153,12 @@ class FirstNamesDB:
     @classmethod
     def get_first_names(
             cls,
-    ) -> List[FirstName]:
+    ) -> list[FirstName]:
         """Get all first names.
 
         Returns
         -------
-        List[FirstName]
+        list[FirstName]
             List of all first names
         """
         return cls.__get_first_names().copy()
@@ -167,7 +167,7 @@ class FirstNamesDB:
     def __get_first_names_by_sex(
             cls,
             sex: str,
-    ) -> List[FirstName]:
+    ) -> list[FirstName]:
         """Get first names for a specific sex from cache.
 
         The first names list for sex is initialized for the first time
@@ -180,7 +180,7 @@ class FirstNamesDB:
 
         Returns
         -------
-        List[FirstName]
+        list[FirstName]
             List of first names filtered by sex
         """
         if sex not in cls.__NAMES_FOR_SEX:
@@ -191,7 +191,7 @@ class FirstNamesDB:
     @classmethod
     def __get_first_names(
             cls,
-    ) -> List[FirstName]:
+    ) -> list[FirstName]:
         """Get all first names from cache.
 
         The first names list is initialized for the first time and
@@ -199,7 +199,7 @@ class FirstNamesDB:
 
         Returns
         -------
-        List[FirstName]
+        list[FirstName]
             List of all first names
         """
         if cls.__FIRST_NAMES is None:

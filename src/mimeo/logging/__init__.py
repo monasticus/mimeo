@@ -18,6 +18,8 @@ To use this package, simply import the desired class or function:
     from mimeo.logging import RegularFilter
     from mimeo.logging import setup_logging
 """
+from __future__ import annotations
+
 import logging.config
 
 import yaml

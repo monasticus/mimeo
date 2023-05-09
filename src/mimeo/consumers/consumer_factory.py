@@ -4,6 +4,8 @@ It exports only one class:
     * ConsumerFactory
         A Factory class instantiating a Consumer based on Mimeo Config.
 """
+from __future__ import annotations
+
 from mimeo.config.exc import UnsupportedPropertyValueError
 from mimeo.config.mimeo_config import MimeoConfig
 from mimeo.consumers import Consumer, FileConsumer, HttpConsumer, RawConsumer

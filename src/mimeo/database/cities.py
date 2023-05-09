@@ -6,7 +6,7 @@ It exports classes related to cities CSV data:
     * CitiesDB
         Class exposing READ operations on cities CSV data.
 """
-from typing import List
+from __future__ import annotations
 
 import pandas
 
@@ -98,9 +98,9 @@ class CitiesDB:
 
     Methods
     -------
-    get_cities() -> List[City]
+    get_cities() -> list[City]
         Get all cities.
-    get_cities_of(country_iso3: str) -> List[City]
+    get_cities_of(country_iso3: str) -> list[City]
         Get cities of a specific country.
     get_city_at(index: int) -> City
         Get a city at `index` position.
@@ -143,7 +143,7 @@ class CitiesDB:
     def get_cities_of(
             self,
             country_iso3: str,
-    ) -> List[City]:
+    ) -> list[City]:
         """Get cities of a specific country.
 
         Parameters
@@ -153,7 +153,7 @@ class CitiesDB:
 
         Returns
         -------
-        List[City]
+        list[City]
             List of cities filtered by country
         """
         return self._get_country_cities(country_iso3).copy()
@@ -161,12 +161,12 @@ class CitiesDB:
     @classmethod
     def get_cities(
             cls,
-    ) -> List[City]:
+    ) -> list[City]:
         """Get all cities.
 
         Returns
         -------
-        List[City]
+        list[City]
             List of all cities
         """
         return cls._get_cities().copy()
@@ -175,7 +175,7 @@ class CitiesDB:
     def _get_country_cities(
             cls,
             country_iso3: str,
-    ) -> List[City]:
+    ) -> list[City]:
         """Get cities of a specific country from cache.
 
         The country's cities list is initialized for the first time
@@ -188,7 +188,7 @@ class CitiesDB:
 
         Returns
         -------
-        List[City]
+        list[City]
             List of cities filtered by country
         """
         if country_iso3 not in cls._COUNTRY_CITIES:
@@ -200,7 +200,7 @@ class CitiesDB:
     @classmethod
     def _get_cities(
             cls,
-    ) -> List[City]:
+    ) -> list[City]:
         """Get all cities from cache.
 
         The cities list is initialized for the first time and cached
@@ -208,7 +208,7 @@ class CitiesDB:
 
         Returns
         -------
-        List[City]
+        list[City]
             List of all cities
         """
         if cls._CITIES is None:

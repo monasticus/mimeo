@@ -4,12 +4,13 @@ It exports a single class:
     * MimeoJob
         A class representing a single Mimeo processing job.
 """
+from __future__ import annotations
+
 import json
 import logging
 from argparse import Namespace
 from os import walk
 from pathlib import Path
-from typing import List
 
 from mimeo import MimeoConfig, Mimeograph
 from mimeo.cli import MimeoArgumentParser, MimeoConfigParser
@@ -68,7 +69,7 @@ class MimeoJob:
 
     @staticmethod
     def _get_config_paths(
-            paths: List,
+            paths: list,
     ) -> list:
         """Collect Mimeo Configuration paths.
 

@@ -4,6 +4,8 @@ It exports only one class:
     * RawConsumer
         A Consumer implementation printing data in the standard output.
 """
+from __future__ import annotations
+
 from mimeo.consumers import Consumer
 
 

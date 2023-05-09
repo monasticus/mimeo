@@ -12,6 +12,8 @@ It defines the following decorators:
     Decorator clearing iterations of the current context
 
 """
+from __future__ import annotations
+
 import functools
 from typing import Callable
 

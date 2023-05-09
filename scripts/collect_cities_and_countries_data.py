@@ -9,6 +9,8 @@ files under src/mimeo/resources package, and number of records
 updated in cities.py and countries.py of src/mimeo/database package.
 All source files are removed.
 """
+from __future__ import annotations
+
 import unicodedata
 
 import pandas

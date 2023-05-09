@@ -5,6 +5,8 @@ It exports a single function:
     * main()
         Execute a Mimeo Job using CLI.
 """
+from __future__ import annotations
+
 from mimeo.cli import MimeoJob
 from mimeo.logging import setup_logging
 

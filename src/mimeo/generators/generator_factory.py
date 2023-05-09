@@ -4,6 +4,8 @@ It exports only one class:
     * GeneratorFactory
         A Factory class instantiating a Generator based on Mimeo Config.
 """
+from __future__ import annotations
+
 from mimeo.config.exc import UnsupportedPropertyValueError
 from mimeo.config.mimeo_config import MimeoConfig
 from mimeo.generators import Generator, XMLGenerator

@@ -7,7 +7,7 @@ It exports classes related to countries CSV data:
     * CountriesDB
         Class exposing READ operations on countries CSV data.
 """
-from typing import List
+from __future__ import annotations
 
 import pandas
 
@@ -91,7 +91,7 @@ class CountriesDB:
 
     Methods
     -------
-    get_countries() -> List[Country]
+    get_countries() -> list[Country]
         Get all countries.
     get_country_at(index: int) -> Country
         Get a country at `index` position.
@@ -196,12 +196,12 @@ class CountriesDB:
     @classmethod
     def get_countries(
             cls,
-    ) -> List[Country]:
+    ) -> list[Country]:
         """Get all countries.
 
         Returns
         -------
-        List[Country]
+        list[Country]
             List of all countries
         """
         return cls._get_countries().copy()
@@ -209,7 +209,7 @@ class CountriesDB:
     @classmethod
     def _get_countries(
             cls,
-    ) -> List[Country]:
+    ) -> list[Country]:
         """Get all countries from cache.
 
         The countries list is initialized for the first time and cached
@@ -217,7 +217,7 @@ class CountriesDB:
 
         Returns
         -------
-        List[Country]
+        list[Country]
             List of all countries
         """
         if cls._COUNTRIES is None:

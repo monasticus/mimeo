@@ -5,6 +5,8 @@ in Mimeo:
     * Mimeograph
         A class responsible for the Mimeo processing.
 """
+from __future__ import annotations
+
 import logging
 
 from mimeo.config.mimeo_config import MimeoConfig
