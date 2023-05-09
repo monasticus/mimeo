@@ -447,10 +447,8 @@ class MimeoRenderer:
                 value = cls._render_string_value(value)
             if cls.is_parametrized_mimeo_util(value):
                 value = cls._render_parametrized_mimeo_util(value)
-        except Exception as err:
-            error_name = type(err).__name__
-            logger.exception("Error [%s]: [%s] occurred for [%s].",
-                             error_name, err, value)
+        except Exception:
+            logger.exception("An error occurred for [%s].", value)
             raise
         return value
 
