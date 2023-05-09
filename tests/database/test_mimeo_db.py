@@ -20,7 +20,7 @@ def test_get_city_at():
     city_from_mimeo_db = mimeo_db.get_city_at(0)
     assert city_from_mimeo_db is not None
     assert city_from_mimeo_db is city_from_cities_db
-    
+
     city_from_cities_db = cities_db.get_city_at(1)
     city_from_mimeo_db = mimeo_db.get_city_at(1)
     assert city_from_mimeo_db is not None

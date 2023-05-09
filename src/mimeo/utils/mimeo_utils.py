@@ -405,7 +405,7 @@ class AutoIncrementUtil(MimeoUtil):
 
 class CurrentIterationUtil(MimeoUtil):
     """A MimeoUtil implementation rendering a current iteration ID.
-    
+
     It is a Mimeo Context-dependent Mimeo Util. Rendered ID value is
     pulled from the Context.
 
@@ -462,7 +462,7 @@ class CurrentIterationUtil(MimeoUtil):
 
 class KeyUtil(MimeoUtil):
     """A MimeoUtil implementation rendering a unique identifier.
-    
+
     It is a Mimeo Context-dependent Mimeo Util. Rendered identifiers
     are stored in a MimeoContext and pulled from it when the Mimeo
     Util is parametrized to do so.
@@ -536,7 +536,7 @@ class KeyUtil(MimeoUtil):
 
 class CityUtil(MimeoUtil):
     """A MimeoUtil implementation rendering city names.
-    
+
     It is a Mimeo Context-dependent Mimeo Util only when parametrized
     to generate unique city names.
 
