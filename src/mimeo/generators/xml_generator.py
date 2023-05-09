@@ -196,11 +196,13 @@ class XMLGenerator(Generator):
             parent: Optional[ElemTree.Element],
             element_meta: dict,
             context: MimeoContext = None,
-    ) -> Optional[ElemTree.Element]:
+    ) -> ElemTree.Element:
         """Process a single template's node.
 
-        This is a recursive function that traverses Mimeo Template
-        and generates XML nodes based on element's value type.
+        This is a recursive function that traverses Mimeo Template and generates XML
+        nodes based on element's metadata. First, element is pre-processed, in meaning
+        of metadata being adjusted. Then, element is processed accordingly to its value
+        type.
 
         Parameters
         ----------
@@ -213,9 +215,8 @@ class XMLGenerator(Generator):
 
         Returns
         -------
-        Optional[ElemTree.Element]
-            Returned only when `parent` is None. A single data unit
-            generated within a single template iteration.
+        ElemTree.Element
+            A single data unit generated within a single template iteration.
 
         Raises
         ------
@@ -237,6 +238,32 @@ class XMLGenerator(Generator):
             cls,
             element_meta: dict,
     ) -> dict:
+        """Pre-process element's metadata.
+
+        This function adjusts existing element's metadata and completes it with custom
+        properties:
+        * the tag property is changed only for special fields
+          - field name is extracted
+        * the value property is being modified for dicts including '_attrs' key
+          - the 'attrs' key is removed from the dict
+        * the attrs property
+          - takes the '_attrs' property value from dicts including '_attrs' key
+          - takes the default value (an empty dict) when is None
+        * the mimeo_util property is being initialized
+          - True if element's value is a parametrized mimeo_util. Otherwise, False.
+        * the special property is being initialized
+          - True, when a field is special. Otherwise, False.
+
+        Parameters
+        ----------
+        element_meta : dict
+            Initial element's metadata
+
+        Returns
+        -------
+        dict
+            Complete element's metadata
+        """
         tag = element_meta["tag"]
         value = element_meta["value"]
         attrs = element_meta["attrs"]
@@ -259,37 +286,109 @@ class XMLGenerator(Generator):
             is_special_field,
         )
 
+    @staticmethod
+    def _is_complex(
+            element_meta: dict,
+    ) -> bool:
+        """Verify if an element is complex.
+
+        Parameters
+        ----------
+        element_meta : dict
+            Element's metadata
+
+        Returns
+        -------
+        bool
+            True if element's value is a list or a dict not being a parametrized
+            Mimeo Util. Otherwise, False.
+        """
+        return (isinstance(element_meta["value"], (list, dict)) and
+                not element_meta["mimeo_util"])
+
     @classmethod
     def _process_complex_value(
             cls,
-            parent: ElemTree.Element,
+            parent: Optional[ElemTree.Element],
             element_meta: dict,
     ) -> Optional[ElemTree.Element]:
-        if element_meta["tag"] == MimeoConfig.TEMPLATES_KEY:
-            func = cls._process_templates_value
-        elif (isinstance(element_meta["value"], dict) and
-              not element_meta["mimeo_util"]):
-            func = cls._process_dict_value
-        else:  # element_meta["value"] is a list
-            func = cls._process_list_value
-        return func(parent, element_meta)
+        """Process a node with a complex value.
 
-    @classmethod
-    def _process_templates_value(
-            cls,
-            parent: ElemTree.Element,
-            element_meta: dict,
-    ) -> None:
-        templates = (MimeoTemplate(template) for template in element_meta["value"])
-        for _ in cls.generate(templates, parent):
-            pass
+        The node is processed accordingly to its value type.
+        When the type is list and tag is _templates_, node is processed
+        in a special way.
+
+        Parameters
+        ----------
+        parent : Optional[ElemTree.Element]
+            A parent node
+        element_meta : dict
+            Element's metadata
+
+        Returns
+        -------
+        ElemTree.Element
+            A processed node
+
+        Raises
+        ------
+        InvalidSpecialFieldValueError
+            If the special field value is dict or list
+        SpecialFieldNotFoundError
+            If the special field does not exist.
+        """
+        if isinstance(element_meta["value"], dict):
+            func = cls._process_dict_value
+        elif (isinstance(element_meta["value"], list) and
+              element_meta["tag"] != MimeoConfig.TEMPLATES_KEY):
+            func = cls._process_list_value
+        else:
+            func = cls._process_templates_value
+        return func(parent, element_meta)
 
     @classmethod
     def _process_dict_value(
             cls,
-            parent: ElemTree.Element,
+            parent: Optional[ElemTree.Element],
             element_meta: dict,
-    ) -> Optional[ElemTree.Element]:
+    ) -> ElemTree.Element:
+        """Process a node with a dictionary value.
+
+        It iterates through the dictionary items and processes each of them.
+
+        Parameters
+        ----------
+        parent : Optional[ElemTree.Element]
+            A parent node
+        element_meta : dict
+            Element's metadata
+
+        Returns
+        -------
+        ElemTree.Element
+            A processed node
+
+        Raises
+        ------
+        InvalidSpecialFieldValueError
+            If the special field value is dict or list
+        SpecialFieldNotFoundError
+            If the special field does not exist.
+
+        Examples
+        --------
+        parent = ElemTree.Element("Root")
+        element_meta = cls._element_meta(
+            tag="SomeField",
+            value={"SomeChild1": 1, "SomeChild2": 2},
+        )
+        cls._process_dict_value(parent, element_meta)
+        ->
+        <SomeField>
+            <SomeChild1>1</SomeChild1>
+            <SomeChild2>2</SomeChild2>
+        </SomeField>
+        """
         element = cls._create_xml_element(parent, element_meta)
         for child_tag, child_value in element_meta["value"].items():
             cls._process_node(element, cls._element_meta(child_tag, child_value))
@@ -300,22 +399,204 @@ class XMLGenerator(Generator):
             cls,
             parent: ElemTree.Element,
             element_meta: dict,
-    ) -> Optional[ElemTree.Element]:
+    ) -> ElemTree.Element:
+        """Process a node with a list value.
+
+        The node is processed accordingly to its children types.
+
+        Parameters
+        ----------
+        parent : Optional[ElemTree.Element]
+            A parent node
+        element_meta : dict
+            Element's metadata
+
+        Returns
+        -------
+        ElemTree.Element
+            A processed node
+
+        Raises
+        ------
+        InvalidSpecialFieldValueError
+            If the special field value is dict or list
+        SpecialFieldNotFoundError
+            If the special field does not exist.
+        """
         has_only_atomic_values = all(not isinstance(child, (list, dict))
                                      for child in element_meta["value"])
-        element = cls._create_xml_element(parent, element_meta)
         if has_only_atomic_values:
-            parent.remove(element)
-            for child in element_meta["value"]:
-                element_meta = cls._element_meta(element_meta["tag"], child)
-                cls._process_node(parent, element_meta)
-        else:
-            for child in element_meta["value"]:
-                grand_child_tag = next(iter(child))
-                grand_child_data = child[grand_child_tag]
-                element_meta = cls._element_meta(grand_child_tag, grand_child_data)
-                cls._process_node(element, element_meta)
+            return cls._process_list_value_with_atomic_children(parent, element_meta)
+        return cls._process_list_value_with_complex_children(parent, element_meta)
+
+    @classmethod
+    def _process_list_value_with_atomic_children(
+            cls,
+            parent: ElemTree.Element,
+            element_meta: dict,
+    ) -> ElemTree.Element:
+        """Process a node with a list value having atomic children.
+
+        This method generates a child element for each atomic value as direct children
+        of the parent.
+
+        Parameters
+        ----------
+        parent : Optional[ElemTree.Element]
+            A parent node
+        element_meta : dict
+            Element's metadata
+
+        Returns
+        -------
+        ElemTree.Element
+            A processed node
+
+        Raises
+        ------
+        InvalidSpecialFieldValueError
+            If the special field value is dict or list
+        SpecialFieldNotFoundError
+            If the special field does not exist.
+
+        Examples
+        --------
+        parent = ElemTree.Element("Root")
+        element_meta = cls._element_meta(
+            tag="SomeField",
+            value=[],
+        )
+        cls._process_list_value_with_atomic_children(parent, element_meta)
+        ->
+        <Root>
+            <SomeField>1</SomeField>
+            <SomeField>2</SomeField>
+        </Root>
+        """
+        for child in element_meta["value"]:
+            element_meta = cls._element_meta(element_meta["tag"], child)
+            cls._process_node(parent, element_meta)
+        return parent
+
+    @classmethod
+    def _process_list_value_with_complex_children(
+            cls,
+            parent: ElemTree.Element,
+            element_meta: dict,
+    ) -> ElemTree.Element:
+        """Process a node with a list value having complex children.
+
+        It iterates through the list items and processes each of them.
+
+        Parameters
+        ----------
+        parent : Optional[ElemTree.Element]
+            A parent node
+        element_meta : dict
+            Element's metadata
+
+        Returns
+        -------
+        ElemTree.Element
+            A processed node
+
+        Raises
+        ------
+        InvalidSpecialFieldValueError
+            If the special field value is dict or list
+        SpecialFieldNotFoundError
+            If the special field does not exist.
+
+        Examples
+        --------
+        parent = ElemTree.Element("Root")
+        element_meta = cls._element_meta(
+            tag="SomeField",
+            value=[{"SomeChild": {"SomeGrandChild1": 1, "SomeGrandChild2": 2}},
+                   {"SomeChild": {"SomeGrandChild1": 'A', "SomeGrandChild2": 'B'}}],
+        )
+        cls._process_list_value_with_complex_children(parent, element_meta)
+        ->
+        <SomeField>
+            <SomeChild>
+                <SomeGrandChild1>1</SomeGrandChild1>
+                <SomeGrandChild2>2</SomeGrandChild2>
+            </SomeChild>
+            <SomeChild>
+                <SomeGrandChild1>A</SomeGrandChild1>
+                <SomeGrandChild2>B</SomeGrandChild2>
+            </SomeChild>
+        </SomeField>
+        """
+        element = cls._create_xml_element(parent, element_meta)
+        for child in element_meta["value"]:
+            grand_child_tag = next(iter(child))
+            grand_child_data = child[grand_child_tag]
+            element_meta = cls._element_meta(grand_child_tag, grand_child_data)
+            cls._process_node(element, element_meta)
         return element
+
+    @classmethod
+    def _process_templates_value(
+            cls,
+            parent: ElemTree.Element,
+            element_meta: dict,
+    ) -> ElemTree.Element:
+        """Process a node with a dictionary value storing templates.
+
+        It iterates through the templates and generates data based on them.
+
+        Parameters
+        ----------
+        parent : Optional[ElemTree.Element]
+            A parent node
+        element_meta : dict
+            Element's metadata
+
+        Returns
+        -------
+        ElemTree.Element
+            A processed node
+
+        Raises
+        ------
+        InvalidSpecialFieldValueError
+            If the special field value is dict or list
+        SpecialFieldNotFoundError
+            If the special field does not exist.
+
+        Examples
+        --------
+        parent = ElemTree.Element("Root")
+        element_meta = cls._element_meta(
+            tag="SomeField",
+            value={"_templates_": [
+                {
+                  "count": 10,
+                  "model": {
+                    "SomeChild": {
+                      "Node1": 1,
+                      "Node2": "value-2",
+                      "Node3": true
+                    }
+                  }
+                }
+            ]},
+        )
+        cls._process_templates_value(parent, element_meta)
+        ->
+        <Root>
+            <SomeField>
+                <SomeChild><Node1>1</Node1><Node2>value-2</Node2><Node3>true</Node3></SomeChild>
+                <SomeChild><Node1>1</Node1><Node2>value-2</Node2><Node3>true</Node3></SomeChild>
+                ... x10
+            </SomeField>
+        </Root>
+        """
+        templates = (MimeoTemplate(template) for template in element_meta["value"])
+        for _ in cls.generate(templates, parent):
+            pass
+        return parent
 
     @classmethod
     def _process_atomic_value(
@@ -323,7 +604,45 @@ class XMLGenerator(Generator):
             parent: ElemTree.Element,
             element_meta: dict,
             context: MimeoContext,
-    ) -> Optional[ElemTree.Element]:
+    ) -> ElemTree.Element:
+        """Process a node with an atomic value.
+
+        A parametrized Mimeo Util is considered as an atomic value as representing one.
+        It renders a value for the node.
+
+        Parameters
+        ----------
+        parent : Optional[ElemTree.Element]
+            A parent node
+        element_meta : dict
+            Element's metadata
+        context : MimeoContext, default None
+            The current Mimeo Context (injected by MimeoContextManager)
+
+        Returns
+        -------
+        ElemTree.Element
+            A processed node
+
+        Raises
+        ------
+        InvalidSpecialFieldValueError
+            If the special field value is dict or list
+        SpecialFieldNotFoundError
+            If the special field does not exist.
+
+        Examples
+        --------
+        context = MimeoContextManager().get_current_context()
+        parent = ElemTree.Element("Root")
+        element_meta = cls._element_meta(
+            tag="SomeField",
+            value="value-1",
+        )
+        cls._process_atomic_value(parent, element_meta, context)
+        ->
+        <SomeField>value-1</SomeField>
+        """
         element = cls._create_xml_element(parent, element_meta)
         value = MimeoRenderer.render(element_meta["value"])
         if element_meta["special"]:
@@ -341,18 +660,33 @@ class XMLGenerator(Generator):
             is_mimeo_util: Optional[bool] = None,
             is_special_field: Optional[bool] = None,
     ) -> dict:
+        """Build element's metadata.
+
+        Parameters
+        ----------
+        tag : str
+            An element's tag
+        value : Union[dict, list, str, int, float, bool]
+            An element's value
+        attrs : Optional[dict] = None
+            An element's attributes
+        is_mimeo_util : Optional[bool] = None
+            A is-mimeo-util flag
+        is_special_field : Optional[bool] = None
+            A is-special-field flag
+
+        Returns
+        -------
+        dict
+            Element's metadata
+        """
         return {
             "tag": tag,
             "value": value,
             "attrs": attrs,
-            "special": is_special_field,
             "mimeo_util": is_mimeo_util,
+            "special": is_special_field,
         }
-
-    @staticmethod
-    def _is_complex(element_meta):
-        return (isinstance(element_meta["value"], (dict, list)) and
-                not element_meta["mimeo_util"])
 
     @staticmethod
     def _create_xml_element(
