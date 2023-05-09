@@ -11,9 +11,11 @@ the following renderers:
     * SpecialFieldsRenderer
         A class rendering Mimeo Special Fields.
 """
+from __future__ import annotations
+
 import logging
 import re
-from typing import Any, Union
+from typing import Any
 
 from mimeo.config import MimeoConfig
 from mimeo.context import MimeoContext, MimeoContextManager
@@ -57,7 +59,10 @@ class UtilsRenderer:
     _INSTANCES = {}
 
     @classmethod
-    def render_raw(cls, mimeo_util_key: str) -> Any:
+    def render_raw(
+            cls,
+            mimeo_util_key: str,
+    ) -> Any:
         """Render a Mimeo Util in a raw form.
 
         Parameters
@@ -81,7 +86,10 @@ class UtilsRenderer:
         })
 
     @classmethod
-    def render_parametrized(cls, mimeo_util_config: dict) -> Any:
+    def render_parametrized(
+            cls,
+            mimeo_util_config: dict,
+    ) -> Any:
         """Render a Mimeo Util in a parametrized form.
 
         Parameters
@@ -111,7 +119,10 @@ class UtilsRenderer:
         return mimeo_util.render()
 
     @classmethod
-    def _get_mimeo_util(cls, config: dict) -> MimeoUtil:
+    def _get_mimeo_util(
+            cls,
+            config: dict,
+    ) -> MimeoUtil:
         """Get a Mimeo Util instance based on the configuration.
 
         All instances are cached to not re-create a Util with the same
@@ -141,7 +152,9 @@ class UtilsRenderer:
         return cls._INSTANCES.get(cache_key)
 
     @staticmethod
-    def _generate_cache_key(config: dict) -> str:
+    def _generate_cache_key(
+            config: dict,
+    ) -> str:
         """Generate an internal Mimeo Util key from its parameters.
 
         This method ensures that Mimeo Util instances are cached
@@ -160,7 +173,11 @@ class UtilsRenderer:
         return "-".join(":".join([key, str(val)]) for key, val in config.items())
 
     @classmethod
-    def _instantiate_mimeo_util(cls, cache_key: str, config: dict) -> MimeoUtil:
+    def _instantiate_mimeo_util(
+            cls,
+            cache_key: str,
+            config: dict,
+    ) -> MimeoUtil:
         """Instantiate a Mimeo Util based on the configuration.
 
         After instantiation the Mimeo Util is cached for the future.
@@ -190,7 +207,10 @@ class UtilsRenderer:
         return mimeo_util
 
     @classmethod
-    def get_mimeo_util_name(cls, config: dict) -> str:
+    def get_mimeo_util_name(
+            cls,
+            config: dict,
+    ) -> str:
         """Return a verified Mimeo Util name.
 
         Parameters
@@ -232,7 +252,10 @@ class VarsRenderer:
     """
 
     @classmethod
-    def render(cls, var: str) -> Union[str, int, bool, dict]:
+    def render(
+            cls,
+            var: str,
+    ) -> str | int | bool | dict:
         """Render a Mimeo Var.
 
         Parameters
@@ -269,7 +292,11 @@ class SpecialFieldsRenderer:
 
     @classmethod
     @mimeo_context
-    def render(cls, field: str, context: MimeoContext = None) -> Union[str, int, bool]:
+    def render(
+            cls,
+            field: str,
+            context: MimeoContext = None,
+    ) -> str | int | bool:
         """Render a Mimeo Special Field.
 
         Parameters
@@ -281,7 +308,7 @@ class SpecialFieldsRenderer:
 
         Returns
         -------
-        Union[str, int, bool]
+        str | int | bool
 
         Raises
         ------
@@ -318,7 +345,10 @@ class MimeoRenderer:
     _SPECIAL_FIELDS_PATTERN = re.compile(".*({:([a-zA-Z]+:)?[-_a-zA-Z0-9]+:})")
 
     @classmethod
-    def get_special_field_name(cls, wrapped_field_name: str) -> str:
+    def get_special_field_name(
+            cls,
+            wrapped_field_name: str,
+    ) -> str:
         """Extract a special field name.
 
         Parameters
@@ -343,7 +373,10 @@ class MimeoRenderer:
         return wrapped_field_name[2:][:-2]
 
     @classmethod
-    def is_special_field(cls, special_field: str) -> bool:
+    def is_special_field(
+            cls,
+            special_field: str,
+    ) -> bool:
         """Verify if the field is special (of form {:FIELD_NAME:}).
 
         Parameters
@@ -360,7 +393,10 @@ class MimeoRenderer:
         return bool(re.match(r"^{:([a-zA-Z]+:)?[-_a-zA-Z0-9]+:}$", special_field))
 
     @classmethod
-    def is_raw_mimeo_util(cls, value: str) -> bool:
+    def is_raw_mimeo_util(
+            cls,
+            value: str,
+    ) -> bool:
         """Verify if the value is a raw Mimeo Util.
 
         Parameters
@@ -379,7 +415,10 @@ class MimeoRenderer:
         return bool(re.match(raw_mimeo_utils_re, value))
 
     @classmethod
-    def is_parametrized_mimeo_util(cls, value: dict):
+    def is_parametrized_mimeo_util(
+            cls,
+            value: dict,
+    ):
         """Verify if the value is a parametrized Mimeo Util.
 
         Parameters
@@ -398,7 +437,10 @@ class MimeoRenderer:
                 MimeoConfig.MODEL_MIMEO_UTIL_KEY in value)
 
     @classmethod
-    def render(cls, value: Any) -> Any:
+    def render(
+            cls,
+            value: Any,
+    ) -> Any:
         """Render a value.
 
         This method renders a value accordingly to its type and form.
@@ -453,7 +495,10 @@ class MimeoRenderer:
         return value
 
     @classmethod
-    def _render_string_value(cls, value: str) -> Any:
+    def _render_string_value(
+            cls,
+            value: str,
+    ) -> Any:
         """Render a string value.
 
         Depending on value form it can render it as a raw value,
@@ -478,7 +523,10 @@ class MimeoRenderer:
         return value
 
     @classmethod
-    def _render_special_field(cls, value: str) -> Any:
+    def _render_special_field(
+            cls,
+            value: str,
+    ) -> Any:
         """Render a value containing a Mimeo Special Field.
 
         This method finds first special field and replaces all
@@ -512,7 +560,10 @@ class MimeoRenderer:
         return cls.render(r_val)
 
     @classmethod
-    def _render_var(cls, value: str) -> Any:
+    def _render_var(
+            cls,
+            value: str,
+    ) -> Any:
         """Render a value containing a Mimeo Var.
 
         This method finds first variable and replaces all occurrences.
@@ -548,7 +599,10 @@ class MimeoRenderer:
         return cls.render(r_val)
 
     @classmethod
-    def _render_raw_mimeo_util(cls, value: str) -> Any:
+    def _render_raw_mimeo_util(
+            cls,
+            value: str,
+    ) -> Any:
         """Render a raw Mimeo Util.
 
         Parameters
@@ -572,7 +626,10 @@ class MimeoRenderer:
         return cls.render(rendered_value)
 
     @classmethod
-    def _render_parametrized_mimeo_util(cls, value: dict) -> Any:
+    def _render_parametrized_mimeo_util(
+            cls,
+            value: dict,
+    ) -> Any:
         """Render a parametrized Mimeo Util.
 
         Before the Mimeo Util itself will be rendered, first all its
@@ -607,7 +664,10 @@ class MimeoRenderer:
         return cls.render(r_val)
 
     @classmethod
-    def _render_mimeo_util_parameters(cls, mimeo_util_config: dict) -> dict:
+    def _render_mimeo_util_parameters(
+            cls,
+            mimeo_util_config: dict,
+    ) -> dict:
         """Render Mimeo Util's parameters.
 
         Parameters

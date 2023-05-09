@@ -4,8 +4,9 @@ It exports only one class:
     * MimeoIteration
         A class representing a single iteration in a Mimeo Template.
 """
+from __future__ import annotations
+
 import uuid
-from typing import Union
 
 from mimeo.context.exc import (InvalidSpecialFieldNameError,
                                InvalidSpecialFieldValueError,
@@ -28,13 +29,16 @@ class MimeoIteration:
 
     Methods
     -------
-    add_special_field(self, field_name: str, field_value: Union[str, int, bool])
+    add_special_field(self, field_name: str, field_value: str | int | bool)
         Put a special field entry to memory.
-    get_special_field(self, field_name: str) -> Union[str, int, bool]
+    get_special_field(self, field_name: str) -> str | int | bool]
         Get a special field value from memory.
     """
 
-    def __init__(self, identifier: int):
+    def __init__(
+            self,
+            identifier: int,
+    ):
         """Initialize MimeoIteration class.
 
         Parameters
@@ -46,14 +50,18 @@ class MimeoIteration:
         self.key = str(uuid.uuid4())
         self._special_fields = {}
 
-    def add_special_field(self, field_name: str, field_value: Union[str, int, bool]):
+    def add_special_field(
+            self,
+            field_name: str,
+            field_value: str | int | bool,
+    ):
         """Put a special field entry to memory.
 
         Parameters
         ----------
         field_name : str
             A special field name
-        field_value : Union[str, int, bool]
+        field_value : str | int | bool
             A special field value
 
         Raises
@@ -70,7 +78,10 @@ class MimeoIteration:
 
         self._special_fields[field_name] = field_value
 
-    def get_special_field(self, field_name: str) -> Union[str, int, bool]:
+    def get_special_field(
+            self,
+            field_name: str,
+    ) -> str | int | bool:
         """Get a special field value from memory.
 
         Parameters
@@ -80,7 +91,7 @@ class MimeoIteration:
 
         Returns
         -------
-        Union[str, int, bool]
+        str | int | bool
             A special field value
 
         Raises

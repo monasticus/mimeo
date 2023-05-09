@@ -19,7 +19,9 @@ from mimeo.config.mimeo_config import MimeoTemplate
 from mimeo.context import MimeoContext, MimeoContextManager
 
 
-def mimeo_context(func: Callable) -> Callable:
+def mimeo_context(
+        func: Callable,
+) -> Callable:
     """Provide a 'context' parameter to a function.
 
     It can be used only for functions having defined a 'context'
@@ -40,7 +42,10 @@ def mimeo_context(func: Callable) -> Callable:
     """
 
     @functools.wraps(func)
-    def inject_context(*args, **kwargs):
+    def inject_context(
+            *args,
+            **kwargs,
+    ):
         if any(isinstance(arg, MimeoContext) for arg in args) or "context" in kwargs:
             result = func(*args, **kwargs)
         else:
@@ -51,7 +56,9 @@ def mimeo_context(func: Callable) -> Callable:
     return inject_context
 
 
-def mimeo_context_switch(func: Callable) -> Callable:
+def mimeo_context_switch(
+        func: Callable,
+) -> Callable:
     """Switch context before and after function's call.
 
     It can be used only for functions having defined a MimeoTemplate
@@ -73,7 +80,10 @@ def mimeo_context_switch(func: Callable) -> Callable:
     """
 
     @functools.wraps(func)
-    def switch_context(*args, **kwargs):
+    def switch_context(
+            *args,
+            **kwargs,
+    ):
         context_mng = MimeoContextManager()
         prev_context = context_mng.get_current_context()
 
@@ -92,7 +102,9 @@ def mimeo_context_switch(func: Callable) -> Callable:
     return switch_context
 
 
-def mimeo_next_iteration(func):
+def mimeo_next_iteration(
+        func: Callable,
+):
     """Increment current context's iteration.
 
     It is meant to be used for Generator's function that
@@ -110,14 +122,19 @@ def mimeo_next_iteration(func):
     """
 
     @functools.wraps(func)
-    def next_iteration(*args, **kwargs):
+    def next_iteration(
+            *args,
+            **kwargs,
+    ):
         MimeoContextManager().get_current_context().next_iteration()
         return func(*args, **kwargs)
 
     return next_iteration
 
 
-def mimeo_clear_iterations(func):
+def mimeo_clear_iterations(
+        func: Callable,
+):
     """Clear iterations of the current context.
 
     It is meant to be used for Generator's function that generates
@@ -135,7 +152,10 @@ def mimeo_clear_iterations(func):
     """
 
     @functools.wraps(func)
-    def clear_iterations(*args, **kwargs):
+    def clear_iterations(
+            *args,
+            **kwargs,
+    ):
         MimeoContextManager().get_current_context().clear_iterations()
         return func(*args, **kwargs)
 

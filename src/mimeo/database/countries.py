@@ -28,7 +28,12 @@ class Country:
         A country name
     """
 
-    def __init__(self, iso_3: str, iso_2: str, name: str):
+    def __init__(
+            self,
+            iso_3: str,
+            iso_2: str,
+            name: str,
+    ):
         """Initialize Country class.
 
         Parameters
@@ -44,7 +49,9 @@ class Country:
         self.iso_2 = iso_2
         self.name = name
 
-    def __str__(self) -> str:
+    def __str__(
+            self,
+    ) -> str:
         """Stringify the Country instance.
 
         Returns
@@ -58,7 +65,9 @@ class Country:
             "name": self.name,
         })
 
-    def __repr__(self) -> str:
+    def __repr__(
+            self,
+    ) -> str:
         """Represent the Country instance.
 
         Returns
@@ -99,7 +108,10 @@ class CountriesDB:
     _COUNTRIES_DF = None
     _COUNTRIES = None
 
-    def get_country_at(self, index: int) -> Country:
+    def get_country_at(
+            self,
+            index: int,
+    ) -> Country:
         """Get a country at `index` position.
 
         Parameters
@@ -124,7 +136,10 @@ class CountriesDB:
             last_index = CountriesDB.NUM_OF_RECORDS-1
             raise InvalidIndexError(index, last_index) from IndexError
 
-    def get_country_by_iso_3(self, iso_3: str) -> Country:
+    def get_country_by_iso_3(
+            self,
+            iso_3: str,
+    ) -> Country:
         """Get a country having a specific ISO3 code.
 
         Parameters
@@ -140,7 +155,10 @@ class CountriesDB:
         countries = self._get_countries()
         return next(filter(lambda country: country.iso_3 == iso_3, countries), None)
 
-    def get_country_by_iso_2(self, iso_2: str) -> Country:
+    def get_country_by_iso_2(
+            self,
+            iso_2: str,
+    ) -> Country:
         """Get a country having a specific ISO2 code.
 
         Parameters
@@ -156,7 +174,10 @@ class CountriesDB:
         countries = self._get_countries()
         return next(filter(lambda country: country.iso_2 == iso_2, countries), None)
 
-    def get_country_by_name(self, name: str) -> Country:
+    def get_country_by_name(
+            self,
+            name: str,
+    ) -> Country:
         """Get a country having a specific name.
 
         Parameters
@@ -173,7 +194,9 @@ class CountriesDB:
         return next(filter(lambda country: country.name == name, countries), None)
 
     @classmethod
-    def get_countries(cls) -> List[Country]:
+    def get_countries(
+            cls,
+    ) -> List[Country]:
         """Get all countries.
 
         Returns
@@ -184,7 +207,9 @@ class CountriesDB:
         return cls._get_countries().copy()
 
     @classmethod
-    def _get_countries(cls) -> List[Country]:
+    def _get_countries(
+            cls,
+    ) -> List[Country]:
         """Get all countries from cache.
 
         The countries list is initialized for the first time and cached
@@ -201,7 +226,9 @@ class CountriesDB:
         return cls._COUNTRIES
 
     @classmethod
-    def _get_countries_df(cls) -> pandas.DataFrame:
+    def _get_countries_df(
+            cls,
+    ) -> pandas.DataFrame:
         """Load countries CSV data and save in internal class attribute."""
         if cls._COUNTRIES_DF is None:
             data = tools.get_resource(CountriesDB._COUNTRIES_DB)

@@ -12,7 +12,9 @@ class InstanceNotAliveError(Exception):
     Raised when using OnlyOneAlive class that is not alive.
     """
 
-    def __init__(self):
+    def __init__(
+            self,
+    ):
         """Initialize InstanceNotAliveError exception with details.
 
         Extends Exception constructor with a constant message.

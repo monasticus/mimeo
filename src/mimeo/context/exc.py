@@ -16,7 +16,7 @@ It contains all custom exceptions related to Mimeo Context:
     * VarNotFoundError
         A custom Exception class for not found var.
 """
-from typing import Union
+from __future__ import annotations
 
 
 class MinimumIdentifierReachedError(Exception):
@@ -26,7 +26,9 @@ class MinimumIdentifierReachedError(Exception):
     0.
     """
 
-    def __init__(self):
+    def __init__(
+            self,
+    ):
         """Initialize MinimumIdentifierReachedError exception with details.
 
         Extends Exception constructor with a constant message.
@@ -41,7 +43,10 @@ class UninitializedContextIterationError(Exception):
     prior initialization.
     """
 
-    def __init__(self, context_name: str):
+    def __init__(
+            self,
+            context_name: str,
+    ):
         """Initialize UninitializedContextIterationError exception with details.
 
         Extends Exception constructor with a custom message.
@@ -62,7 +67,11 @@ class ContextIterationNotFoundError(Exception):
     Raised while attempting to access an iteration that does not exist.
     """
 
-    def __init__(self, iteration_id: int, context_name: str):
+    def __init__(
+            self,
+            iteration_id: int,
+            context_name: str,
+    ):
         """Initialize ContextIterationNotFoundError exception with details.
 
         Extends Exception constructor with a custom message.
@@ -86,7 +95,9 @@ class InvalidSpecialFieldNameError(Exception):
     is not a string value.
     """
 
-    def __init__(self):
+    def __init__(
+            self,
+    ):
         """Initialize InvalidSpecialFieldNameError exception with details.
 
         Extends Exception constructor with a constant message.
@@ -101,14 +112,17 @@ class InvalidSpecialFieldValueError(Exception):
     is non-atomic one.
     """
 
-    def __init__(self, field_value: Union[dict, list]):
+    def __init__(
+            self,
+            field_value: dict | list,
+    ):
         """Initialize InvalidSpecialFieldValueError exception with details.
 
         Extends Exception constructor with a custom message.
 
         Parameters
         ----------
-        field_value : Union[str, int, bool]
+        field_value : dict | list
             A special field value
         """
         msg = f"Provided field value [{field_value}] is invalid (use any atomic value)!"
@@ -122,7 +136,10 @@ class SpecialFieldNotFoundError(Exception):
     exist.
     """
 
-    def __init__(self, field_name: str):
+    def __init__(
+            self,
+            field_name: str,
+    ):
         """Initialize SpecialFieldNotFoundError exception with details.
 
         Extends Exception constructor with a custom message.
@@ -141,7 +158,10 @@ class VarNotFoundError(Exception):
     Raised while attempting to access a variable that does not exist.
     """
 
-    def __init__(self, variable_name: str):
+    def __init__(
+            self,
+            variable_name: str,
+    ):
         """Initialize VarNotFoundError exception with details.
 
         Extends Exception constructor with a custom message.

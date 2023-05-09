@@ -32,7 +32,10 @@ class NotASpecialFieldError(Exception):
     not a special one.
     """
 
-    def __init__(self, field_name: str):
+    def __init__(
+            self,
+            field_name: str,
+    ):
         """Initialize NotASpecialFieldError exception with details.
 
         Extends Exception constructor with a custom message.

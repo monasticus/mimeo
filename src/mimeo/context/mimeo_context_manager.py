@@ -34,7 +34,10 @@ class MimeoContextManager(Alive, metaclass=OnlyOneAlive):
         Return a specific Mimeo Var value.
     """
 
-    def __init__(self, mimeo_config: MimeoConfig = None):
+    def __init__(
+            self,
+            mimeo_config: MimeoConfig = None,
+    ):
         """Initialize MimeoContextManager class.
 
         Parameters
@@ -48,7 +51,9 @@ class MimeoContextManager(Alive, metaclass=OnlyOneAlive):
         self._contexts = {}
         self._current_context = None
 
-    def __enter__(self) -> MimeoContextManager:
+    def __enter__(
+            self,
+    ) -> MimeoContextManager:
         """Enter the MimeoContextManager instance.
 
         Extends Alive __enter__ function and initializes vars.
@@ -62,7 +67,12 @@ class MimeoContextManager(Alive, metaclass=OnlyOneAlive):
         self._vars = self._mimeo_config.vars
         return self
 
-    def __exit__(self, exc_type, exc_val, exc_tb) -> None:
+    def __exit__(
+            self,
+            exc_type,
+            exc_val,
+            exc_tb,
+    ) -> None:
         """Exit the MimeoContextManager instance.
 
         Extends Alive __enter__ function and removes internal
@@ -86,7 +96,10 @@ class MimeoContextManager(Alive, metaclass=OnlyOneAlive):
         self._vars = None
         self._contexts = None
 
-    def get_context(self, context: str) -> MimeoContext:
+    def get_context(
+            self,
+            context: str,
+    ) -> MimeoContext:
         """Return a Mimeo Context with a specific name.
 
         If the context does not exist, it is initialized.
@@ -111,7 +124,9 @@ class MimeoContextManager(Alive, metaclass=OnlyOneAlive):
             self._contexts[context] = MimeoContext(context)
         return self._contexts[context]
 
-    def get_current_context(self) -> MimeoContext:
+    def get_current_context(
+            self,
+    ) -> MimeoContext:
         """Return the current Mimeo Context.
 
         Returns
@@ -127,7 +142,10 @@ class MimeoContextManager(Alive, metaclass=OnlyOneAlive):
         super().assert_alive()
         return self._current_context
 
-    def set_current_context(self, context: MimeoContext):
+    def set_current_context(
+            self,
+            context: MimeoContext,
+    ):
         """Set the current Mimeo Context.
 
         Parameters
@@ -143,7 +161,10 @@ class MimeoContextManager(Alive, metaclass=OnlyOneAlive):
         super().assert_alive()
         self._current_context = context
 
-    def get_var(self, variable_name: str) -> str | int | bool | dict:
+    def get_var(
+            self,
+            variable_name: str,
+    ) -> str | int | bool | dict:
         """Return a specific Mimeo Var value.
 
         Parameters
@@ -153,7 +174,7 @@ class MimeoContextManager(Alive, metaclass=OnlyOneAlive):
 
         Returns
         -------
-        value : Union[str, int, bool, dict]
+        value : str | int | bool | dict
             The Mimeo Var value
 
         Raises

@@ -12,7 +12,9 @@ from mimeo import resources as data
 from mimeo.resources.exc import ResourceNotFoundError
 
 
-def get_resource(resource_name: str) -> TextIO:
+def get_resource(
+        resource_name: str,
+) -> TextIO:
     """Return a Mimeo resource.
 
     The resource needs to be included in mimeo.resources package

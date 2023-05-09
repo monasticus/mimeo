@@ -14,7 +14,11 @@ class EnvironmentNotFoundError(Exception):
     Raised while attempting to access an environment that does not exist.
     """
 
-    def __init__(self, env_name: str, envs_file_path: str):
+    def __init__(
+            self,
+            env_name: str,
+            envs_file_path: str,
+    ):
         """Initialize EnvironmentNotFoundError exception with details.
 
         Extends Exception constructor with a custom message.
@@ -36,7 +40,10 @@ class EnvironmentsFileNotFoundError(Exception):
     Raised while attempting to access an environments file that does not exist.
     """
 
-    def __init__(self, envs_file_path: str):
+    def __init__(
+            self,
+            envs_file_path: str,
+    ):
         """Initialize EnvironmentsFileNotFoundError exception with details.
 
         Extends Exception constructor with a custom message.

@@ -51,7 +51,11 @@ class OnlyOneAlive(type):
 
     _INSTANCES = {}
 
-    def __call__(cls, *args, **kwargs):
+    def __call__(
+            cls,
+            *args,
+            **kwargs,
+    ):
         """Ensure there's only one instance qualified to be used."""
         if cls not in cls._INSTANCES:
             cls._INSTANCES[cls] = []
@@ -80,10 +84,14 @@ class Alive:
         Assert the instance is alive.
     """
 
-    def __init__(self):
+    def __init__(
+            self,
+    ):
         self._alive = False
 
-    def __enter__(self) -> Alive:
+    def __enter__(
+            self,
+    ) -> Alive:
         """Enter the Alive instance.
 
         It sets the internal `alive` attribute to True.
@@ -96,7 +104,12 @@ class Alive:
         self._alive = True
         return self
 
-    def __exit__(self, exc_type, exc_val, exc_tb) -> None:
+    def __exit__(
+            self,
+            exc_type,
+            exc_val,
+            exc_tb,
+    ) -> None:
         """Exit the Alive instance.
 
         It sets the internal `alive` attribute to False.
@@ -117,7 +130,9 @@ class Alive:
         """
         self._alive = False
 
-    def assert_alive(self) -> bool:
+    def assert_alive(
+            self,
+    ) -> bool:
         """Assert the instance is alive.
 
         Returns
@@ -134,6 +149,8 @@ class Alive:
             raise InstanceNotAliveError
         return self.is_alive()
 
-    def is_alive(self) -> bool:
+    def is_alive(
+            self,
+    ) -> bool:
         """Verify if the instance is alive."""
         return self._alive

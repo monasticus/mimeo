@@ -29,7 +29,9 @@ class GeneratorFactory:
     XML = MimeoConfig.OUTPUT_FORMAT_XML
 
     @staticmethod
-    def get_generator(mimeo_config: MimeoConfig) -> Generator:
+    def get_generator(
+            mimeo_config: MimeoConfig,
+    ) -> Generator:
         """Initialize a Generator based on the Mimeo Output Format.
 
         Parameters

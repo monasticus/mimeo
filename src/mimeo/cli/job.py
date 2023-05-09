@@ -32,11 +32,15 @@ class MimeoJob:
         Executes a Mimeo Job based on the CLI arguments.
     """
 
-    def __init__(self):
+    def __init__(
+            self,
+    ):
         """Initialize MimeoJob class."""
         self._args = MimeoArgumentParser().parse_args()
 
-    def run(self):
+    def run(
+            self,
+    ):
         """Execute a Mimeo Job based on the CLI arguments.
 
         First it customizes a log level. After that all Mimeo Configs
@@ -51,7 +55,9 @@ class MimeoJob:
             Mimeograph(mimeo_config).process()
 
     @staticmethod
-    def _customize_log_level(args):
+    def _customize_log_level(
+            args,
+    ):
         """Customize the log level based on command line arguments."""
         if args.silent:
             logging.getLogger("mimeo").setLevel(logging.WARNING)
@@ -61,7 +67,9 @@ class MimeoJob:
             logging.getLogger("mimeo").setLevel(logging.FINE)
 
     @staticmethod
-    def _get_config_paths(paths: List) -> list:
+    def _get_config_paths(
+            paths: List,
+    ) -> list:
         """Collect Mimeo Configuration paths.
 
         This method traverses directory paths and collects all files
@@ -88,7 +96,11 @@ class MimeoJob:
         return file_paths
 
     @classmethod
-    def _get_mimeo_config(cls, config_path: str, args: Namespace) -> MimeoConfig:
+    def _get_mimeo_config(
+            cls,
+            config_path: str,
+            args: Namespace,
+    ) -> MimeoConfig:
         """Return parsed Mimeo Configuration.
 
         This method parses a raw configuration with command line
@@ -118,7 +130,9 @@ class MimeoJob:
         return mimeo_config_parser.parse_config()
 
     @staticmethod
-    def _get_raw_config(config_path: str) -> dict:
+    def _get_raw_config(
+            config_path: str,
+    ) -> dict:
         """Load configuration file to a dictionary."""
         logger.info("Reading Mimeo Configuration: %s", config_path)
         with Path(config_path).open() as config_file:

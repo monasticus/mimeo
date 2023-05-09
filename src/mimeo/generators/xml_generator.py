@@ -4,9 +4,11 @@ It exports only one class:
     * XMLGenerator
         A Generator implementation producing data in the XML format.
 """
+from __future__ import annotations
+
 import logging
 import xml.etree.ElementTree as ElemTree
-from typing import Iterator, List, Optional, Union
+from typing import Iterator
 from xml.dom import minidom
 
 from mimeo.config.mimeo_config import MimeoConfig, MimeoTemplate
@@ -29,7 +31,7 @@ class XMLGenerator(Generator):
     Methods
     -------
     generate(
-        templates: Union[list, Iterator[MimeoTemplate]],
+        templates: list | Iterator[MimeoTemplate],
         parent: ElemTree.Element = None
     ) -> Iterator[ElemTree.Element]
         Generate XML data based on the Mimeo Configuration.
@@ -57,7 +59,7 @@ class XMLGenerator(Generator):
     @classmethod
     def generate(
             cls,
-            templates: Union[list, Iterator[MimeoTemplate]],
+            templates: list | Iterator[MimeoTemplate],
             parent: ElemTree.Element = None,
     ) -> Iterator[ElemTree.Element]:
         """Generate XML data based on the Mimeo Configuration.
@@ -69,7 +71,7 @@ class XMLGenerator(Generator):
 
         Parameters
         ----------
-        templates : Union[list, Iterator[MimeoTemplate]]
+        templates : list | Iterator[MimeoTemplate]
             A collection of Mimeo Templates to process
         parent : ElemTree.Element, default None
             A parent XML node for the currently processed template.
@@ -123,7 +125,7 @@ class XMLGenerator(Generator):
             cls,
             template: MimeoTemplate,
             parent: ElemTree.Element = None,
-    ) -> List[ElemTree.Element]:
+    ) -> list[ElemTree.Element]:
         """Process a single Mimeo Template.
 
         This function is used recursively when a Mimeo Configuration
@@ -193,7 +195,7 @@ class XMLGenerator(Generator):
     @mimeo_context
     def _process_node(
             cls,
-            parent: Optional[ElemTree.Element],
+            parent: ElemTree.Element | None,
             element_meta: dict,
             context: MimeoContext = None,
     ) -> ElemTree.Element:
@@ -206,7 +208,7 @@ class XMLGenerator(Generator):
 
         Parameters
         ----------
-        parent : Optional[ElemTree.Element]
+        parent : ElemTree.Element | None
             A parent node
         element_meta : dict
             Element's metadata
@@ -309,9 +311,9 @@ class XMLGenerator(Generator):
     @classmethod
     def _process_complex_value(
             cls,
-            parent: Optional[ElemTree.Element],
+            parent: ElemTree.Element | None,
             element_meta: dict,
-    ) -> Optional[ElemTree.Element]:
+    ) -> ElemTree.Element | None:
         """Process a node with a complex value.
 
         The node is processed accordingly to its value type.
@@ -349,7 +351,7 @@ class XMLGenerator(Generator):
     @classmethod
     def _process_dict_value(
             cls,
-            parent: Optional[ElemTree.Element],
+            parent: ElemTree.Element | None,
             element_meta: dict,
     ) -> ElemTree.Element:
         """Process a node with a dictionary value.
@@ -655,10 +657,10 @@ class XMLGenerator(Generator):
     @staticmethod
     def _element_meta(
             tag: str,
-            value: Union[dict, list, str, int, float, bool],
-            attrs: Optional[dict] = None,
-            is_mimeo_util: Optional[bool] = None,
-            is_special_field: Optional[bool] = None,
+            value: dict | list | str | int | float | bool,
+            attrs: dict | None = None,
+            is_mimeo_util: bool | None = None,
+            is_special_field: bool | None = None,
     ) -> dict:
         """Build element's metadata.
 
@@ -666,8 +668,7 @@ class XMLGenerator(Generator):
         ----------
         tag : str
             An element's tag
-        value : Union[dict, list, str, int, float, bool]
-            An element's value
+        value : dict | list | str | int | float | bool
         attrs : Optional[dict] = None
             An element's attributes
         is_mimeo_util : Optional[bool] = None
@@ -692,7 +693,7 @@ class XMLGenerator(Generator):
     def _create_xml_element(
             parent: ElemTree.Element,
             element_meta: dict,
-    ) -> Union[ElemTree.Element, ElemTree.SubElement]:
+    ) -> ElemTree.Element | ElemTree.SubElement:
         """Create an XML element based on the `parent` existence.
 
         Parameters
@@ -704,7 +705,7 @@ class XMLGenerator(Generator):
 
         Returns
         -------
-        Union[ElemTree.Element, ElemTree.SubElement]
+        ElemTree.Element | ElemTree.SubElement
             If the `parent` is None, returns ElemTree.Element.
             Otherwise, returns ElemTree.SubElement
         """

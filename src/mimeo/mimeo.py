@@ -27,12 +27,17 @@ class Mimeograph:
         Process the Mimeo Configuration (generate data and consume).
     """
 
-    def __init__(self, mimeo_config: MimeoConfig):
+    def __init__(
+            self,
+            mimeo_config: MimeoConfig,
+    ):
         self._mimeo_config = mimeo_config
         self._generator = GeneratorFactory.get_generator(self._mimeo_config)
         self._consumer = ConsumerFactory.get_consumer(self._mimeo_config)
 
-    def process(self):
+    def process(
+            self,
+    ):
         """Process the Mimeo Configuration (generate data and consume)."""
         logger.info("Starting data generation")
         with MimeoContextManager(self._mimeo_config):

@@ -19,7 +19,10 @@ class RawConsumer(Consumer):
         Print data generated in the standard output.
     """
 
-    def consume(self, data: str) -> None:
+    def consume(
+            self,
+            data: str,
+    ) -> None:
         """Print data generated in the standard output.
 
         It is an implementation of Consumer's abstract method.

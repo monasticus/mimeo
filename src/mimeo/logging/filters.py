@@ -21,7 +21,10 @@ class RegularFilter(Filter):
         Determine if the specified record is to be logged.
     """
 
-    def filter(self, record: LogRecord) -> bool:
+    def filter(
+            self,
+            record: LogRecord,
+    ) -> bool:
         """Determine if the specified record is to be logged.
 
         Parameters
@@ -48,7 +51,10 @@ class DetailedFilter(Filter):
         Determine if the specified record is to be logged.
     """
 
-    def filter(self, record: LogRecord):
+    def filter(
+            self,
+            record: LogRecord,
+    ):
         """Determine if the specified record is to be logged.
 
         Parameters

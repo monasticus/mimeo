@@ -59,7 +59,10 @@ class MimeoContext:
     _INITIAL_COUNT = "init-count"
     _INDEXES = "indexes"
 
-    def __init__(self, name: str):
+    def __init__(
+            self,
+            name: str,
+    ):
         """Initialize MimeoContext class.
 
         Parameters
@@ -75,7 +78,9 @@ class MimeoContext:
         self._first_names_indexes = {}
         self._last_names_indexes = None
 
-    def next_id(self) -> int:
+    def next_id(
+            self,
+    ) -> int:
         """Increment an identifier and return the current (incremented) one.
 
         Identifier is used by Auto Increment Mimeo Util.
@@ -88,7 +93,9 @@ class MimeoContext:
         self._id += 1
         return self.curr_id()
 
-    def curr_id(self) -> int:
+    def curr_id(
+            self,
+    ) -> int:
         """Return the current identifier within the context.
 
         Identifier is used by Auto Increment Mimeo Util.
@@ -100,7 +107,9 @@ class MimeoContext:
         """
         return self._id
 
-    def prev_id(self) -> int:
+    def prev_id(
+            self,
+    ) -> int:
         """Decrement an identifier and return the current (decremented) one.
 
         Identifier is used by Auto Increment Mimeo Util.
@@ -122,7 +131,9 @@ class MimeoContext:
         self._id -= 1
         return self.curr_id()
 
-    def next_iteration(self) -> MimeoIteration:
+    def next_iteration(
+            self,
+    ) -> MimeoIteration:
         """Initialize a next iteration within the context.
 
         To initialize the iteration, it gets the last iteration id and
@@ -141,7 +152,9 @@ class MimeoContext:
         self._iterations.append(next_iteration)
         return next_iteration
 
-    def curr_iteration(self) -> MimeoIteration:
+    def curr_iteration(
+            self,
+    ) -> MimeoIteration:
         """Return the current iteration within the context.
 
         Returns
@@ -158,7 +171,10 @@ class MimeoContext:
             raise UninitializedContextIterationError(self.name)
         return self._iterations[-1]
 
-    def get_iteration(self, iteration_id: int) -> MimeoIteration:
+    def get_iteration(
+            self,
+            iteration_id: int,
+    ) -> MimeoIteration:
         """Return a specific iteration from the context.
 
         Returns
@@ -177,7 +193,9 @@ class MimeoContext:
             raise ContextIterationNotFoundError(iteration_id, self.name)
         return iteration
 
-    def clear_iterations(self):
+    def clear_iterations(
+            self,
+    ):
         """Clear out all context iterations.
 
         This method is meant to be used in case of nested templates.
@@ -186,7 +204,9 @@ class MimeoContext:
         """
         self._iterations = []
 
-    def next_country_index(self) -> int:
+    def next_country_index(
+            self,
+    ) -> int:
         """Provide next unique country index.
 
         When used for the first time in the specific context
@@ -212,7 +232,10 @@ class MimeoContext:
 
         return self._countries_indexes.pop()
 
-    def next_city_index(self, country: str = None) -> int:
+    def next_city_index(
+            self,
+            country: str = None,
+    ) -> int:
         """Provide next unique city index.
 
         When used for the first time in the specific context
@@ -249,7 +272,10 @@ class MimeoContext:
 
         return self._cities_indexes[country][MimeoContext._INDEXES].pop()
 
-    def next_first_name_index(self, sex: str = None) -> int:
+    def next_first_name_index(
+            self,
+            sex: str = None,
+    ) -> int:
         """Provide next unique first name index.
 
         When used for the first time in the specific context
@@ -285,7 +311,9 @@ class MimeoContext:
 
         return self._first_names_indexes[sex][MimeoContext._INDEXES].pop()
 
-    def next_last_name_index(self) -> int:
+    def next_last_name_index(
+            self,
+    ) -> int:
         """Provide next unique last name index.
 
         When used for the first time in the specific context
@@ -311,7 +339,9 @@ class MimeoContext:
 
         return self._last_names_indexes.pop()
 
-    def _initialize_countries_indexes(self):
+    def _initialize_countries_indexes(
+            self,
+    ):
         """Initialize countries' indexes with unique integers.
 
         The list length and range depends on the number of country
@@ -322,7 +352,10 @@ class MimeoContext:
             countries_indexes = random.sample(range(num_of_entries), num_of_entries)
             self._countries_indexes = countries_indexes
 
-    def _initialize_cities_indexes(self, country: str):
+    def _initialize_cities_indexes(
+            self,
+            country: str,
+    ):
         """Initialize cities' indexes with unique integers.
 
         The list length and range depends on the number of city
@@ -351,7 +384,10 @@ class MimeoContext:
                 MimeoContext._INDEXES: cities_indexes,
             }
 
-    def _initialize_first_names_indexes(self, sex: str):
+    def _initialize_first_names_indexes(
+            self,
+            sex: str,
+    ):
         """Initialize first names' indexes with integers.
 
         The list length and range depends on the number of first name
@@ -375,7 +411,9 @@ class MimeoContext:
                 MimeoContext._INDEXES: first_names_indexes,
             }
 
-    def _initialize_last_names_indexes(self):
+    def _initialize_last_names_indexes(
+            self,
+    ):
         """Initialize last names' indexes with unique integers.
 
         The list length and range depends on the number of last name
@@ -386,7 +424,9 @@ class MimeoContext:
             last_names_indexes = random.sample(range(num_of_entries), num_of_entries)
             self._last_names_indexes = last_names_indexes
 
-    def _validate_countries(self):
+    def _validate_countries(
+            self,
+    ):
         """Verify if all countries' indexes have been consumed.
 
         Raises
@@ -399,7 +439,10 @@ class MimeoContext:
                    f"database contain only {MimeoDB.NUM_OF_COUNTRIES} countries.")
             raise OutOfStockError(msg)
 
-    def _validate_cities(self, country: str):
+    def _validate_cities(
+            self,
+            country: str,
+    ):
         """Verify if all cities' indexes have been consumed.
 
         Raises
@@ -417,7 +460,10 @@ class MimeoContext:
                        f"database contain only {init_count} cities of {country}.")
             raise OutOfStockError(msg)
 
-    def _validate_first_names(self, sex: str):
+    def _validate_first_names(
+            self,
+            sex: str,
+    ):
         """Verify if all first names' indexes have been consumed.
 
         Raises
@@ -436,7 +482,9 @@ class MimeoContext:
                        f"database contain only {init_count} {sex_info} first names.")
             raise OutOfStockError(msg)
 
-    def _validate_last_names(self):
+    def _validate_last_names(
+            self,
+    ):
         """Verify if all last names' indexes have been consumed.
 
         Raises

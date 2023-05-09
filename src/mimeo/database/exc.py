@@ -18,7 +18,11 @@ class InvalidIndexError(Exception):
     Raised while attempting to get data at row that does not exist.
     """
 
-    def __init__(self, index: int, last_index: int):
+    def __init__(
+            self,
+            index: int,
+            last_index: int,
+    ):
         """Initialize InvalidIndexError exception with details.
 
         Extends Exception constructor with a custom message.
@@ -40,7 +44,10 @@ class InvalidSexError(Exception):
     Raised when sex provided to filter forenames is not supported.
     """
 
-    def __init__(self, supported_sex_list: tuple):
+    def __init__(
+            self,
+            supported_sex_list: tuple,
+    ):
         """Initialize InvalidSexError exception with details.
 
         Extends Exception constructor with a custom message.

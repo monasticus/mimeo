@@ -7,11 +7,12 @@ It exports two parser classes:
         A class parsing source Mimeo Configuration with Mimeo
         arguments.
 """
+from __future__ import annotations
+
 import json
 import logging
 from argparse import ArgumentParser, Namespace
 from pathlib import Path
-from typing import Union
 
 from mimeo import MimeoConfig
 from mimeo.cli.exc import (EnvironmentNotFoundError,
@@ -25,7 +26,9 @@ DEFAULT_ENVS_PATH = "mimeo.envs.json"
 class MimeoArgumentParser(ArgumentParser):
     """A custom ArgumentParser for the Mimeo CLI."""
 
-    def __init__(self):
+    def __init__(
+            self,
+    ):
         """Initialize MimeoArgumentParser class.
 
         Extends ArgumentParser constructor with a Mimeo CLI details.
@@ -90,7 +93,9 @@ class MimeoArgumentParser(ArgumentParser):
         self._add_mimeo_configuration_arguments()
         self._add_logging_arguments()
 
-    def _add_positional_arguments(self):
+    def _add_positional_arguments(
+            self,
+    ):
         """Add positional arguments."""
         self.add_argument(
             "-v",
@@ -103,7 +108,9 @@ class MimeoArgumentParser(ArgumentParser):
             type=str,
             help="take paths to Mimeo Configuration files")
 
-    def _add_mimeo_configuration_arguments(self):
+    def _add_mimeo_configuration_arguments(
+            self,
+    ):
         """Add arguments overwriting Mimeo Configuration."""
         mimeo_config_args = self.add_argument_group("Mimeo Configuration arguments")
         mimeo_config_args.add_argument(
@@ -192,7 +199,9 @@ class MimeoArgumentParser(ArgumentParser):
             metavar="PATH",
             help=f"use a custom environments file (by default: {DEFAULT_ENVS_PATH})")
 
-    def _add_logging_arguments(self):
+    def _add_logging_arguments(
+            self,
+    ):
         """Add arguments customizing logs producing."""
         logging_args = self.add_argument_group("Logging arguments")
         logging_args_excl = logging_args.add_mutually_exclusive_group()
@@ -284,7 +293,11 @@ class MimeoConfigParser:
         },
     }
 
-    def __init__(self, config: dict, args: Namespace):
+    def __init__(
+            self,
+            config: dict,
+            args: Namespace,
+    ):
         """Initialize MimeoConfigParser class.
 
         Parameters
@@ -297,7 +310,9 @@ class MimeoConfigParser:
         self._raw_config = config
         self._args = args
 
-    def parse_config(self) -> MimeoConfig:
+    def parse_config(
+            self,
+    ) -> MimeoConfig:
         """Parse a Mimeo Configuration using Mimeo arguments.
 
         The parsing is made according to the following rule:
@@ -327,7 +342,10 @@ class MimeoConfigParser:
         logger.fine("Parsed Mimeo Configuration: [%s]", mimeo_config)
         return mimeo_config
 
-    def _parse_with_http_environment(self, config: dict) -> dict:
+    def _parse_with_http_environment(
+            self,
+            config: dict,
+    ) -> dict:
         """Parse Mimeo Configuration with an HTTP environment.
 
         When --http-envs-file argument has not been provided, then
@@ -361,7 +379,10 @@ class MimeoConfigParser:
             env = self._get_environment(self._args.http_envs_file, self._args.http_env)
         return self._overwrite_output_with_env(config, env)
 
-    def _parse_with_specific_args(self, config: dict) -> dict:
+    def _parse_with_specific_args(
+            self,
+            config: dict,
+    ) -> dict:
         """Parse Mimeo Configuration with Mimeo Configuration args.
 
         This method uses an internal `dict` fetching each command line
@@ -389,7 +410,11 @@ class MimeoConfigParser:
         return config
 
     @classmethod
-    def _overwrite_output_with_env(cls, config: dict, env: dict) -> dict:
+    def _overwrite_output_with_env(
+            cls,
+            config: dict,
+            env: dict,
+    ) -> dict:
         """Overwrite Mimeo Output Details with an environment config.
 
         Parameters
@@ -416,7 +441,7 @@ class MimeoConfigParser:
             cls,
             config_entry: dict,
             entry_path: list,
-            value: Union[str, int, bool],
+            value: str | int | bool,
     ) -> dict:
         """Overwrite a Mimeo Configuration entry.
 
@@ -455,7 +480,10 @@ class MimeoConfigParser:
         return config_entry
 
     @staticmethod
-    def _get_environment(envs_path: str, env_name: str) -> dict:
+    def _get_environment(
+            envs_path: str,
+            env_name: str,
+    ) -> dict:
         """Load an HTTP environment from HTTP envs vile.
 
         Parameters

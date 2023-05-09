@@ -34,7 +34,9 @@ class ConsumerFactory:
     HTTP_DIRECTION = MimeoConfig.OUTPUT_DIRECTION_HTTP
 
     @staticmethod
-    def get_consumer(mimeo_config: MimeoConfig) -> Consumer:
+    def get_consumer(
+            mimeo_config: MimeoConfig,
+    ) -> Consumer:
         """Initialize a Consumer based on the Mimeo Output Direction.
 
         Parameters

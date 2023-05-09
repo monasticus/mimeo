@@ -30,7 +30,10 @@ class LastNamesDB:
     _LAST_NAMES_DB = "surnames.txt"
     _LAST_NAMES = None
 
-    def get_last_name_at(self, index: int) -> str:
+    def get_last_name_at(
+            self,
+            index: int,
+    ) -> str:
         """Get a last name at `index` position.
 
         Parameters
@@ -56,7 +59,9 @@ class LastNamesDB:
             raise InvalidIndexError(index, last_index) from IndexError
 
     @classmethod
-    def get_last_names(cls) -> List[str]:
+    def get_last_names(
+            cls,
+    ) -> List[str]:
         """Get all last names.
 
         Returns
@@ -67,7 +72,9 @@ class LastNamesDB:
         return cls.__get_last_names().copy()
 
     @classmethod
-    def __get_last_names(cls) -> list:
+    def __get_last_names(
+            cls,
+    ) -> list:
         """Get all last names from cache.
 
         The last names list is initialized for the first time and

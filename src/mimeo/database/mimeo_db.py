@@ -66,13 +66,17 @@ class MimeoDB:
     NUM_OF_FIRST_NAMES = FirstNamesDB.NUM_OF_RECORDS
     NUM_OF_LAST_NAMES = LastNamesDB.NUM_OF_RECORDS
 
-    def __init__(self):
+    def __init__(
+            self,
+    ):
         self.__cities_db = CitiesDB()
         self.__countries_db = CountriesDB()
         self.__first_names_db = FirstNamesDB()
         self.__last_names_db = LastNamesDB()
 
-    def get_cities(self) -> List[City]:
+    def get_cities(
+            self,
+    ) -> List[City]:
         """Get all cities.
 
         Returns
@@ -82,7 +86,10 @@ class MimeoDB:
         """
         return self.__cities_db.get_cities()
 
-    def get_cities_of(self, country: str) -> List[City]:
+    def get_cities_of(
+            self,
+            country: str,
+    ) -> List[City]:
         """Get cities of a specific country.
 
         In contrast to CitiesDB.get_cities_of() method it combines
@@ -108,7 +115,10 @@ class MimeoDB:
             return []
         return self.__cities_db.get_cities_of(country.iso_3)
 
-    def get_city_at(self, index: int) -> City:
+    def get_city_at(
+            self,
+            index: int,
+    ) -> City:
         """Get a city at `index` position.
 
         Parameters
@@ -128,7 +138,9 @@ class MimeoDB:
         """
         return self.__cities_db.get_city_at(index)
 
-    def get_countries(self) -> List[Country]:
+    def get_countries(
+            self,
+    ) -> List[Country]:
         """Get all countries.
 
         Returns
@@ -138,7 +150,10 @@ class MimeoDB:
         """
         return self.__countries_db.get_countries()
 
-    def get_country_at(self, index: int) -> Country:
+    def get_country_at(
+            self,
+            index: int,
+    ) -> Country:
         """Get a country at `index` position.
 
         Parameters
@@ -158,7 +173,10 @@ class MimeoDB:
         """
         return self.__countries_db.get_country_at(index)
 
-    def get_country_by_iso_3(self, iso_3: str) -> Country:
+    def get_country_by_iso_3(
+            self,
+            iso_3: str,
+    ) -> Country:
         """Get a country having a specific ISO3 code.
 
         Parameters
@@ -173,7 +191,10 @@ class MimeoDB:
         """
         return self.__countries_db.get_country_by_iso_3(iso_3)
 
-    def get_country_by_iso_2(self, iso_2: str) -> Country:
+    def get_country_by_iso_2(
+            self,
+            iso_2: str,
+    ) -> Country:
         """Get a country having a specific ISO2 code.
 
         Parameters
@@ -188,7 +209,10 @@ class MimeoDB:
         """
         return self.__countries_db.get_country_by_iso_2(iso_2)
 
-    def get_country_by_name(self, name: str) -> Country:
+    def get_country_by_name(
+            self,
+            name: str,
+    ) -> Country:
         """Get a country having a specific name.
 
         Parameters
@@ -203,7 +227,9 @@ class MimeoDB:
         """
         return self.__countries_db.get_country_by_name(name)
 
-    def get_first_names(self) -> List[FirstName]:
+    def get_first_names(
+            self,
+    ) -> List[FirstName]:
         """Get all first names.
 
         Returns
@@ -213,7 +239,10 @@ class MimeoDB:
         """
         return self.__first_names_db.get_first_names()
 
-    def get_first_names_by_sex(self, sex: str) -> List[FirstName]:
+    def get_first_names_by_sex(
+            self,
+            sex: str,
+    ) -> List[FirstName]:
         """Get first names for a specific sex.
 
         Parameters
@@ -233,7 +262,10 @@ class MimeoDB:
         """
         return self.__first_names_db.get_first_names_by_sex(sex)
 
-    def get_first_name_at(self, index: int) -> FirstName:
+    def get_first_name_at(
+            self,
+            index: int,
+    ) -> FirstName:
         """Get a first name at `index` position.
 
         Parameters
@@ -253,7 +285,9 @@ class MimeoDB:
         """
         return self.__first_names_db.get_first_name_at(index)
 
-    def get_last_names(self) -> List[str]:
+    def get_last_names(
+            self,
+    ) -> List[str]:
         """Get all last names.
 
         Returns
@@ -263,7 +297,10 @@ class MimeoDB:
         """
         return self.__last_names_db.get_last_names()
 
-    def get_last_name_at(self, index: int) -> str:
+    def get_last_name_at(
+            self,
+            index: int,
+    ) -> str:
         """Get a last name at `index` position.
 
         Parameters

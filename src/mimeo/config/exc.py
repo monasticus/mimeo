@@ -25,7 +25,9 @@ class UnsupportedPropertyValueError(Exception):
     not being supported by Mimeo.
     """
 
-    def __init__(self, prop: str, val: str, supported_values: tuple):
+    def __init__(
+            self, prop: str, val: str, supported_values: tuple,
+    ):
         """Initialize UnsupportedPropertyValueError exception with details.
 
         Extends Exception constructor with a custom message.
@@ -57,7 +59,10 @@ class InvalidIndentError(Exception):
     Raised when a configured indent is negative.
     """
 
-    def __init__(self, indent: int):
+    def __init__(
+            self,
+            indent: int,
+    ):
         """Initialize InvalidIndentError exception with details.
 
         Extends Exception constructor with a custom message.

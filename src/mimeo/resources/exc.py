@@ -12,7 +12,10 @@ class ResourceNotFoundError(Exception):
     Raised while attempting to get a resource that does exist.
     """
 
-    def __init__(self, resource_name: str):
+    def __init__(
+            self,
+            resource_name: str,
+    ):
         """Initialize ResourceNotFoundError exception with details.
 
         Extends Exception constructor with a custom message.

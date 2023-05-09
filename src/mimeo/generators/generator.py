@@ -21,7 +21,7 @@ class Generator(metaclass=ABCMeta):
     Methods
     -------
     generate(
-        templates: Union[list, Iterator[MimeoTemplate]],
+        templates: list | Iterator[MimeoTemplate],
         parent: Any = None
     ) -> Iterator[Any]
         Generate data based on the Mimeo Configuration.
@@ -65,7 +65,7 @@ class Generator(metaclass=ABCMeta):
 
         Parameters
         ----------
-        templates : Union[list, Iterator[MimeoTemplate]]
+        templates : list | Iterator[MimeoTemplate]
             A collection of Mimeo Templates to process
         parent : Any, default None
             A parent node for the currently processed template.
