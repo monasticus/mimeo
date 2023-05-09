@@ -48,7 +48,7 @@ class FileConsumer(Consumer):
         """
         self.directory = output.directory_path
         self.output_path_tmplt = f"{self.directory}/{output.file_name}"
-        self.__count = 0
+        self._count = 0
 
     def consume(
             self,
@@ -70,9 +70,8 @@ class FileConsumer(Consumer):
             logger.info("Creating output directory [%s]", self.directory)
             Path(self.directory).mkdir(parents=True, exist_ok=True)
 
-        self.__count += 1
-        file_name = self.output_path_tmplt.format(self.__count)
+        self._count += 1
+        file_name = self.output_path_tmplt.format(self._count)
 
         logger.info("Writing data into file [%s]", file_name)
-        with Path(file_name).open("w") as output_file:
-            output_file.write(data)
+        Path(file_name).write_text(data)

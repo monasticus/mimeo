@@ -17,5 +17,5 @@ def test_str():
 
 def test_repr():
     city = City("1234", "London", "London", "GBR")
-    exp_repr = "City('1234', 'London', 'London', 'GBR')"
+    exp_repr = "City(id='1234', name='London', name_ascii='London', country='GBR')"
     assert city.__repr__() == exp_repr

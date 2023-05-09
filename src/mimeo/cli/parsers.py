@@ -469,11 +469,12 @@ class MimeoConfigParser:
         """
         direct_entry = entry_path[0]
         if len(entry_path) > 1:
-            if config_entry.get(direct_entry) is None:
+            if direct_entry not in config_entry:
                 config_entry[direct_entry] = {}
-            value = cls._overwrite_config_entry(config_entry[direct_entry],
-                                                entry_path[1:],
-                                                value)
+            value = cls._overwrite_config_entry(
+                config_entry[direct_entry],
+                entry_path[1:],
+                value)
         else:
             logger.fine("Overwriting %s to [%s]", direct_entry, value)
         config_entry[direct_entry] = value

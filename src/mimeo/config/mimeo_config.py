@@ -400,12 +400,14 @@ class MimeoOutput(MimeoDTO):
         UnsupportedPropertyValueError
             If the configured output direction is not supported
         """
-        direction = output.get(MimeoConfig.OUTPUT_DIRECTION_KEY,
-                               MimeoConfig.OUTPUT_DIRECTION_FILE)
+        direction = output.get(
+            MimeoConfig.OUTPUT_DIRECTION_KEY,
+            MimeoConfig.OUTPUT_DIRECTION_FILE)
         if direction not in MimeoConfig.SUPPORTED_OUTPUT_DIRECTIONS:
-            raise UnsupportedPropertyValueError(MimeoConfig.OUTPUT_DIRECTION_KEY,
-                                                direction,
-                                                MimeoConfig.SUPPORTED_OUTPUT_DIRECTIONS)
+            raise UnsupportedPropertyValueError(
+                MimeoConfig.OUTPUT_DIRECTION_KEY,
+                direction,
+                MimeoConfig.SUPPORTED_OUTPUT_DIRECTIONS)
         return direction
 
     @staticmethod
@@ -429,12 +431,14 @@ class MimeoOutput(MimeoDTO):
         UnsupportedPropertyValueError
             If the customized output format is not supported
         """
-        output_format = config.get(MimeoConfig.OUTPUT_FORMAT_KEY,
-                                   MimeoConfig.OUTPUT_FORMAT_XML)
+        output_format = config.get(
+            MimeoConfig.OUTPUT_FORMAT_KEY,
+            MimeoConfig.OUTPUT_FORMAT_XML)
         if output_format not in MimeoConfig.SUPPORTED_OUTPUT_FORMATS:
-            raise UnsupportedPropertyValueError(MimeoConfig.OUTPUT_FORMAT_KEY,
-                                                output_format,
-                                                MimeoConfig.SUPPORTED_OUTPUT_FORMATS)
+            raise UnsupportedPropertyValueError(
+                MimeoConfig.OUTPUT_FORMAT_KEY,
+                output_format,
+                MimeoConfig.SUPPORTED_OUTPUT_FORMATS)
         return output_format
 
     @staticmethod
@@ -544,12 +548,14 @@ class MimeoOutput(MimeoDTO):
         """
         method = None
         if direction == MimeoConfig.OUTPUT_DIRECTION_HTTP:
-            method = output.get(MimeoConfig.OUTPUT_METHOD_KEY,
-                                MimeoConfig.OUTPUT_DIRECTION_HTTP_REQUEST_POST)
+            method = output.get(
+                MimeoConfig.OUTPUT_METHOD_KEY,
+                MimeoConfig.OUTPUT_DIRECTION_HTTP_REQUEST_POST)
             if method not in MimeoConfig.SUPPORTED_REQUEST_METHODS:
-                raise UnsupportedPropertyValueError(MimeoConfig.OUTPUT_METHOD_KEY,
-                                                    method,
-                                                    MimeoConfig.SUPPORTED_REQUEST_METHODS)
+                raise UnsupportedPropertyValueError(
+                    MimeoConfig.OUTPUT_METHOD_KEY,
+                    method,
+                    MimeoConfig.SUPPORTED_REQUEST_METHODS)
         return method
 
     @staticmethod
@@ -683,12 +689,14 @@ class MimeoOutput(MimeoDTO):
         """
         auth = None
         if direction == MimeoConfig.OUTPUT_DIRECTION_HTTP:
-            auth = output.get(MimeoConfig.OUTPUT_AUTH_KEY,
-                              MimeoConfig.OUTPUT_DIRECTION_HTTP_AUTH_BASIC)
+            auth = output.get(
+                MimeoConfig.OUTPUT_AUTH_KEY,
+                MimeoConfig.OUTPUT_DIRECTION_HTTP_AUTH_BASIC)
             if auth not in MimeoConfig.SUPPORTED_AUTH_METHODS:
-                raise UnsupportedPropertyValueError(MimeoConfig.OUTPUT_AUTH_KEY,
-                                                    auth,
-                                                    MimeoConfig.SUPPORTED_AUTH_METHODS)
+                raise UnsupportedPropertyValueError(
+                    MimeoConfig.OUTPUT_AUTH_KEY,
+                    auth,
+                    MimeoConfig.SUPPORTED_AUTH_METHODS)
         return auth
 
     @staticmethod

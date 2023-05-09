@@ -69,11 +69,12 @@ class HttpConsumer(Consumer):
         logger.fine("Consuming data [%s]", data)
         with Session() as sess:
             logger.info("Sending request %s %s", self.method, self.url)
-            return sess.request(self.method,
-                                self.url,
-                                auth=self.__auth,
-                                data=data,
-                                headers={"Content-Type": "application/xml"})
+            return sess.request(
+                self.method,
+                self.url,
+                auth=self.__auth,
+                data=data,
+                headers={"Content-Type": "application/xml"})
 
     @staticmethod
     def __build_url(

@@ -82,10 +82,10 @@ class City:
             A python representation of the City instance
         """
         return (f"City("
-                f"'{self.id}', "
-                f"'{self.name}', "
-                f"'{self.name_ascii}', "
-                f"'{self.country}')")
+                f"id='{self.id}', "
+                f"name='{self.name}', "
+                f"name_ascii='{self.name_ascii}', "
+                f"country='{self.country}')")
 
 
 class CitiesDB:

@@ -108,8 +108,9 @@ class MimeoDB:
         list[City]
             List of cities filtered by country
         """
-        countries = filter(lambda c: country in [c.iso_3, c.iso_2, c.name],
-                           self.get_countries())
+        countries = filter(
+            lambda c: country in [c.iso_3, c.iso_2, c.name],
+            self.get_countries())
         country = next(countries, None)
         if country is None:
             return []

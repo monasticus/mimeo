@@ -29,7 +29,7 @@ from mimeo import tools
 
 from .filters import DetailedFilter, RegularFilter
 
-__all__ = ["DetailedFilter", "RegularFilter"]
+__all__ = ["DetailedFilter", "RegularFilter", "setup_logging"]
 
 
 def setup_logging():

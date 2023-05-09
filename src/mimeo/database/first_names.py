@@ -68,8 +68,8 @@ class FirstName:
             A python representation of the FirstName instance
         """
         return (f"FirstName("
-                f"'{self.name}', "
-                f"'{self.sex}')")
+                f"name='{self.name}', "
+                f"sex='{self.sex}')")
 
 
 class FirstNamesDB:

@@ -6,6 +6,8 @@ It exports only one class:
 """
 from __future__ import annotations
 
+from types import TracebackType
+
 from mimeo.config import MimeoConfig
 from mimeo.context import MimeoContext
 from mimeo.context.exc import VarNotFoundError
@@ -69,9 +71,9 @@ class MimeoContextManager(Alive, metaclass=OnlyOneAlive):
 
     def __exit__(
             self,
-            exc_type,
-            exc_val,
-            exc_tb,
+            exc_type: type | None,
+            exc_val: BaseException | None,
+            exc_tb: TracebackType | None,
     ) -> None:
         """Exit the MimeoContextManager instance.
 
@@ -80,11 +82,11 @@ class MimeoContextManager(Alive, metaclass=OnlyOneAlive):
 
         Parameters
         ----------
-        exc_type
+        exc_type : type | None
             An exception's type
-        exc_val
+        exc_val : BaseException | None
             An exception's value
-        exc_tb
+        exc_tb  TracebackType | None
             An exception's traceback
 
         Returns

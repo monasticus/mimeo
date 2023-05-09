@@ -104,18 +104,19 @@ class XMLGenerator(Generator):
             Stringified data unit
         """
         if self.__indent is None or self.__indent == 0:
-            node_str = ElemTree.tostring(data_unit,
-                                         encoding="utf-8",
-                                         method="xml",
-                                         xml_declaration=self.__xml_declaration)
+            node_str = ElemTree.tostring(
+                data_unit,
+                encoding="utf-8",
+                method="xml",
+                xml_declaration=self.__xml_declaration)
         else:
             xml_string = ElemTree.tostring(data_unit)
             xml_minidom = minidom.parseString(xml_string)
-
             if self.__xml_declaration is False:
                 xml_minidom = xml_minidom.childNodes[0]
-            node_str = xml_minidom.toprettyxml(indent=" " * self.__indent,
-                                               encoding="utf-8")
+            node_str = xml_minidom.toprettyxml(
+                indent=" " * self.__indent,
+                encoding="utf-8")
         return node_str.decode("ascii")
 
     @classmethod
@@ -187,8 +188,7 @@ class XMLGenerator(Generator):
         """
         element_meta = cls._element_meta(
             template.model.root_name,
-            template.model.root_data,
-        )
+            template.model.root_data)
         return cls._process_node(parent, element_meta)
 
     @classmethod
@@ -285,8 +285,7 @@ class XMLGenerator(Generator):
             value,
             attrs,
             is_mimeo_util,
-            is_special_field,
-        )
+            is_special_field)
 
     @staticmethod
     def _is_complex(
@@ -711,7 +710,9 @@ class XMLGenerator(Generator):
             Otherwise, returns ElemTree.SubElement
         """
         if parent is None:
-            return ElemTree.Element(element_meta["tag"], attrib=element_meta["attrs"])
+            return ElemTree.Element(
+                element_meta["tag"],
+                attrib=element_meta["attrs"])
         return ElemTree.SubElement(
             parent,
             element_meta["tag"],

@@ -14,4 +14,4 @@ def test_str():
 
 def test_repr():
     first_name = FirstName("Dave", "M")
-    assert first_name.__repr__() == "FirstName('Dave', 'M')"
+    assert first_name.__repr__() == "FirstName(name='Dave', sex='M')"

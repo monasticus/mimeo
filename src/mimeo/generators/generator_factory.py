@@ -54,6 +54,7 @@ class GeneratorFactory:
         output_format = mimeo_config.output.format
         if output_format == GeneratorFactory.XML:
             return XMLGenerator(mimeo_config)
-        raise UnsupportedPropertyValueError(MimeoConfig.OUTPUT_FORMAT_KEY,
-                                            output_format,
-                                            MimeoConfig.SUPPORTED_OUTPUT_FORMATS)
+        raise UnsupportedPropertyValueError(
+            MimeoConfig.OUTPUT_FORMAT_KEY,
+            output_format,
+            MimeoConfig.SUPPORTED_OUTPUT_FORMATS)

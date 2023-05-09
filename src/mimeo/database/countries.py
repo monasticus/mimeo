@@ -76,9 +76,9 @@ class Country:
             A python representation of the Country instance
         """
         return (f"Country("
-                f"'{self.iso_3}', "
-                f"'{self.iso_2}', "
-                f"'{self.name}')")
+                f"iso_3='{self.iso_3}', "
+                f"iso_2='{self.iso_2}', "
+                f"name='{self.name}')")
 
 
 class CountriesDB:

@@ -37,6 +37,8 @@ with SomeClass({'x': 1}) as alive_1:
 """
 from __future__ import annotations
 
+from types import TracebackType
+
 from mimeo.meta.exc import InstanceNotAliveError
 
 
@@ -106,9 +108,9 @@ class Alive:
 
     def __exit__(
             self,
-            exc_type,
-            exc_val,
-            exc_tb,
+            exc_type: type | None,
+            exc_val: BaseException | None,
+            exc_tb: TracebackType | None,
     ) -> None:
         """Exit the Alive instance.
 
@@ -116,11 +118,11 @@ class Alive:
 
         Parameters
         ----------
-        exc_type
+        exc_type : type | None
             An exception's type
-        exc_val
+        exc_val : BaseException | None
             An exception's value
-        exc_tb
+        exc_tb  TracebackType | None
             An exception's traceback
 
         Returns
