@@ -7,6 +7,7 @@ name = "mimeograph"
 version = "0.4.2"
 description = "Generate data based on a simple template"
 readme = "README.md"
+requires-python = ">=3.8"
 authors = [{ name = "T.A. Programming Svcs.", email = "tomasz.maciej.aniolowski@gmail.com" }]
 license = { file = "LICENSE" }
 classifiers = [
@@ -15,19 +16,27 @@ classifiers = [
     "Environment :: Console",
     "Intended Audience :: Developers",
     "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
     "Topic :: Database",
     "Topic :: Software Development",
     "Topic :: Software Development :: Testing",
     "Topic :: Utilities",
 ]
-keywords = ["mimeograph", "mimeo", "generate", "generator"]
+keywords = ["mimeograph", "mimeo", "generate", "generator", "data", "xml"]
 dependencies = [
     "requests",
     "pandas",
     "pyyaml",
     "haggis"
 ]
-requires-python = ">=3.8"
+
+[project.urls]
+GitHub = "https://github.com/TomaszAniolowski/mimeo"
 
 [project.optional-dependencies]
 dev = ["bumpver", "build", "twine", "ruff", "isort", "pytest", "pytest-cov", "responses"]
@@ -59,7 +68,7 @@ exclude_lines = [
     # Don't complain if non-runnable code isn't run:
     "if __name__ == .__main__.:",
     # Don't complain about abstract methods, they aren't run:
-    "raise NotImplementedError"
+    "raise NotImplementedError$"
 ]
 
 [tool.isort]

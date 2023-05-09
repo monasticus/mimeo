@@ -1,7 +1,10 @@
-
 # Mimeo (Mimeograph)
 
-**Mimeo** is a command line tool and python library generating custom data based on a template.
+[![License](https://img.shields.io/github/license/TomaszAniolowski/mimeo?label=License&style=plastic)](https://github.com/TomaszAniolowski/mimeo/blob/develop/LICENSE)
+[![Version](https://img.shields.io/pypi/v/mimeograph?color=blue&label=PyPI&style=plastic)](https://pypi.org/project/mimeograph/)  
+[![Build](https://github.com/TomaszAniolowski/mimeo/actions/workflows/test.yml/badge.svg?style=plastic&branch=develop)](https://github.com/TomaszAniolowski/mimeo/actions/workflows/test.yml?query=branch%3Adevelop)
+
+[Mimeo](https://github.com/TomaszAniolowski/mimeo) is a command line tool and python library generating custom data based on a template.
 It can be used by developers, testers or even business analysts in their daily work.
 
 
