@@ -3,6 +3,7 @@ init:
 
 imports:
 	@isort .
+	@isort -a "from __future__ import annotations" src scripts
 
 data:
 	@./scripts/collect_cities_and_countries_data.py
@@ -34,3 +35,8 @@ upgrade:
 	@make --no-print-directory bump v=$(v)
 	@make --no-print-directory build
 	@make --no-print-directory publish v=`make --no-print-directory latest_tag`
+
+check_new_linters:
+	python -m pip install --upgrade ruff
+	@./meta/linters/look_for_new_linters.py
+

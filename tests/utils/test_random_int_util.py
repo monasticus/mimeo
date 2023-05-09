@@ -14,8 +14,9 @@ def test_random_int_raw():
 
 def test_random_int_parametrized_default():
     random_integers = set()
+    mimeo_util = {"_name": "random_int"}
     for _ in range(100):
-        random_int = UtilsRenderer.render_parametrized({"_name": "random_int"})
+        random_int = UtilsRenderer.render_parametrized(mimeo_util)
         assert isinstance(random_int, int)
         assert random_int >= 1
         assert random_int <= 100
@@ -25,8 +26,9 @@ def test_random_int_parametrized_default():
 
 def test_random_int_parametrized_with_start_only():
     random_integers = set()
+    mimeo_util = {"_name": "random_int", "start": 0}
     for _ in range(100):
-        random_int = UtilsRenderer.render_parametrized({"_name": "random_int", "start": 0})
+        random_int = UtilsRenderer.render_parametrized(mimeo_util)
         assert isinstance(random_int, int)
         assert random_int >= 0
         assert random_int <= 100
@@ -36,8 +38,9 @@ def test_random_int_parametrized_with_start_only():
 
 def test_random_int_parametrized_with_limit_only():
     random_integers = set()
+    mimeo_util = {"_name": "random_int", "limit": 10}
     for _ in range(100):
-        random_int = UtilsRenderer.render_parametrized({"_name": "random_int", "limit": 10})
+        random_int = UtilsRenderer.render_parametrized(mimeo_util)
         assert isinstance(random_int, int)
         assert random_int >= 1
         assert random_int <= 10
@@ -46,9 +49,10 @@ def test_random_int_parametrized_with_limit_only():
 
 
 def test_random_int_parametrized_with_limit_and_start():
+    mimeo_util = {"_name": "random_int", "start": 8, "limit": 10}
     random_integers = set()
     for _ in range(100):
-        random_int = UtilsRenderer.render_parametrized({"_name": "random_int", "start": 8, "limit": 10})
+        random_int = UtilsRenderer.render_parametrized(mimeo_util)
         assert isinstance(random_int, int)
         assert random_int >= 8
         assert random_int <= 10

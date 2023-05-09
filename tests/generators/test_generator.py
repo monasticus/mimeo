@@ -1,12 +1,10 @@
 import xml.etree.ElementTree as ElemTree
 from typing import Any, Iterator, Union
 
-import pytest
-
 import tests.utils as test_utils
-from mimeo.config import MimeoConfig
 from mimeo.config.mimeo_config import MimeoTemplate
 from mimeo.generators import Generator
+from tests.utils import assert_throws
 
 
 class ValidGenerator(Generator):
@@ -15,7 +13,7 @@ class ValidGenerator(Generator):
                  parent: Any = None) -> Iterator[ElemTree.Element]:
         pass
 
-    def stringify(self, data: ElemTree.Element, mimeo_config: MimeoConfig) -> str:
+    def stringify(self, data: ElemTree.Element) -> str:
         pass
 
 
@@ -27,7 +25,7 @@ class InvalidGenerator1(Generator):
 
 
 class InvalidGenerator2(Generator):
-    def stringify(self, data: ElemTree.Element, mimeo_config: MimeoConfig) -> str:
+    def stringify(self, data: ElemTree.Element) -> str:
         pass
 
 
@@ -50,21 +48,31 @@ def test_valid_class_instantiation():
         ValidGenerator()
         assert True
     except TypeError:
-        assert False
+        raise AssertionError from TypeError
 
 
-def test_invalid_class_instantiation():
-    with pytest.raises(TypeError) as err:
-        InvalidGenerator1()
+@assert_throws(err_type=TypeError,
+               msg=test_utils.get_class_impl_error_msg(
+                   "InvalidGenerator1",
+                   ["stringify"],
+               ))
+def test_invalid_class_instantiation_1():
+    InvalidGenerator1()
 
-    assert err.value.args[0] == test_utils.get_class_impl_error_msg("InvalidGenerator1", ["stringify"])
 
-    with pytest.raises(TypeError) as err:
-        InvalidGenerator2()
+@assert_throws(err_type=TypeError,
+               msg=test_utils.get_class_impl_error_msg(
+                   "InvalidGenerator2",
+                   ["generate"],
+               ))
+def test_invalid_class_instantiation_2():
+    InvalidGenerator2()
 
-    assert err.value.args[0] == test_utils.get_class_impl_error_msg("InvalidGenerator2", ["generate"])
 
-    with pytest.raises(TypeError) as err:
-        InvalidGenerator3()
-
-    assert err.value.args[0] == test_utils.get_class_impl_error_msg("InvalidGenerator3", ["generate", "stringify"])
+@assert_throws(err_type=TypeError,
+               msg=test_utils.get_class_impl_error_msg(
+                   "InvalidGenerator3",
+                   ["generate", "stringify"],
+               ))
+def test_invalid_class_instantiation_3():
+    InvalidGenerator3()

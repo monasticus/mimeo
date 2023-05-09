@@ -7,6 +7,7 @@ name = "mimeograph"
 version = "0.4.2"
 description = "Generate data based on a simple template"
 readme = "README.md"
+requires-python = ">=3.8"
 authors = [{ name = "T.A. Programming Svcs.", email = "tomasz.maciej.aniolowski@gmail.com" }]
 license = { file = "LICENSE" }
 classifiers = [
@@ -15,23 +16,31 @@ classifiers = [
     "Environment :: Console",
     "Intended Audience :: Developers",
     "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
     "Topic :: Database",
     "Topic :: Software Development",
     "Topic :: Software Development :: Testing",
     "Topic :: Utilities",
 ]
-keywords = ["mimeograph", "mimeo", "generate", "generator"]
+keywords = ["mimeograph", "mimeo", "generate", "generator", "data", "xml"]
 dependencies = [
     "requests",
     "pandas",
     "pyyaml",
     "haggis"
 ]
-requires-python = ">=3.8"
+
+[project.urls]
+GitHub = "https://github.com/TomaszAniolowski/mimeo"
 
 [project.optional-dependencies]
-dev = ["bumpver", "build", "twine", "pylama", "isort", "pytest", "pytest-cov", "responses"]
-test = ["pylama", "pytest", "pytest-cov", "responses"]
+dev = ["bumpver", "build", "twine", "ruff", "isort", "pytest", "pytest-cov", "responses"]
+test = ["pytest", "pytest-cov", "responses"]
 
 [project.scripts]
 mimeo = "mimeo.__main__:main"
@@ -57,9 +66,9 @@ show_missing = true
 skip_covered = true
 exclude_lines = [
     # Don't complain if non-runnable code isn't run:
-    "if __name__ == '__main__':",
+    "if __name__ == .__main__.:",
     # Don't complain about abstract methods, they aren't run:
-    "raise NotImplementedError"
+    "raise NotImplementedError$"
 ]
 
 [tool.isort]
@@ -71,17 +80,49 @@ skip_glob=[
     "src/mimeo/generators/__init__.py"
 ]
 
-[tool.pylama]
-async = true
-linters = "mccabe,pycodestyle,pydocstyle,pyflakes"
+[tool.ruff]
+select = ["F", "E", "W", "C90", "N", "D", "UP", "B", "A", "COM", "C4", "EM", "EXE", "ISC", "G", "PIE", "T20", "PT", "Q", "RSE", "RET", "SLF", "SIM", "ARG", "PTH", "ERA", "PD", "PGH", "PL", "TRY", "RUF"]
+ignore = []
+exclude = [
+    ".git",
+    ".github",
+    ".idea",
+    ".pytest_cache",
+    ".ruff_cache",
+    ".venv",
+    "__pycache__",
+    "dist",
+    "venv",
+    "examples",
+    "meta",
+    "tmp"
+]
+ignore-init-module-imports = true
 
-[tool.pylama.linter.pydocstyle]
+[tool.ruff.pydocstyle]
 convention = "numpy"
 
-[[tool.pylama.files]]
-path = "*/__init__.py"
-ignore = "W0611"
+[tool.ruff.mccabe]
+max-complexity = 10
 
-[[tool.pylama.files]]
-path = "tests/*"
-linters = "mccabe,pycodestyle,pyflakes"
+[tool.ruff.per-file-ignores]
+"scripts/*" = [
+    "T20" # allow for print in scripts
+]
+"tests/*" = [
+    "D", # disable pydocstyle for tests
+    "PLC1901", # allow comparison to blank string in tests
+    "PLR2004" # allow magic values in tests
+]
+"src/mimeo/consumers/raw_consumer.py" = [
+    "T20" # allow for print in raw consumer
+]
+"src/mimeo/logging/filters.py" = [
+    "A003" # an external superclass
+]
+"src/mimeo/utils/mimeo_utils.py" = [
+    "ARG002" # ignore unexpected keyword arguments
+]
+"tests/utils/test_mimeo_util.py" = [
+    "N802" # the test scenario requires uppercased function name
+]

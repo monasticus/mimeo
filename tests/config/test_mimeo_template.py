@@ -1,7 +1,6 @@
-import pytest
-
-from mimeo.config.exc import InvalidMimeoTemplate
+from mimeo.config.exc import InvalidMimeoTemplateError
 from mimeo.config.mimeo_config import MimeoTemplate
+from tests.utils import assert_throws
 
 
 def test_str():
@@ -9,9 +8,9 @@ def test_str():
       "count": 30,
       "model": {
         "SomeEntity": {
-          "ChildNode": "value"
-        }
-      }
+          "ChildNode": "value",
+        },
+      },
     }
 
     mimeo_template = MimeoTemplate(template)
@@ -23,42 +22,38 @@ def test_parsing_template():
       "count": 30,
       "model": {
         "SomeEntity": {
-          "ChildNode": "value"
-        }
-      }
+          "ChildNode": "value",
+        },
+      },
     }
 
     mimeo_template = MimeoTemplate(template)
     assert mimeo_template.count == 30
     assert mimeo_template.model.root_name == "SomeEntity"
     assert mimeo_template.model.root_data == {
-        "ChildNode": "value"
+        "ChildNode": "value",
     }
 
 
+@assert_throws(err_type=InvalidMimeoTemplateError,
+               msg="No count value in the Mimeo Template: {tmplt}",
+               params={"tmplt": "{'model': {'SomeEntity': {'ChildNode': 'value'}}}"})
 def test_parsing_template_without_count():
     template = {
       "model": {
         "SomeEntity": {
-          "ChildNode": "value"
-        }
-      }
+          "ChildNode": "value",
+        },
+      },
     }
-
-    with pytest.raises(InvalidMimeoTemplate) as err:
-        MimeoTemplate(template)
-
-    assert err.value.args[0] == "No count value in the Mimeo Template: " \
-                                "{'model': {'SomeEntity': {'ChildNode': 'value'}}}"
+    MimeoTemplate(template)
 
 
+@assert_throws(err_type=InvalidMimeoTemplateError,
+               msg="No model data in the Mimeo Template: {tmplt}",
+               params={"tmplt": "{'count': 30}"})
 def test_parsing_template_with_multiple_roots():
     template = {
-      "count": 30
+      "count": 30,
     }
-
-    with pytest.raises(InvalidMimeoTemplate) as err:
-        MimeoTemplate(template)
-
-    assert err.value.args[0] == "No model data in the Mimeo Template: " \
-                                "{'count': 30}"
+    MimeoTemplate(template)

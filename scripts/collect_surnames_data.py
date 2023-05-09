@@ -8,6 +8,8 @@ Result of this script is src/mimeo/resources/surnames.txt file
 and number of records updated in src/mimeo/database/last_names.py.
 All source files are removed.
 """
+from __future__ import annotations
+
 import pandas
 import utils
 
@@ -18,7 +20,10 @@ def main():
     """Get surnames data."""
     print("Getting surnames data.")
     source_data_path = utils.download_file(SOURCE_URL)
-    utils.adjust_data(source_data_path, utils.MIMEO_DB_SURNAMES, utils.MIMEO_RESOURCES_SURNAMES, _modify_source_data)
+    utils.adjust_data(source_data_path,
+                      utils.MIMEO_DB_SURNAMES,
+                      utils.MIMEO_RESOURCES_SURNAMES,
+                      _modify_source_data)
 
 
 def _modify_source_data(source_df: pandas.DataFrame) -> pandas.DataFrame:

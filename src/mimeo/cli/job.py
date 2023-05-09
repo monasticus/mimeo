@@ -4,10 +4,13 @@ It exports a single class:
     * MimeoJob
         A class representing a single Mimeo processing job.
 """
+from __future__ import annotations
+
 import json
 import logging
 from argparse import Namespace
-from os import path, walk
+from os import walk
+from pathlib import Path
 
 from mimeo import MimeoConfig, Mimeograph
 from mimeo.cli import MimeoArgumentParser, MimeoConfigParser
@@ -30,11 +33,15 @@ class MimeoJob:
         Executes a Mimeo Job based on the CLI arguments.
     """
 
-    def __init__(self):
+    def __init__(
+            self,
+    ):
         """Initialize MimeoJob class."""
         self._args = MimeoArgumentParser().parse_args()
 
-    def run(self):
+    def run(
+            self,
+    ):
         """Execute a Mimeo Job based on the CLI arguments.
 
         First it customizes a log level. After that all Mimeo Configs
@@ -49,7 +56,9 @@ class MimeoJob:
             Mimeograph(mimeo_config).process()
 
     @staticmethod
-    def _customize_log_level(args):
+    def _customize_log_level(
+            args,
+    ):
         """Customize the log level based on command line arguments."""
         if args.silent:
             logging.getLogger("mimeo").setLevel(logging.WARNING)
@@ -59,7 +68,9 @@ class MimeoJob:
             logging.getLogger("mimeo").setLevel(logging.FINE)
 
     @staticmethod
-    def _get_config_paths(paths: list) -> list:
+    def _get_config_paths(
+            paths: list,
+    ) -> list:
         """Collect Mimeo Configuration paths.
 
         This method traverses directory paths and collects all files
@@ -77,16 +88,20 @@ class MimeoJob:
         """
         file_paths = []
         for file_path in paths:
-            if path.isdir(file_path):
+            if Path(file_path).is_dir():
                 for dir_path, _, file_names in walk(file_path):
                     for file_name in file_names:
                         file_paths.append(f"{dir_path}/{file_name}")
-            elif path.isfile(file_path):
+            elif Path(file_path).is_file():
                 file_paths.append(file_path)
         return file_paths
 
     @classmethod
-    def _get_mimeo_config(cls, config_path: str, args: Namespace) -> MimeoConfig:
+    def _get_mimeo_config(
+            cls,
+            config_path: str,
+            args: Namespace,
+    ) -> MimeoConfig:
         """Return parsed Mimeo Configuration.
 
         This method parses a raw configuration with command line
@@ -106,9 +121,9 @@ class MimeoJob:
 
         Raises
         ------
-        EnvironmentsFileNotFound
+        EnvironmentsFileNotFoundError
             If environments file does not exist.
-        EnvironmentNotFound
+        EnvironmentNotFoundError
             If the http environment is not defined in the environments file
         """
         config = cls._get_raw_config(config_path)
@@ -116,9 +131,10 @@ class MimeoJob:
         return mimeo_config_parser.parse_config()
 
     @staticmethod
-    def _get_raw_config(config_path: str) -> dict:
+    def _get_raw_config(
+            config_path: str,
+    ) -> dict:
         """Load configuration file to a dictionary."""
-        logger.info(f"Reading Mimeo Configuration: {config_path}")
-        with open(config_path) as config_file:
-            config = json.load(config_file)
-        return config
+        logger.info("Reading Mimeo Configuration: %s", config_path)
+        with Path(config_path).open() as config_file:
+            return json.load(config_file)

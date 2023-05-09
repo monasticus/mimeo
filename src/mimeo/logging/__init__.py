@@ -18,6 +18,8 @@ To use this package, simply import the desired class or function:
     from mimeo.logging import RegularFilter
     from mimeo.logging import setup_logging
 """
+from __future__ import annotations
+
 import logging.config
 
 import yaml
@@ -26,6 +28,8 @@ from haggis.logs import add_logging_level
 from mimeo import tools
 
 from .filters import DetailedFilter, RegularFilter
+
+__all__ = ["DetailedFilter", "RegularFilter", "setup_logging"]
 
 
 def setup_logging():

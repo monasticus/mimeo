@@ -39,8 +39,8 @@ from typing import Any
 from mimeo.context import MimeoContext, MimeoContextManager
 from mimeo.context.decorators import mimeo_context
 from mimeo.database import Country, MimeoDB
-from mimeo.database.exc import DataNotFound, InvalidSex
-from mimeo.utils.exc import InvalidValue
+from mimeo.database.exc import DataNotFoundError, InvalidSexError
+from mimeo.utils.exc import InvalidValueError
 
 
 class MimeoUtil(metaclass=ABCMeta):
@@ -55,7 +55,10 @@ class MimeoUtil(metaclass=ABCMeta):
     """
 
     @classmethod
-    def __subclasshook__(cls, subclass: MimeoUtil):
+    def __subclasshook__(
+            cls,
+            subclass: MimeoUtil,
+    ):
         """Verify if a subclass implements all abstract methods.
 
         Parameters
@@ -69,13 +72,15 @@ class MimeoUtil(metaclass=ABCMeta):
             True if the subclass includes the render method and KEY
             attribute
         """
-        return ('KEY' in subclass.__dict__ and
+        return ("KEY" in subclass.__dict__ and
                 not callable(subclass.KEY) and
-                'render' in subclass.__dict__ and
+                "render" in subclass.__dict__ and
                 callable(subclass.render))
 
     @abstractmethod
-    def render(self) -> Any:
+    def render(
+            self,
+    ) -> Any:
         """Render a value.
 
         It is an abstract method to implement in subclasses
@@ -99,7 +104,11 @@ class RandomStringUtil(MimeoUtil):
 
     KEY = "random_str"
 
-    def __init__(self, length: int = 20, **kwargs):
+    def __init__(
+            self,
+            length: int = 20,
+            **kwargs,
+    ):
         """Initialize RandomStringUtil class.
 
         Parameters
@@ -111,7 +120,9 @@ class RandomStringUtil(MimeoUtil):
         """
         self._length = length
 
-    def render(self) -> str:
+    def render(
+            self,
+    ) -> str:
         """Render a random string value.
 
         Returns
@@ -138,7 +149,12 @@ class RandomIntegerUtil(MimeoUtil):
 
     KEY = "random_int"
 
-    def __init__(self, start: int = 1, limit: int = 100, **kwargs):
+    def __init__(
+            self,
+            start: int = 1,
+            limit: int = 100,
+            **kwargs,
+    ):
         """Initialize RandomIntegerUtil class.
 
         Parameters
@@ -153,7 +169,9 @@ class RandomIntegerUtil(MimeoUtil):
         self._start = start
         self._limit = limit
 
-    def render(self) -> int:
+    def render(
+            self,
+    ) -> int:
         """Render a random integer value.
 
         Returns
@@ -180,7 +198,11 @@ class RandomItemUtil(MimeoUtil):
 
     KEY = "random_item"
 
-    def __init__(self, items: list = None, **kwargs):
+    def __init__(
+            self,
+            items: list = None,
+            **kwargs,
+    ):
         """Initialize RandomItemUtil class.
 
         Parameters
@@ -192,7 +214,9 @@ class RandomItemUtil(MimeoUtil):
         """
         self._items = items if items is not None and len(items) != 0 else [""]
 
-    def render(self) -> Any:
+    def render(
+            self,
+    ) -> Any:
         """Render a random item.
 
         Returns
@@ -220,7 +244,11 @@ class DateUtil(MimeoUtil):
 
     KEY = "date"
 
-    def __init__(self, days_delta: int = 0, **kwargs):
+    def __init__(
+            self,
+            days_delta: int = 0,
+            **kwargs,
+    ):
         """Initialize DateUtil class.
 
         Parameters
@@ -232,7 +260,9 @@ class DateUtil(MimeoUtil):
         """
         self._days_delta = days_delta
 
-    def render(self) -> str:
+    def render(
+            self,
+    ) -> str:
         """Render a stringified date value.
 
         Returns
@@ -240,7 +270,10 @@ class DateUtil(MimeoUtil):
         str
             A stringified date value in format %Y-%m-%d
         """
-        date_value = date.today() if self._days_delta == 0 else date.today() + timedelta(days=self._days_delta)
+        if self._days_delta == 0:
+            date_value = date.today()
+        else:
+            date_value = date.today() + timedelta(days=self._days_delta)
         return date_value.strftime("%Y-%m-%d")
 
 
@@ -286,7 +319,9 @@ class DateTimeUtil(MimeoUtil):
         self._minutes_delta = minutes_delta
         self._seconds_delta = seconds_delta
 
-    def render(self) -> str:
+    def render(
+            self,
+    ) -> str:
         """Render a stringified date time value.
 
         Returns
@@ -303,7 +338,7 @@ class DateTimeUtil(MimeoUtil):
 
 class AutoIncrementUtil(MimeoUtil):
     """A MimeoUtil implementation rendering an auto incremented ID.
-    
+
     It is a Mimeo Context-dependent Mimeo Util. Rendered ID value is
     pulled from the Context.
 
@@ -320,7 +355,11 @@ class AutoIncrementUtil(MimeoUtil):
 
     KEY = "auto_increment"
 
-    def __init__(self, pattern: str = "{:05d}", **kwargs):
+    def __init__(
+            self,
+            pattern: str = "{:05d}",
+            **kwargs,
+    ):
         """Initialize AutoIncrementUtil class.
 
         Parameters
@@ -333,9 +372,12 @@ class AutoIncrementUtil(MimeoUtil):
         self._pattern = pattern
 
     @mimeo_context
-    def render(self, context: MimeoContext = None) -> str:
+    def render(
+            self,
+            context: MimeoContext = None,
+    ) -> str:
         """Render an auto incremented identifier.
-        
+
         Parameters
         ----------
         context : MimeoContext, default None
@@ -345,7 +387,7 @@ class AutoIncrementUtil(MimeoUtil):
         -------
         str
             An auto incremented identifier in a parametrized format
-        
+
         Raises
         ------
         InvalidValue
@@ -356,13 +398,14 @@ class AutoIncrementUtil(MimeoUtil):
             return self._pattern.format(identifier)
         except AttributeError:
             context.prev_id()
-            raise InvalidValue(f"The {self.KEY} Mimeo Util require a string value for the pattern parameter "
-                               f"and was: [{self._pattern}].")
+            msg = (f"The {self.KEY} Mimeo Util require a string value for the pattern "
+                   f"parameter and was: [{self._pattern}].")
+            raise InvalidValueError(msg) from AttributeError
 
 
 class CurrentIterationUtil(MimeoUtil):
     """A MimeoUtil implementation rendering a current iteration ID.
-    
+
     It is a Mimeo Context-dependent Mimeo Util. Rendered ID value is
     pulled from the Context.
 
@@ -379,7 +422,11 @@ class CurrentIterationUtil(MimeoUtil):
 
     KEY = "curr_iter"
 
-    def __init__(self, context: str = None, **kwargs):
+    def __init__(
+            self,
+            context: str = None,
+            **kwargs,
+    ):
         """Initialize CurrentIterationUtil class.
 
         Parameters
@@ -392,9 +439,12 @@ class CurrentIterationUtil(MimeoUtil):
         self._context_name = context
 
     @mimeo_context
-    def render(self, context: MimeoContext = None) -> int:
+    def render(
+            self,
+            context: MimeoContext = None,
+    ) -> int:
         """Render a current iteration ID.
-        
+
         Parameters
         ----------
         context : MimeoContext, default None
@@ -405,13 +455,14 @@ class CurrentIterationUtil(MimeoUtil):
         int
             A specific Mimeo Context's current iteration ID
         """
-        context = context if self._context_name is None else MimeoContextManager().get_context(self._context_name)
+        if self._context_name is not None:
+            context = MimeoContextManager().get_context(self._context_name)
         return context.curr_iteration().id
 
 
 class KeyUtil(MimeoUtil):
     """A MimeoUtil implementation rendering a unique identifier.
-    
+
     It is a Mimeo Context-dependent Mimeo Util. Rendered identifiers
     are stored in a MimeoContext and pulled from it when the Mimeo
     Util is parametrized to do so.
@@ -429,7 +480,12 @@ class KeyUtil(MimeoUtil):
 
     KEY = "key"
 
-    def __init__(self, context: str = None, iteration: int = None, **kwargs):
+    def __init__(
+            self,
+            context: str = None,
+            iteration: int = None,
+            **kwargs,
+    ):
         """Initialize KeyUtil class.
 
         Parameters
@@ -445,9 +501,12 @@ class KeyUtil(MimeoUtil):
         self._iteration = iteration
 
     @mimeo_context
-    def render(self, context: MimeoContext = None) -> str:
+    def render(
+            self,
+            context: MimeoContext = None,
+    ) -> str:
         """Render a unique identifier.
-        
+
         By default, Key Mimeo Util renders identifier from the current
         iteration of the current Mimeo Context.
         If the context name is parametrized and iteration is not, then
@@ -455,7 +514,7 @@ class KeyUtil(MimeoUtil):
         context. If the iteration is parametrized, then the identifier
         is pulled from the specific iteration of Mimeo Context (current
         or parametrized).
-        
+
         Parameters
         ----------
         context : MimeoContext, default None
@@ -466,14 +525,18 @@ class KeyUtil(MimeoUtil):
         str
             A unique identifier
         """
-        context = context if self._context_name is None else MimeoContextManager().get_context(self._context_name)
-        iteration = context.curr_iteration() if self._iteration is None else context.get_iteration(self._iteration)
+        if self._context_name is not None:
+            context = MimeoContextManager().get_context(self._context_name)
+        if self._iteration is None:
+            iteration = context.curr_iteration()
+        else:
+            iteration = context.get_iteration(self._iteration)
         return iteration.key
 
 
 class CityUtil(MimeoUtil):
     """A MimeoUtil implementation rendering city names.
-    
+
     It is a Mimeo Context-dependent Mimeo Util only when parametrized
     to generate unique city names.
 
@@ -491,7 +554,12 @@ class CityUtil(MimeoUtil):
     KEY = "city"
     _MIMEO_DB = MimeoDB()
 
-    def __init__(self, unique: bool = True, country: str = None, **kwargs):
+    def __init__(
+            self,
+            unique: bool = True,
+            country: str = None,
+            **kwargs,
+    ):
         """Initialize CityUtil class.
 
         Parameters
@@ -508,7 +576,10 @@ class CityUtil(MimeoUtil):
         self._country = country
 
     @mimeo_context
-    def render(self, context: MimeoContext = None) -> str:
+    def render(
+            self,
+            context: MimeoContext = None,
+    ) -> str:
         """Render a city name.
 
         By default, City Mimeo Util generates a unique city name across
@@ -528,9 +599,9 @@ class CityUtil(MimeoUtil):
 
         Raises
         ------
-        OutOfStock
+        OutOfStockError
             If all unique cities have been consumed already
-        DataNotFound
+        DataNotFoundError
             If database does not contain any cities for the provided
             `country`
         """
@@ -544,7 +615,9 @@ class CityUtil(MimeoUtil):
             country_cities = self._MIMEO_DB.get_cities_of(self._country)
             country_cities_count = len(country_cities)
             if country_cities_count == 0:
-                raise DataNotFound(f"Mimeo database does not contain any cities of provided country [{self._country}].")
+                msg = (f"Mimeo database doesn't contain any cities "
+                       f"of provided country [{self._country}].")
+                raise DataNotFoundError(msg)
 
             if self._unique:
                 index = context.next_city_index(self._country)
@@ -579,7 +652,13 @@ class CountryUtil(MimeoUtil):
     __VALUE_ISO2 = "iso2"
     __MIMEO_DB = MimeoDB()
 
-    def __init__(self, value: str = None, unique: bool = True, country: str = None, **kwargs):
+    def __init__(
+            self,
+            value: str = None,
+            unique: bool = True,
+            country: str = None,
+            **kwargs,
+    ):
         """Initialize CountryUtil class.
 
         Parameters
@@ -600,7 +679,10 @@ class CountryUtil(MimeoUtil):
         self._country = country
 
     @mimeo_context
-    def render(self, context: MimeoContext = None) -> str:
+    def render(
+            self,
+            context: MimeoContext = None,
+    ) -> str:
         """Render a country name.
 
         By default, Country Mimeo Util generates a unique country name
@@ -625,38 +707,43 @@ class CountryUtil(MimeoUtil):
         ------
         InvalidValue
             If the `country` parameter value is not supported
-        OutOfStock
+        OutOfStockError
             If all unique countries have been consumed already
-        DataNotFound
+        DataNotFoundError
             If database does not contain the provided `country`
         """
         if self._value == self.__VALUE_NAME:
             return self._get_country(context).name
-        elif self._value == self.__VALUE_ISO3:
+        if self._value == self.__VALUE_ISO3:
             return self._get_country(context).iso_3
-        elif self._value == self.__VALUE_ISO2:
+        if self._value == self.__VALUE_ISO2:
             return self._get_country(context).iso_2
-        else:
-            raise InvalidValue(f"The `country` Mimeo Util does not support such value [{self._value}]. "
-                               f"Supported values are: "
-                               f"{self.__VALUE_NAME} (default), {self.__VALUE_ISO3}, {self.__VALUE_ISO2}.")
+        msg = (f"The country Mimeo Util does not support a value [{self._value}]. "
+               f"Supported values are: {self.__VALUE_NAME} (default), "
+               f"{self.__VALUE_ISO3}, {self.__VALUE_ISO2}.")
+        raise InvalidValueError(msg)
 
-    def _get_country(self, context: MimeoContext) -> Country:
+    def _get_country(
+            self,
+            context: MimeoContext,
+    ) -> Country:
         if self._country is not None:
             countries = self.__MIMEO_DB.get_countries()
-            country_found = next(filter(lambda c: self._country in [c.name, c.iso_3, c.iso_2], countries), None)
-            if country_found is not None:
-                return country_found
-            else:
-                raise DataNotFound(f"Mimeo database does not contain such a country [{self._country}].")
-        else:
-            if self._unique:
-                index = context.next_country_index()
-            else:
-                index = random.randrange(MimeoDB.NUM_OF_COUNTRIES)
+            country_found = next(
+                filter(lambda c: self._country in [c.name, c.iso_3, c.iso_2],
+                       countries),
+                None,
+            )
+            if country_found is None:
+                msg = f"Mimeo database doesn't contain a country [{self._country}]."
+                raise DataNotFoundError(msg)
+            return country_found
 
-            country = self.__MIMEO_DB.get_country_at(index)
-            return country
+        if self._unique:
+            index = context.next_country_index()
+        else:
+            index = random.randrange(MimeoDB.NUM_OF_COUNTRIES)
+        return self.__MIMEO_DB.get_country_at(index)
 
 
 class FirstNameUtil(MimeoUtil):
@@ -679,7 +766,12 @@ class FirstNameUtil(MimeoUtil):
     KEY = "first_name"
     __MIMEO_DB = MimeoDB()
 
-    def __init__(self, unique: bool = True, sex: str = None, **kwargs):
+    def __init__(
+            self,
+            unique: bool = True,
+            sex: str = None,
+            **kwargs,
+    ):
         """Initialize FirstNameUtil class.
 
         Parameters
@@ -696,7 +788,10 @@ class FirstNameUtil(MimeoUtil):
         self._sex = self._standardize_sex(sex)
 
     @mimeo_context
-    def render(self, context: MimeoContext = None) -> str:
+    def render(
+            self,
+            context: MimeoContext = None,
+    ) -> str:
         """Render a first name.
 
         By default, First Name Mimeo Util generates a unique forename
@@ -716,9 +811,9 @@ class FirstNameUtil(MimeoUtil):
 
         Raises
         ------
-        OutOfStock
+        OutOfStockError
             If all unique first names have been consumed already
-        InvalidSex
+        InvalidSexError
             If the `sex` parameter value is not supported
         """
         if self._sex is None:
@@ -740,15 +835,17 @@ class FirstNameUtil(MimeoUtil):
         return first_name.name
 
     @classmethod
-    def _standardize_sex(cls, sex: str):
+    def _standardize_sex(
+            cls,
+            sex: str,
+    ):
         if sex is None:
             return sex
-        elif sex.upper() in ["M", "MALE"]:
+        if sex.upper() in ["M", "MALE"]:
             return "M"
-        elif sex.upper() in ["F", "FEMALE"]:
+        if sex.upper() in ["F", "FEMALE"]:
             return "F"
-        else:
-            raise InvalidSex(("M", "F", "Male", "Female"))
+        raise InvalidSexError(("M", "F", "Male", "Female"))
 
 
 class LastNameUtil(MimeoUtil):
@@ -771,7 +868,11 @@ class LastNameUtil(MimeoUtil):
     KEY = "last_name"
     __MIMEO_DB = MimeoDB()
 
-    def __init__(self, unique: bool = True, **kwargs):
+    def __init__(
+            self,
+            unique: bool = True,
+            **kwargs,
+    ):
         """Initialize LastNameUtil class.
 
         Parameters
@@ -785,7 +886,10 @@ class LastNameUtil(MimeoUtil):
         self._unique = unique
 
     @mimeo_context
-    def render(self, context: MimeoContext = None) -> str:
+    def render(
+            self,
+            context: MimeoContext = None,
+    ) -> str:
         """Render a last name.
 
         By default, First Name Mimeo Util generates a unique surname
@@ -803,13 +907,11 @@ class LastNameUtil(MimeoUtil):
 
         Raises
         ------
-        OutOfStock
+        OutOfStockError
             If all unique last names have been consumed already
         """
         if self._unique:
             index = context.next_first_name_index()
         else:
             index = random.randrange(MimeoDB.NUM_OF_FIRST_NAMES)
-        last_name = self.__MIMEO_DB.get_last_name_at(index)
-
-        return last_name
+        return self.__MIMEO_DB.get_last_name_at(index)

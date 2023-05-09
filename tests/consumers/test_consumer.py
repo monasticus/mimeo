@@ -1,7 +1,6 @@
-import pytest
-
 import tests.utils as test_utils
 from mimeo.consumers import Consumer
+from tests.utils import assert_throws
 
 
 class ValidConsumer(Consumer):
@@ -26,11 +25,13 @@ def test_valid_class_instantiation():
         ValidConsumer()
         assert True
     except TypeError:
-        assert False
+        raise AssertionError from TypeError
 
 
+@assert_throws(err_type=TypeError,
+               msg=test_utils.get_class_impl_error_msg(
+                   "InvalidConsumer",
+                   ["consume"],
+               ))
 def test_invalid_class_instantiation():
-    with pytest.raises(TypeError) as err:
-        InvalidConsumer()
-
-    assert err.value.args[0] == test_utils.get_class_impl_error_msg("InvalidConsumer", ["consume"])
+    InvalidConsumer()

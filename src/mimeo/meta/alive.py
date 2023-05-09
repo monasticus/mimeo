@@ -37,7 +37,9 @@ with SomeClass({'x': 1}) as alive_1:
 """
 from __future__ import annotations
 
-from mimeo.meta.exc import InstanceNotAlive
+from types import TracebackType
+
+from mimeo.meta.exc import InstanceNotAliveError
 
 
 class OnlyOneAlive(type):
@@ -51,18 +53,21 @@ class OnlyOneAlive(type):
 
     _INSTANCES = {}
 
-    def __call__(cls, *args, **kwargs):
+    def __call__(
+            cls,
+            *args,
+            **kwargs,
+    ):
         """Ensure there's only one instance qualified to be used."""
         if cls not in cls._INSTANCES:
             cls._INSTANCES[cls] = []
 
-        alive_instance = next((instance for instance in cls._INSTANCES[cls] if instance.is_alive()), None)
-        if alive_instance is not None:
-            return alive_instance
-        else:
+        alive_instance = next((i for i in cls._INSTANCES[cls] if i.is_alive()), None)
+        if alive_instance is None:
             instance = super().__call__(*args, **kwargs)
             cls._INSTANCES[cls].append(instance)
             return instance
+        return alive_instance
 
 
 class Alive:
@@ -81,10 +86,14 @@ class Alive:
         Assert the instance is alive.
     """
 
-    def __init__(self):
+    def __init__(
+            self,
+    ):
         self._alive = False
 
-    def __enter__(self) -> Alive:
+    def __enter__(
+            self,
+    ) -> Alive:
         """Enter the Alive instance.
 
         It sets the internal `alive` attribute to True.
@@ -97,18 +106,23 @@ class Alive:
         self._alive = True
         return self
 
-    def __exit__(self, exc_type, exc_val, exc_tb) -> None:
+    def __exit__(
+            self,
+            exc_type: type | None,
+            exc_val: BaseException | None,
+            exc_tb: TracebackType | None,
+    ) -> None:
         """Exit the Alive instance.
 
         It sets the internal `alive` attribute to False.
 
         Parameters
         ----------
-        exc_type
+        exc_type : type | None
             An exception's type
-        exc_val
+        exc_val : BaseException | None
             An exception's value
-        exc_tb
+        exc_tb  TracebackType | None
             An exception's traceback
 
         Returns
@@ -117,9 +131,10 @@ class Alive:
             A None value
         """
         self._alive = False
-        return None
 
-    def assert_alive(self) -> bool:
+    def assert_alive(
+            self,
+    ) -> bool:
         """Assert the instance is alive.
 
         Returns
@@ -133,9 +148,11 @@ class Alive:
             If the instance is not alive
         """
         if not self.is_alive():
-            raise InstanceNotAlive()
+            raise InstanceNotAliveError
         return self.is_alive()
 
-    def is_alive(self) -> bool:
+    def is_alive(
+            self,
+    ) -> bool:
         """Verify if the instance is alive."""
         return self._alive

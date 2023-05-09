@@ -7,6 +7,8 @@ It exports the following filters:
     * DetailedFilter
         A Filter subclass filtering out log records above DEBUG level.
 """
+from __future__ import annotations
+
 from logging import DEBUG, INFO, Filter, LogRecord
 
 
@@ -21,7 +23,10 @@ class RegularFilter(Filter):
         Determine if the specified record is to be logged.
     """
 
-    def filter(self, record: LogRecord) -> bool:
+    def filter(
+            self,
+            record: LogRecord,
+    ) -> bool:
         """Determine if the specified record is to be logged.
 
         Parameters
@@ -48,7 +53,10 @@ class DetailedFilter(Filter):
         Determine if the specified record is to be logged.
     """
 
-    def filter(self, record: LogRecord):
+    def filter(
+            self,
+            record: LogRecord,
+    ):
         """Determine if the specified record is to be logged.
 
         Parameters

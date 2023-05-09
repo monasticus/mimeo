@@ -37,9 +37,11 @@ It exports the following functions:
     * overwrite_num_of_records
         Overwrite a number of records in Mimeo Database package.
 """
-import os
+from __future__ import annotations
+
 import re
 import zipfile
+from pathlib import Path
 from typing import Callable
 
 import pandas
@@ -77,7 +79,7 @@ def download_file(url: str) -> str:
 
     with Session() as sess:
         resp = sess.get(url, stream=True)
-        with open(target_path, "wb") as output:
+        with Path(target_path).open("wb") as output:
             for chunk in resp.iter_content(chunk_size=128):
                 output.write(chunk)
     print(f"Writing a file: {target_path}")
@@ -105,12 +107,17 @@ def extract_zip_data(zip_path: str, files_to_extract: list = None):
 
 def remove_file(file_path: str):
     """Remove a file if it exists."""
-    if os.path.exists(file_path):
+    if Path(file_path).exists():
         print(f"Removing file: {file_path}.")
-        os.remove(file_path)
+        Path(file_path).unlink()
 
 
-def adjust_data(source_data_path: str, target_db: str, target_file_name: str, modify: Callable):
+def adjust_data(
+        source_data_path: str,
+        target_db: str,
+        target_file_name: str,
+        modify: Callable,
+):
     """Adjust source data for Mimeo usage.
 
     Once data is modified, it saves it and overwrites number of records
@@ -167,18 +174,23 @@ def overwrite_num_of_records(mimeo_db: str, data_frame: pandas.DataFrame):
     """
     print(f"Updating number of records in {mimeo_db}")
     num_of_records = len(data_frame.index)
-    if mimeo_db in [MIMEO_DB_CITIES, MIMEO_DB_COUNTRIES, MIMEO_DB_FORENAMES, MIMEO_DB_SURNAMES]:
+    if mimeo_db in [MIMEO_DB_CITIES, MIMEO_DB_COUNTRIES,
+                    MIMEO_DB_FORENAMES, MIMEO_DB_SURNAMES]:
         mimeo_db_path = f"{MIMEO_DB_PACKAGE}/{mimeo_db}"
-        with open(mimeo_db_path, "r") as module_file:
+        with Path(mimeo_db_path).open() as module_file:
             module = module_file.read()
 
         curr_num_of_records = re.compile("NUM_OF_RECORDS = (.*)").findall(module)[0]
         if int(curr_num_of_records) == num_of_records:
             print(f"Number of records [{num_of_records}] has not been changed.")
         else:
-            module = re.sub(r"NUM_OF_RECORDS = .*", f"NUM_OF_RECORDS = {num_of_records}", module)
-            with open(mimeo_db_path, "w") as module_file:
+            module = re.sub(r"NUM_OF_RECORDS = .*",
+                            f"NUM_OF_RECORDS = {num_of_records}",
+                            module)
+            with Path(mimeo_db_path).open("w") as module_file:
                 module_file.write(module)
-            print(f"Number of records has been updated [{curr_num_of_records} -> {num_of_records}].")
+            print("Number of records has been updated "
+                  f"[{curr_num_of_records} -> {num_of_records}].")
     else:
-        print(f"Number of records has not been overwritten as {mimeo_db} is not a registered Mimeo Database.")
+        print("Number of records has not been overwritten "
+              f"as {mimeo_db} is not a registered Mimeo Database.")

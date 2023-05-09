@@ -1,7 +1,8 @@
-import pytest
+from pathlib import Path
 
 from mimeo.database import CitiesDB
-from mimeo.database.exc import InvalidIndex
+from mimeo.database.exc import InvalidIndexError
+from tests.utils import assert_throws
 
 
 def test_get_cities():
@@ -16,8 +17,8 @@ def test_get_cities():
 
 
 def test_get_city_at():
-    with open("src/mimeo/resources/cities.csv", "r") as cities:
-        headers = next(cities)
+    with Path("src/mimeo/resources/cities.csv").open() as cities:
+        next(cities)
         city_1_cols = next(cities).rstrip().split(",")
         city_2_cols = next(cities).rstrip().split(",")
 
@@ -36,25 +37,24 @@ def test_get_city_at():
     assert city_2.country == city_2_cols[3]
 
 
+@assert_throws(err_type=InvalidIndexError,
+               msg="Provided index [{i}] is out or the range: 0-42904!",
+               params={"i": 999999})
 def test_get_city_at_out_of_range():
     db = CitiesDB()
-
-    with pytest.raises(InvalidIndex) as err:
-        db.get_city_at(999999)
-
-    assert err.value.args[0] == "Provided index [999999] is out or the range: 0-42904!"
+    db.get_city_at(999999)
 
 
 def test_get_city_of():
     db = CitiesDB()
-    gbr_cities = db.get_cities_of('GBR')
+    gbr_cities = db.get_cities_of("GBR")
 
     for city in gbr_cities:
-        assert city.country == 'GBR'
+        assert city.country == "GBR"
 
 
 def test_get_city_of_non_existing_country():
     db = CitiesDB()
-    gbr_cities = db.get_cities_of('NEC')
+    gbr_cities = db.get_cities_of("NEC")
 
     assert len(gbr_cities) == 0

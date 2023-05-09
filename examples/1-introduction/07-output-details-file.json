@@ -1,5 +1,5 @@
 {
-  "output_details": {
+  "output": {
     "direction": "file",
     "format": "xml",
     "directory_path": "output",

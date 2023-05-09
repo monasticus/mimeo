@@ -1,32 +1,37 @@
 """The Mimeo Configuration Exceptions module.
 
 It contains all custom exceptions related to Mimeo Configuration:
-    * UnsupportedPropertyValue
+    * UnsupportedPropertyValueError
         A custom Exception class for unsupported properties' values.
-    * MissingRequiredProperty
+    * MissingRequiredPropertyError
         A custom Exception class for missing required properties.
-    * InvalidIndent
+    * InvalidIndentError
         A custom Exception class for invalid indent configuration.
-    * InvalidVars
+    * InvalidVarsError
         A custom Exception class for invalid vars' configuration.
-    * InvalidMimeoModel
+    * InvalidMimeoModelError
         A custom Exception class for invalid model configuration.
-    * InvalidMimeoTemplate
+    * InvalidMimeoTemplateError
         A custom Exception class for invalid template configuration.
-    * InvalidMimeoConfig
+    * InvalidMimeoConfigError
         A custom Exception class for invalid mimeo configuration.
 """
 
 
-class UnsupportedPropertyValue(Exception):
+from __future__ import annotations
+
+
+class UnsupportedPropertyValueError(Exception):
     """A custom Exception class for unsupported properties' values.
 
     Raised when a Mimeo Configuration property points to a value
     not being supported by Mimeo.
     """
 
-    def __init__(self, prop: str, val: str, supported_values: tuple):
-        """Initialize UnsupportedPropertyValue exception with details.
+    def __init__(
+            self, prop: str, val: str, supported_values: tuple,
+    ):
+        """Initialize UnsupportedPropertyValueError exception with details.
 
         Extends Exception constructor with a custom message.
 
@@ -43,24 +48,25 @@ class UnsupportedPropertyValue(Exception):
                          f"Supported values: [{', '.join(supported_values)}].")
 
 
-class MissingRequiredProperty(Exception):
+class MissingRequiredPropertyError(Exception):
     """A custom Exception class for missing required properties.
 
     Raised when a Mimeo Configuration does not contain a required
     property.
     """
 
-    pass
 
-
-class InvalidIndent(Exception):
+class InvalidIndentError(Exception):
     """A custom Exception class for invalid indent configuration.
 
     Raised when a configured indent is negative.
     """
 
-    def __init__(self, indent: int):
-        """Initialize InvalidIndent exception with details.
+    def __init__(
+            self,
+            indent: int,
+    ):
+        """Initialize InvalidIndentError exception with details.
 
         Extends Exception constructor with a custom message.
 
@@ -72,37 +78,29 @@ class InvalidIndent(Exception):
         super().__init__(f"Provided indent [{indent}] is negative!")
 
 
-class InvalidVars(Exception):
+class InvalidVarsError(Exception):
     """A custom Exception class for invalid vars' configuration.
 
     Raised when vars are not configured properly.
     """
 
-    pass
 
-
-class InvalidMimeoModel(Exception):
+class InvalidMimeoModelError(Exception):
     """A custom Exception class for invalid model configuration.
 
     Raised when a Mimeo Model is not configured properly.
     """
 
-    pass
 
-
-class InvalidMimeoTemplate(Exception):
+class InvalidMimeoTemplateError(Exception):
     """A custom Exception class for invalid template configuration.
 
     Raised when a Mimeo Template is not configured properly.
     """
 
-    pass
 
-
-class InvalidMimeoConfig(Exception):
+class InvalidMimeoConfigError(Exception):
     """A custom Exception class for invalid mimeo configuration.
 
     Raised when a Mimeo Configuration is not configured properly.
     """
-
-    pass

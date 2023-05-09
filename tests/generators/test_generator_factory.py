@@ -1,51 +1,52 @@
-import pytest
-
 from mimeo.config import MimeoConfig
-from mimeo.config.exc import UnsupportedPropertyValue
+from mimeo.config.exc import UnsupportedPropertyValueError
 from mimeo.generators import GeneratorFactory, XMLGenerator
+from tests.utils import assert_throws
 
 
 def test_generator_factory_for_xml():
     config = {
-        "output_details": {
-            "format": "xml"
+        "output": {
+            "format": "xml",
         },
         "_templates_": [
             {
                 "count": 5,
                 "model": {
                     "SomeEntity": {
-                        "ChildNode": "value"
-                    }
-                }
-            }
-        ]
+                        "ChildNode": "value",
+                    },
+                },
+            },
+        ],
     }
     mimeo_config = MimeoConfig(config)
     generator = GeneratorFactory.get_generator(mimeo_config)
     assert isinstance(generator, XMLGenerator)
 
 
+@assert_throws(err_type=UnsupportedPropertyValueError,
+               msg="Provided format [{format}] is not supported! "
+                   "Supported values: [{values}].",
+               params={"format": "unsupported_format",
+                       "values": "xml"})
 def test_generator_factory_for_unsupported_format():
     config = {
-        "output_details": {
-            "format": "xml"
+        "output": {
+            "format": "xml",
         },
         "_templates_": [
             {
                 "count": 5,
                 "model": {
                     "SomeEntity": {
-                        "ChildNode": "value"
-                    }
-                }
-            }
-        ]
+                        "ChildNode": "value",
+                    },
+                },
+            },
+        ],
     }
     mimeo_config = MimeoConfig(config)
-    mimeo_config.output_details.format = "unsupported_format"
+    mimeo_config.output.format = "unsupported_format"
 
-    with pytest.raises(UnsupportedPropertyValue) as err:
-        GeneratorFactory.get_generator(mimeo_config)
-
-    assert err.value.args[0] == "Provided format [unsupported_format] is not supported! Supported values: [xml]."
+    GeneratorFactory.get_generator(mimeo_config)

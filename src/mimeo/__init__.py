@@ -43,7 +43,10 @@ The same apply to the following modules included by the Mimeo package:
 To use this package, simply import the desired classes:
     from mimeo import MimeoConfig, Mimeograph
 """
+from __future__ import annotations
+
 from .config import MimeoConfig
 from .mimeo import Mimeograph
 
 __version__ = "0.4.2"
+__all__ = ["MimeoConfig", "Mimeograph"]

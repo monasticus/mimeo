@@ -1,7 +1,8 @@
-import pytest
+from pathlib import Path
 
 from mimeo.database import FirstNamesDB
-from mimeo.database.exc import InvalidIndex, InvalidSex
+from mimeo.database.exc import InvalidIndexError, InvalidSexError
+from tests.utils import assert_throws
 
 
 def test_get_first_names():
@@ -16,8 +17,8 @@ def test_get_first_names():
 
 
 def test_get_first_name_at():
-    with open("src/mimeo/resources/forenames.csv", "r") as first_names:
-        headers = next(first_names)
+    with Path("src/mimeo/resources/forenames.csv").open() as first_names:
+        next(first_names)
         first_name_1_cols = next(first_names).rstrip().split(",")
         first_name_2_cols = next(first_names).rstrip().split(",")
 
@@ -32,25 +33,23 @@ def test_get_first_name_at():
     assert first_name_2.sex == first_name_2_cols[1]
 
 
+@assert_throws(err_type=InvalidIndexError,
+               msg="Provided index [{i}] is out or the range: 0-7454!",
+               params={"i": 9999})
 def test_get_first_name_at_out_of_range():
     db = FirstNamesDB()
-
-    with pytest.raises(InvalidIndex) as err:
-        db.get_first_name_at(9999)
-
-    assert err.value.args[0] == "Provided index [9999] is out or the range: 0-7454!"
+    db.get_first_name_at(9999)
 
 
 def test_get_first_names_by_sex():
     db = FirstNamesDB()
-    male_first_names = db.get_first_names_by_sex('M')
+    male_first_names = db.get_first_names_by_sex("M")
 
     for name in male_first_names:
-        assert name.sex == 'M'
+        assert name.sex == "M"
 
 
+@assert_throws(err_type=InvalidSexError,
+               msg="Invalid sex (use M / F)!")
 def test_get_first_names_by_sex_invalid():
-    with pytest.raises(InvalidSex) as err:
-        FirstNamesDB().get_first_names_by_sex('N')
-
-    assert err.value.args[0] == "Invalid sex (use M / F)!"
+    FirstNamesDB().get_first_names_by_sex("N")

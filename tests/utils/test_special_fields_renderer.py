@@ -2,7 +2,6 @@ import pytest
 
 from mimeo.config import MimeoConfig
 from mimeo.context import MimeoContextManager
-from mimeo.utils.exc import NotASpecialField
 from mimeo.utils.renderers import SpecialFieldsRenderer
 
 
@@ -16,11 +15,11 @@ def default_config():
                     "SomeEntity": {
                         "ChildNode1": 1,
                         "ChildNode2": "value-2",
-                        "ChildNode3": True
-                    }
-                }
-            }
-        ]
+                        "ChildNode3": True,
+                    },
+                },
+            },
+        ],
     })
 
 

@@ -1,7 +1,8 @@
-import pytest
+from pathlib import Path
 
 from mimeo.database import LastNamesDB
-from mimeo.database.exc import InvalidIndex
+from mimeo.database.exc import InvalidIndexError
+from tests.utils import assert_throws
 
 
 def test_get_last_names():
@@ -16,7 +17,7 @@ def test_get_last_names():
 
 
 def test_get_last_name_at():
-    with open("src/mimeo/resources/surnames.txt", "r") as last_names:
+    with Path("src/mimeo/resources/surnames.txt").open() as last_names:
         last_name_1_source = next(last_names).rstrip()
         last_name_2_source = next(last_names).rstrip()
 
@@ -29,10 +30,9 @@ def test_get_last_name_at():
     assert last_name_2 == last_name_2_source
 
 
+@assert_throws(err_type=InvalidIndexError,
+               msg="Provided index [{i}] is out or the range: 0-151669!",
+               params={"i": 151670})
 def test_get_last_name_at_out_of_range():
     db = LastNamesDB()
-
-    with pytest.raises(InvalidIndex) as err:
-        db.get_last_name_at(151670)
-
-    assert err.value.args[0] == "Provided index [151670] is out or the range: 0-151669!"
+    db.get_last_name_at(151670)

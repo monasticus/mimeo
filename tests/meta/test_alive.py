@@ -1,7 +1,7 @@
-import pytest
 
 from mimeo.meta import Alive, OnlyOneAlive
-from mimeo.meta.exc import InstanceNotAlive
+from mimeo.meta.exc import InstanceNotAliveError
+from tests.utils import assert_throws
 
 
 class SomeClass(Alive, metaclass=OnlyOneAlive):
@@ -45,8 +45,8 @@ def test_assert_alive_true():
         assert instance.assert_alive()
 
 
+@assert_throws(err_type=InstanceNotAliveError,
+               msg="The instance is not alive!")
 def test_assert_alive_false():
     instance = SomeClass()
-    with pytest.raises(InstanceNotAlive) as err:
-        instance.assert_alive()
-    assert err.value.args[0] == "The instance is not alive!"
+    instance.assert_alive()

@@ -1,6 +1,5 @@
 from http import HTTPStatus
 
-import pytest
 import responses
 
 from mimeo.config import MimeoConfig
@@ -13,33 +12,36 @@ from mimeo.generators import GeneratorFactory
 def test_consume_post():
     config = {
         "format": "xml",
-        "output_details": {
+        "output": {
             "direction": "http",
             "host": "localhost",
             "port": 8080,
             "endpoint": "/documents",
             "username": "admin",
-            "password": "admin"
+            "password": "admin",
         },
         "_templates_": [
             {
                 "count": 2,
                 "model": {
-                    "SomeEntity": {}
-                }
-            }
-        ]
+                    "SomeEntity": {},
+                },
+            },
+        ],
     }
     mimeo_config = MimeoConfig(config)
     consumer = ConsumerFactory.get_consumer(mimeo_config)
     assert consumer.method == "POST"
     assert consumer.url == "http://localhost:8080/documents"
 
-    responses.add(responses.POST, consumer.url, json={"success": True}, status=HTTPStatus.OK)
+    responses.add(responses.POST,
+                  consumer.url,
+                  json={"success": True},
+                  status=HTTPStatus.OK)
 
     with MimeoContextManager(mimeo_config):
         generator = GeneratorFactory.get_generator(mimeo_config)
-        data = (generator.stringify(root, mimeo_config)
+        data = (generator.stringify(root)
                 for root in generator.generate(mimeo_config.templates))
 
         for root in data:
@@ -54,7 +56,7 @@ def test_consume_post():
 def test_consume_put():
     config = {
         "format": "xml",
-        "output_details": {
+        "output": {
             "direction": "http",
             "method": "PUT",
             "host": "localhost",
@@ -62,27 +64,30 @@ def test_consume_put():
             "endpoint": "/documents",
             "auth": "digest",
             "username": "admin",
-            "password": "admin"
+            "password": "admin",
         },
         "_templates_": [
             {
                 "count": 2,
                 "model": {
-                    "SomeEntity": {}
-                }
-            }
-        ]
+                    "SomeEntity": {},
+                },
+            },
+        ],
     }
     mimeo_config = MimeoConfig(config)
     consumer = ConsumerFactory.get_consumer(mimeo_config)
     assert consumer.method == "PUT"
     assert consumer.url == "http://localhost:8080/documents"
 
-    responses.add(responses.PUT, consumer.url, json={"success": True}, status=HTTPStatus.OK)
+    responses.add(responses.PUT,
+                  consumer.url,
+                  json={"success": True},
+                  status=HTTPStatus.OK)
 
     with MimeoContextManager(mimeo_config):
         generator = GeneratorFactory.get_generator(mimeo_config)
-        data = (generator.stringify(root, mimeo_config)
+        data = (generator.stringify(root)
                 for root in generator.generate(mimeo_config.templates))
 
         for root in data:
@@ -97,32 +102,35 @@ def test_consume_put():
 def test_consume_without_port():
     config = {
         "format": "xml",
-        "output_details": {
+        "output": {
             "direction": "http",
             "host": "localhost",
             "endpoint": "/documents",
             "username": "admin",
-            "password": "admin"
+            "password": "admin",
         },
         "_templates_": [
             {
                 "count": 2,
                 "model": {
-                    "SomeEntity": {}
-                }
-            }
-        ]
+                    "SomeEntity": {},
+                },
+            },
+        ],
     }
     mimeo_config = MimeoConfig(config)
     consumer = ConsumerFactory.get_consumer(mimeo_config)
     assert consumer.method == "POST"
     assert consumer.url == "http://localhost/documents"
 
-    responses.add(responses.POST, consumer.url, json={"success": True}, status=HTTPStatus.OK)
+    responses.add(responses.POST,
+                  consumer.url,
+                  json={"success": True},
+                  status=HTTPStatus.OK)
 
     with MimeoContextManager(mimeo_config):
         generator = GeneratorFactory.get_generator(mimeo_config)
-        data = (generator.stringify(root, mimeo_config)
+        data = (generator.stringify(root)
                 for root in generator.generate(mimeo_config.templates))
 
         for root in data:

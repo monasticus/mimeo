@@ -10,34 +10,36 @@ It contains all custom exceptions related to Mimeo Utils:
 """
 
 
-class InvalidMimeoUtil(Exception):
+from __future__ import annotations
+
+
+class InvalidMimeoUtilError(Exception):
     """A custom Exception class for an invalid Mimeo Util.
 
     Raised when Mimeo Util node has missing _name property, or it
     does not match any Mimeo Util.
     """
 
-    pass
 
-
-class InvalidValue(Exception):
+class InvalidValueError(Exception):
     """A custom Exception class for an invalid value in Mimeo Util.
 
     Raised when Mimeo Util node is incorrectly parametrized.
     """
 
-    pass
 
-
-class NotASpecialField(Exception):
+class NotASpecialFieldError(Exception):
     """A custom Exception class for a field used as a special.
 
     Raised while attempting to retrieve special field name when it is
     not a special one.
     """
 
-    def __init__(self, field_name: str):
-        """Initialize NotASpecialField exception with details.
+    def __init__(
+            self,
+            field_name: str,
+    ):
+        """Initialize NotASpecialFieldError exception with details.
 
         Extends Exception constructor with a custom message.
 
@@ -46,4 +48,5 @@ class NotASpecialField(Exception):
         field_name : str
             A field name
         """
-        super().__init__(f"Provided field [{field_name}] is not a special one (use {'{:NAME:}'})!")
+        msg = f"Provided field [{field_name}] is not a special one (use {'{:NAME:}'})!"
+        super().__init__(msg)

@@ -6,19 +6,22 @@ at all levels. All of them are Data Transfer Objects:
         A superclass for all Mimeo configuration DTOs
     * MimeoConfig
         A MimeoDTO class representing Mimeo Configuration
-    * MimeoOutputDetails
+    * MimeoOutput
         A MimeoDTO class representing Mimeo Output Details
     * MimeoTemplate
         A MimeoDTO class representing Mimeo Template
     * MimeoModel
         A MimeoDTO class representing Mimeo Model
 """
+from __future__ import annotations
+
 import re
 
-from mimeo.config.exc import (InvalidIndent, InvalidMimeoConfig,
-                              InvalidMimeoModel, InvalidMimeoTemplate,
-                              InvalidVars, MissingRequiredProperty,
-                              UnsupportedPropertyValue)
+from mimeo.config.exc import (InvalidIndentError, InvalidMimeoConfigError,
+                              InvalidMimeoModelError,
+                              InvalidMimeoTemplateError, InvalidVarsError,
+                              MissingRequiredPropertyError,
+                              UnsupportedPropertyValueError)
 from mimeo.logging import setup_logging
 
 # setup logging when mimeo is used as a python library
@@ -36,7 +39,9 @@ class MimeoDTO:
         Return the stringified source dictionary of a DTO.
     """
 
-    def __init__(self, source: dict):
+    def __init__(
+            self, source: dict,
+    ):
         """Initialize MimeoDTO class.
 
         Parameters
@@ -46,7 +51,9 @@ class MimeoDTO:
         """
         self._source = source
 
-    def __str__(self):
+    def __str__(
+            self,
+    ):
         """Return the stringified source dictionary of a DTO."""
         return str(self._source)
 
@@ -58,35 +65,35 @@ class MimeoConfig(MimeoDTO):
 
     Attributes
     ----------
-    OUTPUT_DETAILS_KEY : str
+    OUTPUT_KEY : str
         A Mimeo Configuration output details key
-    OUTPUT_DETAILS_DIRECTION_KEY : str
+    OUTPUT_DIRECTION_KEY : str
         A Mimeo Configuration output direction key
-    OUTPUT_DETAILS_FORMAT_KEY : str
+    OUTPUT_FORMAT_KEY : str
         A Mimeo Configuration output format key
-    OUTPUT_DETAILS_XML_DECLARATION_KEY : str
+    OUTPUT_XML_DECLARATION_KEY : str
         A Mimeo Configuration xml declaration key
-    OUTPUT_DETAILS_INDENT_KEY : str
+    OUTPUT_INDENT_KEY : str
         A Mimeo Configuration indent key
-    OUTPUT_DETAILS_DIRECTORY_PATH_KEY : str
+    OUTPUT_DIRECTORY_PATH_KEY : str
         A Mimeo Configuration output directory path key
-    OUTPUT_DETAILS_FILE_NAME_KEY : str
+    OUTPUT_FILE_NAME_KEY : str
         A Mimeo Configuration output file name key
-    OUTPUT_DETAILS_METHOD_KEY : str
+    OUTPUT_METHOD_KEY : str
         A Mimeo Configuration http method key
-    OUTPUT_DETAILS_PROTOCOL_KEY : str
+    OUTPUT_PROTOCOL_KEY : str
         A Mimeo Configuration http protocol key
-    OUTPUT_DETAILS_HOST_KEY : str
+    OUTPUT_HOST_KEY : str
         A Mimeo Configuration http host key
-    OUTPUT_DETAILS_PORT_KEY : str
+    OUTPUT_PORT_KEY : str
         A Mimeo Configuration http port key
-    OUTPUT_DETAILS_ENDPOINT_KEY : str
+    OUTPUT_ENDPOINT_KEY : str
         A Mimeo Configuration http endpoint key
-    OUTPUT_DETAILS_AUTH_KEY : str
+    OUTPUT_AUTH_KEY : str
         A Mimeo Configuration http auth key
-    OUTPUT_DETAILS_USERNAME_KEY : str
+    OUTPUT_USERNAME_KEY : str
         A Mimeo Configuration http username key
-    OUTPUT_DETAILS_PASSWORD_KEY : str
+    OUTPUT_PASSWORD_KEY : str
         A Mimeo Configuration http password key
     VARS_KEY : str
         A Mimeo Configuration vars key
@@ -108,19 +115,19 @@ class MimeoConfig(MimeoDTO):
         A Mimeo Configuration Mimeo Util's name key
     SUPPORTED_OUTPUT_FORMATS : set
         A set of supported output formats
-    OUTPUT_DETAILS_DIRECTION_FILE : str
+    OUTPUT_DIRECTION_FILE : str
         The 'file' output direction
-    OUTPUT_DETAILS_DIRECTION_STD_OUT : str
+    OUTPUT_DIRECTION_STD_OUT : str
         The 'stdout' output direction
-    OUTPUT_DETAILS_DIRECTION_HTTP : str
+    OUTPUT_DIRECTION_HTTP : str
         The 'http' output direction
-    OUTPUT_DETAILS_DIRECTION_HTTP_REQUEST_POST : str
+    OUTPUT_DIRECTION_HTTP_REQUEST_POST : str
         The 'POST' http request method
-    OUTPUT_DETAILS_DIRECTION_HTTP_REQUEST_PUT : str
+    OUTPUT_DIRECTION_HTTP_REQUEST_PUT : str
         The 'PUT' http request method
-    OUTPUT_DETAILS_DIRECTION_HTTP_AUTH_BASIC : str
+    OUTPUT_DIRECTION_HTTP_AUTH_BASIC : str
         The 'basic' http auth method
-    OUTPUT_DETAILS_DIRECTION_HTTP_AUTH_DIGEST : str
+    OUTPUT_DIRECTION_HTTP_AUTH_DIGEST : str
         The 'digest' http auth method
     SUPPORTED_OUTPUT_DIRECTIONS : set
         List of supported output directions
@@ -131,7 +138,7 @@ class MimeoConfig(MimeoDTO):
     REQUIRED_HTTP_DETAILS : set
         List of required http request output direction details
 
-    output_details : MimeoOutputDetails, default {}
+    output : MimeoOutput, default {}
         A Mimeo Output Details settings
     vars : dict, default {}
         A Mimeo Configuration vars setting
@@ -139,21 +146,21 @@ class MimeoConfig(MimeoDTO):
         A Mimeo Templates setting
     """
 
-    OUTPUT_DETAILS_KEY = "output_details"
-    OUTPUT_DETAILS_DIRECTION_KEY = "direction"
-    OUTPUT_DETAILS_FORMAT_KEY = "format"
-    OUTPUT_DETAILS_XML_DECLARATION_KEY = "xml_declaration"
-    OUTPUT_DETAILS_INDENT_KEY = "indent"
-    OUTPUT_DETAILS_DIRECTORY_PATH_KEY = "directory_path"
-    OUTPUT_DETAILS_FILE_NAME_KEY = "file_name"
-    OUTPUT_DETAILS_METHOD_KEY = "method"
-    OUTPUT_DETAILS_PROTOCOL_KEY = "protocol"
-    OUTPUT_DETAILS_HOST_KEY = "host"
-    OUTPUT_DETAILS_PORT_KEY = "port"
-    OUTPUT_DETAILS_ENDPOINT_KEY = "endpoint"
-    OUTPUT_DETAILS_AUTH_KEY = "auth"
-    OUTPUT_DETAILS_USERNAME_KEY = "username"
-    OUTPUT_DETAILS_PASSWORD_KEY = "password"
+    OUTPUT_KEY = "output"
+    OUTPUT_DIRECTION_KEY = "direction"
+    OUTPUT_FORMAT_KEY = "format"
+    OUTPUT_XML_DECLARATION_KEY = "xml_declaration"
+    OUTPUT_INDENT_KEY = "indent"
+    OUTPUT_DIRECTORY_PATH_KEY = "directory_path"
+    OUTPUT_FILE_NAME_KEY = "file_name"
+    OUTPUT_METHOD_KEY = "method"
+    OUTPUT_PROTOCOL_KEY = "protocol"
+    OUTPUT_HOST_KEY = "host"
+    OUTPUT_PORT_KEY = "port"
+    OUTPUT_ENDPOINT_KEY = "endpoint"
+    OUTPUT_AUTH_KEY = "auth"
+    OUTPUT_USERNAME_KEY = "username"
+    OUTPUT_PASSWORD_KEY = "password"
     VARS_KEY = "vars"
     TEMPLATES_KEY = "_templates_"
     TEMPLATES_COUNT_KEY = "count"
@@ -166,31 +173,34 @@ class MimeoConfig(MimeoDTO):
 
     OUTPUT_FORMAT_XML = "xml"
 
-    OUTPUT_DETAILS_DIRECTION_FILE = "file"
-    OUTPUT_DETAILS_DIRECTION_STD_OUT = "stdout"
-    OUTPUT_DETAILS_DIRECTION_HTTP = "http"
+    OUTPUT_DIRECTION_FILE = "file"
+    OUTPUT_DIRECTION_STD_OUT = "stdout"
+    OUTPUT_DIRECTION_HTTP = "http"
 
-    OUTPUT_DETAILS_DIRECTION_HTTP_REQUEST_POST = "POST"
-    OUTPUT_DETAILS_DIRECTION_HTTP_REQUEST_PUT = "PUT"
+    OUTPUT_DIRECTION_HTTP_REQUEST_POST = "POST"
+    OUTPUT_DIRECTION_HTTP_REQUEST_PUT = "PUT"
 
-    OUTPUT_DETAILS_DIRECTION_HTTP_AUTH_BASIC = "basic"
-    OUTPUT_DETAILS_DIRECTION_HTTP_AUTH_DIGEST = "digest"
+    OUTPUT_DIRECTION_HTTP_AUTH_BASIC = "basic"
+    OUTPUT_DIRECTION_HTTP_AUTH_DIGEST = "digest"
 
     SUPPORTED_OUTPUT_FORMATS = (OUTPUT_FORMAT_XML,)
 
-    SUPPORTED_OUTPUT_DIRECTIONS = (OUTPUT_DETAILS_DIRECTION_STD_OUT,
-                                   OUTPUT_DETAILS_DIRECTION_FILE,
-                                   OUTPUT_DETAILS_DIRECTION_HTTP)
-    SUPPORTED_REQUEST_METHODS = (OUTPUT_DETAILS_DIRECTION_HTTP_REQUEST_POST,
-                                 OUTPUT_DETAILS_DIRECTION_HTTP_REQUEST_PUT)
-    SUPPORTED_AUTH_METHODS = (OUTPUT_DETAILS_DIRECTION_HTTP_AUTH_BASIC,
-                              OUTPUT_DETAILS_DIRECTION_HTTP_AUTH_DIGEST)
-    REQUIRED_HTTP_DETAILS = (OUTPUT_DETAILS_HOST_KEY,
-                             OUTPUT_DETAILS_ENDPOINT_KEY,
-                             OUTPUT_DETAILS_USERNAME_KEY,
-                             OUTPUT_DETAILS_PASSWORD_KEY)
+    SUPPORTED_OUTPUT_DIRECTIONS = (OUTPUT_DIRECTION_STD_OUT,
+                                   OUTPUT_DIRECTION_FILE,
+                                   OUTPUT_DIRECTION_HTTP)
+    SUPPORTED_REQUEST_METHODS = (OUTPUT_DIRECTION_HTTP_REQUEST_POST,
+                                 OUTPUT_DIRECTION_HTTP_REQUEST_PUT)
+    SUPPORTED_AUTH_METHODS = (OUTPUT_DIRECTION_HTTP_AUTH_BASIC,
+                              OUTPUT_DIRECTION_HTTP_AUTH_DIGEST)
+    REQUIRED_HTTP_DETAILS = (OUTPUT_HOST_KEY,
+                             OUTPUT_ENDPOINT_KEY,
+                             OUTPUT_USERNAME_KEY,
+                             OUTPUT_PASSWORD_KEY)
 
-    def __init__(self, config: dict):
+    def __init__(
+            self,
+            config: dict,
+    ):
         """Initialize MimeoConfig class.
 
         Extends MimeoDTO constructor.
@@ -201,12 +211,15 @@ class MimeoConfig(MimeoDTO):
             A source config dictionary
         """
         super().__init__(config)
-        self.output_details = MimeoOutputDetails(config.get(self.OUTPUT_DETAILS_KEY, {}))
-        self.vars = MimeoConfig._get_vars(config)
-        self.templates = MimeoConfig._get_templates(config)
+        self.output = MimeoOutput(config.get(self.OUTPUT_KEY, {}))
+        self.vars = self._get_vars(config)
+        self.templates = self._get_templates(config)
 
-    @staticmethod
-    def _get_vars(config: dict) -> dict:
+    @classmethod
+    def _get_vars(
+            cls,
+            config: dict,
+    ) -> dict:
         """Extract variables from the source dictionary.
 
         Parameters
@@ -221,7 +234,7 @@ class MimeoConfig(MimeoDTO):
 
         Raises
         ------
-        InvalidVars
+        InvalidVarsError
             If (1) the vars key does not point to a dictionary or
             (2) some variable's name does not start with a letter,
             is not SNAKE_UPPER_CASE with possible digits or
@@ -229,17 +242,25 @@ class MimeoConfig(MimeoDTO):
         """
         variables = config.get(MimeoConfig.VARS_KEY, {})
         if not isinstance(variables, dict):
-            raise InvalidVars(f"vars property does not store an object: {variables}")
+            msg = f"vars property does not store an object: {variables}"
+            raise InvalidVarsError(msg)
         for var, val in variables.items():
             if not re.match(r"^[A-Z][A-Z_0-9]*$", var):
-                raise InvalidVars(f"Provided var [{var}] is invalid "
-                                  "(you can use upper-cased name with underscore and digits, starting with a letter)!")
-            if isinstance(val, list) or (isinstance(val, dict) and not MimeoConfig._is_mimeo_util_object(val)):
-                raise InvalidVars(f"Provided var [{var}] is invalid (you can use ony atomic values and Mimeo Utils)!")
+                msg = (f"Provided var [{var}] is invalid "
+                       f"(you can use upper-cased name with underscore and digits, "
+                       f"starting with a letter)!")
+                raise InvalidVarsError(msg)
+            if isinstance(val, (list, dict)) and not cls._is_mimeo_util_object(val):
+                msg = (f"Provided var [{var}] is invalid "
+                       f"(you can use ony atomic values and Mimeo Utils)!")
+                raise InvalidVarsError(msg)
         return variables
 
-    @staticmethod
-    def _get_templates(config: dict) -> list:
+    @classmethod
+    def _get_templates(
+            cls,
+            config: dict,
+    ) -> list:
         """Extract Mimeo Templates from the source dictionary.
 
         Parameters
@@ -258,16 +279,21 @@ class MimeoConfig(MimeoDTO):
             If (1) the source dictionary does not include the _templates_ key or
             (2) the _templates_ key does not point to a list
         """
-        templates = config.get(MimeoConfig.TEMPLATES_KEY)
+        templates = config.get(cls.TEMPLATES_KEY)
         if templates is None:
-            raise InvalidMimeoConfig(f"No templates in the Mimeo Config: {config}")
-        elif not isinstance(templates, list):
-            raise InvalidMimeoConfig(f"_templates_ property does not store an array: {config}")
-        else:
-            return [MimeoTemplate(template) for template in config.get(MimeoConfig.TEMPLATES_KEY)]
+            msg = f"No templates in the Mimeo Config: {config}"
+            raise InvalidMimeoConfigError(msg)
+        if not isinstance(templates, list):
+            msg = f"_templates_ property does not store an array: {config}"
+            raise InvalidMimeoConfigError(msg)
+        return [MimeoTemplate(template)
+                for template in config.get(cls.TEMPLATES_KEY)]
 
-    @staticmethod
-    def _is_mimeo_util_object(obj: dict) -> bool:
+    @classmethod
+    def _is_mimeo_util_object(
+            cls,
+            obj: dict,
+    ) -> bool:
         """Verify if the object is a Mimeo Util.
 
         Parameters
@@ -278,12 +304,15 @@ class MimeoConfig(MimeoDTO):
         Returns
         -------
         bool
-            True if the object is a dictionary having only one key: _mimeo_util, otherwise False
+            True if the object is a dictionary having only one key: _mimeo_util.
+            Otherwise, False.
         """
-        return isinstance(obj, dict) and len(obj) == 1 and MimeoConfig.MODEL_MIMEO_UTIL_KEY in obj
+        return (isinstance(obj, dict) and
+                len(obj) == 1 and
+                cls.MODEL_MIMEO_UTIL_KEY in obj)
 
 
-class MimeoOutputDetails(MimeoDTO):
+class MimeoOutput(MimeoDTO):
     """A MimeoDTO class representing Mimeo Output Details.
 
     It is a python representation of a Mimeo Output Details configuration node.
@@ -300,7 +329,7 @@ class MimeoOutputDetails(MimeoDTO):
         A Mimeo Configuration indent setting
     directory_path : str, default 'mimeo-output'
         The configured file output directory
-    file_name_tmplt : str, default 'mimeo-output-{}.{output_format}'
+    file_name : str, default 'mimeo-output-{}.{output_format}'
         The configured file output file name template
     method : str, default POST
         The configured http output request method
@@ -320,40 +349,45 @@ class MimeoOutputDetails(MimeoDTO):
         The configured http output password
     """
 
-    def __init__(self, output_details: dict):
-        """Initialize MimeoOutputDetails class.
+    def __init__(
+            self,
+            output: dict,
+    ):
+        """Initialize MimeoOutput class.
 
         Extends MimeoDTO constructor.
 
         Parameters
         ----------
-        output_details : dict
+        output : dict
             A source config output details dictionary
         """
-        super().__init__(output_details)
-        self.direction = MimeoOutputDetails._get_direction(output_details)
-        MimeoOutputDetails._validate_output_details(self.direction, output_details)
-        self.format = MimeoOutputDetails._get_format(output_details)
-        self.xml_declaration = output_details.get(MimeoConfig.OUTPUT_DETAILS_XML_DECLARATION_KEY, False)
-        self.indent = MimeoOutputDetails._get_indent(output_details)
-        self.directory_path = MimeoOutputDetails._get_directory_path(self.direction, output_details)
-        self.file_name_tmplt = MimeoOutputDetails._get_file_name_tmplt(self.direction, output_details, self.format)
-        self.method = MimeoOutputDetails._get_method(self.direction, output_details)
-        self.protocol = MimeoOutputDetails._get_protocol(self.direction, output_details)
-        self.host = MimeoOutputDetails._get_host(self.direction, output_details)
-        self.port = MimeoOutputDetails._get_port(self.direction, output_details)
-        self.endpoint = MimeoOutputDetails._get_endpoint(self.direction, output_details)
-        self.auth = MimeoOutputDetails._get_auth(self.direction, output_details)
-        self.username = MimeoOutputDetails._get_username(self.direction, output_details)
-        self.password = MimeoOutputDetails._get_password(self.direction, output_details)
+        super().__init__(output)
+        self.direction = self._get_direction(output)
+        self._validate_output(self.direction, output)
+        self.format = self._get_format(output)
+        self.xml_declaration = output.get(MimeoConfig.OUTPUT_XML_DECLARATION_KEY, False)
+        self.indent = self._get_indent(output)
+        self.directory_path = self._get_directory_path(self.direction, output)
+        self.file_name = self._get_file_name(self.direction, output, self.format)
+        self.method = self._get_method(self.direction, output)
+        self.protocol = self._get_protocol(self.direction, output)
+        self.host = self._get_host(self.direction, output)
+        self.port = self._get_port(self.direction, output)
+        self.endpoint = self._get_endpoint(self.direction, output)
+        self.auth = self._get_auth(self.direction, output)
+        self.username = self._get_username(self.direction, output)
+        self.password = self._get_password(self.direction, output)
 
     @staticmethod
-    def _get_direction(output_details: dict) -> str:
+    def _get_direction(
+            output: dict,
+    ) -> str:
         """Extract output direction from the source dictionary.
 
         Parameters
         ----------
-        output_details : dict
+        output : dict
             A source config output details dictionary
 
         Returns
@@ -363,20 +397,23 @@ class MimeoOutputDetails(MimeoDTO):
 
         Raises
         ------
-        UnsupportedPropertyValue
+        UnsupportedPropertyValueError
             If the configured output direction is not supported
         """
-        direction = output_details.get(MimeoConfig.OUTPUT_DETAILS_DIRECTION_KEY,
-                                       MimeoConfig.OUTPUT_DETAILS_DIRECTION_FILE)
-        if direction in MimeoConfig.SUPPORTED_OUTPUT_DIRECTIONS:
-            return direction
-        else:
-            raise UnsupportedPropertyValue(MimeoConfig.OUTPUT_DETAILS_DIRECTION_KEY,
-                                           direction,
-                                           MimeoConfig.SUPPORTED_OUTPUT_DIRECTIONS)
+        direction = output.get(
+            MimeoConfig.OUTPUT_DIRECTION_KEY,
+            MimeoConfig.OUTPUT_DIRECTION_FILE)
+        if direction not in MimeoConfig.SUPPORTED_OUTPUT_DIRECTIONS:
+            raise UnsupportedPropertyValueError(
+                MimeoConfig.OUTPUT_DIRECTION_KEY,
+                direction,
+                MimeoConfig.SUPPORTED_OUTPUT_DIRECTIONS)
+        return direction
 
     @staticmethod
-    def _get_format(config: dict) -> str:
+    def _get_format(
+            config: dict,
+    ) -> str:
         """Extract an output format from the source dictionary.
 
         Parameters
@@ -391,19 +428,23 @@ class MimeoOutputDetails(MimeoDTO):
 
         Raises
         ------
-        UnsupportedPropertyValue
+        UnsupportedPropertyValueError
             If the customized output format is not supported
         """
-        output_format = config.get(MimeoConfig.OUTPUT_DETAILS_FORMAT_KEY, MimeoConfig.OUTPUT_FORMAT_XML)
-        if output_format in MimeoConfig.SUPPORTED_OUTPUT_FORMATS:
-            return output_format
-        else:
-            raise UnsupportedPropertyValue(MimeoConfig.OUTPUT_DETAILS_FORMAT_KEY,
-                                           output_format,
-                                           MimeoConfig.SUPPORTED_OUTPUT_FORMATS)
+        output_format = config.get(
+            MimeoConfig.OUTPUT_FORMAT_KEY,
+            MimeoConfig.OUTPUT_FORMAT_XML)
+        if output_format not in MimeoConfig.SUPPORTED_OUTPUT_FORMATS:
+            raise UnsupportedPropertyValueError(
+                MimeoConfig.OUTPUT_FORMAT_KEY,
+                output_format,
+                MimeoConfig.SUPPORTED_OUTPUT_FORMATS)
+        return output_format
 
     @staticmethod
-    def _get_indent(config: dict) -> int:
+    def _get_indent(
+            config: dict,
+    ) -> int:
         """Extract an indent value from the source dictionary.
 
         Parameters
@@ -418,17 +459,19 @@ class MimeoOutputDetails(MimeoDTO):
 
         Raises
         ------
-        InvalidIndent
+        InvalidIndentError
             If the customized indent is lower than zero
         """
-        indent = config.get(MimeoConfig.OUTPUT_DETAILS_INDENT_KEY, 0)
-        if indent >= 0:
-            return indent
-        else:
-            raise InvalidIndent(indent)
+        indent = config.get(MimeoConfig.OUTPUT_INDENT_KEY, 0)
+        if indent < 0:
+            raise InvalidIndentError(indent)
+        return indent
 
     @staticmethod
-    def _get_directory_path(direction: str, output_details: dict) -> str:
+    def _get_directory_path(
+            direction: str,
+            output: dict,
+    ) -> str | None:
         """Extract an output directory path from the source dictionary.
 
         It is extracted only when the output direction is 'file'.
@@ -437,21 +480,26 @@ class MimeoOutputDetails(MimeoDTO):
         ----------
         direction : str
             The configured output direction
-        output_details : dict
+        output : dict
             A source config output details dictionary
 
         Returns
         -------
-        str
+        str | None
             The configured output directory path when the output direction is 'file'.
             Otherwise, None. If the 'directory_path' setting is missing returns
             'mimeo-output' by default.
         """
-        if direction == MimeoConfig.OUTPUT_DETAILS_DIRECTION_FILE:
-            return output_details.get(MimeoConfig.OUTPUT_DETAILS_DIRECTORY_PATH_KEY, "mimeo-output")
+        if direction == MimeoConfig.OUTPUT_DIRECTION_FILE:
+            return output.get(MimeoConfig.OUTPUT_DIRECTORY_PATH_KEY, "mimeo-output")
+        return None
 
     @staticmethod
-    def _get_file_name_tmplt(direction: str, output_details: dict, output_format: str):
+    def _get_file_name(
+            direction: str,
+            output: dict,
+            output_format: str,
+    ) -> str | None:
         """Generate an output file name template based on the source dictionary.
 
         It is generated only when the output direction is 'file'.
@@ -460,22 +508,26 @@ class MimeoOutputDetails(MimeoDTO):
         ----------
         direction : str
             The configured output direction
-        output_details : dict
+        output : dict
             A source config output details dictionary
 
         Returns
         -------
-        str
-            The configured output file name template when the output direction is 'file'.
-            Otherwise, None. If the 'file_name' setting is missing returns
+        str | None
+            The configured output file name template when the output direction is
+            'file'. Otherwise, None. If the 'file_name' setting is missing returns
             'mimeo-output-{}.{output_format}' by default.
         """
-        if direction == MimeoConfig.OUTPUT_DETAILS_DIRECTION_FILE:
-            file_name = output_details.get(MimeoConfig.OUTPUT_DETAILS_FILE_NAME_KEY, "mimeo-output")
+        if direction == MimeoConfig.OUTPUT_DIRECTION_FILE:
+            file_name = output.get(MimeoConfig.OUTPUT_FILE_NAME_KEY, "mimeo-output")
             return f"{file_name}-{'{}'}.{output_format}"
+        return None
 
     @staticmethod
-    def _get_method(direction: str, output_details: dict) -> str:
+    def _get_method(
+            direction: str,
+            output: dict,
+    ) -> str | None:
         """Extract an HTTP request method from the source dictionary.
 
         It is extracted only when the output direction is 'http'.
@@ -484,28 +536,33 @@ class MimeoOutputDetails(MimeoDTO):
         ----------
         direction : str
             The configured output direction
-        output_details : dict
+        output : dict
             A source config output details dictionary
 
         Returns
         -------
-        method: str
+        method: str | None
             The configured HTTP request method when the output direction is 'http'.
             Otherwise, None. If the 'method' setting is missing returns
             'POST' by default.
         """
-        if direction == MimeoConfig.OUTPUT_DETAILS_DIRECTION_HTTP:
-            method = output_details.get(MimeoConfig.OUTPUT_DETAILS_METHOD_KEY,
-                                        MimeoConfig.OUTPUT_DETAILS_DIRECTION_HTTP_REQUEST_POST)
-            if method in MimeoConfig.SUPPORTED_REQUEST_METHODS:
-                return method
-            else:
-                raise UnsupportedPropertyValue(MimeoConfig.OUTPUT_DETAILS_METHOD_KEY,
-                                               method,
-                                               MimeoConfig.SUPPORTED_REQUEST_METHODS)
+        method = None
+        if direction == MimeoConfig.OUTPUT_DIRECTION_HTTP:
+            method = output.get(
+                MimeoConfig.OUTPUT_METHOD_KEY,
+                MimeoConfig.OUTPUT_DIRECTION_HTTP_REQUEST_POST)
+            if method not in MimeoConfig.SUPPORTED_REQUEST_METHODS:
+                raise UnsupportedPropertyValueError(
+                    MimeoConfig.OUTPUT_METHOD_KEY,
+                    method,
+                    MimeoConfig.SUPPORTED_REQUEST_METHODS)
+        return method
 
     @staticmethod
-    def _get_protocol(direction: str, output_details: dict) -> str:
+    def _get_protocol(
+            direction: str,
+            output: dict,
+    ) -> str | None:
         """Extract an HTTP protocol from the source dictionary.
 
         It is extracted only when the output direction is 'http'.
@@ -514,22 +571,26 @@ class MimeoOutputDetails(MimeoDTO):
         ----------
         direction : str
             The configured output direction
-        output_details : dict
+        output : dict
             A source config output details dictionary
 
         Returns
         -------
-        str
+        str | None
             The configured HTTP request method when the output direction is 'http'.
             Otherwise, None. If the 'protocol' setting is missing returns
             'http' by default.
         """
-        if direction == MimeoConfig.OUTPUT_DETAILS_DIRECTION_HTTP:
-            return output_details.get(MimeoConfig.OUTPUT_DETAILS_PROTOCOL_KEY,
-                                      MimeoConfig.OUTPUT_DETAILS_DIRECTION_HTTP)
+        if direction == MimeoConfig.OUTPUT_DIRECTION_HTTP:
+            return output.get(MimeoConfig.OUTPUT_PROTOCOL_KEY,
+                              MimeoConfig.OUTPUT_DIRECTION_HTTP)
+        return None
 
     @staticmethod
-    def _get_host(direction: str, output_details: dict) -> str:
+    def _get_host(
+            direction: str,
+            output: dict,
+    ) -> str | None:
         """Extract an HTTP host from the source dictionary.
 
         It is extracted only when the output direction is 'http'.
@@ -538,20 +599,24 @@ class MimeoOutputDetails(MimeoDTO):
         ----------
         direction : str
             The configured output direction
-        output_details : dict
+        output : dict
             A source config output details dictionary
 
         Returns
         -------
-        str
+        str | None
             The configured HTTP host when the output direction is 'http'.
             Otherwise, None.
         """
-        if direction == MimeoConfig.OUTPUT_DETAILS_DIRECTION_HTTP:
-            return output_details.get(MimeoConfig.OUTPUT_DETAILS_HOST_KEY)
+        if direction == MimeoConfig.OUTPUT_DIRECTION_HTTP:
+            return output.get(MimeoConfig.OUTPUT_HOST_KEY)
+        return None
 
     @staticmethod
-    def _get_port(direction: str, output_details: dict) -> str:
+    def _get_port(
+            direction: str,
+            output: dict,
+    ) -> str | None:
         """Extract an HTTP port from the source dictionary.
 
         It is extracted only when the output direction is 'http'.
@@ -560,20 +625,24 @@ class MimeoOutputDetails(MimeoDTO):
         ----------
         direction : str
             The configured output direction
-        output_details : dict
+        output : dict
             A source config output details dictionary
 
         Returns
         -------
-        str
+        str | None
             The configured HTTP port when the output direction is 'http'.
             Otherwise, None.
         """
-        if direction == MimeoConfig.OUTPUT_DETAILS_DIRECTION_HTTP:
-            return output_details.get(MimeoConfig.OUTPUT_DETAILS_PORT_KEY)
+        if direction == MimeoConfig.OUTPUT_DIRECTION_HTTP:
+            return output.get(MimeoConfig.OUTPUT_PORT_KEY)
+        return None
 
     @staticmethod
-    def _get_endpoint(direction: str, output_details: dict) -> str:
+    def _get_endpoint(
+            direction: str,
+            output: dict,
+    ) -> str | None:
         """Extract an HTTP endpoint from the source dictionary.
 
         It is extracted only when the output direction is 'http'.
@@ -582,20 +651,24 @@ class MimeoOutputDetails(MimeoDTO):
         ----------
         direction : str
             The configured output direction
-        output_details : dict
+        output : dict
             A source config output details dictionary
 
         Returns
         -------
-        str
+        str | None
             The configured HTTP request method when the output direction is 'http'.
             Otherwise, None.
         """
-        if direction == MimeoConfig.OUTPUT_DETAILS_DIRECTION_HTTP:
-            return output_details.get(MimeoConfig.OUTPUT_DETAILS_ENDPOINT_KEY)
+        if direction == MimeoConfig.OUTPUT_DIRECTION_HTTP:
+            return output.get(MimeoConfig.OUTPUT_ENDPOINT_KEY)
+        return None
 
     @staticmethod
-    def _get_auth(direction: str, output_details: dict) -> str:
+    def _get_auth(
+            direction: str,
+            output: dict,
+    ) -> str | None:
         """Extract an HTTP auth method from the source dictionary.
 
         It is extracted only when the output direction is 'http'.
@@ -604,28 +677,33 @@ class MimeoOutputDetails(MimeoDTO):
         ----------
         direction : str
             The configured output direction
-        output_details : dict
+        output : dict
             A source config output details dictionary
 
         Returns
         -------
-        method: str
+        auth: str | None
             The configured HTTP auth method when the output direction is 'http'.
             Otherwise, None. If the 'auth' setting is missing returns
             'basic' by default.
         """
-        if direction == MimeoConfig.OUTPUT_DETAILS_DIRECTION_HTTP:
-            auth =  output_details.get(MimeoConfig.OUTPUT_DETAILS_AUTH_KEY,
-                                       MimeoConfig.OUTPUT_DETAILS_DIRECTION_HTTP_AUTH_BASIC)
-            if auth in MimeoConfig.SUPPORTED_AUTH_METHODS:
-                return auth
-            else:
-                raise UnsupportedPropertyValue(MimeoConfig.OUTPUT_DETAILS_AUTH_KEY,
-                                               auth,
-                                               MimeoConfig.SUPPORTED_AUTH_METHODS)
+        auth = None
+        if direction == MimeoConfig.OUTPUT_DIRECTION_HTTP:
+            auth = output.get(
+                MimeoConfig.OUTPUT_AUTH_KEY,
+                MimeoConfig.OUTPUT_DIRECTION_HTTP_AUTH_BASIC)
+            if auth not in MimeoConfig.SUPPORTED_AUTH_METHODS:
+                raise UnsupportedPropertyValueError(
+                    MimeoConfig.OUTPUT_AUTH_KEY,
+                    auth,
+                    MimeoConfig.SUPPORTED_AUTH_METHODS)
+        return auth
 
     @staticmethod
-    def _get_username(direction: str, output_details: dict) -> str:
+    def _get_username(
+            direction: str,
+            output: dict,
+    ) -> str | None:
         """Extract a username from the source dictionary.
 
         It is extracted only when the output direction is 'http'.
@@ -634,20 +712,24 @@ class MimeoOutputDetails(MimeoDTO):
         ----------
         direction : str
             The configured output direction
-        output_details : dict
+        output : dict
             A source config output details dictionary
 
         Returns
         -------
-        str
+        str | None
             The configured username when the output direction is 'http'.
             Otherwise, None.
         """
-        if direction == MimeoConfig.OUTPUT_DETAILS_DIRECTION_HTTP:
-            return output_details.get(MimeoConfig.OUTPUT_DETAILS_USERNAME_KEY)
+        if direction == MimeoConfig.OUTPUT_DIRECTION_HTTP:
+            return output.get(MimeoConfig.OUTPUT_USERNAME_KEY)
+        return None
 
     @staticmethod
-    def _get_password(direction: str, output_details: dict) -> str:
+    def _get_password(
+            direction: str,
+            output: dict,
+    ) -> str | None:
         """Extract a password from the source dictionary.
 
         It is extracted only when the output direction is 'http'.
@@ -656,20 +738,24 @@ class MimeoOutputDetails(MimeoDTO):
         ----------
         direction : str
             The configured output direction
-        output_details : dict
+        output : dict
             A source config output details dictionary
 
         Returns
         -------
-        str
+        str | None
             The configured password when the output direction is 'http'.
             Otherwise, None.
         """
-        if direction == MimeoConfig.OUTPUT_DETAILS_DIRECTION_HTTP:
-            return output_details.get(MimeoConfig.OUTPUT_DETAILS_PASSWORD_KEY)
+        if direction == MimeoConfig.OUTPUT_DIRECTION_HTTP:
+            return output.get(MimeoConfig.OUTPUT_PASSWORD_KEY)
+        return None
 
     @staticmethod
-    def _validate_output_details(direction: str, output_details: dict) -> None:
+    def _validate_output(
+            direction: str,
+            output: dict,
+    ) -> None:
         """Validate output details in the source dictionary.
 
         The validation is being done according to the configured output
@@ -679,22 +765,24 @@ class MimeoOutputDetails(MimeoDTO):
         ----------
         direction : str
             The configured output direction
-        output_details : dict
+        output : dict
             A source config output details dictionary
 
         Raises
         ------
-        MissingRequiredProperty
-            If the output details doesn't include all required settings for the direction
+        MissingRequiredPropertyError
+            If the output details doesn't include all required settings
+            for the direction
         """
-        if direction == MimeoConfig.OUTPUT_DETAILS_DIRECTION_HTTP:
+        if direction == MimeoConfig.OUTPUT_DIRECTION_HTTP:
             missing_details = []
             for detail in MimeoConfig.REQUIRED_HTTP_DETAILS:
-                if detail not in output_details:
+                if detail not in output:
                     missing_details.append(detail)
             if len(missing_details) > 0:
-                missing_details_str = ', '.join(missing_details)
-                raise MissingRequiredProperty(f"Missing required fields is HTTP output details: {missing_details_str}")
+                details_str = ", ".join(missing_details)
+                msg = f"Missing required fields is HTTP output details: {details_str}"
+                raise MissingRequiredPropertyError(msg)
 
 
 class MimeoTemplate(MimeoDTO):
@@ -710,7 +798,10 @@ class MimeoTemplate(MimeoDTO):
         A configured model of the Mimeo Template
     """
 
-    def __init__(self, template: dict):
+    def __init__(
+            self,
+            template: dict,
+    ):
         """Initialize MimeoTemplate class.
 
         Extends MimeoDTO constructor.
@@ -721,12 +812,14 @@ class MimeoTemplate(MimeoDTO):
             A source config template dictionary
         """
         super().__init__(template)
-        MimeoTemplate._validate_template(template)
+        self._validate_template(template)
         self.count = template.get(MimeoConfig.TEMPLATES_COUNT_KEY)
         self.model = MimeoModel(template.get(MimeoConfig.TEMPLATES_MODEL_KEY))
 
     @staticmethod
-    def _validate_template(template: dict) -> None:
+    def _validate_template(
+            template: dict,
+    ) -> None:
         """Validate template in the source dictionary.
 
         Parameters
@@ -740,9 +833,11 @@ class MimeoTemplate(MimeoDTO):
             If the source config doesn't include count or model properties
         """
         if MimeoConfig.TEMPLATES_COUNT_KEY not in template:
-            raise InvalidMimeoTemplate(f"No count value in the Mimeo Template: {template}")
+            msg = f"No count value in the Mimeo Template: {template}"
+            raise InvalidMimeoTemplateError(msg)
         if MimeoConfig.TEMPLATES_MODEL_KEY not in template:
-            raise InvalidMimeoTemplate(f"No model data in the Mimeo Template: {template}")
+            msg = f"No model data in the Mimeo Template: {template}"
+            raise InvalidMimeoTemplateError(msg)
 
 
 class MimeoModel(MimeoDTO):
@@ -760,7 +855,10 @@ class MimeoModel(MimeoDTO):
         A context name (root_name by default)
     """
 
-    def __init__(self, model: dict):
+    def __init__(
+            self,
+            model: dict,
+    ):
         """Initialize MimeoModel class.
 
         Extends MimeoDTO constructor.
@@ -776,7 +874,9 @@ class MimeoModel(MimeoDTO):
         self.context_name = MimeoModel._get_context_name(model, self.root_name)
 
     @staticmethod
-    def _get_root_name(model: dict) -> str:
+    def _get_root_name(
+            model: dict,
+    ) -> str:
         """Extract a root name from the source dictionary.
 
         Parameters
@@ -794,16 +894,20 @@ class MimeoModel(MimeoDTO):
         IncorrectMimeoModel
             If the source config has no or more than one root nodes
         """
-        model_keys = [key for key in filter(MimeoModel._is_not_configuration_key, iter(model))]
-        if len(model_keys) == 1:
-            return model_keys[0]
+        model_keys = list(filter(MimeoModel._is_not_configuration_key, iter(model)))
         if len(model_keys) == 0:
-            raise InvalidMimeoModel(f"No root data in Mimeo Model: {model}")
-        elif len(model_keys) > 1:
-            raise InvalidMimeoModel(f"Multiple root data in Mimeo Model: {model}")
+            msg = f"No root data in Mimeo Model: {model}"
+            raise InvalidMimeoModelError(msg)
+        if len(model_keys) > 1:
+            msg = f"Multiple root data in Mimeo Model: {model}"
+            raise InvalidMimeoModelError(msg)
+        return model_keys[0]
 
     @staticmethod
-    def _get_context_name(model: dict, root_name: str) -> str:
+    def _get_context_name(
+            model: dict,
+            root_name: str,
+    ) -> str:
         """Extract a context name from the source dictionary.
 
         Parameters
@@ -825,13 +929,15 @@ class MimeoModel(MimeoDTO):
             If the source config has a context name not being a string value
         """
         context_name = model.get(MimeoConfig.MODEL_CONTEXT_KEY, root_name)
-        if isinstance(context_name, str):
-            return context_name
-        else:
-            raise InvalidMimeoModel(f"Invalid context name in Mimeo Model (not a string value): {model}")
+        if not isinstance(context_name, str):
+            msg = f"Invalid context name in Mimeo Model (not a string value): {model}"
+            raise InvalidMimeoModelError(msg)
+        return context_name
 
     @staticmethod
-    def _is_not_configuration_key(dict_key: str) -> bool:
+    def _is_not_configuration_key(
+            dict_key: str,
+    ) -> bool:
         """Verify if the dictionary key is a configuration one.
 
         Parameters

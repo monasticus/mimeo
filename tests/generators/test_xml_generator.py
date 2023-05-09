@@ -1,24 +1,23 @@
-import pytest
-
 from mimeo.config import MimeoConfig
 from mimeo.context import MimeoContextManager
 from mimeo.generators import XMLGenerator
-from mimeo.utils.exc import InvalidValue
+from mimeo.utils.exc import InvalidValueError
+from tests.utils import assert_throws
 
 
 def test_generate_single_template_model_without_attributes():
     config = MimeoConfig({
-        "output_details": {
-            "format": "xml"
+        "output": {
+            "format": "xml",
         },
         "_templates_": [
             {
                 "count": 5,
                 "model": {
-                    "SomeEntity": {}
-                }
-            }
-        ]
+                    "SomeEntity": {},
+                },
+            },
+        ],
     })
 
     with MimeoContextManager(config):
@@ -36,8 +35,8 @@ def test_generate_single_template_model_without_attributes():
 
 def test_generate_single_template_model_with_attributes():
     config = MimeoConfig({
-        "output_details": {
-            "format": "xml"
+        "output": {
+            "format": "xml",
         },
         "_templates_": [
             {
@@ -45,12 +44,12 @@ def test_generate_single_template_model_with_attributes():
                 "model": {
                     "SomeEntity": {
                         "_attrs": {
-                            "xmlns": "http://mimeo.arch.com/default-namespace"
-                        }
-                    }
-                }
-            }
-        ]
+                            "xmlns": "http://mimeo.arch.com/default-namespace",
+                        },
+                    },
+                },
+            },
+        ],
     })
 
     with MimeoContextManager(config):
@@ -68,8 +67,8 @@ def test_generate_single_template_model_with_attributes():
 
 def test_generate_single_template_model_with_prefixed_ns():
     config = MimeoConfig({
-        "output_details": {
-            "format": "xml"
+        "output": {
+            "format": "xml",
         },
         "_templates_": [
             {
@@ -77,12 +76,12 @@ def test_generate_single_template_model_with_prefixed_ns():
                 "model": {
                     "pn:SomeEntity": {
                         "_attrs": {
-                            "xmlns:pn": "http://mimeo.arch.com/prefixed-namespace"
-                        }
-                    }
-                }
-            }
-        ]
+                            "xmlns:pn": "http://mimeo.arch.com/prefixed-namespace",
+                        },
+                    },
+                },
+            },
+        ],
     })
 
     with MimeoContextManager(config):
@@ -100,8 +99,8 @@ def test_generate_single_template_model_with_prefixed_ns():
 
 def test_generate_single_template_model_with_attributes_in_atomic_child():
     config = MimeoConfig({
-        "output_details": {
-            "format": "xml"
+        "output": {
+            "format": "xml",
         },
         "_templates_": [
             {
@@ -110,14 +109,14 @@ def test_generate_single_template_model_with_attributes_in_atomic_child():
                     "SomeEntity": {
                         "pn:ChildNode": {
                             "_attrs": {
-                                "xmlns:pn": "http://mimeo.arch.com/prefixed-namespace"
+                                "xmlns:pn": "http://mimeo.arch.com/prefixed-namespace",
                             },
-                            "_value": "string-value"
-                        }
-                    }
-                }
-            }
-        ]
+                            "_value": "string-value",
+                        },
+                    },
+                },
+            },
+        ],
     })
 
     with MimeoContextManager(config):
@@ -141,8 +140,8 @@ def test_generate_single_template_model_with_attributes_in_atomic_child():
 
 def test_generate_single_template_model_with_attributes_in_complex_child():
     config = MimeoConfig({
-        "output_details": {
-            "format": "xml"
+        "output": {
+            "format": "xml",
         },
         "_templates_": [
             {
@@ -151,14 +150,14 @@ def test_generate_single_template_model_with_attributes_in_complex_child():
                     "SomeEntity": {
                         "pn:ChildNode": {
                             "_attrs": {
-                                "xmlns:pn": "http://mimeo.arch.com/prefixed-namespace"
+                                "xmlns:pn": "http://mimeo.arch.com/prefixed-namespace",
                             },
-                            "pn:GrandChild": "string-value"
-                        }
-                    }
-                }
-            }
-        ]
+                            "pn:GrandChild": "string-value",
+                        },
+                    },
+                },
+            },
+        ],
     })
 
     with MimeoContextManager(config):
@@ -187,8 +186,8 @@ def test_generate_single_template_model_with_attributes_in_complex_child():
 
 def test_generate_single_template_model_with_attributes_in_child_mixed():
     config = MimeoConfig({
-        "output_details": {
-            "format": "xml"
+        "output": {
+            "format": "xml",
         },
         "_templates_": [
             {
@@ -197,15 +196,15 @@ def test_generate_single_template_model_with_attributes_in_child_mixed():
                     "SomeEntity": {
                         "ChildNode": {
                             "_attrs": {
-                                "xmlns:pn": "http://mimeo.arch.com/prefixed-namespace"
+                                "xmlns:pn": "http://mimeo.arch.com/prefixed-namespace",
                             },
                             "_value": "string-value",
-                            "GrandChild": "string-value"  # will be ignored
-                        }
-                    }
-                }
-            }
-        ]
+                            "GrandChild": "string-value",  # will be ignored
+                        },
+                    },
+                },
+            },
+        ],
     })
 
     with MimeoContextManager(config):
@@ -227,19 +226,19 @@ def test_generate_single_template_model_with_attributes_in_child_mixed():
 
 def test_generate_single_template_str_value():
     config = MimeoConfig({
-        "output_details": {
-            "format": "xml"
+        "output": {
+            "format": "xml",
         },
         "_templates_": [
             {
                 "count": 5,
                 "model": {
                     "SomeEntity": {
-                        "ChildNode": "value"
-                    }
-                }
-            }
-        ]
+                        "ChildNode": "value",
+                    },
+                },
+            },
+        ],
     })
 
     with MimeoContextManager(config):
@@ -263,19 +262,19 @@ def test_generate_single_template_str_value():
 
 def test_generate_single_template_int_value():
     config = MimeoConfig({
-        "output_details": {
-            "format": "xml"
+        "output": {
+            "format": "xml",
         },
         "_templates_": [
             {
                 "count": 5,
                 "model": {
                     "SomeEntity": {
-                        "ChildNode": 1
-                    }
-                }
-            }
-        ]
+                        "ChildNode": 1,
+                    },
+                },
+            },
+        ],
     })
 
     with MimeoContextManager(config):
@@ -299,19 +298,19 @@ def test_generate_single_template_int_value():
 
 def test_generate_single_template_bool_value():
     config = MimeoConfig({
-        "output_details": {
-            "format": "xml"
+        "output": {
+            "format": "xml",
         },
         "_templates_": [
             {
                 "count": 5,
                 "model": {
                     "SomeEntity": {
-                        "ChildNode": True
-                    }
-                }
-            }
-        ]
+                        "ChildNode": True,
+                    },
+                },
+            },
+        ],
     })
 
     with MimeoContextManager(config):
@@ -335,19 +334,19 @@ def test_generate_single_template_bool_value():
 
 def test_generate_single_template_none_value():
     config = MimeoConfig({
-        "output_details": {
-            "format": "xml"
+        "output": {
+            "format": "xml",
         },
         "_templates_": [
             {
                 "count": 5,
                 "model": {
                     "SomeEntity": {
-                        "ChildNode": None
-                    }
-                }
-            }
-        ]
+                        "ChildNode": None,
+                    },
+                },
+            },
+        ],
     })
 
     with MimeoContextManager(config):
@@ -371,8 +370,8 @@ def test_generate_single_template_none_value():
 
 def test_generate_single_template_using_variables():
     config = MimeoConfig({
-        "output_details": {
-            "format": "xml"
+        "output": {
+            "format": "xml",
         },
         "vars": {
             "CUSTOM_VAR_1": "custom-value-1",
@@ -383,9 +382,9 @@ def test_generate_single_template_using_variables():
             "CUSTOM_VAR_6": {
                 "_mimeo_util": {
                     "_name": "auto_increment",
-                    "pattern": "{}"
-                }
-            }
+                    "pattern": "{}",
+                },
+            },
         },
         "_templates_": [
             {
@@ -397,11 +396,11 @@ def test_generate_single_template_using_variables():
                         "ChildNode3": "{CUSTOM_VAR_3}",
                         "ChildNode4": "{CUSTOM_VAR_4}",
                         "ChildNode5": "{CUSTOM_VAR_5}",
-                        "ChildNode6": "{CUSTOM_VAR_6}"
-                    }
-                }
-            }
-        ]
+                        "ChildNode6": "{CUSTOM_VAR_6}",
+                    },
+                },
+            },
+        ],
     })
 
     with MimeoContextManager(config):
@@ -455,8 +454,8 @@ def test_generate_single_template_using_variables():
 
 def test_generate_single_template_child_elements():
     config = MimeoConfig({
-        "output_details": {
-            "format": "xml"
+        "output": {
+            "format": "xml",
         },
         "_templates_": [
             {
@@ -464,12 +463,12 @@ def test_generate_single_template_child_elements():
                 "model": {
                     "SomeEntity": {
                         "ChildNode": {
-                            "GrandChildNode": "value"
-                        }
-                    }
-                }
-            }
-        ]
+                            "GrandChildNode": "value",
+                        },
+                    },
+                },
+            },
+        ],
     })
 
     with MimeoContextManager(config):
@@ -498,8 +497,8 @@ def test_generate_single_template_child_elements():
 
 def test_generate_single_template_child_elements_in_array():
     config = MimeoConfig({
-        "output_details": {
-            "format": "xml"
+        "output": {
+            "format": "xml",
         },
         "_templates_": [
             {
@@ -508,16 +507,16 @@ def test_generate_single_template_child_elements_in_array():
                     "SomeEntity": {
                         "ChildNodes": [
                             {
-                                "ChildNode": "value-1"
+                                "ChildNode": "value-1",
                             },
                             {
-                                "ChildNode": "value-2"
-                            }
-                        ]
-                    }
-                }
-            }
-        ]
+                                "ChildNode": "value-2",
+                            },
+                        ],
+                    },
+                },
+            },
+        ],
     })
 
     with MimeoContextManager(config):
@@ -553,8 +552,8 @@ def test_generate_single_template_child_elements_in_array():
 
 def test_generate_single_template_only_atomic_child_elements_in_array():
     config = MimeoConfig({
-        "output_details": {
-            "format": "xml"
+        "output": {
+            "format": "xml",
         },
         "_templates_": [
             {
@@ -564,12 +563,12 @@ def test_generate_single_template_only_atomic_child_elements_in_array():
                         "ChildNode": [
                             "value-1",
                             1,
-                            True
-                        ]
-                    }
-                }
-            }
-        ]
+                            True,
+                        ],
+                    },
+                },
+            },
+        ],
     })
 
     with MimeoContextManager(config):
@@ -605,28 +604,28 @@ def test_generate_single_template_only_atomic_child_elements_in_array():
 
 def test_generate_multiple_templates():
     config = MimeoConfig({
-        "output_details": {
-            "format": "xml"
+        "output": {
+            "format": "xml",
         },
         "_templates_": [
             {
                 "count": 2,
                 "model": {
-                    "SomeEntity": {}
-                }
+                    "SomeEntity": {},
+                },
             },
             {
                 "count": 3,
                 "model": {
-                    "SomeEntity2": {}
-                }
-            }
-        ]
+                    "SomeEntity2": {},
+                },
+            },
+        ],
     })
 
     with MimeoContextManager(config):
         generator = XMLGenerator(config)
-        roots = [root for root in generator.generate(config.templates)]
+        roots = list(generator.generate(config.templates))
         template_1_roots = roots[:2]
         template_2_roots = roots[2:]
 
@@ -647,8 +646,8 @@ def test_generate_multiple_templates():
 
 def test_generate_nested_templates():
     config = MimeoConfig({
-        "output_details": {
-            "format": "xml"
+        "output": {
+            "format": "xml",
         },
         "_templates_": [
             {
@@ -662,16 +661,16 @@ def test_generate_nested_templates():
                                     "count": 4,
                                     "model": {
                                         "Node": {
-                                            "ChildNode": True
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    }
-                }
-            }
-        ]
+                                            "ChildNode": True,
+                                        },
+                                    },
+                                },
+                            ],
+                        },
+                    },
+                },
+            },
+        ],
     })
 
     with MimeoContextManager(config):
@@ -712,10 +711,10 @@ def test_generate_nested_templates():
 
 def test_stringify_with_indent_and_xml_declaration():
     config = MimeoConfig({
-        "output_details": {
+        "output": {
             "format": "xml",
             "xml_declaration": True,
-            "indent": 4
+            "indent": 4,
         },
         "_templates_": [
             {
@@ -724,19 +723,19 @@ def test_stringify_with_indent_and_xml_declaration():
                     "SomeEntity": {
                         "_attrs": {
                             "xmlns": "http://mimeo.arch.com/default-namespace",
-                            "xmlns:pn": "http://mimeo.arch.com/prefixed-namespace"
+                            "xmlns:pn": "http://mimeo.arch.com/prefixed-namespace",
                         },
-                        "pn:ChildNode": "value"
-                    }
-                }
-            }
-        ]
+                        "pn:ChildNode": "value",
+                    },
+                },
+            },
+        ],
     })
 
     with MimeoContextManager(config):
         generator = XMLGenerator(config)
         for data in generator.generate(config.templates):
-            data_str = generator.stringify(data, config)
+            data_str = generator.stringify(data)
             assert data_str == ('<?xml version="1.0" encoding="utf-8"?>\n'
                                 '<SomeEntity'
                                 ' xmlns="http://mimeo.arch.com/default-namespace"'
@@ -747,10 +746,10 @@ def test_stringify_with_indent_and_xml_declaration():
 
 def test_stringify_with_indent_and_without_xml_declaration():
     config = MimeoConfig({
-        "output_details": {
+        "output": {
             "format": "xml",
             "xml_declaration": False,
-            "indent": 4
+            "indent": 4,
         },
         "_templates_": [
             {
@@ -759,19 +758,19 @@ def test_stringify_with_indent_and_without_xml_declaration():
                     "SomeEntity": {
                         "_attrs": {
                             "xmlns": "http://mimeo.arch.com/default-namespace",
-                            "xmlns:pn": "http://mimeo.arch.com/prefixed-namespace"
+                            "xmlns:pn": "http://mimeo.arch.com/prefixed-namespace",
                         },
-                        "pn:ChildNode": "value"
-                    }
-                }
-            }
-        ]
+                        "pn:ChildNode": "value",
+                    },
+                },
+            },
+        ],
     })
 
     with MimeoContextManager(config):
         generator = XMLGenerator(config)
         for data in generator.generate(config.templates):
-            data_str = generator.stringify(data, config)
+            data_str = generator.stringify(data)
             assert data_str == ('<SomeEntity'
                                 ' xmlns="http://mimeo.arch.com/default-namespace"'
                                 ' xmlns:pn="http://mimeo.arch.com/prefixed-namespace">\n'
@@ -781,9 +780,9 @@ def test_stringify_with_indent_and_without_xml_declaration():
 
 def test_stringify_without_indent_and_with_xml_declaration():
     config = MimeoConfig({
-        "output_details": {
+        "output": {
             "format": "xml",
-            "xml_declaration": True
+            "xml_declaration": True,
         },
         "_templates_": [
             {
@@ -792,19 +791,19 @@ def test_stringify_without_indent_and_with_xml_declaration():
                     "SomeEntity": {
                         "_attrs": {
                             "xmlns": "http://mimeo.arch.com/default-namespace",
-                            "xmlns:pn": "http://mimeo.arch.com/prefixed-namespace"
+                            "xmlns:pn": "http://mimeo.arch.com/prefixed-namespace",
                         },
-                        "pn:ChildNode": "value"
-                    }
-                }
-            }
-        ]
+                        "pn:ChildNode": "value",
+                    },
+                },
+            },
+        ],
     })
 
     with MimeoContextManager(config):
         generator = XMLGenerator(config)
         for data in generator.generate(config.templates):
-            data_str = generator.stringify(data, config)
+            data_str = generator.stringify(data)
             # Notice no new line at the end of string chunks
             assert data_str == ("<?xml version='1.0' encoding='utf-8'?>\n"
                                 '<SomeEntity'
@@ -816,8 +815,8 @@ def test_stringify_without_indent_and_with_xml_declaration():
 
 def test_stringify_without_indent_and_xml_declaration():
     config = MimeoConfig({
-        "output_details": {
-            "format": "xml"
+        "output": {
+            "format": "xml",
         },
         "_templates_": [
             {
@@ -826,19 +825,19 @@ def test_stringify_without_indent_and_xml_declaration():
                     "SomeEntity": {
                         "_attrs": {
                             "xmlns": "http://mimeo.arch.com/default-namespace",
-                            "xmlns:pn": "http://mimeo.arch.com/prefixed-namespace"
+                            "xmlns:pn": "http://mimeo.arch.com/prefixed-namespace",
                         },
-                        "pn:ChildNode": "value"
-                    }
-                }
-            }
-        ]
+                        "pn:ChildNode": "value",
+                    },
+                },
+            },
+        ],
     })
 
     with MimeoContextManager(config):
         generator = XMLGenerator(config)
         for data in generator.generate(config.templates):
-            data_str = generator.stringify(data, config)
+            data_str = generator.stringify(data)
             # Notice no new line at the end of string chunks
             assert data_str == ('<SomeEntity'
                                 ' xmlns="http://mimeo.arch.com/default-namespace"'
@@ -847,21 +846,21 @@ def test_stringify_without_indent_and_xml_declaration():
                                 '</SomeEntity>')
 
 
-def test_generate_template_using_mimeo_util_raw():
+def test_generate_using_mimeo_util_raw():
     config = MimeoConfig({
-        "output_details": {
-            "format": "xml"
+        "output": {
+            "format": "xml",
         },
         "_templates_": [
             {
                 "count": 5,
                 "model": {
                     "SomeEntity": {
-                        "ChildNode": "{auto_increment}"
-                    }
-                }
-            }
-        ]
+                        "ChildNode": "{auto_increment}",
+                    },
+                },
+            },
+        ],
     })
 
     with MimeoContextManager(config):
@@ -875,7 +874,7 @@ def test_generate_template_using_mimeo_util_raw():
             child = data.find("ChildNode")
             assert child.tag == "ChildNode"
             assert child.attrib == {}
-            assert child.text == "{:05d}".format(index + 1)
+            assert child.text == f"{index + 1:05d}"
             assert len(list(child)) == 0  # number of children
 
             count += 1
@@ -883,10 +882,10 @@ def test_generate_template_using_mimeo_util_raw():
         assert count == 5
 
 
-def test_generate_template_using_mimeo_util_parametrized():
+def test_generate_using_mimeo_util_parametrized():
     config = MimeoConfig({
-        "output_details": {
-            "format": "xml"
+        "output": {
+            "format": "xml",
         },
         "_templates_": [
             {
@@ -896,13 +895,13 @@ def test_generate_template_using_mimeo_util_parametrized():
                         "ChildNode": {
                             "_mimeo_util": {
                                 "_name": "auto_increment",
-                                "pattern": "{}"
-                            }
-                        }
-                    }
-                }
-            }
-        ]
+                                "pattern": "{}",
+                            },
+                        },
+                    },
+                },
+            },
+        ],
     })
 
     with MimeoContextManager(config):
@@ -924,10 +923,14 @@ def test_generate_template_using_mimeo_util_parametrized():
         assert count == 5
 
 
-def test_generate_template_using_mimeo_util_parametrized_invalid():
+@assert_throws(err_type=InvalidValueError,
+               msg="The auto_increment Mimeo Util require a string value "
+                   "for the pattern parameter and was: [{pattern}].",
+               params={"pattern": 1})
+def test_generate_using_mimeo_util_parametrized_invalid():
     config = MimeoConfig({
-        "output_details": {
-            "format": "xml"
+        "output": {
+            "format": "xml",
         },
         "_templates_": [
             {
@@ -937,40 +940,36 @@ def test_generate_template_using_mimeo_util_parametrized_invalid():
                         "ChildNode": {
                             "_mimeo_util": {
                                 "_name": "auto_increment",
-                                "pattern": 1
-                            }
-                        }
-                    }
-                }
-            }
-        ]
+                                "pattern": 1,
+                            },
+                        },
+                    },
+                },
+            },
+        ],
     })
 
     with MimeoContextManager(config):
         generator = XMLGenerator(config)
-        with pytest.raises(InvalidValue) as err:
-            for _ in generator.generate(config.templates):
-                pass
-
-    assert err.value.args[0] == "The auto_increment Mimeo Util require a string value for the pattern parameter " \
-                                "and was: [1]."
+        for _ in generator.generate(config.templates):
+            pass
 
 
-def test_generate_template_using_auto_increment_util():
+def test_generate_using_auto_increment():
     config = MimeoConfig({
-        "output_details": {
-            "format": "xml"
+        "output": {
+            "format": "xml",
         },
         "_templates_": [
             {
                 "count": 5,
                 "model": {
                     "SomeEntity": {
-                        "ChildNode": "{auto_increment}"
-                    }
-                }
-            }
-        ]
+                        "ChildNode": "{auto_increment}",
+                    },
+                },
+            },
+        ],
     })
 
     with MimeoContextManager(config):
@@ -984,7 +983,7 @@ def test_generate_template_using_auto_increment_util():
             child = data.find("ChildNode")
             assert child.tag == "ChildNode"
             assert child.attrib == {}
-            assert child.text == "{:05d}".format(index + 1)
+            assert child.text == f"{index + 1:05d}"
             assert len(list(child)) == 0  # number of children
 
             count += 1
@@ -992,29 +991,29 @@ def test_generate_template_using_auto_increment_util():
         assert count == 5
 
 
-def test_generate_template_using_auto_increment_util_in_two_templates():
+def test_generate_using_auto_increment_in_two_templates():
     config = MimeoConfig({
-        "output_details": {
-            "format": "xml"
+        "output": {
+            "format": "xml",
         },
         "_templates_": [
             {
                 "count": 5,
                 "model": {
                     "SomeEntity": {
-                        "ChildNode": "{auto_increment}"
-                    }
-                }
+                        "ChildNode": "{auto_increment}",
+                    },
+                },
             },
             {
                 "count": 3,
                 "model": {
                     "SomeEntity": {
-                        "ChildNode": "{auto_increment}"
-                    }
-                }
-            }
-        ]
+                        "ChildNode": "{auto_increment}",
+                    },
+                },
+            },
+        ],
     })
 
     with MimeoContextManager(config):
@@ -1028,7 +1027,7 @@ def test_generate_template_using_auto_increment_util_in_two_templates():
             child = data.find("ChildNode")
             assert child.tag == "ChildNode"
             assert child.attrib == {}
-            assert child.text == "{:05d}".format(index + 1)
+            assert child.text == f"{index + 1:05d}"
             assert len(list(child)) == 0  # number of children
 
             count += 1
@@ -1036,37 +1035,38 @@ def test_generate_template_using_auto_increment_util_in_two_templates():
         assert count == 8
 
 
-def test_generate_template_using_auto_increment_util_in_two_templates_with_customized_context_name():
+def test_generate_using_auto_increment_in_two_templates_with_customized_context_name():
     config = MimeoConfig({
-        "output_details": {
-            "format": "xml"
+        "output": {
+            "format": "xml",
         },
         "_templates_": [
             {
                 "count": 5,
                 "model": {
                     "SomeEntity": {
-                        "ChildNode": "{auto_increment}"
-                    }
-                }
+                        "ChildNode": "{auto_increment}",
+                    },
+                },
             },
             {
                 "count": 3,
                 "model": {
                     "context": "A different set",
                     "SomeEntity": {
-                        "ChildNode": "{auto_increment}"
-                    }
-                }
-            }
-        ]
+                        "ChildNode": "{auto_increment}",
+                    },
+                },
+            },
+        ],
     })
 
     with MimeoContextManager(config):
         generator = XMLGenerator(config)
         count = 0
         for index, data in enumerate(generator.generate(config.templates)):
-            expected_increment = index + 1 if index < 5 else index - 5 + 1  # from 6th item it is the second template
+            # from 6th item it is the second template
+            expected_increment = index + 1 if index < 5 else index - 5 + 1
             assert data.tag == "SomeEntity"
             assert data.attrib == {}
             assert len(list(data)) == 1  # number of children
@@ -1074,7 +1074,7 @@ def test_generate_template_using_auto_increment_util_in_two_templates_with_custo
             child = data.find("ChildNode")
             assert child.tag == "ChildNode"
             assert child.attrib == {}
-            assert child.text == "{:05d}".format(expected_increment)
+            assert child.text == f"{expected_increment:05d}"
             assert len(list(child)) == 0  # number of children
 
             count += 1
@@ -1082,21 +1082,21 @@ def test_generate_template_using_auto_increment_util_in_two_templates_with_custo
         assert count == 8
 
 
-def test_generate_template_using_curr_iter_util():
+def test_generate_using_curr_iter_util():
     config = MimeoConfig({
-        "output_details": {
-            "format": "xml"
+        "output": {
+            "format": "xml",
         },
         "_templates_": [
             {
                 "count": 5,
                 "model": {
                     "SomeEntity": {
-                        "ChildNode": "{curr_iter}"
-                    }
-                }
-            }
-        ]
+                        "ChildNode": "{curr_iter}",
+                    },
+                },
+            },
+        ],
     })
 
     with MimeoContextManager(config):
@@ -1119,37 +1119,37 @@ def test_generate_template_using_curr_iter_util():
         assert count == 5
 
 
-def test_generate_template_using_curr_iter_util_in_two_templates():
+def test_generate_using_curr_iter_util_in_two_templates():
     config = MimeoConfig({
-        "output_details": {
-            "format": "xml"
+        "output": {
+            "format": "xml",
         },
         "_templates_": [
             {
                 "count": 5,
                 "model": {
                     "SomeEntity": {
-                        "ChildNode": "{curr_iter}"
-                    }
-                }
+                        "ChildNode": "{curr_iter}",
+                    },
+                },
             },
             {
                 "count": 3,
                 "model": {
                     "SomeEntity": {
-                        "ChildNode": "{curr_iter}"
-                    }
-                }
-            }
-        ]
+                        "ChildNode": "{curr_iter}",
+                    },
+                },
+            },
+        ],
     })
 
     with MimeoContextManager(config):
         generator = XMLGenerator(config)
         count = 0
         for index, data in enumerate(generator.generate(config.templates)):
-            curr_iter = index + 1 if index < 5 else index - 5 + 1  # from 6th item it is the second template
-            print(generator.stringify(data, config))
+            # from 6th item it is the second template
+            curr_iter = index + 1 if index < 5 else index - 5 + 1
             assert data.tag == "SomeEntity"
             assert data.attrib == {}
             assert len(list(data)) == 1  # number of children
@@ -1165,10 +1165,10 @@ def test_generate_template_using_curr_iter_util_in_two_templates():
         assert count == 8
 
 
-def test_generate_templates_using_curr_iter_util_in_nested_templates():
+def test_generates_using_curr_iter_util_in_nested_templates():
     config = MimeoConfig({
-        "output_details": {
-            "format": "xml"
+        "output": {
+            "format": "xml",
         },
         "_templates_": [
             {
@@ -1182,16 +1182,16 @@ def test_generate_templates_using_curr_iter_util_in_nested_templates():
                                     "count": 4,
                                     "model": {
                                         "Node": {
-                                            "ChildNode": "{curr_iter}"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    }
-                }
-            }
-        ]
+                                            "ChildNode": "{curr_iter}",
+                                        },
+                                    },
+                                },
+                            ],
+                        },
+                    },
+                },
+            },
+        ],
     })
 
     with MimeoContextManager(config):
@@ -1232,10 +1232,10 @@ def test_generate_templates_using_curr_iter_util_in_nested_templates():
         assert count == 5
 
 
-def test_generate_templates_using_curr_iter_util_in_nested_templates_indicating_one():
+def test_generates_using_curr_iter_util_in_nested_templates_indicating_one():
     config = MimeoConfig({
-        "output_details": {
-            "format": "xml"
+        "output": {
+            "format": "xml",
         },
         "_templates_": [
             {
@@ -1252,18 +1252,18 @@ def test_generate_templates_using_curr_iter_util_in_nested_templates_indicating_
                                             "ChildNode": {
                                                 "_mimeo_util": {
                                                     "_name": "curr_iter",
-                                                    "context": "SomeEntity"
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    }
-                }
-            }
-        ]
+                                                    "context": "SomeEntity",
+                                                },
+                                            },
+                                        },
+                                    },
+                                },
+                            ],
+                        },
+                    },
+                },
+            },
+        ],
     })
 
     with MimeoContextManager(config):
@@ -1287,7 +1287,7 @@ def test_generate_templates_using_curr_iter_util_in_nested_templates_indicating_
             assert len(list(multiples_nodes_node)) == 4  # number of children
 
             nodes = multiples_nodes_node.findall("Node")
-            for nested_index, node in enumerate(nodes):
+            for _, node in enumerate(nodes):
                 assert node.tag == "Node"
                 assert node.attrib == {}
                 assert len(list(node)) == 1  # number of children
@@ -1303,10 +1303,10 @@ def test_generate_templates_using_curr_iter_util_in_nested_templates_indicating_
         assert count == 5
 
 
-def test_generate_templates_using_curr_iter_util_in_nested_templates_indicating_customized_one():
+def test_generates_using_curr_iter_util_in_nested_templates_indicating_customized_one():
     config = MimeoConfig({
-        "output_details": {
-            "format": "xml"
+        "output": {
+            "format": "xml",
         },
         "_templates_": [
             {
@@ -1324,18 +1324,18 @@ def test_generate_templates_using_curr_iter_util_in_nested_templates_indicating_
                                             "ChildNode": {
                                                 "_mimeo_util": {
                                                     "_name": "curr_iter",
-                                                    "context": "ROOT"
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    }
-                }
-            }
-        ]
+                                                    "context": "ROOT",
+                                                },
+                                            },
+                                        },
+                                    },
+                                },
+                            ],
+                        },
+                    },
+                },
+            },
+        ],
     })
 
     with MimeoContextManager(config):
@@ -1359,7 +1359,7 @@ def test_generate_templates_using_curr_iter_util_in_nested_templates_indicating_
             assert len(list(multiples_nodes_node)) == 4  # number of children
 
             nodes = multiples_nodes_node.findall("Node")
-            for nested_index, node in enumerate(nodes):
+            for _, node in enumerate(nodes):
                 assert node.tag == "Node"
                 assert node.attrib == {}
                 assert len(list(node)) == 1  # number of children
@@ -1375,10 +1375,10 @@ def test_generate_templates_using_curr_iter_util_in_nested_templates_indicating_
         assert count == 5
 
 
-def test_generate_template_using_curr_iter_and_auto_increment_utils():
+def test_generate_using_curr_iter_and_auto_increment_utils():
     config = MimeoConfig({
-        "output_details": {
-            "format": "xml"
+        "output": {
+            "format": "xml",
         },
         "_templates_": [
             {
@@ -1388,11 +1388,11 @@ def test_generate_template_using_curr_iter_and_auto_increment_utils():
                         "ChildNode1": "{curr_iter}",
                         "ChildNode2": "{curr_iter}",
                         "ChildNode3": "{auto_increment}",
-                        "ChildNode4": "{auto_increment}"
-                    }
-                }
-            }
-        ]
+                        "ChildNode4": "{auto_increment}",
+                    },
+                },
+            },
+        ],
     })
 
     with MimeoContextManager(config):
@@ -1433,10 +1433,10 @@ def test_generate_template_using_curr_iter_and_auto_increment_utils():
         assert count == 5
 
 
-def test_generate_template_using_key_util():
+def test_generate_using_key_util():
     config = MimeoConfig({
-        "output_details": {
-            "format": "xml"
+        "output": {
+            "format": "xml",
         },
         "_templates_": [
             {
@@ -1446,17 +1446,17 @@ def test_generate_template_using_key_util():
                         "ChildNode1": "{key}",
                         "ChildNode2": "{key}",
                         "ChildNode3": "{key}",
-                    }
-                }
-            }
-        ]
+                    },
+                },
+            },
+        ],
     })
 
     with MimeoContextManager(config):
         generator = XMLGenerator(config)
         count = 0
         keys = []
-        for index, data in enumerate(generator.generate(config.templates)):
+        for _index, data in enumerate(generator.generate(config.templates)):
             assert data.tag == "SomeEntity"
             assert data.attrib == {}
             assert len(list(data)) == 3  # number of children
@@ -1489,10 +1489,10 @@ def test_generate_template_using_key_util():
         assert len(set(keys)) == len(keys)
 
 
-def test_generate_template_using_key_util_in_separated_contexts():
+def test_generate_using_key_util_in_separated_contexts():
     config = MimeoConfig({
-        "output_details": {
-            "format": "xml"
+        "output": {
+            "format": "xml",
         },
         "_templates_": [
             {
@@ -1505,21 +1505,21 @@ def test_generate_template_using_key_util_in_separated_contexts():
                                 "count": 1,
                                 "model": {
                                     "NewContextNode": {
-                                        "GrandChild": "{key}"
-                                    }
-                                }
-                            }
-                        ]
-                    }
-                }
-            }
-        ]
+                                        "GrandChild": "{key}",
+                                    },
+                                },
+                            },
+                        ],
+                    },
+                },
+            },
+        ],
     })
 
     with MimeoContextManager(config):
         generator = XMLGenerator(config)
         count = 0
-        for index, data in enumerate(generator.generate(config.templates)):
+        for _index, data in enumerate(generator.generate(config.templates)):
             assert data.tag == "SomeEntity"
             assert data.attrib == {}
             assert len(list(data)) == 2  # number of children
@@ -1548,10 +1548,10 @@ def test_generate_template_using_key_util_in_separated_contexts():
         assert count == 5
 
 
-def test_generate_template_using_key_util_in_separated_contexts_indicating_one():
+def test_generate_using_key_util_in_separated_contexts_indicating_one():
     config = MimeoConfig({
-        "output_details": {
-            "format": "xml"
+        "output": {
+            "format": "xml",
         },
         "_templates_": [
             {
@@ -1567,23 +1567,23 @@ def test_generate_template_using_key_util_in_separated_contexts_indicating_one()
                                         "GrandChild": {
                                             "_mimeo_util": {
                                                 "_name": "key",
-                                                "context": "SomeEntity"
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        ]
-                    }
-                }
-            }
-        ]
+                                                "context": "SomeEntity",
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                        ],
+                    },
+                },
+            },
+        ],
     })
 
     with MimeoContextManager(config):
         generator = XMLGenerator(config)
         count = 0
-        for index, data in enumerate(generator.generate(config.templates)):
+        for _index, data in enumerate(generator.generate(config.templates)):
             assert data.tag == "SomeEntity"
             assert data.attrib == {}
             assert len(list(data)) == 2  # number of children
@@ -1612,19 +1612,19 @@ def test_generate_template_using_key_util_in_separated_contexts_indicating_one()
         assert count == 5
 
 
-def test_generate_template_using_key_util_in_two_templates_with_customized_iteration():
+def test_generate_using_key_util_in_two_templates_with_customized_iteration():
     config = MimeoConfig({
-        "output_details": {
-            "format": "xml"
+        "output": {
+            "format": "xml",
         },
         "_templates_": [
             {
                 "count": 5,
                 "model": {
                     "CustomIteration1": {
-                        "ChildNode1": "{key}"
-                    }
-                }
+                        "ChildNode1": "{key}",
+                    },
+                },
             },
             {
                 "count": 5,
@@ -1634,18 +1634,18 @@ def test_generate_template_using_key_util_in_two_templates_with_customized_itera
                             "_mimeo_util": {
                                 "_name": "key",
                                 "context": "CustomIteration1",
-                                "iteration": "{curr_iter}"
-                            }
-                        }
-                    }
-                }
-            }
-        ]
+                                "iteration": "{curr_iter}",
+                            },
+                        },
+                    },
+                },
+            },
+        ],
     })
 
-    with MimeoContextManager(config) as mimeo_manager:
+    with MimeoContextManager(config):
         generator = XMLGenerator(config)
-        data = [data for data in generator.generate(config.templates)]
+        data = list(generator.generate(config.templates))
         some_entity_data = data[:5]
         some_other_entity_data = data[5:]
 
@@ -1681,10 +1681,10 @@ def test_generate_template_using_key_util_in_two_templates_with_customized_itera
             assert some_entity_keys[i] == some_other_entity_keys[i]
 
 
-def test_generate_template_using_get_key_util_in_two_templates_with_customized_context_name():
+def test_generate_using_get_key_util_in_two_templates_with_customized_context_name():
     config = MimeoConfig({
-        "output_details": {
-            "format": "xml"
+        "output": {
+            "format": "xml",
         },
         "_templates_": [
             {
@@ -1692,9 +1692,9 @@ def test_generate_template_using_get_key_util_in_two_templates_with_customized_c
                 "model": {
                     "context": "First SomeEntity set",
                     "SomeEntity": {
-                        "ChildNode1": "{key}"
-                    }
-                }
+                        "ChildNode1": "{key}",
+                    },
+                },
             },
             {
                 "count": 5,
@@ -1704,18 +1704,18 @@ def test_generate_template_using_get_key_util_in_two_templates_with_customized_c
                         "ChildNode1": {
                             "_mimeo_util": {
                                 "_name": "key",
-                                "context": "First SomeEntity set"
-                            }
-                        }
-                    }
-                }
-            }
-        ]
+                                "context": "First SomeEntity set",
+                            },
+                        },
+                    },
+                },
+            },
+        ],
     })
 
     with MimeoContextManager(config):
         generator = XMLGenerator(config)
-        data = [data for data in generator.generate(config.templates)]
+        data = list(generator.generate(config.templates))
         some_entity_data = data[:5]
         some_other_entity_data = data[5:]
 
@@ -1747,10 +1747,10 @@ def test_generate_template_using_get_key_util_in_two_templates_with_customized_c
             assert len(list(child)) == 0  # number of children
 
 
-def test_generate_template_using_special_fields():
+def test_generate_using_special_fields():
     config = MimeoConfig({
-        "output_details": {
-            "format": "xml"
+        "output": {
+            "format": "xml",
         },
         "_templates_": [
             {
@@ -1758,17 +1758,17 @@ def test_generate_template_using_special_fields():
                 "model": {
                     "SomeEntity": {
                         "{:ChildNode1:}": "value-1",
-                        "ChildNode2": "{:ChildNode1:}"
-                    }
-                }
-            }
-        ]
+                        "ChildNode2": "{:ChildNode1:}",
+                    },
+                },
+            },
+        ],
     })
 
     with MimeoContextManager(config):
         generator = XMLGenerator(config)
         count = 0
-        for index, data in enumerate(generator.generate(config.templates)):
+        for _index, data in enumerate(generator.generate(config.templates)):
             assert data.tag == "SomeEntity"
             assert data.attrib == {}
             assert len(list(data)) == 2  # number of children
@@ -1790,10 +1790,10 @@ def test_generate_template_using_special_fields():
         assert count == 5
 
 
-def test_generate_template_using_special_fields_as_partial_values():
+def test_generate_using_special_fields_as_partial_values():
     config = MimeoConfig({
-        "output_details": {
-            "format": "xml"
+        "output": {
+            "format": "xml",
         },
         "_templates_": [
             {
@@ -1806,17 +1806,17 @@ def test_generate_template_using_special_fields_as_partial_values():
                         "ChildNode4": "3-{:ChildNode1:}-3",
                         "ChildNode5": "4-{:ChildNode1:}",
                         "ChildNode6": "{:ChildNode1:}-{:ChildNode1:}",
-                        "ChildNode7": "{:ChildNode1:}-{:ChildNode2:}"
-                    }
-                }
-            }
-        ]
+                        "ChildNode7": "{:ChildNode1:}-{:ChildNode2:}",
+                    },
+                },
+            },
+        ],
     })
 
     with MimeoContextManager(config):
         generator = XMLGenerator(config)
         count = 0
-        for index, data in enumerate(generator.generate(config.templates)):
+        for _index, data in enumerate(generator.generate(config.templates)):
             assert data.tag == "SomeEntity"
             assert data.attrib == {}
             assert len(list(data)) == 7  # number of children
@@ -1868,10 +1868,10 @@ def test_generate_template_using_special_fields_as_partial_values():
         assert count == 5
 
 
-def test_generate_template_using_special_fields_using_namespace():
+def test_generate_using_special_fields_using_namespace():
     config = MimeoConfig({
-        "output_details": {
-            "format": "xml"
+        "output": {
+            "format": "xml",
         },
         "_templates_": [
             {
@@ -1879,23 +1879,23 @@ def test_generate_template_using_special_fields_using_namespace():
                 "model": {
                     "ns:SomeEntity": {
                         "_attrs": {
-                            "xmlns:ns": "http://mimeo.arch.com/prefixed-namespace"
+                            "xmlns:ns": "http://mimeo.arch.com/prefixed-namespace",
                         },
                         "{:ns:ChildNode1:}": "value-1",
-                        "ns:ChildNode2": "{:ns:ChildNode1:}"
-                    }
-                }
-            }
-        ]
+                        "ns:ChildNode2": "{:ns:ChildNode1:}",
+                    },
+                },
+            },
+        ],
     })
 
     with MimeoContextManager(config):
         generator = XMLGenerator(config)
         count = 0
-        for index, data in enumerate(generator.generate(config.templates)):
+        for _index, data in enumerate(generator.generate(config.templates)):
             assert data.tag == "ns:SomeEntity"
             assert data.attrib == {
-                "xmlns:ns": "http://mimeo.arch.com/prefixed-namespace"
+                "xmlns:ns": "http://mimeo.arch.com/prefixed-namespace",
             }
             assert len(list(data)) == 2  # number of children
 
@@ -1916,10 +1916,10 @@ def test_generate_template_using_special_fields_using_namespace():
         assert count == 5
 
 
-def test_generate_template_using_special_fields_recursive():
+def test_generate_using_special_fields_recursive():
     config = MimeoConfig({
-        "output_details": {
-            "format": "xml"
+        "output": {
+            "format": "xml",
         },
         "_templates_": [
             {
@@ -1928,17 +1928,17 @@ def test_generate_template_using_special_fields_recursive():
                     "SomeEntity": {
                         "{:ChildNode1:}": "value-1",
                         "{:ChildNode2:}": "{:ChildNode1:}",
-                        "ChildNode3": "{:ChildNode2:}"
-                    }
-                }
-            }
-        ]
+                        "ChildNode3": "{:ChildNode2:}",
+                    },
+                },
+            },
+        ],
     })
 
     with MimeoContextManager(config):
         generator = XMLGenerator(config)
         count = 0
-        for index, data in enumerate(generator.generate(config.templates)):
+        for _index, data in enumerate(generator.generate(config.templates)):
             assert data.tag == "SomeEntity"
             assert data.attrib == {}
             assert len(list(data)) == 3  # number of children
@@ -1966,10 +1966,10 @@ def test_generate_template_using_special_fields_recursive():
         assert count == 5
 
 
-def test_generate_template_using_special_fields_in_template_context():
+def test_generate_using_special_fields_in_template_context():
     config = MimeoConfig({
-        "output_details": {
-            "format": "xml"
+        "output": {
+            "format": "xml",
         },
         "_templates_": [
             {
@@ -1977,11 +1977,11 @@ def test_generate_template_using_special_fields_in_template_context():
                 "model": {
                     "SomeEntity": {
                         "{:ChildNode1:}": "{curr_iter}",
-                        "ChildNode2": "{:ChildNode1:}"
-                    }
-                }
-            }
-        ]
+                        "ChildNode2": "{:ChildNode1:}",
+                    },
+                },
+            },
+        ],
     })
 
     with MimeoContextManager(config):

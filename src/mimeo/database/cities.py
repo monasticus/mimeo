@@ -6,12 +6,12 @@ It exports classes related to cities CSV data:
     * CitiesDB
         Class exposing READ operations on cities CSV data.
 """
-from typing import List
+from __future__ import annotations
 
 import pandas
 
 from mimeo import tools
-from mimeo.database.exc import InvalidIndex
+from mimeo.database.exc import InvalidIndexError
 
 
 class City:
@@ -29,7 +29,13 @@ class City:
         A country of a city
     """
 
-    def __init__(self, identifier: str, name: str, name_ascii: str, country: str):
+    def __init__(
+            self,
+            identifier: str,
+            name: str,
+            name_ascii: str,
+            country: str,
+    ):
         """Initialize City class.
 
         Parameters
@@ -48,7 +54,9 @@ class City:
         self.name_ascii = name_ascii
         self.country = country
 
-    def __str__(self) -> str:
+    def __str__(
+            self,
+    ) -> str:
         """Stringify the City instance.
 
         Returns
@@ -60,10 +68,12 @@ class City:
             "id": self.id,
             "name": self.name,
             "name_ascii": self.name_ascii,
-            "country": self.country
+            "country": self.country,
         })
 
-    def __repr__(self) -> str:
+    def __repr__(
+            self,
+    ) -> str:
         """Represent the City instance.
 
         Returns
@@ -71,7 +81,11 @@ class City:
         str
             A python representation of the City instance
         """
-        return f"City('{self.id}', '{self.name}', '{self.name_ascii}', '{self.country}')"
+        return (f"City("
+                f"id='{self.id}', "
+                f"name='{self.name}', "
+                f"name_ascii='{self.name_ascii}', "
+                f"country='{self.country}')")
 
 
 class CitiesDB:
@@ -84,9 +98,9 @@ class CitiesDB:
 
     Methods
     -------
-    get_cities() -> List[City]
+    get_cities() -> list[City]
         Get all cities.
-    get_cities_of(country_iso3: str) -> List[City]
+    get_cities_of(country_iso3: str) -> list[City]
         Get cities of a specific country.
     get_city_at(index: int) -> City
         Get a city at `index` position.
@@ -98,7 +112,10 @@ class CitiesDB:
     _CITIES = None
     _COUNTRY_CITIES = {}
 
-    def get_city_at(self, index: int) -> City:
+    def get_city_at(
+            self,
+            index: int,
+    ) -> City:
         """Get a city at `index` position.
 
         Parameters
@@ -113,16 +130,20 @@ class CitiesDB:
 
         Raises
         ------
-        InvalidIndex
+        InvalidIndexError
             If the provided `index` is out of bounds
         """
         cities = self._get_cities()
         try:
             return cities[index]
         except IndexError:
-            raise InvalidIndex(index, CitiesDB.NUM_OF_RECORDS-1)
+            last_index = CitiesDB.NUM_OF_RECORDS-1
+            raise InvalidIndexError(index, last_index) from IndexError
 
-    def get_cities_of(self, country_iso3: str) -> List[City]:
+    def get_cities_of(
+            self,
+            country_iso3: str,
+    ) -> list[City]:
         """Get cities of a specific country.
 
         Parameters
@@ -132,24 +153,29 @@ class CitiesDB:
 
         Returns
         -------
-        List[City]
+        list[City]
             List of cities filtered by country
         """
         return self._get_country_cities(country_iso3).copy()
 
     @classmethod
-    def get_cities(cls) -> List[City]:
+    def get_cities(
+            cls,
+    ) -> list[City]:
         """Get all cities.
 
         Returns
         -------
-        List[City]
+        list[City]
             List of all cities
         """
         return cls._get_cities().copy()
 
     @classmethod
-    def _get_country_cities(cls, country_iso3: str) -> List[City]:
+    def _get_country_cities(
+            cls,
+            country_iso3: str,
+    ) -> list[City]:
         """Get cities of a specific country from cache.
 
         The country's cities list is initialized for the first time
@@ -162,16 +188,19 @@ class CitiesDB:
 
         Returns
         -------
-        List[City]
+        list[City]
             List of cities filtered by country
         """
         if country_iso3 not in cls._COUNTRY_CITIES:
             cities = cls._get_cities()
-            cls._COUNTRY_CITIES[country_iso3] = list(filter(lambda city: city.country == country_iso3, cities))
+            cities = filter(lambda c: c.country == country_iso3, cities)
+            cls._COUNTRY_CITIES[country_iso3] = list(cities)
         return cls._COUNTRY_CITIES[country_iso3]
 
     @classmethod
-    def _get_cities(cls) -> List[City]:
+    def _get_cities(
+            cls,
+    ) -> list[City]:
         """Get all cities from cache.
 
         The cities list is initialized for the first time and cached
@@ -179,7 +208,7 @@ class CitiesDB:
 
         Returns
         -------
-        List[City]
+        list[City]
             List of all cities
         """
         if cls._CITIES is None:
@@ -188,8 +217,11 @@ class CitiesDB:
         return cls._CITIES
 
     @classmethod
-    def _get_cities_df(cls) -> pandas.DataFrame:
+    def _get_cities_df(
+            cls,
+    ) -> pandas.DataFrame:
         """Load cities CSV data and save in internal class attribute."""
         if cls._CITIES_DF is None:
-            cls._CITIES_DF = pandas.read_csv(tools.get_resource(CitiesDB._CITIES_DB))
+            data = tools.get_resource(CitiesDB._CITIES_DB)
+            cls._CITIES_DF = pandas.read_csv(data)
         return cls._CITIES_DF

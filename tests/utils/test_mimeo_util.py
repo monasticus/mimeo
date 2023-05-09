@@ -1,7 +1,7 @@
-import pytest
 
 import tests.utils as test_utils
 from mimeo.utils import MimeoUtil
+from tests.utils import assert_throws
 
 
 class ValidMimeoUtil(MimeoUtil):
@@ -52,11 +52,13 @@ def test_valid_class_instantiation():
         ValidMimeoUtil()
         assert True
     except TypeError:
-        assert False
+        raise AssertionError from TypeError
 
 
+@assert_throws(err_type=TypeError,
+               msg=test_utils.get_class_impl_error_msg(
+                   "InvalidMimeoUtilWithoutRender",
+                   ["render"],
+               ))
 def test_invalid_class_instantiation():
-    with pytest.raises(TypeError) as err:
-        InvalidMimeoUtilWithoutRender()
-
-    assert err.value.args[0] == test_utils.get_class_impl_error_msg("InvalidMimeoUtilWithoutRender", ["render"])
+    InvalidMimeoUtilWithoutRender()

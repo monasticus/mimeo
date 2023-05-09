@@ -9,6 +9,8 @@ files under src/mimeo/resources package, and number of records
 updated in cities.py and countries.py of src/mimeo/database package.
 All source files are removed.
 """
+from __future__ import annotations
+
 import unicodedata
 
 import pandas
@@ -110,7 +112,7 @@ def _modify_source_data_for_cities(source_df: pandas.DataFrame) -> pandas.DataFr
         "id": "ID",
         "city": "CITY",
         "city_ascii": "CITY_ASCII",
-        "iso3": "COUNTRY"
+        "iso3": "COUNTRY",
     }
     columns_order = ["ID", "CITY", "CITY_ASCII", "COUNTRY"]
     sort_column = "ID"
@@ -153,7 +155,7 @@ def _modify_source_data_for_countries(source_df: pandas.DataFrame) -> pandas.Dat
     columns_mapping = {
         "iso3": "ISO_3",
         "iso2": "ISO_2",
-        "country": "NAME"
+        "country": "NAME",
     }
     sort_column = "ISO_3"
 
@@ -174,7 +176,7 @@ def _modify_source_data_for_countries(source_df: pandas.DataFrame) -> pandas.Dat
 
 def _ascii_encoding(value: str):
     """Apply ASCII encoding."""
-    return unicodedata.normalize('NFKD', value).encode('ascii', 'ignore').decode()
+    return unicodedata.normalize("NFKD", value).encode("ascii", "ignore").decode()
 
 
 if __name__ == "__main__":

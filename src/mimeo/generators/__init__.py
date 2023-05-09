@@ -23,3 +23,5 @@ To use this package, simply import the desired class:
 from .generator import Generator
 from .xml_generator import XMLGenerator
 from .generator_factory import GeneratorFactory
+
+__all__ = ["Generator", "XMLGenerator", "GeneratorFactory"]

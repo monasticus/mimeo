@@ -6,11 +6,11 @@ It exports only one class:
 """
 from __future__ import annotations
 
-from typing import Union
+from types import TracebackType
 
 from mimeo.config import MimeoConfig
 from mimeo.context import MimeoContext
-from mimeo.context.exc import VarNotFound
+from mimeo.context.exc import VarNotFoundError
 from mimeo.meta import Alive, OnlyOneAlive
 
 
@@ -36,7 +36,10 @@ class MimeoContextManager(Alive, metaclass=OnlyOneAlive):
         Return a specific Mimeo Var value.
     """
 
-    def __init__(self, mimeo_config: MimeoConfig = None):
+    def __init__(
+            self,
+            mimeo_config: MimeoConfig = None,
+    ):
         """Initialize MimeoContextManager class.
 
         Parameters
@@ -50,7 +53,9 @@ class MimeoContextManager(Alive, metaclass=OnlyOneAlive):
         self._contexts = {}
         self._current_context = None
 
-    def __enter__(self) -> MimeoContextManager:
+    def __enter__(
+            self,
+    ) -> MimeoContextManager:
         """Enter the MimeoContextManager instance.
 
         Extends Alive __enter__ function and initializes vars.
@@ -64,7 +69,12 @@ class MimeoContextManager(Alive, metaclass=OnlyOneAlive):
         self._vars = self._mimeo_config.vars
         return self
 
-    def __exit__(self, exc_type, exc_val, exc_tb) -> None:
+    def __exit__(
+            self,
+            exc_type: type | None,
+            exc_val: BaseException | None,
+            exc_tb: TracebackType | None,
+    ) -> None:
         """Exit the MimeoContextManager instance.
 
         Extends Alive __enter__ function and removes internal
@@ -72,11 +82,11 @@ class MimeoContextManager(Alive, metaclass=OnlyOneAlive):
 
         Parameters
         ----------
-        exc_type
+        exc_type : type | None
             An exception's type
-        exc_val
+        exc_val : BaseException | None
             An exception's value
-        exc_tb
+        exc_tb  TracebackType | None
             An exception's traceback
 
         Returns
@@ -87,9 +97,11 @@ class MimeoContextManager(Alive, metaclass=OnlyOneAlive):
         super().__exit__(exc_type, exc_val, exc_tb)
         self._vars = None
         self._contexts = None
-        return None
 
-    def get_context(self, context: str) -> MimeoContext:
+    def get_context(
+            self,
+            context: str,
+    ) -> MimeoContext:
         """Return a Mimeo Context with a specific name.
 
         If the context does not exist, it is initialized.
@@ -114,7 +126,9 @@ class MimeoContextManager(Alive, metaclass=OnlyOneAlive):
             self._contexts[context] = MimeoContext(context)
         return self._contexts[context]
 
-    def get_current_context(self) -> MimeoContext:
+    def get_current_context(
+            self,
+    ) -> MimeoContext:
         """Return the current Mimeo Context.
 
         Returns
@@ -130,7 +144,10 @@ class MimeoContextManager(Alive, metaclass=OnlyOneAlive):
         super().assert_alive()
         return self._current_context
 
-    def set_current_context(self, context: MimeoContext):
+    def set_current_context(
+            self,
+            context: MimeoContext,
+    ):
         """Set the current Mimeo Context.
 
         Parameters
@@ -146,7 +163,10 @@ class MimeoContextManager(Alive, metaclass=OnlyOneAlive):
         super().assert_alive()
         self._current_context = context
 
-    def get_var(self, variable_name: str) -> Union[str, int, bool, dict]:
+    def get_var(
+            self,
+            variable_name: str,
+    ) -> str | int | bool | dict:
         """Return a specific Mimeo Var value.
 
         Parameters
@@ -156,20 +176,19 @@ class MimeoContextManager(Alive, metaclass=OnlyOneAlive):
 
         Returns
         -------
-        value : Union[str, int, bool, dict]
+        value : str | int | bool | dict
             The Mimeo Var value
 
         Raises
         ------
         InstanceNotAlive
             If the MimeoContextManager instance is not alive
-        VarNotFound
+        VarNotFoundError
             If the Mimeo Var with the `variable_name` provided does not
             exist
         """
         super().assert_alive()
         value = self._vars.get(variable_name)
-        if value is not None:
-            return value
-        else:
-            raise VarNotFound(variable_name)
+        if value is None:
+            raise VarNotFoundError(variable_name)
+        return value

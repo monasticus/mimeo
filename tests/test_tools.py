@@ -1,7 +1,6 @@
-import pytest
-
 from mimeo import tools
-from mimeo.resources.exc import ResourceNotFound
+from mimeo.resources.exc import ResourceNotFoundError
+from tests.utils import assert_throws
 
 
 def test_get_resource_existing():
@@ -9,8 +8,8 @@ def test_get_resource_existing():
         assert resource.name.endswith("resources/logging.yaml")
 
 
+@assert_throws(err_type=ResourceNotFoundError,
+               msg="No such resource: [{res}]",
+               params={"res": "non-existing-file.yaml"})
 def test_get_resource_non_existing():
-    with pytest.raises(ResourceNotFound) as err:
-        tools.get_resource("non-existing-file.yaml")
-
-    assert err.value.args[0] == "No such resource: [non-existing-file.yaml]"
+    tools.get_resource("non-existing-file.yaml")

@@ -2,8 +2,9 @@ import pytest
 
 from mimeo.config import MimeoConfig
 from mimeo.context import MimeoContextManager
-from mimeo.utils.exc import InvalidValue
+from mimeo.utils.exc import InvalidValueError
 from mimeo.utils.renderers import UtilsRenderer
+from tests.utils import assert_throws
 
 
 @pytest.fixture(autouse=True)
@@ -16,11 +17,11 @@ def default_config():
                     "SomeEntity": {
                         "ChildNode1": 1,
                         "ChildNode2": "value-2",
-                        "ChildNode3": True
-                    }
-                }
-            }
-        ]
+                        "ChildNode3": True,
+                    },
+                },
+            },
+        ],
     })
 
 
@@ -40,9 +41,10 @@ def test_auto_increment_parametrized_default(default_config):
         context = mimeo_manager.get_context("SomeEntity")
         mimeo_manager.set_current_context(context)
 
-        identifier = UtilsRenderer.render_parametrized({"_name": "auto_increment"})
+        mimeo_util = {"_name": "auto_increment"}
+        identifier = UtilsRenderer.render_parametrized(mimeo_util)
         assert identifier == "00001"
-        identifier = UtilsRenderer.render_parametrized({"_name": "auto_increment"})
+        identifier = UtilsRenderer.render_parametrized(mimeo_util)
         assert identifier == "00002"
 
 
@@ -51,24 +53,28 @@ def test_auto_increment_parametrized_with_pattern(default_config):
         context = mimeo_manager.get_context("SomeEntity")
         mimeo_manager.set_current_context(context)
 
-        identifier = UtilsRenderer.render_parametrized({"_name": "auto_increment", "pattern": "{}"})
+        mimeo_util = {"_name": "auto_increment", "pattern": "{}"}
+        identifier = UtilsRenderer.render_parametrized(mimeo_util)
         assert identifier == "1"
-        identifier = UtilsRenderer.render_parametrized({"_name": "auto_increment", "pattern": "MYID/{}"})
+        mimeo_util = {"_name": "auto_increment", "pattern": "MYID/{}"}
+        identifier = UtilsRenderer.render_parametrized(mimeo_util)
         assert identifier == "MYID/2"
-        identifier = UtilsRenderer.render_parametrized({"_name": "auto_increment", "pattern": "MYID_{:010d}"})
+        mimeo_util = {"_name": "auto_increment", "pattern": "MYID_{:010d}"}
+        identifier = UtilsRenderer.render_parametrized(mimeo_util)
         assert identifier == "MYID_0000000003"
 
 
+@assert_throws(err_type=InvalidValueError,
+               msg="The auto_increment Mimeo Util require a string value "
+                   "for the pattern parameter and was: [{pattern}].",
+               params={"pattern": 1})
 def test_auto_increment_parametrized_with_non_str_pattern(default_config):
     with MimeoContextManager(default_config) as mimeo_manager:
         context = mimeo_manager.get_context("SomeEntity")
         mimeo_manager.set_current_context(context)
 
-        with pytest.raises(InvalidValue) as err:
-            UtilsRenderer.render_parametrized({"_name": "auto_increment", "pattern": 1})
-
-        assert err.value.args[0] == "The auto_increment Mimeo Util require a string value for the pattern parameter " \
-                                    "and was: [1]."
+        mimeo_util = {"_name": "auto_increment", "pattern": 1}
+        UtilsRenderer.render_parametrized(mimeo_util)
 
 
 def test_auto_increment_for_different_context(default_config):

@@ -3,8 +3,9 @@ import pytest
 from mimeo.config import MimeoConfig
 from mimeo.context import MimeoContextManager
 from mimeo.database import MimeoDB
-from mimeo.database.exc import DataNotFound
+from mimeo.database.exc import DataNotFoundError
 from mimeo.utils.renderers import UtilsRenderer
+from tests.utils import assert_throws
 
 
 @pytest.fixture(autouse=True)
@@ -17,11 +18,11 @@ def default_config():
                     "SomeEntity": {
                         "ChildNode1": 1,
                         "ChildNode2": "value-2",
-                        "ChildNode3": True
-                    }
-                }
-            }
-        ]
+                        "ChildNode3": True,
+                    },
+                },
+            },
+        ],
     })
 
 
@@ -43,7 +44,8 @@ def test_city_parametrized_default(default_config):
         context = mimeo_manager.get_context("SomeEntity")
         mimeo_manager.set_current_context(context)
 
-        city = UtilsRenderer.render_parametrized({"_name": "city"})
+        mimeo_util = {"_name": "city"}
+        city = UtilsRenderer.render_parametrized(mimeo_util)
         assert city in cities
 
 
@@ -54,49 +56,56 @@ def test_city_parametrized_with_unique(default_config):
         context = mimeo_manager.get_context("SomeEntity")
         mimeo_manager.set_current_context(context)
 
-        city = UtilsRenderer.render_parametrized({"_name": "city", "unique": False})
+        mimeo_util = {"_name": "city", "unique": False}
+        city = UtilsRenderer.render_parametrized(mimeo_util)
         assert city in cities
 
 
+@assert_throws(err_type=DataNotFoundError,
+               msg="Mimeo database doesn't contain any cities of provided "
+                   "country [{country}].",
+               params={"country": "NEC"})
 def test_city_parametrized_with_unique_and_non_existing_country(default_config):
     with MimeoContextManager(default_config) as mimeo_manager:
         context = mimeo_manager.get_context("SomeEntity")
         mimeo_manager.set_current_context(context)
 
-        with pytest.raises(DataNotFound) as err:
-            UtilsRenderer.render_parametrized({"_name": "city", "unique": False, "country": "NEC"})
-
-        assert err.value.args[0] == "Mimeo database does not contain any cities of provided country [NEC]."
+        mimeo_util = {"_name": "city", "unique": False, "country": "NEC"}
+        UtilsRenderer.render_parametrized(mimeo_util)
 
 
 def test_city_parametrized_with_unique_and_country(default_config):
     mimeo_db = MimeoDB()
-    gbr_cities = [city.name_ascii for city in iter(mimeo_db.get_cities_of('GBR'))]
+    gbr_cities = [city.name_ascii for city in iter(mimeo_db.get_cities_of("GBR"))]
     with MimeoContextManager(default_config) as mimeo_manager:
         context = mimeo_manager.get_context("SomeEntity")
         mimeo_manager.set_current_context(context)
 
-        city = UtilsRenderer.render_parametrized({"_name": "city", "unique": False, "country": "GBR"})
+        mimeo_util = {"_name": "city", "unique": False, "country": "GBR"}
+        city = UtilsRenderer.render_parametrized(mimeo_util)
         assert city in gbr_cities
 
 
+@assert_throws(err_type=DataNotFoundError,
+               msg="Mimeo database doesn't contain any cities of provided "
+                   "country [{country}].",
+               params={"country": "NEC"})
 def test_city_parametrized_with_non_existing_country(default_config):
     with MimeoContextManager(default_config) as mimeo_manager:
         context = mimeo_manager.get_context("SomeEntity")
         mimeo_manager.set_current_context(context)
 
-        with pytest.raises(DataNotFound) as err:
-            UtilsRenderer.render_parametrized({"_name": "city", "country": "NEC"})
-
-        assert err.value.args[0] == "Mimeo database does not contain any cities of provided country [NEC]."
+        mimeo_util = {"_name": "city", "country": "NEC"}
+        UtilsRenderer.render_parametrized(mimeo_util)
 
 
 def test_city_parametrized_with_country(default_config):
     mimeo_db = MimeoDB()
-    gbr_cities = [city.name_ascii for city in iter(mimeo_db.get_cities_of('GBR'))]
+    gbr_cities = [city.name_ascii for city in iter(mimeo_db.get_cities_of("GBR"))]
     with MimeoContextManager(default_config) as mimeo_manager:
         context = mimeo_manager.get_context("SomeEntity")
         mimeo_manager.set_current_context(context)
 
-        city = UtilsRenderer.render_parametrized({"_name": "city", "country": "GBR"})
+        mimeo_util = {"_name": "city", "country": "GBR"}
+        city = UtilsRenderer.render_parametrized(mimeo_util)
         assert city in gbr_cities

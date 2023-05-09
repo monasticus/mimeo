@@ -1,5 +1,5 @@
 import shutil
-from os import path
+from pathlib import Path
 
 import pytest
 
@@ -10,7 +10,7 @@ from mimeo.generators import GeneratorFactory
 
 
 @pytest.fixture(autouse=True)
-def teardown():
+def _teardown():
     yield
     # Teardown
     shutil.rmtree("test_file_consumer-dir")
@@ -18,20 +18,20 @@ def teardown():
 
 def test_consume():
     config = {
-        "output_details": {
+        "output": {
             "direction": "file",
             "format": "xml",
             "directory_path": "test_file_consumer-dir",
-            "file_name": "test-output"
+            "file_name": "test-output",
         },
         "_templates_": [
             {
                 "count": 2,
                 "model": {
-                    "SomeEntity": {}
-                }
-            }
-        ]
+                    "SomeEntity": {},
+                },
+            },
+        ],
     }
     mimeo_config = MimeoConfig(config)
     consumer = ConsumerFactory.get_consumer(mimeo_config)
@@ -40,21 +40,21 @@ def test_consume():
 
     with MimeoContextManager(mimeo_config):
         generator = GeneratorFactory.get_generator(mimeo_config)
-        data = [generator.stringify(root, mimeo_config)
+        data = [generator.stringify(root)
                 for root in generator.generate(mimeo_config.templates)]
 
-        assert not path.exists("test_file_consumer-dir")
+        assert not Path("test_file_consumer-dir").exists()
 
         consumer.consume(data[0])
-        assert path.exists("test_file_consumer-dir")
-        assert path.exists("test_file_consumer-dir/test-output-1.xml")
-        assert not path.exists("test_file_consumer-dir/test-output-2.xml")
+        assert Path("test_file_consumer-dir").exists()
+        assert Path("test_file_consumer-dir/test-output-1.xml").exists()
+        assert not Path("test_file_consumer-dir/test-output-2.xml").exists()
 
         consumer.consume(data[1])
-        assert path.exists("test_file_consumer-dir/test-output-2.xml")
+        assert Path("test_file_consumer-dir/test-output-2.xml").exists()
 
         for i in range(1, 3):
             file_path = f"test_file_consumer-dir/test-output-{i}.xml"
-            with open(file_path, "r") as file_content:
-                assert file_content.readline() == '<SomeEntity />'
+            with Path(file_path).open() as file_content:
+                assert file_content.readline() == "<SomeEntity />"
 

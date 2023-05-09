@@ -1,5 +1,5 @@
 {
-  "output_details": {
+  "output": {
     "direction": "http",
     "format": "xml",
     "method": "PUT",

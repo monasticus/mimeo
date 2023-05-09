@@ -4,6 +4,8 @@ It exports only one class:
     * RawConsumer
         A Consumer implementation printing data in the standard output.
 """
+from __future__ import annotations
+
 from mimeo.consumers import Consumer
 
 
@@ -19,7 +21,10 @@ class RawConsumer(Consumer):
         Print data generated in the standard output.
     """
 
-    def consume(self, data: str) -> None:
+    def consume(
+            self,
+            data: str,
+    ) -> None:
         """Print data generated in the standard output.
 
         It is an implementation of Consumer's abstract method.

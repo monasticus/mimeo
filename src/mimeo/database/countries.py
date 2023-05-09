@@ -7,12 +7,12 @@ It exports classes related to countries CSV data:
     * CountriesDB
         Class exposing READ operations on countries CSV data.
 """
-from typing import List
+from __future__ import annotations
 
 import pandas
 
 from mimeo import tools
-from mimeo.database.exc import InvalidIndex
+from mimeo.database.exc import InvalidIndexError
 
 
 class Country:
@@ -28,7 +28,12 @@ class Country:
         A country name
     """
 
-    def __init__(self, iso_3: str, iso_2: str, name: str):
+    def __init__(
+            self,
+            iso_3: str,
+            iso_2: str,
+            name: str,
+    ):
         """Initialize Country class.
 
         Parameters
@@ -44,7 +49,9 @@ class Country:
         self.iso_2 = iso_2
         self.name = name
 
-    def __str__(self) -> str:
+    def __str__(
+            self,
+    ) -> str:
         """Stringify the Country instance.
 
         Returns
@@ -55,10 +62,12 @@ class Country:
         return str({
             "iso_3": self.iso_3,
             "iso_2": self.iso_2,
-            "name": self.name
+            "name": self.name,
         })
 
-    def __repr__(self) -> str:
+    def __repr__(
+            self,
+    ) -> str:
         """Represent the Country instance.
 
         Returns
@@ -66,7 +75,10 @@ class Country:
         str
             A python representation of the Country instance
         """
-        return f"Country('{self.iso_3}', '{self.iso_2}', '{self.name}')"
+        return (f"Country("
+                f"iso_3='{self.iso_3}', "
+                f"iso_2='{self.iso_2}', "
+                f"name='{self.name}')")
 
 
 class CountriesDB:
@@ -79,7 +91,7 @@ class CountriesDB:
 
     Methods
     -------
-    get_countries() -> List[Country]
+    get_countries() -> list[Country]
         Get all countries.
     get_country_at(index: int) -> Country
         Get a country at `index` position.
@@ -96,7 +108,10 @@ class CountriesDB:
     _COUNTRIES_DF = None
     _COUNTRIES = None
 
-    def get_country_at(self, index: int) -> Country:
+    def get_country_at(
+            self,
+            index: int,
+    ) -> Country:
         """Get a country at `index` position.
 
         Parameters
@@ -111,16 +126,20 @@ class CountriesDB:
 
         Raises
         ------
-        InvalidIndex
+        InvalidIndexError
             If the provided `index` is out of bounds
         """
         countries = self._get_countries()
         try:
             return countries[index]
         except IndexError:
-            raise InvalidIndex(index, CountriesDB.NUM_OF_RECORDS-1)
+            last_index = CountriesDB.NUM_OF_RECORDS-1
+            raise InvalidIndexError(index, last_index) from IndexError
 
-    def get_country_by_iso_3(self, iso_3: str) -> Country:
+    def get_country_by_iso_3(
+            self,
+            iso_3: str,
+    ) -> Country:
         """Get a country having a specific ISO3 code.
 
         Parameters
@@ -136,7 +155,10 @@ class CountriesDB:
         countries = self._get_countries()
         return next(filter(lambda country: country.iso_3 == iso_3, countries), None)
 
-    def get_country_by_iso_2(self, iso_2: str) -> Country:
+    def get_country_by_iso_2(
+            self,
+            iso_2: str,
+    ) -> Country:
         """Get a country having a specific ISO2 code.
 
         Parameters
@@ -152,7 +174,10 @@ class CountriesDB:
         countries = self._get_countries()
         return next(filter(lambda country: country.iso_2 == iso_2, countries), None)
 
-    def get_country_by_name(self, name: str) -> Country:
+    def get_country_by_name(
+            self,
+            name: str,
+    ) -> Country:
         """Get a country having a specific name.
 
         Parameters
@@ -169,18 +194,22 @@ class CountriesDB:
         return next(filter(lambda country: country.name == name, countries), None)
 
     @classmethod
-    def get_countries(cls) -> List[Country]:
+    def get_countries(
+            cls,
+    ) -> list[Country]:
         """Get all countries.
 
         Returns
         -------
-        List[Country]
+        list[Country]
             List of all countries
         """
         return cls._get_countries().copy()
 
     @classmethod
-    def _get_countries(cls) -> List[Country]:
+    def _get_countries(
+            cls,
+    ) -> list[Country]:
         """Get all countries from cache.
 
         The countries list is initialized for the first time and cached
@@ -188,7 +217,7 @@ class CountriesDB:
 
         Returns
         -------
-        List[Country]
+        list[Country]
             List of all countries
         """
         if cls._COUNTRIES is None:
@@ -197,8 +226,11 @@ class CountriesDB:
         return cls._COUNTRIES
 
     @classmethod
-    def _get_countries_df(cls) -> pandas.DataFrame:
+    def _get_countries_df(
+            cls,
+    ) -> pandas.DataFrame:
         """Load countries CSV data and save in internal class attribute."""
         if cls._COUNTRIES_DF is None:
-            cls._COUNTRIES_DF = pandas.read_csv(tools.get_resource(CountriesDB._COUNTRIES_DB))
+            data = tools.get_resource(CountriesDB._COUNTRIES_DB)
+            cls._COUNTRIES_DF = pandas.read_csv(data)
         return cls._COUNTRIES_DF

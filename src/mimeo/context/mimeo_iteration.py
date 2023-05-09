@@ -4,11 +4,13 @@ It exports only one class:
     * MimeoIteration
         A class representing a single iteration in a Mimeo Template.
 """
-import uuid
-from typing import Union
+from __future__ import annotations
 
-from mimeo.context.exc import (InvalidSpecialFieldName,
-                               InvalidSpecialFieldValue, SpecialFieldNotFound)
+import uuid
+
+from mimeo.context.exc import (InvalidSpecialFieldNameError,
+                               InvalidSpecialFieldValueError,
+                               SpecialFieldNotFoundError)
 
 
 class MimeoIteration:
@@ -27,13 +29,16 @@ class MimeoIteration:
 
     Methods
     -------
-    add_special_field(self, field_name: str, field_value: Union[str, int, bool])
+    add_special_field(self, field_name: str, field_value: str | int | bool)
         Put a special field entry to memory.
-    get_special_field(self, field_name: str) -> Union[str, int, bool]
+    get_special_field(self, field_name: str) -> str | int | bool]
         Get a special field value from memory.
     """
 
-    def __init__(self, identifier: int):
+    def __init__(
+            self,
+            identifier: int,
+    ):
         """Initialize MimeoIteration class.
 
         Parameters
@@ -45,31 +50,38 @@ class MimeoIteration:
         self.key = str(uuid.uuid4())
         self._special_fields = {}
 
-    def add_special_field(self, field_name: str, field_value: Union[str, int, bool]):
+    def add_special_field(
+            self,
+            field_name: str,
+            field_value: str | int | bool,
+    ):
         """Put a special field entry to memory.
 
         Parameters
         ----------
         field_name : str
             A special field name
-        field_value : Union[str, int, bool]
+        field_value : str | int | bool
             A special field value
 
         Raises
         ------
-        InvalidSpecialFieldName
+        InvalidSpecialFieldNameError
             If the special field name is not a string
-        InvalidSpecialFieldValue
+        InvalidSpecialFieldValueError
             If the special field value is dict or list
         """
         if not isinstance(field_name, str):
-            raise InvalidSpecialFieldName()
-        if isinstance(field_value, dict) or isinstance(field_value, list):
-            raise InvalidSpecialFieldValue(field_value)
+            raise InvalidSpecialFieldNameError
+        if isinstance(field_value, (dict, list)):
+            raise InvalidSpecialFieldValueError(field_value)
 
         self._special_fields[field_name] = field_value
 
-    def get_special_field(self, field_name: str) -> Union[str, int, bool]:
+    def get_special_field(
+            self,
+            field_name: str,
+    ) -> str | int | bool:
         """Get a special field value from memory.
 
         Parameters
@@ -79,15 +91,15 @@ class MimeoIteration:
 
         Returns
         -------
-        Union[str, int, bool]
+        str | int | bool
             A special field value
 
         Raises
         ------
-        SpecialFieldNotFound
+        SpecialFieldNotFoundError
             If the special field does not exist.
         """
         if field_name not in self._special_fields:
-            raise SpecialFieldNotFound(field_name)
+            raise SpecialFieldNotFoundError(field_name)
 
         return self._special_fields.get(field_name)

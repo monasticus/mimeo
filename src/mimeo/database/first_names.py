@@ -6,12 +6,12 @@ It exports classes related to forenames CSV data:
     * FirstNamesDB
         Class exposing READ operations on forenames CSV data.
 """
-from typing import List
+from __future__ import annotations
 
 import pandas
 
 from mimeo import tools
-from mimeo.database.exc import InvalidIndex, InvalidSex
+from mimeo.database.exc import InvalidIndexError, InvalidSexError
 
 
 class FirstName:
@@ -25,7 +25,11 @@ class FirstName:
         A sex value
     """
 
-    def __init__(self, name: str, sex: str):
+    def __init__(
+            self,
+            name: str,
+            sex: str,
+    ):
         """Initialize FirstName class.
 
         Parameters
@@ -38,7 +42,9 @@ class FirstName:
         self.name = name
         self.sex = sex
 
-    def __str__(self) -> str:
+    def __str__(
+            self,
+    ) -> str:
         """Stringify the FirstName instance.
 
         Returns
@@ -48,10 +54,12 @@ class FirstName:
         """
         return str({
             "name": self.name,
-            "sex": self.sex
+            "sex": self.sex,
         })
 
-    def __repr__(self) -> str:
+    def __repr__(
+            self,
+    ) -> str:
         """Represent the FirstName instance.
 
         Returns
@@ -59,7 +67,9 @@ class FirstName:
         str
             A python representation of the FirstName instance
         """
-        return f"FirstName('{self.name}', '{self.sex}')"
+        return (f"FirstName("
+                f"name='{self.name}', "
+                f"sex='{self.sex}')")
 
 
 class FirstNamesDB:
@@ -72,9 +82,9 @@ class FirstNamesDB:
 
     Methods
     -------
-    get_first_names() -> List[FirstName]
+    get_first_names() -> list[FirstName]
         Get all first names.
-    get_first_names_by_sex(sex: str) -> List[FirstName]
+    get_first_names_by_sex(sex: str) -> list[FirstName]
         Get first names for a specific sex.
     get_first_name_at(index: int) -> FirstName
         Get a first name at `index` position.
@@ -87,7 +97,10 @@ class FirstNamesDB:
     __FIRST_NAMES = None
     __NAMES_FOR_SEX = {}
 
-    def get_first_name_at(self, index: int) -> FirstName:
+    def get_first_name_at(
+            self,
+            index: int,
+    ) -> FirstName:
         """Get a first name at `index` position.
 
         Parameters
@@ -102,16 +115,20 @@ class FirstNamesDB:
 
         Raises
         ------
-        InvalidIndex
+        InvalidIndexError
             If the provided `index` is out of bounds
         """
         first_names = self.__get_first_names()
         try:
             return first_names[index]
         except IndexError:
-            raise InvalidIndex(index, FirstNamesDB.NUM_OF_RECORDS-1)
+            last_index = FirstNamesDB.NUM_OF_RECORDS-1
+            raise InvalidIndexError(index, last_index) from IndexError
 
-    def get_first_names_by_sex(self, sex: str) -> List[FirstName]:
+    def get_first_names_by_sex(
+            self,
+            sex: str,
+    ) -> list[FirstName]:
         """Get first names for a specific sex.
 
         Parameters
@@ -121,32 +138,36 @@ class FirstNamesDB:
 
         Returns
         -------
-        List[FirstName]
+        list[FirstName]
             List of first names filtered by sex
 
         Raises
         ------
-        InvalidSex
+        InvalidSexError
             If the provided `sex` value is not supported
         """
-        if sex in FirstNamesDB.__SUPPORTED_SEX:
-            return self.__get_first_names_by_sex(sex).copy()
-        else:
-            raise InvalidSex(FirstNamesDB.__SUPPORTED_SEX)
+        if sex not in FirstNamesDB.__SUPPORTED_SEX:
+            raise InvalidSexError(FirstNamesDB.__SUPPORTED_SEX)
+        return self.__get_first_names_by_sex(sex).copy()
 
     @classmethod
-    def get_first_names(cls) -> List[FirstName]:
+    def get_first_names(
+            cls,
+    ) -> list[FirstName]:
         """Get all first names.
 
         Returns
         -------
-        List[FirstName]
+        list[FirstName]
             List of all first names
         """
         return cls.__get_first_names().copy()
 
     @classmethod
-    def __get_first_names_by_sex(cls, sex: str) -> List[FirstName]:
+    def __get_first_names_by_sex(
+            cls,
+            sex: str,
+    ) -> list[FirstName]:
         """Get first names for a specific sex from cache.
 
         The first names list for sex is initialized for the first time
@@ -159,16 +180,18 @@ class FirstNamesDB:
 
         Returns
         -------
-        List[FirstName]
+        list[FirstName]
             List of first names filtered by sex
         """
         if sex not in cls.__NAMES_FOR_SEX:
             first_names = cls.__get_first_names()
-            cls.__NAMES_FOR_SEX[sex] = list(filter(lambda first_name: first_name.sex == sex, first_names))
+            cls.__NAMES_FOR_SEX[sex] = list(filter(lambda n: n.sex == sex, first_names))
         return cls.__NAMES_FOR_SEX[sex]
 
     @classmethod
-    def __get_first_names(cls) -> List[FirstName]:
+    def __get_first_names(
+            cls,
+    ) -> list[FirstName]:
         """Get all first names from cache.
 
         The first names list is initialized for the first time and
@@ -176,7 +199,7 @@ class FirstNamesDB:
 
         Returns
         -------
-        List[FirstName]
+        list[FirstName]
             List of all first names
         """
         if cls.__FIRST_NAMES is None:
@@ -185,8 +208,11 @@ class FirstNamesDB:
         return cls.__FIRST_NAMES
 
     @classmethod
-    def __get_first_names_df(cls) -> pandas.DataFrame:
+    def __get_first_names_df(
+            cls,
+    ) -> pandas.DataFrame:
         """Load forenames CSV data and save in internal class attribute."""
         if cls.__FIRST_NAMES_DF is None:
-            cls.__FIRST_NAMES_DF = pandas.read_csv(tools.get_resource(FirstNamesDB.__FIRST_NAMES_DB))
+            data = tools.get_resource(FirstNamesDB.__FIRST_NAMES_DB)
+            cls.__FIRST_NAMES_DF = pandas.read_csv(data)
         return cls.__FIRST_NAMES_DF

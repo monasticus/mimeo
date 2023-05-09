@@ -1,24 +1,23 @@
-import pytest
-
 from mimeo.config import MimeoConfig
-from mimeo.config.exc import UnsupportedPropertyValue
+from mimeo.config.exc import UnsupportedPropertyValueError
 from mimeo.consumers import (ConsumerFactory, FileConsumer, HttpConsumer,
                              RawConsumer)
+from tests.utils import assert_throws
 
 
 def test_get_consumer_for_file_direction():
     config = {
-        "output_details": {
-            "direction": "file"
+        "output": {
+            "direction": "file",
         },
         "_templates_": [
             {
                 "count": 5,
                 "model": {
-                    "SomeEntity": {}
-                }
-            }
-        ]
+                    "SomeEntity": {},
+                },
+            },
+        ],
     }
     mimeo_config = MimeoConfig(config)
     generator = ConsumerFactory.get_consumer(mimeo_config)
@@ -27,17 +26,17 @@ def test_get_consumer_for_file_direction():
 
 def test_get_consumer_for_stdout_direction():
     config = {
-        "output_details": {
-            "direction": "stdout"
+        "output": {
+            "direction": "stdout",
         },
         "_templates_": [
             {
                 "count": 5,
                 "model": {
-                    "SomeEntity": {}
-                }
-            }
-        ]
+                    "SomeEntity": {},
+                },
+            },
+        ],
     }
     mimeo_config = MimeoConfig(config)
     generator = ConsumerFactory.get_consumer(mimeo_config)
@@ -46,47 +45,48 @@ def test_get_consumer_for_stdout_direction():
 
 def test_get_consumer_for_http_direction():
     config = {
-        "output_details": {
+        "output": {
             "direction": "http",
             "host": "localhost",
             "port": 8080,
             "endpoint": "/document",
             "username": "admin",
-            "password": "admin"
+            "password": "admin",
         },
         "_templates_": [
             {
                 "count": 5,
                 "model": {
-                    "SomeEntity": {}
-                }
-            }
-        ]
+                    "SomeEntity": {},
+                },
+            },
+        ],
     }
     mimeo_config = MimeoConfig(config)
     generator = ConsumerFactory.get_consumer(mimeo_config)
     assert isinstance(generator, HttpConsumer)
 
 
+@assert_throws(err_type=UnsupportedPropertyValueError,
+               msg="Provided direction [{direction}] is not supported! "
+                   "Supported values: [{values}].",
+               params={"direction": "unsupported_direction",
+                       "values": "stdout, file, http"})
 def test_get_consumer_for_unsupported_format():
     config = {
-        "output_details": {
-            "direction": "stdout"
+        "output": {
+            "direction": "stdout",
         },
         "_templates_": [
             {
                 "count": 5,
                 "model": {
-                    "SomeEntity": {}
-                }
-            }
-        ]
+                    "SomeEntity": {},
+                },
+            },
+        ],
     }
     mimeo_config = MimeoConfig(config)
-    mimeo_config.output_details.direction = "unsupported_direction"
+    mimeo_config.output.direction = "unsupported_direction"
 
-    with pytest.raises(UnsupportedPropertyValue) as err:
-        ConsumerFactory.get_consumer(mimeo_config)
-
-    assert err.value.args[0] == "Provided direction [unsupported_direction] is not supported! " \
-                                "Supported values: [stdout, file, http]."
+    ConsumerFactory.get_consumer(mimeo_config)

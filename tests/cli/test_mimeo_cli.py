@@ -5,16 +5,18 @@ import sys
 from base64 import b64encode
 from glob import glob
 from http import HTTPStatus
-from os import listdir, path, remove, rmdir
+from os import listdir
 from pathlib import Path
 
 import pytest
 import responses
 from responses import matchers
 
-import mimeo.__main__ as MimeoCLI
-from mimeo.cli.exc import EnvironmentNotFound, EnvironmentsFileNotFound
-from mimeo.config.exc import MissingRequiredProperty
+import mimeo.__main__ as mimeo_cli
+from mimeo.cli.exc import (EnvironmentNotFoundError,
+                           EnvironmentsFileNotFoundError)
+from mimeo.config.exc import MissingRequiredPropertyError
+from tests.utils import assert_throws
 
 
 @pytest.fixture(autouse=True)
@@ -27,24 +29,24 @@ def minimum_config():
                     "SomeEntity": {
                         "ChildNode1": 1,
                         "ChildNode2": "value-2",
-                        "ChildNode3": True
-                    }
-                }
-            }
-        ]
+                        "ChildNode3": True,
+                    },
+                },
+            },
+        ],
     }
 
 
 @pytest.fixture(autouse=True)
 def default_config():
     return {
-        "output_details": {
+        "output": {
             "direction": "file",
             "format": "xml",
             "indent": 4,
             "xml_declaration": True,
             "directory_path": "test_mimeo_cli-dir/output",
-            "file_name": "output-file"
+            "file_name": "output-file",
         },
         "_templates_": [
             {
@@ -53,18 +55,18 @@ def default_config():
                     "SomeEntity": {
                         "ChildNode1": 1,
                         "ChildNode2": "value-2",
-                        "ChildNode3": True
-                    }
-                }
-            }
-        ]
+                        "ChildNode3": True,
+                    },
+                },
+            },
+        ],
     }
 
 
 @pytest.fixture(autouse=True)
 def http_config():
     return {
-        "output_details": {
+        "output": {
             "direction": "http",
             "method": "POST",
             "protocol": "http",
@@ -73,7 +75,7 @@ def http_config():
             "endpoint": "/document",
             "auth": "digest",
             "username": "admin",
-            "password": "admin"
+            "password": "admin",
         },
         "_templates_": [
             {
@@ -82,11 +84,11 @@ def http_config():
                     "SomeEntity": {
                         "ChildNode1": 1,
                         "ChildNode2": "value-2",
-                        "ChildNode3": True
-                    }
-                }
-            }
-        ]
+                        "ChildNode3": True,
+                    },
+                },
+            },
+        ],
     }
 
 
@@ -99,8 +101,8 @@ def http_default_envs():
             "port": 8000,
             "auth": "basic",
             "username": "custom-username",
-            "password": "custom-password"
-        }
+            "password": "custom-password",
+        },
     }
 
 
@@ -113,59 +115,65 @@ def http_custom_envs():
             "port": 8000,
             "auth": "basic",
             "username": "custom-username",
-            "password": "custom-password"
-        }
+            "password": "custom-password",
+        },
     }
 
 
 @pytest.fixture(autouse=True)
-def setup_and_teardown(minimum_config, default_config, http_config, http_default_envs, http_custom_envs):
+def _setup_and_teardown(
+        minimum_config,
+        default_config,
+        http_config,
+        http_default_envs,
+        http_custom_envs,
+):
     # Setup
     Path("test_mimeo_cli-dir").mkdir(parents=True, exist_ok=True)
-    with open("test_mimeo_cli-dir/minimum-config.json", "w") as file:
+    with Path("test_mimeo_cli-dir/minimum-config.json").open("w") as file:
         json.dump(minimum_config, file)
-    with open("test_mimeo_cli-dir/default-config.json", "w") as file:
+    with Path("test_mimeo_cli-dir/default-config.json").open("w") as file:
         json.dump(default_config, file)
-    with open("test_mimeo_cli-dir/http-config.json", "w") as file:
+    with Path("test_mimeo_cli-dir/http-config.json").open("w") as file:
         json.dump(http_config, file)
-    with open("mimeo.envs.json", "w") as file:
+    with Path("mimeo.envs.json").open("w") as file:
         json.dump(http_default_envs, file)
-    with open("custom-mimeo-envs-file.json", "w") as file:
+    with Path("custom-mimeo-envs-file.json").open("w") as file:
         json.dump(http_custom_envs, file)
 
     yield
 
     # Teardown
     shutil.rmtree("test_mimeo_cli-dir")
-    remove("mimeo.envs.json")
-    remove("custom-mimeo-envs-file.json")
+    Path("mimeo.envs.json").unlink()
+    Path("custom-mimeo-envs-file.json").unlink()
     for filename in glob("mimeo-output/customized-output-file*"):
-        remove(filename)
+        Path(filename).unlink()
     for filename in glob("mimeo-output/mimeo-output*"):
-        remove(filename)
-    if path.exists("mimeo-output") and not listdir("mimeo-output"):
-        rmdir("mimeo-output")
+        Path(filename).unlink()
+    if Path("mimeo-output").exists() and not listdir("mimeo-output"):
+        Path("mimeo-output").rmdir()
 
 
 def test_basic_use():
     sys.argv = ["mimeo", "test_mimeo_cli-dir/default-config.json"]
 
-    assert not path.exists("test_mimeo_cli-dir/output")
+    assert not Path("test_mimeo_cli-dir/output").exists()
 
-    MimeoCLI.main()
+    mimeo_cli.main()
 
-    assert path.exists("test_mimeo_cli-dir/output")
+    assert Path("test_mimeo_cli-dir/output").exists()
     for i in range(1, 11):
         file_path = f"test_mimeo_cli-dir/output/output-file-{i}.xml"
-        assert path.exists(file_path)
+        assert Path(file_path).exists()
 
-        with open(file_path, "r") as file_content:
+        with Path(file_path).open() as file_content:
             assert file_content.readline() == '<?xml version="1.0" encoding="utf-8"?>\n'
-            assert file_content.readline() == '<SomeEntity>\n'
-            assert file_content.readline() == '    <ChildNode1>1</ChildNode1>\n'
-            assert file_content.readline() == '    <ChildNode2>value-2</ChildNode2>\n'
-            assert file_content.readline() == '    <ChildNode3>true</ChildNode3>\n'
-            assert file_content.readline() == '</SomeEntity>\n'
+            assert file_content.readline() == "<SomeEntity>\n"
+            assert file_content.readline() == "    <ChildNode1>1</ChildNode1>\n"
+            assert file_content.readline() == "    <ChildNode2>value-2</ChildNode2>\n"
+            assert file_content.readline() == "    <ChildNode3>true</ChildNode3>\n"
+            assert file_content.readline() == "</SomeEntity>\n"
 
 
 @responses.activate
@@ -173,604 +181,685 @@ def test_directory_path():
     sys.argv = ["mimeo", "test_mimeo_cli-dir"]
 
     responses.add(responses.POST, "http://localhost:8080/document")
-    assert not path.exists("test_mimeo_cli-dir/output")
-    assert not path.exists("mimeo-output")
+    assert not Path("test_mimeo_cli-dir/output").exists()
+    assert not Path("mimeo-output").exists()
 
-    MimeoCLI.main()
+    mimeo_cli.main()
 
-    assert path.exists("test_mimeo_cli-dir/output")
+    assert Path("test_mimeo_cli-dir/output").exists()
     for i in range(1, 11):
         file_path = f"test_mimeo_cli-dir/output/output-file-{i}.xml"
-        assert path.exists(file_path)
+        assert Path(file_path).exists()
 
-        with open(file_path, "r") as file_content:
+        with Path(file_path).open() as file_content:
             assert file_content.readline() == '<?xml version="1.0" encoding="utf-8"?>\n'
-            assert file_content.readline() == '<SomeEntity>\n'
-            assert file_content.readline() == '    <ChildNode1>1</ChildNode1>\n'
-            assert file_content.readline() == '    <ChildNode2>value-2</ChildNode2>\n'
-            assert file_content.readline() == '    <ChildNode3>true</ChildNode3>\n'
-            assert file_content.readline() == '</SomeEntity>\n'
+            assert file_content.readline() == "<SomeEntity>\n"
+            assert file_content.readline() == "    <ChildNode1>1</ChildNode1>\n"
+            assert file_content.readline() == "    <ChildNode2>value-2</ChildNode2>\n"
+            assert file_content.readline() == "    <ChildNode3>true</ChildNode3>\n"
+            assert file_content.readline() == "</SomeEntity>\n"
 
-    assert path.exists("mimeo-output")
+    assert Path("mimeo-output").exists()
     for i in range(1, 11):
         file_path = f"mimeo-output/mimeo-output-{i}.xml"
-        assert path.exists(file_path)
+        assert Path(file_path).exists()
 
-        with open(file_path, "r") as file_content:
-            assert file_content.readline() == '<SomeEntity>' \
-                                              '<ChildNode1>1</ChildNode1>' \
-                                              '<ChildNode2>value-2</ChildNode2>' \
-                                              '<ChildNode3>true</ChildNode3>' \
-                                              '</SomeEntity>'
+        with Path(file_path).open() as file_content:
+            assert file_content.readline() == ("<SomeEntity>"
+                                               "<ChildNode1>1</ChildNode1>"
+                                               "<ChildNode2>value-2</ChildNode2>"
+                                               "<ChildNode3>true</ChildNode3>"
+                                               "</SomeEntity>")
 
 
 def test_custom_short_xml_declaration_false():
-    sys.argv = ["mimeo", "test_mimeo_cli-dir/default-config.json", "-x", "false"]
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/default-config.json",
+                "-x", "false"]
 
-    assert not path.exists("test_mimeo_cli-dir/output")
+    assert not Path("test_mimeo_cli-dir/output").exists()
 
-    MimeoCLI.main()
+    mimeo_cli.main()
 
-    assert path.exists("test_mimeo_cli-dir/output")
+    assert Path("test_mimeo_cli-dir/output").exists()
     for i in range(1, 11):
         file_path = f"test_mimeo_cli-dir/output/output-file-{i}.xml"
-        assert path.exists(file_path)
+        assert Path(file_path).exists()
 
-        with open(file_path, "r") as file_content:
-            assert file_content.readline() == '<SomeEntity>\n'
-            assert file_content.readline() == '    <ChildNode1>1</ChildNode1>\n'
-            assert file_content.readline() == '    <ChildNode2>value-2</ChildNode2>\n'
-            assert file_content.readline() == '    <ChildNode3>true</ChildNode3>\n'
-            assert file_content.readline() == '</SomeEntity>\n'
+        with Path(file_path).open() as file_content:
+            assert file_content.readline() == "<SomeEntity>\n"
+            assert file_content.readline() == "    <ChildNode1>1</ChildNode1>\n"
+            assert file_content.readline() == "    <ChildNode2>value-2</ChildNode2>\n"
+            assert file_content.readline() == "    <ChildNode3>true</ChildNode3>\n"
+            assert file_content.readline() == "</SomeEntity>\n"
 
 
 def test_custom_short_xml_declaration_true():
-    sys.argv = ["mimeo", "test_mimeo_cli-dir/default-config.json", "-x", "true"]
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/default-config.json",
+                "-x", "true"]
 
-    assert not path.exists("test_mimeo_cli-dir/output")
+    assert not Path("test_mimeo_cli-dir/output").exists()
 
-    MimeoCLI.main()
+    mimeo_cli.main()
 
-    assert path.exists("test_mimeo_cli-dir/output")
+    assert Path("test_mimeo_cli-dir/output").exists()
     for i in range(1, 11):
         file_path = f"test_mimeo_cli-dir/output/output-file-{i}.xml"
-        assert path.exists(file_path)
+        assert Path(file_path).exists()
 
-        with open(file_path, "r") as file_content:
+        with Path(file_path).open() as file_content:
             assert file_content.readline() == '<?xml version="1.0" encoding="utf-8"?>\n'
-            assert file_content.readline() == '<SomeEntity>\n'
-            assert file_content.readline() == '    <ChildNode1>1</ChildNode1>\n'
-            assert file_content.readline() == '    <ChildNode2>value-2</ChildNode2>\n'
-            assert file_content.readline() == '    <ChildNode3>true</ChildNode3>\n'
-            assert file_content.readline() == '</SomeEntity>\n'
+            assert file_content.readline() == "<SomeEntity>\n"
+            assert file_content.readline() == "    <ChildNode1>1</ChildNode1>\n"
+            assert file_content.readline() == "    <ChildNode2>value-2</ChildNode2>\n"
+            assert file_content.readline() == "    <ChildNode3>true</ChildNode3>\n"
+            assert file_content.readline() == "</SomeEntity>\n"
 
 
 def test_custom_long_xml_declaration_false():
-    sys.argv = ["mimeo", "test_mimeo_cli-dir/default-config.json", "--xml-declaration", "false"]
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/default-config.json",
+                "--xml-declaration", "false"]
 
-    assert not path.exists("test_mimeo_cli-dir/output")
+    assert not Path("test_mimeo_cli-dir/output").exists()
 
-    MimeoCLI.main()
+    mimeo_cli.main()
 
-    assert path.exists("test_mimeo_cli-dir/output")
+    assert Path("test_mimeo_cli-dir/output").exists()
     for i in range(1, 11):
         file_path = f"test_mimeo_cli-dir/output/output-file-{i}.xml"
-        assert path.exists(file_path)
+        assert Path(file_path).exists()
 
-        with open(file_path, "r") as file_content:
-            assert file_content.readline() == '<SomeEntity>\n'
-            assert file_content.readline() == '    <ChildNode1>1</ChildNode1>\n'
-            assert file_content.readline() == '    <ChildNode2>value-2</ChildNode2>\n'
-            assert file_content.readline() == '    <ChildNode3>true</ChildNode3>\n'
-            assert file_content.readline() == '</SomeEntity>\n'
+        with Path(file_path).open() as file_content:
+            assert file_content.readline() == "<SomeEntity>\n"
+            assert file_content.readline() == "    <ChildNode1>1</ChildNode1>\n"
+            assert file_content.readline() == "    <ChildNode2>value-2</ChildNode2>\n"
+            assert file_content.readline() == "    <ChildNode3>true</ChildNode3>\n"
+            assert file_content.readline() == "</SomeEntity>\n"
 
 
 def test_custom_long_xml_declaration_true():
-    sys.argv = ["mimeo", "test_mimeo_cli-dir/default-config.json", "--xml-declaration", "true"]
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/default-config.json",
+                "--xml-declaration", "true"]
 
-    assert not path.exists("test_mimeo_cli-dir/output")
+    assert not Path("test_mimeo_cli-dir/output").exists()
 
-    MimeoCLI.main()
+    mimeo_cli.main()
 
-    assert path.exists("test_mimeo_cli-dir/output")
+    assert Path("test_mimeo_cli-dir/output").exists()
     for i in range(1, 11):
         file_path = f"test_mimeo_cli-dir/output/output-file-{i}.xml"
-        assert path.exists(file_path)
+        assert Path(file_path).exists()
 
-        with open(file_path, "r") as file_content:
+        with Path(file_path).open() as file_content:
             assert file_content.readline() == '<?xml version="1.0" encoding="utf-8"?>\n'
-            assert file_content.readline() == '<SomeEntity>\n'
-            assert file_content.readline() == '    <ChildNode1>1</ChildNode1>\n'
-            assert file_content.readline() == '    <ChildNode2>value-2</ChildNode2>\n'
-            assert file_content.readline() == '    <ChildNode3>true</ChildNode3>\n'
-            assert file_content.readline() == '</SomeEntity>\n'
+            assert file_content.readline() == "<SomeEntity>\n"
+            assert file_content.readline() == "    <ChildNode1>1</ChildNode1>\n"
+            assert file_content.readline() == "    <ChildNode2>value-2</ChildNode2>\n"
+            assert file_content.readline() == "    <ChildNode3>true</ChildNode3>\n"
+            assert file_content.readline() == "</SomeEntity>\n"
 
 
 def test_custom_short_indent_non_zero():
-    sys.argv = ["mimeo", "test_mimeo_cli-dir/default-config.json", "-i", "2"]
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/default-config.json",
+                "-i", "2"]
 
-    assert not path.exists("test_mimeo_cli-dir/output")
+    assert not Path("test_mimeo_cli-dir/output").exists()
 
-    MimeoCLI.main()
+    mimeo_cli.main()
 
-    assert path.exists("test_mimeo_cli-dir/output")
+    assert Path("test_mimeo_cli-dir/output").exists()
     for i in range(1, 11):
         file_path = f"test_mimeo_cli-dir/output/output-file-{i}.xml"
-        assert path.exists(file_path)
+        assert Path(file_path).exists()
 
-        with open(file_path, "r") as file_content:
+        with Path(file_path).open() as file_content:
             assert file_content.readline() == '<?xml version="1.0" encoding="utf-8"?>\n'
-            assert file_content.readline() == '<SomeEntity>\n'
-            assert file_content.readline() == '  <ChildNode1>1</ChildNode1>\n'
-            assert file_content.readline() == '  <ChildNode2>value-2</ChildNode2>\n'
-            assert file_content.readline() == '  <ChildNode3>true</ChildNode3>\n'
-            assert file_content.readline() == '</SomeEntity>\n'
+            assert file_content.readline() == "<SomeEntity>\n"
+            assert file_content.readline() == "  <ChildNode1>1</ChildNode1>\n"
+            assert file_content.readline() == "  <ChildNode2>value-2</ChildNode2>\n"
+            assert file_content.readline() == "  <ChildNode3>true</ChildNode3>\n"
+            assert file_content.readline() == "</SomeEntity>\n"
 
 
 def test_custom_short_indent_zero():
-    sys.argv = ["mimeo", "test_mimeo_cli-dir/default-config.json", "-i", "0"]
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/default-config.json",
+                "-i", "0"]
 
-    assert not path.exists("test_mimeo_cli-dir/output")
+    assert not Path("test_mimeo_cli-dir/output").exists()
 
-    MimeoCLI.main()
+    mimeo_cli.main()
 
-    assert path.exists("test_mimeo_cli-dir/output")
+    assert Path("test_mimeo_cli-dir/output").exists()
     for i in range(1, 11):
         file_path = f"test_mimeo_cli-dir/output/output-file-{i}.xml"
-        assert path.exists(file_path)
+        assert Path(file_path).exists()
 
-        with open(file_path, "r") as file_content:
+        with Path(file_path).open() as file_content:
             assert file_content.readline() == "<?xml version='1.0' encoding='utf-8'?>\n"
-            assert file_content.readline() == '<SomeEntity>' \
-                                              '<ChildNode1>1</ChildNode1>' \
-                                              '<ChildNode2>value-2</ChildNode2>' \
-                                              '<ChildNode3>true</ChildNode3>' \
-                                              '</SomeEntity>'
+            assert file_content.readline() == ("<SomeEntity>"
+                                               "<ChildNode1>1</ChildNode1>"
+                                               "<ChildNode2>value-2</ChildNode2>"
+                                               "<ChildNode3>true</ChildNode3>"
+                                               "</SomeEntity>")
 
 
 def test_custom_long_indent_non_zero():
-    sys.argv = ["mimeo", "test_mimeo_cli-dir/default-config.json", "--indent", "2"]
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/default-config.json",
+                "--indent", "2"]
 
-    assert not path.exists("test_mimeo_cli-dir/output")
+    assert not Path("test_mimeo_cli-dir/output").exists()
 
-    MimeoCLI.main()
+    mimeo_cli.main()
 
-    assert path.exists("test_mimeo_cli-dir/output")
+    assert Path("test_mimeo_cli-dir/output").exists()
     for i in range(1, 11):
         file_path = f"test_mimeo_cli-dir/output/output-file-{i}.xml"
-        assert path.exists(file_path)
+        assert Path(file_path).exists()
 
-        with open(file_path, "r") as file_content:
+        with Path(file_path).open() as file_content:
             assert file_content.readline() == '<?xml version="1.0" encoding="utf-8"?>\n'
-            assert file_content.readline() == '<SomeEntity>\n'
-            assert file_content.readline() == '  <ChildNode1>1</ChildNode1>\n'
-            assert file_content.readline() == '  <ChildNode2>value-2</ChildNode2>\n'
-            assert file_content.readline() == '  <ChildNode3>true</ChildNode3>\n'
-            assert file_content.readline() == '</SomeEntity>\n'
+            assert file_content.readline() == "<SomeEntity>\n"
+            assert file_content.readline() == "  <ChildNode1>1</ChildNode1>\n"
+            assert file_content.readline() == "  <ChildNode2>value-2</ChildNode2>\n"
+            assert file_content.readline() == "  <ChildNode3>true</ChildNode3>\n"
+            assert file_content.readline() == "</SomeEntity>\n"
 
 
 def test_custom_long_indent_zero():
-    sys.argv = ["mimeo", "test_mimeo_cli-dir/default-config.json", "--indent", "0"]
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/default-config.json",
+                "--indent", "0"]
 
-    assert not path.exists("test_mimeo_cli-dir/output")
+    assert not Path("test_mimeo_cli-dir/output").exists()
 
-    MimeoCLI.main()
+    mimeo_cli.main()
 
-    assert path.exists("test_mimeo_cli-dir/output")
+    assert Path("test_mimeo_cli-dir/output").exists()
     for i in range(1, 11):
         file_path = f"test_mimeo_cli-dir/output/output-file-{i}.xml"
-        assert path.exists(file_path)
+        assert Path(file_path).exists()
 
-        with open(file_path, "r") as file_content:
+        with Path(file_path).open() as file_content:
             assert file_content.readline() == "<?xml version='1.0' encoding='utf-8'?>\n"
-            assert file_content.readline() == '<SomeEntity>' \
-                                              '<ChildNode1>1</ChildNode1>' \
-                                              '<ChildNode2>value-2</ChildNode2>' \
-                                              '<ChildNode3>true</ChildNode3>' \
-                                              '</SomeEntity>'
+            assert file_content.readline() == ("<SomeEntity>"
+                                               "<ChildNode1>1</ChildNode1>"
+                                               "<ChildNode2>value-2</ChildNode2>"
+                                               "<ChildNode3>true</ChildNode3>"
+                                               "</SomeEntity>")
 
 
-def test_custom_short_output_direction():
-    sys.argv = ["mimeo", "test_mimeo_cli-dir/default-config.json", "-o", "stdout"]
+def test_custom_short_direction():
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/default-config.json",
+                "-o", "stdout"]
 
-    assert not path.exists("test_mimeo_cli-dir/output")
+    assert not Path("test_mimeo_cli-dir/output").exists()
 
-    MimeoCLI.main()
+    mimeo_cli.main()
 
-    assert not path.exists("test_mimeo_cli-dir/output")
-
-
-def test_custom_long_output_direction():
-    sys.argv = ["mimeo", "test_mimeo_cli-dir/default-config.json", "--output", "stdout"]
-
-    assert not path.exists("test_mimeo_cli-dir/output")
-
-    MimeoCLI.main()
-
-    assert not path.exists("test_mimeo_cli-dir/output")
+    assert not Path("test_mimeo_cli-dir/output").exists()
 
 
-def test_custom_output_direction_does_not_throw_key_error_when_output_details_does_not_exist():
-    sys.argv = ["mimeo", "test_mimeo_cli-dir/minimum-config.json", "-o", "stdout"]
+def test_custom_long_direction():
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/default-config.json",
+                "--output", "stdout"]
+
+    assert not Path("test_mimeo_cli-dir/output").exists()
+
+    mimeo_cli.main()
+
+    assert not Path("test_mimeo_cli-dir/output").exists()
+
+
+def test_custom_direction_does_not_throw_error_when_output_is_none():
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/minimum-config.json",
+                "-o", "stdout"]
 
     try:
-        MimeoCLI.main()
+        mimeo_cli.main()
     except KeyError:
-        assert False
+        raise AssertionError from KeyError
 
 
-def test_custom_short_output_directory_path():
-    sys.argv = ["mimeo", "test_mimeo_cli-dir/default-config.json", "-d", "test_mimeo_cli-dir/customized-output"]
+def test_custom_short_directory_path():
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/default-config.json",
+                "-d", "test_mimeo_cli-dir/customized-output"]
 
-    assert not path.exists("test_mimeo_cli-dir/output")
-    assert not path.exists("test_mimeo_cli-dir/customized-output")
+    assert not Path("test_mimeo_cli-dir/output").exists()
+    assert not Path("test_mimeo_cli-dir/customized-output").exists()
 
-    MimeoCLI.main()
+    mimeo_cli.main()
 
-    assert not path.exists("test_mimeo_cli-dir/output")
-    assert path.exists("test_mimeo_cli-dir/customized-output")
+    assert not Path("test_mimeo_cli-dir/output").exists()
+    assert Path("test_mimeo_cli-dir/customized-output").exists()
     for i in range(1, 11):
         file_path = f"test_mimeo_cli-dir/customized-output/output-file-{i}.xml"
-        assert path.exists(file_path)
+        assert Path(file_path).exists()
 
-        with open(file_path, "r") as file_content:
+        with Path(file_path).open() as file_content:
             assert file_content.readline() == '<?xml version="1.0" encoding="utf-8"?>\n'
-            assert file_content.readline() == '<SomeEntity>\n'
-            assert file_content.readline() == '    <ChildNode1>1</ChildNode1>\n'
-            assert file_content.readline() == '    <ChildNode2>value-2</ChildNode2>\n'
-            assert file_content.readline() == '    <ChildNode3>true</ChildNode3>\n'
-            assert file_content.readline() == '</SomeEntity>\n'
+            assert file_content.readline() == "<SomeEntity>\n"
+            assert file_content.readline() == "    <ChildNode1>1</ChildNode1>\n"
+            assert file_content.readline() == "    <ChildNode2>value-2</ChildNode2>\n"
+            assert file_content.readline() == "    <ChildNode3>true</ChildNode3>\n"
+            assert file_content.readline() == "</SomeEntity>\n"
 
 
-def test_custom_long_output_directory_path():
-    sys.argv = ["mimeo", "test_mimeo_cli-dir/default-config.json", "--directory", "test_mimeo_cli-dir/customized-output"]
+def test_custom_long_directory_path():
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/default-config.json",
+                "--directory", "test_mimeo_cli-dir/customized-output"]
 
-    assert not path.exists("test_mimeo_cli-dir/output")
-    assert not path.exists("test_mimeo_cli-dir/customized-output")
+    assert not Path("test_mimeo_cli-dir/output").exists()
+    assert not Path("test_mimeo_cli-dir/customized-output").exists()
 
-    MimeoCLI.main()
+    mimeo_cli.main()
 
-    assert not path.exists("test_mimeo_cli-dir/output")
-    assert path.exists("test_mimeo_cli-dir/customized-output")
+    assert not Path("test_mimeo_cli-dir/output").exists()
+    assert Path("test_mimeo_cli-dir/customized-output").exists()
     for i in range(1, 11):
         file_path = f"test_mimeo_cli-dir/customized-output/output-file-{i}.xml"
-        assert path.exists(file_path)
+        assert Path(file_path).exists()
 
-        with open(file_path, "r") as file_content:
+        with Path(file_path).open() as file_content:
             assert file_content.readline() == '<?xml version="1.0" encoding="utf-8"?>\n'
-            assert file_content.readline() == '<SomeEntity>\n'
-            assert file_content.readline() == '    <ChildNode1>1</ChildNode1>\n'
-            assert file_content.readline() == '    <ChildNode2>value-2</ChildNode2>\n'
-            assert file_content.readline() == '    <ChildNode3>true</ChildNode3>\n'
-            assert file_content.readline() == '</SomeEntity>\n'
+            assert file_content.readline() == "<SomeEntity>\n"
+            assert file_content.readline() == "    <ChildNode1>1</ChildNode1>\n"
+            assert file_content.readline() == "    <ChildNode2>value-2</ChildNode2>\n"
+            assert file_content.readline() == "    <ChildNode3>true</ChildNode3>\n"
+            assert file_content.readline() == "</SomeEntity>\n"
 
 
-def test_custom_output_directory_path_does_not_throw_key_error_when_output_details_does_not_exist():
-    sys.argv = ["mimeo", "test_mimeo_cli-dir/minimum-config.json", "-d", "test_mimeo_cli-dir/customized-output"]
+def test_custom_directory_path_does_not_throw_error_when_output_is_none():
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/minimum-config.json",
+                "-d", "test_mimeo_cli-dir/customized-output"]
 
     try:
-        MimeoCLI.main()
+        mimeo_cli.main()
     except KeyError:
-        assert False
+        raise AssertionError from KeyError
 
 
-def test_custom_short_output_file_name():
-    sys.argv = ["mimeo", "test_mimeo_cli-dir/default-config.json", "-f", "customized-output-file"]
+def test_custom_short_file_name():
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/default-config.json",
+                "-f", "customized-output-file"]
 
-    assert not path.exists("test_mimeo_cli-dir/output")
+    assert not Path("test_mimeo_cli-dir/output").exists()
 
-    MimeoCLI.main()
+    mimeo_cli.main()
 
-    assert path.exists("test_mimeo_cli-dir/output")
+    assert Path("test_mimeo_cli-dir/output").exists()
     for i in range(1, 11):
         file_path = f"test_mimeo_cli-dir/output/customized-output-file-{i}.xml"
-        assert path.exists(file_path)
-        assert not path.exists(f"test_mimeo_cli-dir/output/output-file-{i}.xml")
+        assert Path(file_path).exists()
+        assert not Path(f"test_mimeo_cli-dir/output/output-file-{i}.xml").exists()
 
-        with open(file_path, "r") as file_content:
+        with Path(file_path).open() as file_content:
             assert file_content.readline() == '<?xml version="1.0" encoding="utf-8"?>\n'
-            assert file_content.readline() == '<SomeEntity>\n'
-            assert file_content.readline() == '    <ChildNode1>1</ChildNode1>\n'
-            assert file_content.readline() == '    <ChildNode2>value-2</ChildNode2>\n'
-            assert file_content.readline() == '    <ChildNode3>true</ChildNode3>\n'
-            assert file_content.readline() == '</SomeEntity>\n'
+            assert file_content.readline() == "<SomeEntity>\n"
+            assert file_content.readline() == "    <ChildNode1>1</ChildNode1>\n"
+            assert file_content.readline() == "    <ChildNode2>value-2</ChildNode2>\n"
+            assert file_content.readline() == "    <ChildNode3>true</ChildNode3>\n"
+            assert file_content.readline() == "</SomeEntity>\n"
 
 
-def test_custom_long_output_file_name():
-    sys.argv = ["mimeo", "test_mimeo_cli-dir/default-config.json", "--file", "customized-output-file"]
+def test_custom_long_file_name():
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/default-config.json",
+                "--file", "customized-output-file"]
 
-    assert not path.exists("test_mimeo_cli-dir/output")
+    assert not Path("test_mimeo_cli-dir/output").exists()
 
-    MimeoCLI.main()
+    mimeo_cli.main()
 
-    assert path.exists("test_mimeo_cli-dir/output")
+    assert Path("test_mimeo_cli-dir/output").exists()
     for i in range(1, 11):
         file_path = f"test_mimeo_cli-dir/output/customized-output-file-{i}.xml"
-        assert path.exists(file_path)
-        assert not path.exists(f"test_mimeo_cli-dir/output/output-file-{i}.xml")
+        assert Path(file_path).exists()
+        assert not Path(f"test_mimeo_cli-dir/output/output-file-{i}.xml").exists()
 
-        with open(file_path, "r") as file_content:
+        with Path(file_path).open() as file_content:
             assert file_content.readline() == '<?xml version="1.0" encoding="utf-8"?>\n'
-            assert file_content.readline() == '<SomeEntity>\n'
-            assert file_content.readline() == '    <ChildNode1>1</ChildNode1>\n'
-            assert file_content.readline() == '    <ChildNode2>value-2</ChildNode2>\n'
-            assert file_content.readline() == '    <ChildNode3>true</ChildNode3>\n'
-            assert file_content.readline() == '</SomeEntity>\n'
+            assert file_content.readline() == "<SomeEntity>\n"
+            assert file_content.readline() == "    <ChildNode1>1</ChildNode1>\n"
+            assert file_content.readline() == "    <ChildNode2>value-2</ChildNode2>\n"
+            assert file_content.readline() == "    <ChildNode3>true</ChildNode3>\n"
+            assert file_content.readline() == "</SomeEntity>\n"
 
 
-def test_custom_output_file_name_does_not_throw_key_error_when_output_details_does_not_exist():
-    sys.argv = ["mimeo", "test_mimeo_cli-dir/minimum-config.json", "-f", "customized-output-file"]
+def test_custom_file_name_does_not_throw_error_when_output_is_none():
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/minimum-config.json",
+                "-f", "customized-output-file"]
 
     try:
-        MimeoCLI.main()
+        mimeo_cli.main()
     except KeyError:
-        assert False
+        raise AssertionError from KeyError
 
 
 @responses.activate
-def test_custom_short_output_http_host():
-    sys.argv = ["mimeo", "test_mimeo_cli-dir/http-config.json", "-H", "198.168.1.1"]
+def test_custom_short_http_host():
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/http-config.json",
+                "-H", "198.168.1.1"]
 
-    responses.add(responses.POST, "http://198.168.1.1:8080/document", json={"success": True}, status=HTTPStatus.OK)
-    MimeoCLI.main()
+    responses.add(responses.POST,
+                  "http://198.168.1.1:8080/document",
+                  json={"success": True},
+                  status=HTTPStatus.OK)
+    mimeo_cli.main()
     # would throw a ConnectionError when any request call doesn't match registered mocks
 
 
 @responses.activate
-def test_custom_long_output_http_host():
-    sys.argv = ["mimeo", "test_mimeo_cli-dir/http-config.json", "--http-host", "198.168.1.1"]
+def test_custom_long_http_host():
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/http-config.json",
+                "--http-host", "198.168.1.1"]
 
-    responses.add(responses.POST, "http://198.168.1.1:8080/document", json={"success": True}, status=HTTPStatus.OK)
-    MimeoCLI.main()
+    responses.add(responses.POST,
+                  "http://198.168.1.1:8080/document",
+                  json={"success": True},
+                  status=HTTPStatus.OK)
+    mimeo_cli.main()
     # would throw a ConnectionError when any request call doesn't match registered mocks
 
 
-def test_custom_output_http_host_does_not_throw_key_error_when_output_details_does_not_exist():
-    sys.argv = ["mimeo", "test_mimeo_cli-dir/minimum-config.json", "-o", "http", "-H", "198.168.1.1"]
+def test_custom_http_host_does_not_throw_error_when_output_is_none():
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/minimum-config.json",
+                "-o", "http",
+                "-H", "198.168.1.1"]
 
     try:
-        MimeoCLI.main()
-    except MissingRequiredProperty:
+        mimeo_cli.main()
+    except MissingRequiredPropertyError:
         assert True
     except KeyError:
-        assert False
+        raise AssertionError from KeyError
 
 
 @responses.activate
-def test_custom_short_output_http_port():
-    sys.argv = ["mimeo", "test_mimeo_cli-dir/http-config.json", "-p", "8081"]
+def test_custom_short_http_port():
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/http-config.json",
+                "-p", "8081"]
 
-    responses.add(responses.POST, "http://localhost:8081/document", json={"success": True}, status=HTTPStatus.OK)
-    MimeoCLI.main()
+    responses.add(responses.POST,
+                  "http://localhost:8081/document",
+                  json={"success": True},
+                  status=HTTPStatus.OK)
+    mimeo_cli.main()
     # would throw a ConnectionError when any request call doesn't match registered mocks
 
 
 @responses.activate
-def test_custom_long_output_http_port():
-    sys.argv = ["mimeo", "test_mimeo_cli-dir/http-config.json", "--http-port", "8081"]
+def test_custom_long_http_port():
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/http-config.json",
+                "--http-port", "8081"]
 
-    responses.add(responses.POST, "http://localhost:8081/document", json={"success": True}, status=HTTPStatus.OK)
-    MimeoCLI.main()
+    responses.add(responses.POST,
+                  "http://localhost:8081/document",
+                  json={"success": True},
+                  status=HTTPStatus.OK)
+    mimeo_cli.main()
     # would throw a ConnectionError when any request call doesn't match registered mocks
 
 
-def test_custom_output_http_port_does_not_throw_key_error_when_output_details_does_not_exist():
-    sys.argv = ["mimeo", "test_mimeo_cli-dir/minimum-config.json", "-o", "http", "-p", "8081"]
+def test_custom_http_port_does_not_throw_error_when_output_is_none():
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/minimum-config.json",
+                "-o", "http",
+                "-p", "8081"]
 
     try:
-        MimeoCLI.main()
-    except MissingRequiredProperty:
+        mimeo_cli.main()
+    except MissingRequiredPropertyError:
         assert True
     except KeyError:
-        assert False
+        raise AssertionError from KeyError
 
 
 @responses.activate
-def test_custom_short_output_http_endpoint():
-    sys.argv = ["mimeo", "test_mimeo_cli-dir/http-config.json", "-E", "/v2/document"]
+def test_custom_short_http_endpoint():
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/http-config.json",
+                "-E", "/v2/document"]
 
-    responses.add(responses.POST, "http://localhost:8080/v2/document", json={"success": True}, status=HTTPStatus.OK)
-    MimeoCLI.main()
+    responses.add(responses.POST,
+                  "http://localhost:8080/v2/document",
+                  json={"success": True},
+                  status=HTTPStatus.OK)
+    mimeo_cli.main()
     # would throw a ConnectionError when any request call doesn't match registered mocks
 
 
 @responses.activate
-def test_custom_long_output_http_endpoint():
-    sys.argv = ["mimeo", "test_mimeo_cli-dir/http-config.json", "--http-endpoint", "/v2/document"]
+def test_custom_long_http_endpoint():
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/http-config.json",
+                "--http-endpoint", "/v2/document"]
 
-    responses.add(responses.POST, "http://localhost:8080/v2/document", json={"success": True}, status=HTTPStatus.OK)
-    MimeoCLI.main()
+    responses.add(responses.POST,
+                  "http://localhost:8080/v2/document",
+                  json={"success": True},
+                  status=HTTPStatus.OK)
+    mimeo_cli.main()
     # would throw a ConnectionError when any request call doesn't match registered mocks
 
 
-def test_custom_output_http_endpoint_does_not_throw_key_error_when_output_details_does_not_exist():
-    sys.argv = ["mimeo", "test_mimeo_cli-dir/minimum-config.json", "-o", "http", "-E", "/v2/document"]
+def test_custom_http_endpoint_does_not_throw_error_when_output_is_none():
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/minimum-config.json",
+                "-o", "http",
+                "-E", "/v2/document"]
 
     try:
-        MimeoCLI.main()
-    except MissingRequiredProperty:
+        mimeo_cli.main()
+    except MissingRequiredPropertyError:
         assert True
     except KeyError:
-        assert False
+        raise AssertionError from KeyError
 
 
 @responses.activate
-def test_custom_short_output_http_username():
-    sys.argv = ["mimeo", "test_mimeo_cli-dir/http-config.json", "--http-auth", "basic", "-U", "custom-user"]
+def test_custom_short_http_username():
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/http-config.json",
+                "--http-auth", "basic",
+                "-U", "custom-user"]
 
+    auth = _generate_authorization("custom-user", "admin")
     responses.add(
         responses.POST,
         "http://localhost:8080/document",
         json={"success": True},
         status=HTTPStatus.OK,
-        match=[matchers.header_matcher({'Authorization': _generate_authorization("custom-user", "admin")})]
+        match=[matchers.header_matcher({"Authorization": auth})],
     )
-    MimeoCLI.main()
+    mimeo_cli.main()
     # would throw a ConnectionError when any request call doesn't match registered mocks
 
 
 @responses.activate
-def test_custom_long_output_http_username():
-    sys.argv = ["mimeo", "test_mimeo_cli-dir/http-config.json", "--http-auth", "basic", "--http-user", "custom-user"]
+def test_custom_long_http_username():
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/http-config.json",
+                "--http-auth", "basic",
+                "--http-user", "custom-user"]
 
+    auth = _generate_authorization("custom-user", "admin")
     responses.add(
         responses.POST,
         "http://localhost:8080/document",
         json={"success": True},
         status=HTTPStatus.OK,
-        match=[matchers.header_matcher({'Authorization': _generate_authorization("custom-user", "admin")})]
+        match=[matchers.header_matcher({"Authorization": auth})],
     )
-    MimeoCLI.main()
+    mimeo_cli.main()
     # would throw a ConnectionError when any request call doesn't match registered mocks
 
 
-def test_custom_output_http_username_does_not_throw_key_error_when_output_details_does_not_exist():
-    sys.argv = ["mimeo", "test_mimeo_cli-dir/minimum-config.json", "-o", "http", "-U", "custom-user"]
+def test_custom_http_username_does_not_throw_error_when_output_is_none():
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/minimum-config.json",
+                "-o", "http",
+                "-U", "custom-user"]
 
     try:
-        MimeoCLI.main()
-    except MissingRequiredProperty:
+        mimeo_cli.main()
+    except MissingRequiredPropertyError:
         assert True
     except KeyError:
-        assert False
+        raise AssertionError from KeyError
 
 
 @responses.activate
-def test_custom_short_output_http_password():
-    sys.argv = ["mimeo", "test_mimeo_cli-dir/http-config.json", "--http-auth", "basic", "-P", "custom-password"]
+def test_custom_short_http_password():
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/http-config.json",
+                "--http-auth", "basic",
+                "-P", "custom-password"]
 
+    auth = _generate_authorization("admin", "custom-password")
     responses.add(
         responses.POST,
         "http://localhost:8080/document",
         json={"success": True},
         status=HTTPStatus.OK,
-        match=[matchers.header_matcher({'Authorization': _generate_authorization("admin", "custom-password")})]
+        match=[matchers.header_matcher({"Authorization": auth})],
     )
-    MimeoCLI.main()
+    mimeo_cli.main()
     # would throw a ConnectionError when any request call doesn't match registered mocks
 
 
 @responses.activate
-def test_custom_long_output_http_password():
+def test_custom_long_http_password():
     sys.argv = ["mimeo", "test_mimeo_cli-dir/http-config.json",
                 "--http-auth", "basic",
                 "--http-password", "custom-password"]
 
+    auth = _generate_authorization("admin", "custom-password")
     responses.add(
         responses.POST,
         "http://localhost:8080/document",
         json={"success": True},
         status=HTTPStatus.OK,
-        match=[matchers.header_matcher({'Authorization': _generate_authorization("admin", "custom-password")})]
+        match=[matchers.header_matcher({"Authorization": auth})],
     )
-    MimeoCLI.main()
+    mimeo_cli.main()
     # would throw a ConnectionError when any request call doesn't match registered mocks
 
 
-def test_custom_output_http_password_does_not_throw_key_error_when_output_details_does_not_exist():
-    sys.argv = ["mimeo", "test_mimeo_cli-dir/minimum-config.json", "-o", "http", "-P", "custom-password"]
+def test_custom_http_password_does_not_throw_error_when_output_is_none():
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/minimum-config.json",
+                "-o", "http",
+                "-P", "custom-password"]
 
     try:
-        MimeoCLI.main()
-    except MissingRequiredProperty:
+        mimeo_cli.main()
+    except MissingRequiredPropertyError:
         assert True
     except KeyError:
-        assert False
+        raise AssertionError from KeyError
 
 
 @responses.activate
-def test_custom_long_output_http_method():
-    sys.argv = ["mimeo", "test_mimeo_cli-dir/http-config.json", "--http-method", "PUT"]
+def test_custom_long_http_method():
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/http-config.json",
+                "--http-method", "PUT"]
 
-    responses.add(responses.PUT, "http://localhost:8080/document", json={"success": True}, status=HTTPStatus.OK)
-    MimeoCLI.main()
+    responses.add(responses.PUT,
+                  "http://localhost:8080/document",
+                  json={"success": True},
+                  status=HTTPStatus.OK)
+    mimeo_cli.main()
     # would throw a ConnectionError when any request call doesn't match registered mocks
 
 
-def test_custom_output_http_method_does_not_throw_key_error_when_output_details_does_not_exist():
-    sys.argv = ["mimeo", "test_mimeo_cli-dir/minimum-config.json", "-o", "http", "--http-method", "PUT"]
+def test_custom_http_method_does_not_throw_error_when_output_is_none():
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/minimum-config.json",
+                "-o", "http",
+                "--http-method", "PUT"]
 
     try:
-        MimeoCLI.main()
-    except MissingRequiredProperty:
+        mimeo_cli.main()
+    except MissingRequiredPropertyError:
         assert True
     except KeyError:
-        assert False
+        raise AssertionError from KeyError
 
 
 @responses.activate
-def test_custom_long_output_http_protocol():
-    sys.argv = ["mimeo", "test_mimeo_cli-dir/http-config.json", "--http-protocol", "https"]
+def test_custom_long_http_protocol():
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/http-config.json",
+                "--http-protocol", "https"]
 
-    responses.add(responses.POST, "https://localhost:8080/document", json={"success": True}, status=HTTPStatus.OK)
-    MimeoCLI.main()
+    responses.add(responses.POST,
+                  "https://localhost:8080/document",
+                  json={"success": True},
+                  status=HTTPStatus.OK)
+    mimeo_cli.main()
     # would throw a ConnectionError when any request call doesn't match registered mocks
 
 
-def test_custom_output_http_protocol_does_not_throw_key_error_when_output_details_does_not_exist():
-    sys.argv = ["mimeo", "test_mimeo_cli-dir/minimum-config.json", "-o", "http", "--http-protocol", "https"]
+def test_custom_http_protocol_does_not_throw_error_when_output_is_none():
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/minimum-config.json",
+                "-o", "http",
+                "--http-protocol", "https"]
 
     try:
-        MimeoCLI.main()
-    except MissingRequiredProperty:
+        mimeo_cli.main()
+    except MissingRequiredPropertyError:
         assert True
     except KeyError:
-        assert False
+        raise AssertionError from KeyError
 
 
 @responses.activate
-def test_custom_long_output_http_auth():
-    sys.argv = ["mimeo", "test_mimeo_cli-dir/http-config.json", "--http-auth", "basic"]
+def test_custom_long_http_auth():
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/http-config.json",
+                "--http-auth", "basic"]
 
+    auth = _generate_authorization("admin", "admin")
     responses.add(
         responses.POST,
         "http://localhost:8080/document",
         json={"success": True},
         status=HTTPStatus.OK,
-        match=[matchers.header_matcher({'Authorization': _generate_authorization("admin", "admin")})]
+        match=[matchers.header_matcher({"Authorization": auth})],
     )
-    MimeoCLI.main()
+    mimeo_cli.main()
     # would throw a ConnectionError when any request call doesn't match registered mocks
 
 
-def test_custom_output_http_auth_does_not_throw_key_error_when_output_details_does_not_exist():
-    sys.argv = ["mimeo", "test_mimeo_cli-dir/minimum-config.json", "-o", "http", "--http-auth", "basic"]
+def test_custom_http_auth_does_not_throw_error_when_output_is_none():
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/minimum-config.json",
+                "-o", "http",
+                "--http-auth", "basic"]
 
     try:
-        MimeoCLI.main()
-    except MissingRequiredProperty:
+        mimeo_cli.main()
+    except MissingRequiredPropertyError:
         assert True
     except KeyError:
-        assert False
+        raise AssertionError from KeyError
 
 
 @responses.activate
 def test_custom_short_env():
-    sys.argv = ["mimeo", "test_mimeo_cli-dir/http-config.json", "-e", "default"]
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/http-config.json",
+                "-e", "default"]
 
+    auth = _generate_authorization("custom-username", "custom-password")
     responses.add(
         responses.POST,
         "https://11.111.11.111:8000/document",
         json={"success": True},
         status=HTTPStatus.OK,
-        match=[matchers.header_matcher({'Authorization': _generate_authorization("custom-username", "custom-password")})]
+        match=[matchers.header_matcher({"Authorization": auth})],
     )
-    MimeoCLI.main()
+    mimeo_cli.main()
     # would throw a ConnectionError when any request call doesn't match registered mocks
 
 
 @responses.activate
 def test_custom_long_env():
-    sys.argv = ["mimeo", "test_mimeo_cli-dir/http-config.json", "--http-env", "default"]
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/http-config.json",
+                "--http-env", "default"]
 
+    auth = _generate_authorization("custom-username", "custom-password")
     responses.add(
         responses.POST,
         "https://11.111.11.111:8000/document",
         json={"success": True},
         status=HTTPStatus.OK,
-        match=[matchers.header_matcher({'Authorization': _generate_authorization("custom-username", "custom-password")})]
+        match=[matchers.header_matcher({"Authorization": auth})],
     )
-    MimeoCLI.main()
+    mimeo_cli.main()
     # would throw a ConnectionError when any request call doesn't match registered mocks
 
 
@@ -780,84 +869,90 @@ def test_custom_env_file():
                 "--http-envs-file", "custom-mimeo-envs-file.json",
                 "-e", "custom"]
 
+    auth = _generate_authorization("custom-username", "custom-password")
     responses.add(
         responses.POST,
         "https://11.111.11.111:8000/document",
         json={"success": True},
         status=HTTPStatus.OK,
-        match=[matchers.header_matcher({'Authorization': _generate_authorization("custom-username", "custom-password")})]
+        match=[matchers.header_matcher({"Authorization": auth})],
     )
-    MimeoCLI.main()
+    mimeo_cli.main()
     # would throw a ConnectionError when any request call doesn't match registered mocks
 
 
+@assert_throws(err_type=EnvironmentsFileNotFoundError,
+               msg="Environments file not found [{file}]",
+               params={"file": "non-existing-environments-file.json"})
 def test_custom_env_file_does_throw_error_when_file_does_not_exist():
     sys.argv = ["mimeo", "test_mimeo_cli-dir/http-config.json",
                 "--http-envs-file", "non-existing-environments-file.json",
                 "-e", "custom"]
-
-    with pytest.raises(EnvironmentsFileNotFound) as err:
-        MimeoCLI.main()
-
-    assert err.value.args[0] == "Environments file not found [non-existing-environments-file.json]"
+    mimeo_cli.main()
 
 
-def test_custom_env_does_not_throw_key_error_when_output_details_does_not_exist():
-    sys.argv = ["mimeo", "test_mimeo_cli-dir/minimum-config.json", "-o", "http", "-e", "default"]
+def test_custom_env_does_not_throw_error_when_output_is_none():
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/minimum-config.json",
+                "-o", "http",
+                "-e", "default"]
 
     try:
-        MimeoCLI.main()
-    except MissingRequiredProperty:
+        mimeo_cli.main()
+    except MissingRequiredPropertyError:
         assert True
     except KeyError:
-        assert False
+        raise AssertionError from KeyError
 
 
+@assert_throws(err_type=EnvironmentNotFoundError,
+               msg="No such env [{env}] in environments file [{file}]",
+               params={"env": "non-existing", "file": "mimeo.envs.json"})
 def test_custom_env_does_throw_error_when_environment_does_not_exist():
-    sys.argv = ["mimeo", "test_mimeo_cli-dir/minimum-config.json", "-o", "http", "-e", "non-existing"]
-
-    with pytest.raises(EnvironmentNotFound) as err:
-        MimeoCLI.main()
-
-    assert err.value.args[0] == "No such env [non-existing] in environments file [mimeo.envs.json]"
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/minimum-config.json",
+                "-o", "http",
+                "-e", "non-existing"]
+    mimeo_cli.main()
 
 
 def test_logging_mode_default():
     sys.argv = ["mimeo", "test_mimeo_cli-dir/default-config.json"]
     logger = logging.getLogger("mimeo")
 
-    MimeoCLI.main()
+    mimeo_cli.main()
 
     assert logger.getEffectiveLevel() == logging.INFO
 
 
 def test_logging_mode_silent():
-    sys.argv = ["mimeo", "test_mimeo_cli-dir/default-config.json", "--silent"]
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/default-config.json",
+                "--silent"]
     logger = logging.getLogger("mimeo")
 
-    MimeoCLI.main()
+    mimeo_cli.main()
 
     assert logger.getEffectiveLevel() == logging.WARNING
 
 
 def test_logging_mode_debug():
-    sys.argv = ["mimeo", "test_mimeo_cli-dir/default-config.json", "--debug"]
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/default-config.json",
+                "--debug"]
     logger = logging.getLogger("mimeo")
 
-    MimeoCLI.main()
+    mimeo_cli.main()
 
     assert logger.getEffectiveLevel() == logging.DEBUG
 
 
 def test_logging_mode_fine():
-    sys.argv = ["mimeo", "test_mimeo_cli-dir/default-config.json", "--fine"]
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/default-config.json",
+                "--fine"]
     logger = logging.getLogger("mimeo")
 
-    MimeoCLI.main()
+    mimeo_cli.main()
 
     assert logger.getEffectiveLevel() == logging.FINE
 
 
 def _generate_authorization(username: str, password: str):
-    token = b64encode(f"{username}:{password}".encode('utf-8')).decode("ascii")
-    return f'Basic {token}'
+    token = b64encode(f"{username}:{password}".encode()).decode("ascii")
+    return f"Basic {token}"
