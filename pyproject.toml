@@ -94,6 +94,7 @@ exclude = [
     "dist",
     "venv",
     "examples",
+    "meta",
     "tmp"
 ]
 ignore-init-module-imports = true
