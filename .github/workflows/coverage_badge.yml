@@ -28,7 +28,7 @@ jobs:
         run: |
           pytest --cov=src tests | tee output.txt
 
-      - name: Pytest coverage comment
+      - name: Parse Code Coverage
         id: coverageComment
         uses: MishaKav/pytest-coverage-comment@main
         with:
@@ -38,16 +38,6 @@ jobs:
       - name: Update README with Code Coverage Badge
         run: |
           sed -i -e "s/Code%20Coverage-[0-9]*%25-[a-z]*/Code%20Coverage-${{ steps.coverageComment.outputs.coverage }}25-${{ steps.coverageComment.outputs.color }}/g" ./README.md
-#          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-#          git config --local user.name "github-actions[bot]"
-#          rm output.txt
-#          git add README.md
-#          git diff --quiet && git diff --staged --quiet || git commit -m "update code coverage badge"
-
-#      - name: Push changes
-#        uses: ad-m/github-push-action@master
-#        with:
-#          github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v5
@@ -56,3 +46,4 @@ jobs:
             commit-message: "update code coverage badge"
             title: "Update Code Coverage badge in README.md"
             assignees: "TomaszAniolowski"
+            body: "Code coverage updated to ${{ steps.coverageComment.outputs.coverage }}"
