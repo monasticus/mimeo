@@ -9,6 +9,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
       - name: Set up Python 3.8
         uses: actions/setup-python@v4
@@ -38,18 +40,18 @@ jobs:
       - name: Update README with Code Coverage Badge
         run: |
           sed -i -e "s/Code%20Coverage-[0-9]*%25-[a-z]*/Code%20Coverage-${{ steps.coverageComment.outputs.coverage }}%25-${{ steps.coverageComment.outputs.color }}/g" ./README.md
-          rm output.txt
-          git checkout feature/mimeo-99
-          git pull
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add README.md
+          git commit -m "update code coverage badge"
 
 #      - name: Set git config before push
 #        run: |
 #          git config --local --unset-all "http.https://github.com/.extraheader"
 #          git config --local remote.origin.url git@github.com:TomaszAniolowski/mimeo.git
 
-      - name: Commit & Push changes to README
-        uses: actions-js/push@master
+      - name: Push changes
+        uses: ad-m/github-push-action@master
         with:
-          message: Update code coverage badge on README
-          branch: "feature/mimeo-99"
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}
