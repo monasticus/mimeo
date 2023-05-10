@@ -9,8 +9,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
 
       - name: Set up Python 3.8
         uses: actions/setup-python@v4
@@ -50,4 +48,11 @@ jobs:
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: "main"
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+            add-paths: "README.md"
+            commit-message: "update code coverage badge"
+            title: "Update Code Coverage badge in README.md"
+            assignees: "TomaszAniolowski"
