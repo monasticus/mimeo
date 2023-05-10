@@ -40,14 +40,14 @@ jobs:
           sed -i -e "s/Code%20Coverage-[0-9]*%25-[a-z]*/Code%20Coverage-${{ steps.coverageComment.outputs.coverage }}%25-${{ steps.coverageComment.outputs.color }}/g" ./README.md
           rm output.txt
 
-      - name: Set git config before push
-        run: |
-          git config --local --unset-all "http.https://github.com/.extraheader"
-          git config --local remote.origin.url git@github.com:TomaszAniolowski/mimeo.git
+#      - name: Set git config before push
+#        run: |
+#          git config --local --unset-all "http.https://github.com/.extraheader"
+#          git config --local remote.origin.url git@github.com:TomaszAniolowski/mimeo.git
 
       - name: Commit & Push changes to README
         uses: actions-js/push@master
         with:
           message: Update code coverage badge on README
-#          branch: "feature/mimeo-99"
+          branch: "feature/mimeo-99"
           github_token: ${{ secrets.GITHUB_TOKEN }}
