@@ -1,5 +1,8 @@
 init:
-	pip install -r requirements.txt
+	@python -m pip install pip-tools
+	@pip-compile --extra dev pyproject.toml
+	@pip install -r requirements.txt
+	@pip install -e .
 
 imports:
 	@isort .
