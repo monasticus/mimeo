@@ -22,7 +22,7 @@ jobs:
           pip install -r requirements.txt
       - name: Build mimeo
         run: pip install -e .
-      - name: Create test reports
+      - name: Create test report
         run: |
           pytest --cov=src tests | tee output.txt
       - name: Pytest coverage comment
@@ -36,9 +36,8 @@ jobs:
         run: |
           sed -i -e "s/Code%20Coverage-[0-9]*%25-[a-z]*/Code%20Coverage-${{ steps.coverageComment.outputs.coverage }}%25-${{ steps.coverageComment.outputs.color }}/g" ./README.md
 
-      - name: Commit & Push changes to Readme
-        if: ${{ github.ref == 'refs/heads/main' }}
+      - name: Commit & Push changes to README
         uses: actions-js/push@master
         with:
-          message: Update coverage on Readme
+          message: Update code coverage badge on README
           github_token: ${{ secrets.GITHUB_TOKEN }}
