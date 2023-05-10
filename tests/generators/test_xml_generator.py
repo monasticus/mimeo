@@ -496,7 +496,7 @@ def test_generate_single_template_child_elements():
         assert count == 5
 
 
-def test_generate_single_template_child_elements_in_array():
+def test_generate_single_template_complex_child_elements_in_array():
     config = MimeoConfig({
         "output": {
             "format": "xml",
@@ -701,6 +701,45 @@ def test_generate_single_template_mixed_child_elements_in_array():
                     "SomeEntity": {
                         "ChildNodes": [
                             "atomic",
+                            {
+                                "ChildNode": "value-1",
+                            },
+                        ],
+                    },
+                },
+            },
+        ],
+    })
+
+    with MimeoContextManager(config):
+        generator = XMLGenerator(config)
+        for _ in generator.generate(config.templates):
+            pass
+
+
+@assert_throws(err_type=UnsupportedStructureError,
+               msg="An array can include only atomic types (including Mimeo Utils) or "
+                   "only JSON objects! Unsupported structure found in {e}: {s}",
+               params={"e": "ChildNodes",
+                       "s": "[{'_mimeo_util': {'_name': 'auto_increment', "
+                            "'pattern': '{}'}}, {'ChildNode': 'value-1'}]"})
+def test_generate_single_template_complex_child_elements_with_mimeo_util_in_array():
+    config = MimeoConfig({
+        "output": {
+            "format": "xml",
+        },
+        "_templates_": [
+            {
+                "count": 5,
+                "model": {
+                    "SomeEntity": {
+                        "ChildNodes": [
+                            {
+                                "_mimeo_util": {
+                                    "_name": "auto_increment",
+                                    "pattern": "{}",
+                                },
+                            },
                             {
                                 "ChildNode": "value-1",
                             },

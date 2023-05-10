@@ -441,7 +441,8 @@ class XMLGenerator(Generator):
             return cls._process_list_value_with_atomic_children(parent, element_meta)
 
         has_only_dict_values = all(
-            isinstance(child, dict)
+            isinstance(child, dict) and
+            not MimeoRenderer.is_parametrized_mimeo_util(child)
             for child in element_meta["value"])
         if has_only_dict_values:
             return cls._process_list_value_with_complex_children(parent, element_meta)
