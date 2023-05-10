@@ -32,6 +32,8 @@ It exports the following functions:
         Extract data from ZIP file.
     * remove_file
         Remove a file if it exists.
+    * adjust_data
+        Adjust source data for Mimeo usage.
     * dump_to_database
         Save data frame to a file.
     * overwrite_num_of_records
