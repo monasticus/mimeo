@@ -49,5 +49,5 @@ jobs:
         uses: actions-js/push@master
         with:
           message: Update code coverage badge on README
-          branch: "feature/mimeo-99"
+#          branch: "feature/mimeo-99"
           github_token: ${{ secrets.GITHUB_TOKEN }}
