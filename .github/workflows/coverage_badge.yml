@@ -1,0 +1,57 @@
+name: Update a code coverage badge
+
+on: [pull_request]
+#  push:
+#    branches:
+#      - main
+jobs:
+  update-badge:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.8"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install pip-tools
+          pip-compile --extra test pyproject.toml
+          pip install -r requirements.txt
+
+      - name: Build mimeo
+        run: pip install -e .
+
+      - name: Create test report
+        run: |
+          pytest --cov=src tests | tee output.txt
+
+      - name: Pytest coverage comment
+        id: coverageComment
+        uses: MishaKav/pytest-coverage-comment@main
+        with:
+          hide-comment: true
+          pytest-coverage-path: output.txt
+
+      - name: Update README with Code Coverage Badge
+        run: |
+          sed -i -e "s/Code%20Coverage-[0-9]*%25-[a-z]*/Code%20Coverage-${{ steps.coverageComment.outputs.coverage }}%25-${{ steps.coverageComment.outputs.color }}/g" ./README.md
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add README.md
+          git commit -m "update code coverage badge"
+
+#      - name: Set git config before push
+#        run: |
+#          git config --local --unset-all "http.https://github.com/.extraheader"
+#          git config --local remote.origin.url git@github.com:TomaszAniolowski/mimeo.git
+
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: "feature/mimeo-99"
