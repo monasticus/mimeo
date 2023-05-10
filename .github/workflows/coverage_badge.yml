@@ -39,6 +39,8 @@ jobs:
         run: |
           sed -i -e "s/Code%20Coverage-[0-9]*%25-[a-z]*/Code%20Coverage-${{ steps.coverageComment.outputs.coverage }}%25-${{ steps.coverageComment.outputs.color }}/g" ./README.md
           rm output.txt
+          git checkout feature/mimeo-99
+          git pull
 
 #      - name: Set git config before push
 #        run: |
