@@ -19,6 +19,6 @@ jobs:
           pip-compile --extra test pyproject.toml
           pip install -r requirements.txt
       - name: Build mimeo
-        run: pip install .
+        run: pip install -e .
       - name: Test code with pytest
         run: pytest tests/
