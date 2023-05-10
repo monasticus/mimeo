@@ -35,6 +35,7 @@ publish:
 	@twine upload dist/mimeograph-$(v)*
 
 upgrade:
+	@git pull
 	@make --no-print-directory bump v=$(v)
 	@make --no-print-directory build
 	@make --no-print-directory publish v=`make --no-print-directory latest_tag`
