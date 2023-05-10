@@ -43,7 +43,9 @@ jobs:
           rm output.txt
 
       - name: Set git config before push
-        run: git config --local --unset-all "http.https://github.com/.extraheader"
+        run: |
+          git config --local --unset-all "http.https://github.com/.extraheader"
+          git config --local remote.origin.url git@github.com:TomaszAniolowski/mimeo.git
 
       - name: Commit & Push changes to README
         uses: actions-js/push@master
