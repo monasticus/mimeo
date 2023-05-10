@@ -603,6 +603,57 @@ def test_generate_single_template_only_atomic_child_elements_in_array():
         assert count == 5
 
 
+def test_generate_single_template_only_atomic_child_elements_with_mimeo_util_in_array():
+    config = MimeoConfig({
+        "output": {
+            "format": "xml",
+        },
+        "_templates_": [
+            {
+                "count": 5,
+                "model": {
+                    "SomeEntity": {
+                        "ChildNode": [
+                            "value-1",
+                            {
+                                "_mimeo_util": {
+                                    "_name": "auto_increment",
+                                    "pattern": "{}",
+                                },
+                            },
+                        ],
+                    },
+                },
+            },
+        ],
+    })
+
+    with MimeoContextManager(config):
+        generator = XMLGenerator(config)
+        count = 0
+        for data in generator.generate(config.templates):
+            assert data.tag == "SomeEntity"
+            assert data.attrib == {}
+            assert len(list(data)) == 2  # number of children
+
+            child_nodes = data.findall("ChildNode")
+
+            child_node1 = child_nodes[0]
+            assert child_node1.tag == "ChildNode"
+            assert child_node1.attrib == {}
+            assert child_node1.text == "value-1"
+            assert len(list(child_node1)) == 0  # number of children
+            child_node2 = child_nodes[1]
+            assert child_node2.tag == "ChildNode"
+            assert child_node2.attrib == {}
+            assert child_node2.text == str(count + 1)
+            assert len(list(child_node2)) == 0  # number of children
+
+            count += 1
+
+        assert count == 5
+
+
 @assert_throws(err_type=UnsupportedStructureError,
                msg="An array can include only atomic types (including Mimeo Utils) or "
                    "only JSON objects! Unsupported structure found in {e}: {s}",

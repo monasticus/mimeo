@@ -434,7 +434,8 @@ class XMLGenerator(Generator):
             If the special field does not exist.
         """
         has_only_atomic_values = all(
-            not isinstance(child, (list, dict))
+            not isinstance(child, (list, dict)) or
+            MimeoRenderer.is_parametrized_mimeo_util(child)
             for child in element_meta["value"])
         if has_only_atomic_values:
             return cls._process_list_value_with_atomic_children(parent, element_meta)
