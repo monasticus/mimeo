@@ -17,6 +17,7 @@ from mimeo.context.decorators import (mimeo_clear_iterations, mimeo_context,
                                       mimeo_context_switch,
                                       mimeo_next_iteration)
 from mimeo.generators import Generator
+from mimeo.generators.exc import UnsupportedStructureError
 from mimeo.utils import MimeoRenderer
 
 logger = logging.getLogger(__name__)
@@ -222,10 +223,12 @@ class XMLGenerator(Generator):
 
         Raises
         ------
+        UnsupportedStructureError
+            If a list value elements are not atomic-only or dict-only.
         InvalidSpecialFieldValueError
-            If the special field value is dict or list
+            If a special field value is dict or list
         SpecialFieldNotFoundError
-            If the special field does not exist.
+            If a special field does not exist.
         """
         logger.fine("Rendering element - parent [%s], element_meta [%s]",
                     parent if parent is None else parent.tag, element_meta)
@@ -333,10 +336,12 @@ class XMLGenerator(Generator):
 
         Raises
         ------
+        UnsupportedStructureError
+            If a list value elements are not atomic-only or dict-only.
         InvalidSpecialFieldValueError
-            If the special field value is dict or list
+            If a special field value is dict or list
         SpecialFieldNotFoundError
-            If the special field does not exist.
+            If a special field does not exist.
         """
         if isinstance(element_meta["value"], dict):
             func = cls._process_dict_value
@@ -371,10 +376,12 @@ class XMLGenerator(Generator):
 
         Raises
         ------
+        UnsupportedStructureError
+            If a list value elements are not atomic-only or dict-only.
         InvalidSpecialFieldValueError
-            If the special field value is dict or list
+            If a special field value is dict or list
         SpecialFieldNotFoundError
-            If the special field does not exist.
+            If a special field does not exist.
 
         Examples
         --------
@@ -419,16 +426,26 @@ class XMLGenerator(Generator):
 
         Raises
         ------
+        UnsupportedStructureError
+            If the list value elements are not atomic-only or dict-only.
         InvalidSpecialFieldValueError
             If the special field value is dict or list
         SpecialFieldNotFoundError
             If the special field does not exist.
         """
-        has_only_atomic_values = all(not isinstance(child, (list, dict))
-                                     for child in element_meta["value"])
+        has_only_atomic_values = all(
+            not isinstance(child, (list, dict))
+            for child in element_meta["value"])
         if has_only_atomic_values:
             return cls._process_list_value_with_atomic_children(parent, element_meta)
-        return cls._process_list_value_with_complex_children(parent, element_meta)
+
+        has_only_dict_values = all(
+            isinstance(child, dict)
+            for child in element_meta["value"])
+        if has_only_dict_values:
+            return cls._process_list_value_with_complex_children(parent, element_meta)
+
+        raise UnsupportedStructureError(element_meta["tag"], element_meta["value"])
 
     @classmethod
     def _process_list_value_with_atomic_children(
@@ -455,10 +472,12 @@ class XMLGenerator(Generator):
 
         Raises
         ------
+        UnsupportedStructureError
+            If a list value elements are not atomic-only or dict-only.
         InvalidSpecialFieldValueError
-            If the special field value is dict or list
+            If a special field value is dict or list
         SpecialFieldNotFoundError
-            If the special field does not exist.
+            If a special field does not exist.
 
         Examples
         --------
@@ -503,10 +522,12 @@ class XMLGenerator(Generator):
 
         Raises
         ------
+        UnsupportedStructureError
+            If a list value elements are not atomic-only or dict-only.
         InvalidSpecialFieldValueError
-            If the special field value is dict or list
+            If a special field value is dict or list
         SpecialFieldNotFoundError
-            If the special field does not exist.
+            If a special field does not exist.
 
         Examples
         --------
@@ -561,10 +582,12 @@ class XMLGenerator(Generator):
 
         Raises
         ------
+        UnsupportedStructureError
+            If a list value elements are not atomic-only or dict-only.
         InvalidSpecialFieldValueError
-            If the special field value is dict or list
+            If a special field value is dict or list
         SpecialFieldNotFoundError
-            If the special field does not exist.
+            If a special field does not exist.
 
         Examples
         --------
@@ -627,10 +650,12 @@ class XMLGenerator(Generator):
 
         Raises
         ------
+        UnsupportedStructureError
+            If a list value elements are not atomic-only or dict-only.
         InvalidSpecialFieldValueError
-            If the special field value is dict or list
+            If a special field value is dict or list
         SpecialFieldNotFoundError
-            If the special field does not exist.
+            If a special field does not exist.
 
         Examples
         --------

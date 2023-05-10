@@ -7,6 +7,8 @@ It contains modules supporting the Mimeo Config output formats:
     The Mimeo Generator Factory module.
 * xml_generator
     The Mimeo XML Generator module.
+* exc
+    The Mimeo Generators Exceptions module.
 
 This package exports the following classes:
 * Generator:
@@ -19,6 +21,7 @@ This package exports the following classes:
 
 To use this package, simply import the desired class:
     from mimeo.generators import GeneratorFactory
+    from mimeo.generators.exc import UnsupportedStructureError
 """
 from .generator import Generator
 from .xml_generator import XMLGenerator

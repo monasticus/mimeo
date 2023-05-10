@@ -1,6 +1,7 @@
 from mimeo.config import MimeoConfig
 from mimeo.context import MimeoContextManager
 from mimeo.generators import XMLGenerator
+from mimeo.generators.exc import UnsupportedStructureError
 from mimeo.utils.exc import InvalidValueError
 from tests.utils import assert_throws
 
@@ -600,6 +601,69 @@ def test_generate_single_template_only_atomic_child_elements_in_array():
             count += 1
 
         assert count == 5
+
+
+@assert_throws(err_type=UnsupportedStructureError,
+               msg="An array can include only atomic types (including Mimeo Utils) or "
+                   "only JSON objects! Unsupported structure found in {e}: {s}",
+               params={"e": "ChildNode", "s": "[['atomic']]"})
+def test_generate_single_template_list_child_element_in_array():
+    config = MimeoConfig({
+        "output": {
+            "format": "xml",
+        },
+        "_templates_": [
+            {
+                "count": 5,
+                "model": {
+                    "SomeEntity": {
+                        "ChildNode": [
+                            [
+                                "atomic",
+                            ],
+                        ],
+                    },
+                },
+            },
+        ],
+    })
+
+    with MimeoContextManager(config):
+        generator = XMLGenerator(config)
+        for _ in generator.generate(config.templates):
+            pass
+
+
+@assert_throws(err_type=UnsupportedStructureError,
+               msg="An array can include only atomic types (including Mimeo Utils) or "
+                   "only JSON objects! Unsupported structure found in {e}: {s}",
+               params={"e": "ChildNodes", "s": "['atomic', {'ChildNode': 'value-1'}]"})
+def test_generate_single_template_mixed_child_elements_in_array():
+    config = MimeoConfig({
+        "output": {
+            "format": "xml",
+        },
+        "_templates_": [
+            {
+                "count": 5,
+                "model": {
+                    "SomeEntity": {
+                        "ChildNodes": [
+                            "atomic",
+                            {
+                                "ChildNode": "value-1",
+                            },
+                        ],
+                    },
+                },
+            },
+        ],
+    })
+
+    with MimeoContextManager(config):
+        generator = XMLGenerator(config)
+        for _ in generator.generate(config.templates):
+            pass
 
 
 def test_generate_multiple_templates():
