@@ -3,7 +3,8 @@ import sys
 from typing import Callable, List, Type
 
 import pytest
-from requests import PreparedRequest
+from aioresponses import aioresponses
+from yarl import URL
 
 
 def assert_throws(
@@ -35,13 +36,23 @@ def get_class_impl_error_msg(
     return f"Can't instantiate abstract class {cls} with abstract {method} {methods}"
 
 
-def get_request_body_matcher(
-        body_list: list,
-) -> Callable:
+def assert_requests_count(
+        mock: aioresponses,
+        expected_count: int):
+    actual_count = 0
+    for key in mock.requests:
+        actual_count += len(mock.requests[key])
+    assert actual_count == expected_count
 
-    def match_body(r: PreparedRequest) -> tuple[bool, str]:
-        valid = r.body in body_list
-        reason = f"The request body [{r.body}] doesn't match any of expected."
-        return valid, reason
 
-    return match_body
+def assert_request_sent(
+        mock: aioresponses,
+        method: str,
+        url: str, body: str = "",
+        count: int = 1,
+):
+    requests = mock.requests.get((method, URL(url)))
+    assert requests is not None
+
+    found = list(filter(lambda r: r.kwargs.get("data", "") == body, requests))
+    assert len(found) == count

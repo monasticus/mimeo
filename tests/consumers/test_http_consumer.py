@@ -1,6 +1,7 @@
-from http import HTTPStatus
+import asyncio
 
 import responses
+from aioresponses import aioresponses
 
 from mimeo.config import MimeoConfig
 from mimeo.consumers import ConsumerFactory
@@ -37,24 +38,22 @@ def test_consume_post():
     assert consumer.method == "POST"
     assert consumer.url == "http://localhost:8080/documents"
 
-    responses.post(
-        consumer.url,
-        json={"success": True},
-        status=HTTPStatus.OK,
-        match=[utils.get_request_body_matcher(["<SomeEntity><Id>1</Id></SomeEntity>",
-                                               "<SomeEntity><Id>2</Id></SomeEntity>"])])
+    with aioresponses() as mock:
+        mock.post(consumer.url, repeat=True)
+        with MimeoContextManager(mimeo_config):
+            generator = GeneratorFactory.get_generator(mimeo_config)
+            data = [generator.stringify(root)
+                    for root in generator.generate(mimeo_config.templates)]
+            asyncio.run(consumer.consume(data))
+            utils.assert_requests_count(mock, 2)
+            utils.assert_request_sent(
+                mock, consumer.method, consumer.url,
+                "<SomeEntity><Id>1</Id></SomeEntity>")
+            utils.assert_request_sent(
+                mock, consumer.method, consumer.url,
+                "<SomeEntity><Id>2</Id></SomeEntity>")
 
-    with MimeoContextManager(mimeo_config):
-        generator = GeneratorFactory.get_generator(mimeo_config)
-        data = [generator.stringify(root)
-                for root in generator.generate(mimeo_config.templates)]
 
-        consumer.consume(data)
-    # would throw a ConnectionError when any request call doesn't match registered mocks
-
-
-
-@responses.activate
 def test_consume_put():
     config = {
         "format": "xml",
@@ -84,20 +83,20 @@ def test_consume_put():
     assert consumer.method == "PUT"
     assert consumer.url == "http://localhost:8080/documents"
 
-    responses.put(
-        consumer.url,
-        json={"success": True},
-        status=HTTPStatus.OK,
-        match=[utils.get_request_body_matcher(["<SomeEntity><Id>1</Id></SomeEntity>",
-                                               "<SomeEntity><Id>2</Id></SomeEntity>"])])
-
-    with MimeoContextManager(mimeo_config):
-        generator = GeneratorFactory.get_generator(mimeo_config)
-        data = [generator.stringify(root)
-                for root in generator.generate(mimeo_config.templates)]
-
-        consumer.consume(data)
-    # would throw a ConnectionError when any request call doesn't match registered mocks
+    with aioresponses() as mock:
+        mock.put(consumer.url, repeat=True)
+        with MimeoContextManager(mimeo_config):
+            generator = GeneratorFactory.get_generator(mimeo_config)
+            data = [generator.stringify(root)
+                    for root in generator.generate(mimeo_config.templates)]
+            asyncio.run(consumer.consume(data))
+            utils.assert_requests_count(mock, 2)
+            utils.assert_request_sent(
+                mock, consumer.method, consumer.url,
+                "<SomeEntity><Id>1</Id></SomeEntity>")
+            utils.assert_request_sent(
+                mock, consumer.method, consumer.url,
+                "<SomeEntity><Id>2</Id></SomeEntity>")
 
 
 @responses.activate
@@ -127,17 +126,17 @@ def test_consume_without_port():
     assert consumer.method == "POST"
     assert consumer.url == "http://localhost/documents"
 
-    responses.post(
-        consumer.url,
-        json={"success": True},
-        status=HTTPStatus.OK,
-        match=[utils.get_request_body_matcher(["<SomeEntity><Id>1</Id></SomeEntity>",
-                                               "<SomeEntity><Id>2</Id></SomeEntity>"])])
-
-    with MimeoContextManager(mimeo_config):
-        generator = GeneratorFactory.get_generator(mimeo_config)
-        data = [generator.stringify(root)
-                for root in generator.generate(mimeo_config.templates)]
-
-        consumer.consume(data)
-    # would throw a ConnectionError when any request call doesn't match registered mocks
+    with aioresponses() as mock:
+        mock.post(consumer.url, repeat=True)
+        with MimeoContextManager(mimeo_config):
+            generator = GeneratorFactory.get_generator(mimeo_config)
+            data = [generator.stringify(root)
+                    for root in generator.generate(mimeo_config.templates)]
+            asyncio.run(consumer.consume(data))
+            utils.assert_requests_count(mock, 2)
+            utils.assert_request_sent(
+                mock, consumer.method, consumer.url,
+                "<SomeEntity><Id>1</Id></SomeEntity>")
+            utils.assert_request_sent(
+                mock, consumer.method, consumer.url,
+                "<SomeEntity><Id>2</Id></SomeEntity>")
