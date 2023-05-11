@@ -1,3 +1,4 @@
+import asyncio
 import shutil
 from pathlib import Path
 
@@ -45,7 +46,7 @@ def test_consume():
 
         assert not Path("test_file_consumer-dir").exists()
 
-        consumer.consume(data)
+        asyncio.run(consumer.consume(data))
         assert Path("test_file_consumer-dir").exists()
         assert Path("test_file_consumer-dir/test-output-1.xml").exists()
         assert Path("test_file_consumer-dir/test-output-2.xml").exists()

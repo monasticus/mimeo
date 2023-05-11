@@ -8,7 +8,9 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
-from typing import Generator, Collection
+from typing import Collection, Generator
+
+import aiofiles
 
 from mimeo.config.mimeo_config import MimeoOutput
 from mimeo.consumers import Consumer
@@ -49,9 +51,8 @@ class FileConsumer(Consumer):
         """
         self.directory = output.directory_path
         self.output_path_tmplt = f"{self.directory}/{output.file_name}"
-        self._count = 0
 
-    def consume(
+    async def consume(
             self,
             data: Collection | Generator,
     ) -> None:
@@ -77,4 +78,5 @@ class FileConsumer(Consumer):
             file_name = self.output_path_tmplt.format(count)
 
             logger.info("Writing data into file [%s]", file_name)
-            Path(file_name).write_text(data_unit)
+            async with aiofiles.open(file_name, mode="w") as file:
+                await file.write(data_unit)
