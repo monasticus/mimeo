@@ -3,6 +3,7 @@ import sys
 from typing import Callable, List, Type
 
 import pytest
+from requests import PreparedRequest
 
 
 def assert_throws(
@@ -24,8 +25,23 @@ def assert_throws(
     return test
 
 
-def get_class_impl_error_msg(cls: str, methods_list: List[str]) -> str:
+def get_class_impl_error_msg(
+        cls: str,
+        methods_list: List[str],
+) -> str:
     methods = ", ".join(methods_list)
     plural = sys.version_info < (3, 9) or len(methods_list) > 1
     method = "methods" if plural else "method"
     return f"Can't instantiate abstract class {cls} with abstract {method} {methods}"
+
+
+def get_request_body_matcher(
+        body_list: list,
+) -> Callable:
+
+    def match_body(r: PreparedRequest) -> tuple[bool, str]:
+        valid = r.body in body_list
+        reason = f"The request body [{r.body}] doesn't match any of expected."
+        return valid, reason
+
+    return match_body
