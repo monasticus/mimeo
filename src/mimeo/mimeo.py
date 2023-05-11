@@ -43,7 +43,8 @@ class Mimeograph:
         """Process the Mimeo Configuration (generate data and consume)."""
         logger.info("Starting data generation")
         with MimeoContextManager(self._mimeo_config):
-            for data in self._generator.generate(self._mimeo_config.templates):
-                data_str = self._generator.stringify(data)
-                self._consumer.consume(data_str)
+            self._consumer.consume(
+                self._generator.stringify(data)
+                for data in self._generator.generate(self._mimeo_config.templates)
+            )
         logger.info("Data has been processed")
