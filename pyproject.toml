@@ -30,6 +30,7 @@ classifiers = [
 keywords = ["mimeograph", "mimeo", "generate", "generator", "data", "xml"]
 dependencies = [
     "requests",
+    "aiohttp",
     "pandas",
     "pyyaml",
     "haggis"
@@ -39,7 +40,7 @@ dependencies = [
 GitHub = "https://github.com/TomaszAniolowski/mimeo"
 
 [project.optional-dependencies]
-dev = ["bumpver", "build", "twine", "ruff", "isort", "pytest", "pytest-cov", "responses"]
+dev = ["bumpver", "build", "twine", "ruff", "isort", "pytest", "pytest-cov", "responses", "aioresponses"]
 test = ["pytest", "pytest-cov", "responses"]
 
 [project.scripts]
