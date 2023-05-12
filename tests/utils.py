@@ -3,27 +3,18 @@ import sys
 from typing import Callable, List, Type
 
 import pytest
+from aiohttp import BasicAuth
 from aioresponses import aioresponses
+from aioresponses.core import RequestCall
 from yarl import URL
 
 
-def assert_throws(
-        err_type: Type[Exception],
-        msg: str,
-        params: dict = None,
-) -> Callable:
-
-    def test(func: Callable) -> Callable:
-
-        @functools.wraps(func)
-        def test_wrapper(*args, **kwargs):
-            with pytest.raises(err_type) as err:
-                func(*args, **kwargs)
-            expected_msg = msg if params is None else msg.format(**params)
-            assert err.value.args[0] == expected_msg
-        return test_wrapper
-
-    return test
+__all__ = [
+    "get_class_impl_error_msg",
+    "assert_throws",
+    "assert_requests_count",
+    "assert_request_sent",
+]
 
 
 def get_class_impl_error_msg(
@@ -34,6 +25,24 @@ def get_class_impl_error_msg(
     plural = sys.version_info < (3, 9) or len(methods_list) > 1
     method = "methods" if plural else "method"
     return f"Can't instantiate abstract class {cls} with abstract {method} {methods}"
+
+
+def assert_throws(
+        err_type: Type[Exception],
+        msg: str,
+        params: dict = None,
+) -> Callable:
+    def test(func: Callable) -> Callable:
+        @functools.wraps(func)
+        def test_wrapper(*args, **kwargs):
+            with pytest.raises(err_type) as err:
+                func(*args, **kwargs)
+            expected_msg = msg if params is None else msg.format(**params)
+            assert err.value.args[0] == expected_msg
+
+        return test_wrapper
+
+    return test
 
 
 def assert_requests_count(
@@ -48,11 +57,24 @@ def assert_requests_count(
 def assert_request_sent(
         mock: aioresponses,
         method: str,
-        url: str, body: str = "",
-        count: int = 1,
+        url: str,
+        body: str = None,
+        auth: tuple[str, str] = None,
 ):
     requests = mock.requests.get((method, URL(url)))
     assert requests is not None
 
-    found = list(filter(lambda r: r.kwargs.get("data", "") == body, requests))
-    assert len(found) == count
+    found = next(filter(lambda r: _matches_request(r, body, auth), requests))
+    assert found is not None
+
+
+def _matches_request(
+        request: RequestCall,
+        body: str = None,
+        auth: tuple[str, str] = None,
+) -> bool:
+    actual_body = request.kwargs.get("data")
+    actual_auth = request.kwargs.get("auth")
+    matches_body = body is None or actual_body == body
+    matches_auth = auth is None or actual_auth == BasicAuth(auth[0], auth[1], "utf-8")
+    return matches_body and matches_auth

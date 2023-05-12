@@ -48,10 +48,12 @@ def test_consume_post():
             utils.assert_requests_count(mock, 2)
             utils.assert_request_sent(
                 mock, consumer.method, consumer.url,
-                "<SomeEntity><Id>1</Id></SomeEntity>")
+                body="<SomeEntity><Id>1</Id></SomeEntity>",
+                auth=("admin", "admin"))
             utils.assert_request_sent(
                 mock, consumer.method, consumer.url,
-                "<SomeEntity><Id>2</Id></SomeEntity>")
+                body="<SomeEntity><Id>2</Id></SomeEntity>",
+                auth=("admin", "admin"))
 
 
 def test_consume_put():
@@ -93,10 +95,12 @@ def test_consume_put():
             utils.assert_requests_count(mock, 2)
             utils.assert_request_sent(
                 mock, consumer.method, consumer.url,
-                "<SomeEntity><Id>1</Id></SomeEntity>")
+                body="<SomeEntity><Id>1</Id></SomeEntity>",
+                auth=("admin", "admin"))
             utils.assert_request_sent(
                 mock, consumer.method, consumer.url,
-                "<SomeEntity><Id>2</Id></SomeEntity>")
+                body="<SomeEntity><Id>2</Id></SomeEntity>",
+                auth=("admin", "admin"))
 
 
 @responses.activate
@@ -136,7 +140,9 @@ def test_consume_without_port():
             utils.assert_requests_count(mock, 2)
             utils.assert_request_sent(
                 mock, consumer.method, consumer.url,
-                "<SomeEntity><Id>1</Id></SomeEntity>")
+                body="<SomeEntity><Id>1</Id></SomeEntity>",
+                auth=("admin", "admin"))
             utils.assert_request_sent(
                 mock, consumer.method, consumer.url,
-                "<SomeEntity><Id>2</Id></SomeEntity>")
+                body="<SomeEntity><Id>2</Id></SomeEntity>",
+                auth=("admin", "admin"))
