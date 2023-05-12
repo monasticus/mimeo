@@ -1,4 +1,3 @@
-import asyncio
 import shutil
 from pathlib import Path
 
@@ -17,7 +16,7 @@ def _teardown():
     shutil.rmtree("test_file_consumer-dir")
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_consume():
     config = {
         "output": {

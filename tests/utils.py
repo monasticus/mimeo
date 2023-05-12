@@ -1,6 +1,6 @@
 import functools
 import sys
-from typing import Callable, List, Type
+from typing import Callable, List, Type, Tuple
 
 import pytest
 from aiohttp import BasicAuth
@@ -59,7 +59,7 @@ def assert_request_sent(
         method: str,
         url: str,
         body: str = None,
-        auth: tuple[str, str] = None,
+        auth: Tuple[str, str] = None,
 ):
     requests = mock.requests.get((method, URL(url)))
     assert requests is not None
