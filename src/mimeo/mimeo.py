@@ -37,14 +37,14 @@ class Mimeograph:
         self._generator = GeneratorFactory.get_generator(self._mimeo_config)
         self._consumer = ConsumerFactory.get_consumer(self._mimeo_config)
 
-    def process(
+    async def process(
             self,
     ):
         """Process the Mimeo Configuration (generate data and consume)."""
         logger.info("Starting data generation")
         with MimeoContextManager(self._mimeo_config):
-            self._consumer.consume(
-                self._generator.stringify(data)
-                for data in self._generator.generate(self._mimeo_config.templates)
-            )
+            data = self._generator.generate(self._mimeo_config.templates)
+            data_str = [self._generator.stringify(data_unit)
+                        for data_unit in data]
+        await self._consumer.consume(data_str)
         logger.info("Data has been processed")

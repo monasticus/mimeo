@@ -23,7 +23,7 @@ class RawConsumer(Consumer):
         Print data generated in the standard output.
     """
 
-    def consume(
+    async def consume(
             self,
             data: Collection | Generator,
     ) -> None:

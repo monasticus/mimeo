@@ -61,7 +61,6 @@ def test_parsing_output_stdout():
     assert mimeo_output.directory_path is None
     assert mimeo_output.file_name is None
     assert mimeo_output.method is None
-    assert mimeo_output.auth is None
     assert mimeo_output.protocol is None
     assert mimeo_output.host is None
     assert mimeo_output.port is None

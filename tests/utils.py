@@ -8,7 +8,6 @@ from aioresponses import aioresponses
 from aioresponses.core import RequestCall
 from yarl import URL
 
-
 __all__ = [
     "get_class_impl_error_msg",
     "assert_throws",
