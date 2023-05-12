@@ -7,7 +7,6 @@ from os import listdir
 from pathlib import Path
 
 import pytest
-import responses
 
 import mimeo.__main__ as mimeo_cli
 from mimeo.cli.exc import (EnvironmentNotFoundError,
@@ -174,7 +173,6 @@ def test_basic_use():
 def test_directory_path(aioresponses):
     sys.argv = ["mimeo", "test_mimeo_cli-dir"]
 
-    responses.add(responses.POST, "http://localhost:8080/document")
     assert not Path("test_mimeo_cli-dir/output").exists()
     assert not Path("mimeo-output").exists()
 

@@ -1,6 +1,5 @@
 import asyncio
 
-import responses
 from aioresponses import aioresponses
 
 from mimeo.config import MimeoConfig
@@ -10,7 +9,6 @@ from mimeo.generators import GeneratorFactory
 from tests import utils
 
 
-@responses.activate
 def test_consume_post():
     config = {
         "format": "xml",
@@ -117,7 +115,6 @@ def test_consume_put():
             )
 
 
-@responses.activate
 def test_consume_without_port():
     config = {
         "format": "xml",
