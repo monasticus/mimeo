@@ -70,7 +70,8 @@ def assert_request_sent(
 
 def assert_requests_count(
         mock: aioresponses,
-        expected_count: int):
+        expected_count: int
+):
     actual_count = 0
     for key in mock.requests:
         actual_count += len(mock.requests[key])
@@ -80,7 +81,7 @@ def assert_requests_count(
 def _matches_request(
         request: RequestCall,
         body: str = None,
-        auth: tuple[str, str] = None,
+        auth: Tuple[str, str] = None,
 ) -> bool:
     actual_body = request.kwargs.get("data")
     actual_auth = request.kwargs.get("auth")
