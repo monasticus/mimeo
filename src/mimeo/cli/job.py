@@ -6,6 +6,7 @@ It exports a single class:
 """
 from __future__ import annotations
 
+import asyncio
 import json
 import logging
 from argparse import Namespace
@@ -53,7 +54,9 @@ class MimeoJob:
         logger.info("Starting a Mimeo job")
         for config_path in self._get_config_paths(self._args.paths):
             mimeo_config = self._get_mimeo_config(config_path, self._args)
-            Mimeograph(mimeo_config).process()
+            asyncio.run(
+                Mimeograph(mimeo_config).process(),
+            )
 
     @staticmethod
     def _customize_log_level(

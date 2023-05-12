@@ -1,4 +1,3 @@
-
 import shutil
 from pathlib import Path
 
@@ -16,7 +15,8 @@ def _teardown():
     shutil.rmtree("test_mimeograph-dir")
 
 
-def test_produce():
+@pytest.mark.asyncio()
+async def test_produce():
     config = {
         "output": {
             "direction": "file",
@@ -44,7 +44,7 @@ def test_produce():
         mimeo = Mimeograph(mimeo_config)
 
         assert not Path("test_mimeograph-dir").exists()
-        mimeo.process()
+        await mimeo.process()
         assert Path("test_mimeograph-dir").exists()
         for i in range(1, 11):
             file_path = f"test_mimeograph-dir/output-{i}.xml"

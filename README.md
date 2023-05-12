@@ -146,7 +146,6 @@ When using Mimeo command line tool you can overwrite Mimeo Configuration propert
 |     `-P`     | `--http-password`   | overwrite the `output/password` property                             |
 |              | `--http-method`     | overwrite the `output/method` property                               |
 |              | `--http-protocol`   | overwrite the `output/protocol` property                             |
-|              | `--http-auth`       | overwrite the `output/auth` property                                 |
 |     `-e`     | `--http-env`        | overwrite the output http properties using a mimeo env configuration |
 |              | `--http-envs-file`  | use a custom environments file (by default: mimeo.envs.json)                 |
 
@@ -176,7 +175,6 @@ Mimeo configuration is defined in a JSON file using internal settings and data t
 | `output/host`            |  Config  | :heavy_check_mark: |          string          |      ---       | For `http` direction - defines a url host                                                                                                               |
 | `output/port`            |  Config  |        :x:         |         integer          |     `null`     | For `http` direction - defines a url port (can be empty)                                                                                                |
 | `output/endpoint`        |  Config  | :heavy_check_mark: |          string          |      ---       | For `http` direction - defines a url endpoint                                                                                                           |
-| `output/auth`            |  Config  |        :x:         |    `basic`, `digest`     |    `basic`     | For `http` direction - defines a auth method                                                                                                            |
 | `output/username`        |  Config  | :heavy_check_mark: |          string          |      ---       | For `http` direction - defines a username                                                                                                               |
 | `output/password`        |  Config  | :heavy_check_mark: |          string          |      ---       | For `http` direction - defines a password                                                                                                               |
 | `vars`                           |  Config  |        :x:         |          object          |      ---       | Defines variables to be used in a Mimeo Template (read more in next section)                                                                            |

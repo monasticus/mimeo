@@ -1,14 +1,14 @@
-from http import HTTPStatus
+import asyncio
 
-import responses
+from aioresponses import aioresponses
 
 from mimeo.config import MimeoConfig
 from mimeo.consumers import ConsumerFactory
 from mimeo.context import MimeoContextManager
 from mimeo.generators import GeneratorFactory
+from tests import utils
 
 
-@responses.activate
 def test_consume_post():
     config = {
         "format": "xml",
@@ -24,7 +24,9 @@ def test_consume_post():
             {
                 "count": 2,
                 "model": {
-                    "SomeEntity": {},
+                    "SomeEntity": {
+                        "Id": "{curr_iter}",
+                    },
                 },
             },
         ],
@@ -34,25 +36,31 @@ def test_consume_post():
     assert consumer.method == "POST"
     assert consumer.url == "http://localhost:8080/documents"
 
-    responses.add(responses.POST,
-                  consumer.url,
-                  json={"success": True},
-                  status=HTTPStatus.OK)
+    with aioresponses() as mock:
+        mock.post(consumer.url, repeat=True)
+        with MimeoContextManager(mimeo_config):
+            generator = GeneratorFactory.get_generator(mimeo_config)
+            data = [generator.stringify(root)
+                    for root in generator.generate(mimeo_config.templates)]
+            asyncio.run(consumer.consume(data))
+            utils.assert_requests_sent(
+                mock, [
+                    {
+                        "method": consumer.method,
+                        "url": consumer.url,
+                        "body": "<SomeEntity><Id>1</Id></SomeEntity>",
+                        "auth": ("admin", "admin"),
+                    },
+                    {
+                        "method": consumer.method,
+                        "url": consumer.url,
+                        "body": "<SomeEntity><Id>2</Id></SomeEntity>",
+                        "auth": ("admin", "admin"),
+                    },
+                ],
+            )
 
-    with MimeoContextManager(mimeo_config):
-        generator = GeneratorFactory.get_generator(mimeo_config)
-        data = (generator.stringify(root)
-                for root in generator.generate(mimeo_config.templates))
 
-        for root in data:
-            resp = consumer.consume(root)
-            assert resp.request.method == "POST"
-            assert resp.request.body == root
-            assert resp.status_code == HTTPStatus.OK
-            assert resp.json() == {"success": True}
-
-
-@responses.activate
 def test_consume_put():
     config = {
         "format": "xml",
@@ -70,7 +78,9 @@ def test_consume_put():
             {
                 "count": 2,
                 "model": {
-                    "SomeEntity": {},
+                    "SomeEntity": {
+                        "Id": "{curr_iter}",
+                    },
                 },
             },
         ],
@@ -80,25 +90,31 @@ def test_consume_put():
     assert consumer.method == "PUT"
     assert consumer.url == "http://localhost:8080/documents"
 
-    responses.add(responses.PUT,
-                  consumer.url,
-                  json={"success": True},
-                  status=HTTPStatus.OK)
+    with aioresponses() as mock:
+        mock.put(consumer.url, repeat=True)
+        with MimeoContextManager(mimeo_config):
+            generator = GeneratorFactory.get_generator(mimeo_config)
+            data = [generator.stringify(root)
+                    for root in generator.generate(mimeo_config.templates)]
+            asyncio.run(consumer.consume(data))
+            utils.assert_requests_sent(
+                mock, [
+                    {
+                        "method": consumer.method,
+                        "url": consumer.url,
+                        "body": "<SomeEntity><Id>1</Id></SomeEntity>",
+                        "auth": ("admin", "admin"),
+                    },
+                    {
+                        "method": consumer.method,
+                        "url": consumer.url,
+                        "body": "<SomeEntity><Id>2</Id></SomeEntity>",
+                        "auth": ("admin", "admin"),
+                    },
+                ],
+            )
 
-    with MimeoContextManager(mimeo_config):
-        generator = GeneratorFactory.get_generator(mimeo_config)
-        data = (generator.stringify(root)
-                for root in generator.generate(mimeo_config.templates))
 
-        for root in data:
-            resp = consumer.consume(root)
-            assert resp.request.method == "PUT"
-            assert resp.request.body == root
-            assert resp.status_code == HTTPStatus.OK
-            assert resp.json() == {"success": True}
-
-
-@responses.activate
 def test_consume_without_port():
     config = {
         "format": "xml",
@@ -113,7 +129,9 @@ def test_consume_without_port():
             {
                 "count": 2,
                 "model": {
-                    "SomeEntity": {},
+                    "SomeEntity": {
+                        "Id": "{curr_iter}",
+                    },
                 },
             },
         ],
@@ -123,20 +141,26 @@ def test_consume_without_port():
     assert consumer.method == "POST"
     assert consumer.url == "http://localhost/documents"
 
-    responses.add(responses.POST,
-                  consumer.url,
-                  json={"success": True},
-                  status=HTTPStatus.OK)
-
-    with MimeoContextManager(mimeo_config):
-        generator = GeneratorFactory.get_generator(mimeo_config)
-        data = (generator.stringify(root)
-                for root in generator.generate(mimeo_config.templates))
-
-        for root in data:
-            resp = consumer.consume(root)
-            assert resp.request.method == "POST"
-            assert resp.request.body == root
-            assert resp.status_code == HTTPStatus.OK
-            assert resp.json() == {"success": True}
-
+    with aioresponses() as mock:
+        mock.post(consumer.url, repeat=True)
+        with MimeoContextManager(mimeo_config):
+            generator = GeneratorFactory.get_generator(mimeo_config)
+            data = [generator.stringify(root)
+                    for root in generator.generate(mimeo_config.templates)]
+            asyncio.run(consumer.consume(data))
+            utils.assert_requests_sent(
+                mock, [
+                    {
+                        "method": consumer.method,
+                        "url": consumer.url,
+                        "body": "<SomeEntity><Id>1</Id></SomeEntity>",
+                        "auth": ("admin", "admin"),
+                    },
+                    {
+                        "method": consumer.method,
+                        "url": consumer.url,
+                        "body": "<SomeEntity><Id>2</Id></SomeEntity>",
+                        "auth": ("admin", "admin"),
+                    },
+                ],
+            )

@@ -16,7 +16,8 @@ def _teardown():
     shutil.rmtree("test_file_consumer-dir")
 
 
-def test_consume():
+@pytest.mark.asyncio()
+async def test_consume():
     config = {
         "output": {
             "direction": "file",
@@ -45,12 +46,9 @@ def test_consume():
 
         assert not Path("test_file_consumer-dir").exists()
 
-        consumer.consume(data[0])
+        await consumer.consume(data)
         assert Path("test_file_consumer-dir").exists()
         assert Path("test_file_consumer-dir/test-output-1.xml").exists()
-        assert not Path("test_file_consumer-dir/test-output-2.xml").exists()
-
-        consumer.consume(data[1])
         assert Path("test_file_consumer-dir/test-output-2.xml").exists()
 
         for i in range(1, 3):

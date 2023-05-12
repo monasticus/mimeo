@@ -11,13 +11,23 @@
           "pn:ChildNode1": 1,
           "pn:ChildNode2": "value-2",
           "pn:ChildNode3": true
-        },
+        }
+      }
+    },
+    {
+      "count": 30,
+      "model": {
         "SomeEntityWithAtomicValue": {
           "_attrs": {
             "xmlns": "http://mimeo.arch.com/default-namespace"
           },
           "_value": "atomic-value"
-        },
+        }
+      }
+    },
+    {
+      "count": 30,
+      "model": {
         "SomeEntityWithChildrenNodesInArray": {
           "_attrs": {
             "xmlns": "http://mimeo.arch.com/default-namespace",

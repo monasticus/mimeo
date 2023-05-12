@@ -7,7 +7,6 @@
     "host": "localhost",
     "port": 8080,
     "endpoint": "/document",
-    "auth": "digest",
     "username": "admin",
     "password": "admin"
   },

@@ -71,8 +71,6 @@ class MimeoArgumentParser(ArgumentParser):
                                 overwrite the output/method property
           --http-protocol PROTOCOL
                                 overwrite the output/protocol property
-          --http-auth AUTH
-                                overwrite the output/auth property
           -e ENVIRONMENT, --http-env ENVIRONMENT
                                 overwrite the output http properties using a mimeo
                                 env configuration
@@ -183,11 +181,6 @@ class MimeoArgumentParser(ArgumentParser):
             metavar="PROTOCOL",
             help="overwrite the output/protocol property")
         mimeo_config_args.add_argument(
-            "--http-auth",
-            type=str,
-            metavar="AUTH",
-            help="overwrite the output/auth property")
-        mimeo_config_args.add_argument(
             "-e",
             "--http-env",
             type=str,
@@ -231,7 +224,6 @@ class MimeoConfigParser:
     _ENVIRONMENT_PROPS = [MimeoConfig.OUTPUT_PROTOCOL_KEY,
                           MimeoConfig.OUTPUT_HOST_KEY,
                           MimeoConfig.OUTPUT_PORT_KEY,
-                          MimeoConfig.OUTPUT_AUTH_KEY,
                           MimeoConfig.OUTPUT_USERNAME_KEY,
                           MimeoConfig.OUTPUT_PASSWORD_KEY]
 
@@ -266,10 +258,6 @@ class MimeoConfigParser:
         "http_protocol": {
             "entry_path": [MimeoConfig.OUTPUT_KEY,
                            MimeoConfig.OUTPUT_PROTOCOL_KEY],
-        },
-        "http_auth": {
-            "entry_path": [MimeoConfig.OUTPUT_KEY,
-                           MimeoConfig.OUTPUT_AUTH_KEY],
         },
         "http_host": {
             "entry_path": [MimeoConfig.OUTPUT_KEY,

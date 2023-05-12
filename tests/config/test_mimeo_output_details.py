@@ -18,7 +18,6 @@ def test_str():
         "host": "localhost",
         "port": 8080,
         "endpoint": "/document",
-        "auth": "digest",
         "username": "admin",
         "password": "admin",
     }
@@ -62,7 +61,6 @@ def test_parsing_output_stdout():
     assert mimeo_output.directory_path is None
     assert mimeo_output.file_name is None
     assert mimeo_output.method is None
-    assert mimeo_output.auth is None
     assert mimeo_output.protocol is None
     assert mimeo_output.host is None
     assert mimeo_output.port is None
@@ -83,7 +81,6 @@ def test_parsing_output_stdout_with_other_directions_customization():
         "host": "localhost",
         "port": 8080,
         "endpoint": "/document",
-        "auth": "digest",
         "username": "admin",
         "password": "admin",
     }
@@ -96,7 +93,6 @@ def test_parsing_output_stdout_with_other_directions_customization():
     assert mimeo_output.directory_path is None
     assert mimeo_output.file_name is None
     assert mimeo_output.method is None
-    assert mimeo_output.auth is None
     assert mimeo_output.protocol is None
     assert mimeo_output.host is None
     assert mimeo_output.port is None
@@ -118,7 +114,6 @@ def test_parsing_output_file_default():
     assert mimeo_output.directory_path == "mimeo-output"
     assert mimeo_output.file_name == "mimeo-output-{}.xml"
     assert mimeo_output.method is None
-    assert mimeo_output.auth is None
     assert mimeo_output.protocol is None
     assert mimeo_output.host is None
     assert mimeo_output.port is None
@@ -142,7 +137,6 @@ def test_parsing_output_file_customized():
     assert mimeo_output.directory_path == "out"
     assert mimeo_output.file_name == "out-file-{}.xml"
     assert mimeo_output.method is None
-    assert mimeo_output.auth is None
     assert mimeo_output.protocol is None
     assert mimeo_output.host is None
     assert mimeo_output.port is None
@@ -166,7 +160,6 @@ def test_parsing_output_http_default():
     assert mimeo_output.xml_declaration is False
     assert mimeo_output.indent == 0
     assert mimeo_output.method == "POST"
-    assert mimeo_output.auth == "basic"
     assert mimeo_output.protocol == "http"
     assert mimeo_output.host == "localhost"
     assert mimeo_output.port is None
@@ -185,7 +178,6 @@ def test_parsing_output_http_customized():
         "host": "localhost",
         "port": 8080,
         "endpoint": "/document",
-        "auth": "digest",
         "username": "admin",
         "password": "admin",
     }
@@ -196,7 +188,6 @@ def test_parsing_output_http_customized():
     assert mimeo_output.xml_declaration is False
     assert mimeo_output.indent == 0
     assert mimeo_output.method == "PUT"
-    assert mimeo_output.auth == "digest"
     assert mimeo_output.protocol == "https"
     assert mimeo_output.host == "localhost"
     assert mimeo_output.port == 8080
@@ -237,23 +228,6 @@ def test_parsing_output_with_unsupported_format():
 def test_parsing_output_unsupported_direction():
     output = {
         "direction": "unsupported_direction",
-    }
-    MimeoOutput(output)
-
-
-@assert_throws(err_type=UnsupportedPropertyValueError,
-               msg="Provided auth [{auth}] is not supported! "
-                   "Supported values: [{values}].",
-               params={"auth": "unsupported_auth",
-                       "values": "basic, digest"})
-def test_parsing_output_unsupported_auth_method():
-    output = {
-        "direction": "http",
-        "host": "localhost",
-        "endpoint": "/documents",
-        "auth": "unsupported_auth",
-        "username": "admin",
-        "password": "admin",
     }
     MimeoOutput(output)
 

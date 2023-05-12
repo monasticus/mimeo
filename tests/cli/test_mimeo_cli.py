@@ -2,20 +2,17 @@ import json
 import logging
 import shutil
 import sys
-from base64 import b64encode
 from glob import glob
-from http import HTTPStatus
 from os import listdir
 from pathlib import Path
 
 import pytest
-import responses
-from responses import matchers
 
 import mimeo.__main__ as mimeo_cli
 from mimeo.cli.exc import (EnvironmentNotFoundError,
                            EnvironmentsFileNotFoundError)
 from mimeo.config.exc import MissingRequiredPropertyError
+from tests import utils
 from tests.utils import assert_throws
 
 
@@ -73,7 +70,6 @@ def http_config():
             "host": "localhost",
             "port": 8080,
             "endpoint": "/document",
-            "auth": "digest",
             "username": "admin",
             "password": "admin",
         },
@@ -99,7 +95,6 @@ def http_default_envs():
             "protocol": "https",
             "host": "11.111.11.111",
             "port": 8000,
-            "auth": "basic",
             "username": "custom-username",
             "password": "custom-password",
         },
@@ -113,7 +108,6 @@ def http_custom_envs():
             "protocol": "https",
             "host": "11.111.11.111",
             "port": 8000,
-            "auth": "basic",
             "username": "custom-username",
             "password": "custom-password",
         },
@@ -176,15 +170,24 @@ def test_basic_use():
             assert file_content.readline() == "</SomeEntity>\n"
 
 
-@responses.activate
-def test_directory_path():
+def test_directory_path(aioresponses):
     sys.argv = ["mimeo", "test_mimeo_cli-dir"]
 
-    responses.add(responses.POST, "http://localhost:8080/document")
     assert not Path("test_mimeo_cli-dir/output").exists()
     assert not Path("mimeo-output").exists()
 
+    aioresponses.post("http://localhost:8080/document", status=200)
     mimeo_cli.main()
+
+    utils.assert_requests_count(aioresponses, 1)
+    utils.assert_request_sent(
+        aioresponses, "POST", "http://localhost:8080/document",
+        body="<SomeEntity>"
+             "<ChildNode1>1</ChildNode1>"
+             "<ChildNode2>value-2</ChildNode2>"
+             "<ChildNode3>true</ChildNode3>"
+             "</SomeEntity>",
+    )
 
     assert Path("test_mimeo_cli-dir/output").exists()
     for i in range(1, 11):
@@ -532,30 +535,41 @@ def test_custom_file_name_does_not_throw_error_when_output_is_none():
         raise AssertionError from KeyError
 
 
-@responses.activate
-def test_custom_short_http_host():
+def test_custom_short_http_host(aioresponses):
     sys.argv = ["mimeo", "test_mimeo_cli-dir/http-config.json",
                 "-H", "198.168.1.1"]
 
-    responses.add(responses.POST,
-                  "http://198.168.1.1:8080/document",
-                  json={"success": True},
-                  status=HTTPStatus.OK)
+
+    aioresponses.post("http://198.168.1.1:8080/document", status=200)
     mimeo_cli.main()
-    # would throw a ConnectionError when any request call doesn't match registered mocks
+
+    utils.assert_requests_count(aioresponses, 1)
+    utils.assert_request_sent(
+        aioresponses, "POST", "http://198.168.1.1:8080/document",
+        body="<SomeEntity>"
+             "<ChildNode1>1</ChildNode1>"
+             "<ChildNode2>value-2</ChildNode2>"
+             "<ChildNode3>true</ChildNode3>"
+             "</SomeEntity>",
+    )
 
 
-@responses.activate
-def test_custom_long_http_host():
+def test_custom_long_http_host(aioresponses):
     sys.argv = ["mimeo", "test_mimeo_cli-dir/http-config.json",
                 "--http-host", "198.168.1.1"]
 
-    responses.add(responses.POST,
-                  "http://198.168.1.1:8080/document",
-                  json={"success": True},
-                  status=HTTPStatus.OK)
+    aioresponses.post("http://198.168.1.1:8080/document", status=200)
     mimeo_cli.main()
-    # would throw a ConnectionError when any request call doesn't match registered mocks
+
+    utils.assert_requests_count(aioresponses, 1)
+    utils.assert_request_sent(
+        aioresponses, "POST", "http://198.168.1.1:8080/document",
+        body="<SomeEntity>"
+             "<ChildNode1>1</ChildNode1>"
+             "<ChildNode2>value-2</ChildNode2>"
+             "<ChildNode3>true</ChildNode3>"
+             "</SomeEntity>",
+    )
 
 
 def test_custom_http_host_does_not_throw_error_when_output_is_none():
@@ -571,30 +585,40 @@ def test_custom_http_host_does_not_throw_error_when_output_is_none():
         raise AssertionError from KeyError
 
 
-@responses.activate
-def test_custom_short_http_port():
+def test_custom_short_http_port(aioresponses):
     sys.argv = ["mimeo", "test_mimeo_cli-dir/http-config.json",
                 "-p", "8081"]
 
-    responses.add(responses.POST,
-                  "http://localhost:8081/document",
-                  json={"success": True},
-                  status=HTTPStatus.OK)
+    aioresponses.post("http://localhost:8081/document", status=200)
     mimeo_cli.main()
-    # would throw a ConnectionError when any request call doesn't match registered mocks
+
+    utils.assert_requests_count(aioresponses, 1)
+    utils.assert_request_sent(
+        aioresponses, "POST", "http://localhost:8081/document",
+        body="<SomeEntity>"
+             "<ChildNode1>1</ChildNode1>"
+             "<ChildNode2>value-2</ChildNode2>"
+             "<ChildNode3>true</ChildNode3>"
+             "</SomeEntity>",
+    )
 
 
-@responses.activate
-def test_custom_long_http_port():
+def test_custom_long_http_port(aioresponses):
     sys.argv = ["mimeo", "test_mimeo_cli-dir/http-config.json",
                 "--http-port", "8081"]
 
-    responses.add(responses.POST,
-                  "http://localhost:8081/document",
-                  json={"success": True},
-                  status=HTTPStatus.OK)
+    aioresponses.post("http://localhost:8081/document", status=200)
     mimeo_cli.main()
-    # would throw a ConnectionError when any request call doesn't match registered mocks
+
+    utils.assert_requests_count(aioresponses, 1)
+    utils.assert_request_sent(
+        aioresponses, "POST", "http://localhost:8081/document",
+        body="<SomeEntity>"
+             "<ChildNode1>1</ChildNode1>"
+             "<ChildNode2>value-2</ChildNode2>"
+             "<ChildNode3>true</ChildNode3>"
+             "</SomeEntity>",
+    )
 
 
 def test_custom_http_port_does_not_throw_error_when_output_is_none():
@@ -610,30 +634,40 @@ def test_custom_http_port_does_not_throw_error_when_output_is_none():
         raise AssertionError from KeyError
 
 
-@responses.activate
-def test_custom_short_http_endpoint():
+def test_custom_short_http_endpoint(aioresponses):
     sys.argv = ["mimeo", "test_mimeo_cli-dir/http-config.json",
                 "-E", "/v2/document"]
 
-    responses.add(responses.POST,
-                  "http://localhost:8080/v2/document",
-                  json={"success": True},
-                  status=HTTPStatus.OK)
+    aioresponses.post("http://localhost:8080/v2/document", status=200)
     mimeo_cli.main()
-    # would throw a ConnectionError when any request call doesn't match registered mocks
+
+    utils.assert_requests_count(aioresponses, 1)
+    utils.assert_request_sent(
+        aioresponses, "POST", "http://localhost:8080/v2/document",
+        body="<SomeEntity>"
+             "<ChildNode1>1</ChildNode1>"
+             "<ChildNode2>value-2</ChildNode2>"
+             "<ChildNode3>true</ChildNode3>"
+             "</SomeEntity>",
+    )
 
 
-@responses.activate
-def test_custom_long_http_endpoint():
+def test_custom_long_http_endpoint(aioresponses):
     sys.argv = ["mimeo", "test_mimeo_cli-dir/http-config.json",
                 "--http-endpoint", "/v2/document"]
 
-    responses.add(responses.POST,
-                  "http://localhost:8080/v2/document",
-                  json={"success": True},
-                  status=HTTPStatus.OK)
+    aioresponses.post("http://localhost:8080/v2/document", status=200)
     mimeo_cli.main()
-    # would throw a ConnectionError when any request call doesn't match registered mocks
+
+    utils.assert_requests_count(aioresponses, 1)
+    utils.assert_request_sent(
+        aioresponses, "POST", "http://localhost:8080/v2/document",
+        body="<SomeEntity>"
+             "<ChildNode1>1</ChildNode1>"
+             "<ChildNode2>value-2</ChildNode2>"
+             "<ChildNode3>true</ChildNode3>"
+             "</SomeEntity>",
+    )
 
 
 def test_custom_http_endpoint_does_not_throw_error_when_output_is_none():
@@ -649,40 +683,42 @@ def test_custom_http_endpoint_does_not_throw_error_when_output_is_none():
         raise AssertionError from KeyError
 
 
-@responses.activate
-def test_custom_short_http_username():
+def test_custom_short_http_username(aioresponses):
     sys.argv = ["mimeo", "test_mimeo_cli-dir/http-config.json",
-                "--http-auth", "basic",
                 "-U", "custom-user"]
 
-    auth = _generate_authorization("custom-user", "admin")
-    responses.add(
-        responses.POST,
-        "http://localhost:8080/document",
-        json={"success": True},
-        status=HTTPStatus.OK,
-        match=[matchers.header_matcher({"Authorization": auth})],
-    )
+    aioresponses.post("http://localhost:8080/document", status=200)
     mimeo_cli.main()
-    # would throw a ConnectionError when any request call doesn't match registered mocks
+
+    utils.assert_requests_count(aioresponses, 1)
+    utils.assert_request_sent(
+        aioresponses, "POST", "http://localhost:8080/document",
+        body="<SomeEntity>"
+             "<ChildNode1>1</ChildNode1>"
+             "<ChildNode2>value-2</ChildNode2>"
+             "<ChildNode3>true</ChildNode3>"
+             "</SomeEntity>",
+        auth=("custom-user", "admin"),
+    )
 
 
-@responses.activate
-def test_custom_long_http_username():
+def test_custom_long_http_username(aioresponses):
     sys.argv = ["mimeo", "test_mimeo_cli-dir/http-config.json",
-                "--http-auth", "basic",
                 "--http-user", "custom-user"]
 
-    auth = _generate_authorization("custom-user", "admin")
-    responses.add(
-        responses.POST,
-        "http://localhost:8080/document",
-        json={"success": True},
-        status=HTTPStatus.OK,
-        match=[matchers.header_matcher({"Authorization": auth})],
-    )
+    aioresponses.post("http://localhost:8080/document", status=200)
     mimeo_cli.main()
-    # would throw a ConnectionError when any request call doesn't match registered mocks
+
+    utils.assert_requests_count(aioresponses, 1)
+    utils.assert_request_sent(
+        aioresponses, "POST", "http://localhost:8080/document",
+        body="<SomeEntity>"
+             "<ChildNode1>1</ChildNode1>"
+             "<ChildNode2>value-2</ChildNode2>"
+             "<ChildNode3>true</ChildNode3>"
+             "</SomeEntity>",
+        auth=("custom-user", "admin"),
+    )
 
 
 def test_custom_http_username_does_not_throw_error_when_output_is_none():
@@ -698,40 +734,42 @@ def test_custom_http_username_does_not_throw_error_when_output_is_none():
         raise AssertionError from KeyError
 
 
-@responses.activate
-def test_custom_short_http_password():
+def test_custom_short_http_password(aioresponses):
     sys.argv = ["mimeo", "test_mimeo_cli-dir/http-config.json",
-                "--http-auth", "basic",
                 "-P", "custom-password"]
 
-    auth = _generate_authorization("admin", "custom-password")
-    responses.add(
-        responses.POST,
-        "http://localhost:8080/document",
-        json={"success": True},
-        status=HTTPStatus.OK,
-        match=[matchers.header_matcher({"Authorization": auth})],
-    )
+    aioresponses.post("http://localhost:8080/document", status=200)
     mimeo_cli.main()
-    # would throw a ConnectionError when any request call doesn't match registered mocks
+
+    utils.assert_requests_count(aioresponses, 1)
+    utils.assert_request_sent(
+        aioresponses, "POST", "http://localhost:8080/document",
+        body="<SomeEntity>"
+             "<ChildNode1>1</ChildNode1>"
+             "<ChildNode2>value-2</ChildNode2>"
+             "<ChildNode3>true</ChildNode3>"
+             "</SomeEntity>",
+        auth=("admin", "custom-password"),
+    )
 
 
-@responses.activate
-def test_custom_long_http_password():
+def test_custom_long_http_password(aioresponses):
     sys.argv = ["mimeo", "test_mimeo_cli-dir/http-config.json",
-                "--http-auth", "basic",
                 "--http-password", "custom-password"]
 
-    auth = _generate_authorization("admin", "custom-password")
-    responses.add(
-        responses.POST,
-        "http://localhost:8080/document",
-        json={"success": True},
-        status=HTTPStatus.OK,
-        match=[matchers.header_matcher({"Authorization": auth})],
-    )
+    aioresponses.post("http://localhost:8080/document", status=200)
     mimeo_cli.main()
-    # would throw a ConnectionError when any request call doesn't match registered mocks
+
+    utils.assert_requests_count(aioresponses, 1)
+    utils.assert_request_sent(
+        aioresponses, "POST", "http://localhost:8080/document",
+        body="<SomeEntity>"
+             "<ChildNode1>1</ChildNode1>"
+             "<ChildNode2>value-2</ChildNode2>"
+             "<ChildNode3>true</ChildNode3>"
+             "</SomeEntity>",
+        auth=("admin", "custom-password"),
+    )
 
 
 def test_custom_http_password_does_not_throw_error_when_output_is_none():
@@ -747,17 +785,23 @@ def test_custom_http_password_does_not_throw_error_when_output_is_none():
         raise AssertionError from KeyError
 
 
-@responses.activate
-def test_custom_long_http_method():
+def test_custom_long_http_method(aioresponses):
     sys.argv = ["mimeo", "test_mimeo_cli-dir/http-config.json",
                 "--http-method", "PUT"]
 
-    responses.add(responses.PUT,
-                  "http://localhost:8080/document",
-                  json={"success": True},
-                  status=HTTPStatus.OK)
+    aioresponses.put("http://localhost:8080/document", status=200)
     mimeo_cli.main()
-    # would throw a ConnectionError when any request call doesn't match registered mocks
+
+    utils.assert_requests_count(aioresponses, 1)
+    utils.assert_request_sent(
+        aioresponses, "PUT", "http://localhost:8080/document",
+        body="<SomeEntity>"
+             "<ChildNode1>1</ChildNode1>"
+             "<ChildNode2>value-2</ChildNode2>"
+             "<ChildNode3>true</ChildNode3>"
+             "</SomeEntity>",
+        auth=("admin", "admin"),
+    )
 
 
 def test_custom_http_method_does_not_throw_error_when_output_is_none():
@@ -773,17 +817,23 @@ def test_custom_http_method_does_not_throw_error_when_output_is_none():
         raise AssertionError from KeyError
 
 
-@responses.activate
-def test_custom_long_http_protocol():
+def test_custom_long_http_protocol(aioresponses):
     sys.argv = ["mimeo", "test_mimeo_cli-dir/http-config.json",
                 "--http-protocol", "https"]
 
-    responses.add(responses.POST,
-                  "https://localhost:8080/document",
-                  json={"success": True},
-                  status=HTTPStatus.OK)
+    aioresponses.post("https://localhost:8080/document", status=200)
     mimeo_cli.main()
-    # would throw a ConnectionError when any request call doesn't match registered mocks
+
+    utils.assert_requests_count(aioresponses, 1)
+    utils.assert_request_sent(
+        aioresponses, "POST", "https://localhost:8080/document",
+        body="<SomeEntity>"
+             "<ChildNode1>1</ChildNode1>"
+             "<ChildNode2>value-2</ChildNode2>"
+             "<ChildNode3>true</ChildNode3>"
+             "</SomeEntity>",
+        auth=("admin", "admin"),
+    )
 
 
 def test_custom_http_protocol_does_not_throw_error_when_output_is_none():
@@ -799,86 +849,62 @@ def test_custom_http_protocol_does_not_throw_error_when_output_is_none():
         raise AssertionError from KeyError
 
 
-@responses.activate
-def test_custom_long_http_auth():
-    sys.argv = ["mimeo", "test_mimeo_cli-dir/http-config.json",
-                "--http-auth", "basic"]
-
-    auth = _generate_authorization("admin", "admin")
-    responses.add(
-        responses.POST,
-        "http://localhost:8080/document",
-        json={"success": True},
-        status=HTTPStatus.OK,
-        match=[matchers.header_matcher({"Authorization": auth})],
-    )
-    mimeo_cli.main()
-    # would throw a ConnectionError when any request call doesn't match registered mocks
-
-
-def test_custom_http_auth_does_not_throw_error_when_output_is_none():
-    sys.argv = ["mimeo", "test_mimeo_cli-dir/minimum-config.json",
-                "-o", "http",
-                "--http-auth", "basic"]
-
-    try:
-        mimeo_cli.main()
-    except MissingRequiredPropertyError:
-        assert True
-    except KeyError:
-        raise AssertionError from KeyError
-
-
-@responses.activate
-def test_custom_short_env():
+def test_custom_short_env(aioresponses):
     sys.argv = ["mimeo", "test_mimeo_cli-dir/http-config.json",
                 "-e", "default"]
 
-    auth = _generate_authorization("custom-username", "custom-password")
-    responses.add(
-        responses.POST,
-        "https://11.111.11.111:8000/document",
-        json={"success": True},
-        status=HTTPStatus.OK,
-        match=[matchers.header_matcher({"Authorization": auth})],
-    )
+    aioresponses.post("https://11.111.11.111:8000/document", status=200)
     mimeo_cli.main()
-    # would throw a ConnectionError when any request call doesn't match registered mocks
+
+    utils.assert_requests_count(aioresponses, 1)
+    utils.assert_request_sent(
+        aioresponses, "POST", "https://11.111.11.111:8000/document",
+        body="<SomeEntity>"
+             "<ChildNode1>1</ChildNode1>"
+             "<ChildNode2>value-2</ChildNode2>"
+             "<ChildNode3>true</ChildNode3>"
+             "</SomeEntity>",
+        auth=("custom-username", "custom-password"),
+    )
 
 
-@responses.activate
-def test_custom_long_env():
+def test_custom_long_env(aioresponses):
     sys.argv = ["mimeo", "test_mimeo_cli-dir/http-config.json",
                 "--http-env", "default"]
 
-    auth = _generate_authorization("custom-username", "custom-password")
-    responses.add(
-        responses.POST,
-        "https://11.111.11.111:8000/document",
-        json={"success": True},
-        status=HTTPStatus.OK,
-        match=[matchers.header_matcher({"Authorization": auth})],
-    )
+    aioresponses.post("https://11.111.11.111:8000/document", status=200)
     mimeo_cli.main()
-    # would throw a ConnectionError when any request call doesn't match registered mocks
+
+    utils.assert_requests_count(aioresponses, 1)
+    utils.assert_request_sent(
+        aioresponses, "POST", "https://11.111.11.111:8000/document",
+        body="<SomeEntity>"
+             "<ChildNode1>1</ChildNode1>"
+             "<ChildNode2>value-2</ChildNode2>"
+             "<ChildNode3>true</ChildNode3>"
+             "</SomeEntity>",
+        auth=("custom-username", "custom-password"),
+    )
 
 
-@responses.activate
-def test_custom_env_file():
+def test_custom_env_file(aioresponses):
     sys.argv = ["mimeo", "test_mimeo_cli-dir/http-config.json",
                 "--http-envs-file", "custom-mimeo-envs-file.json",
                 "-e", "custom"]
 
-    auth = _generate_authorization("custom-username", "custom-password")
-    responses.add(
-        responses.POST,
-        "https://11.111.11.111:8000/document",
-        json={"success": True},
-        status=HTTPStatus.OK,
-        match=[matchers.header_matcher({"Authorization": auth})],
-    )
+    aioresponses.post("https://11.111.11.111:8000/document", status=200)
     mimeo_cli.main()
-    # would throw a ConnectionError when any request call doesn't match registered mocks
+
+    utils.assert_requests_count(aioresponses, 1)
+    utils.assert_request_sent(
+        aioresponses, "POST", "https://11.111.11.111:8000/document",
+        body="<SomeEntity>"
+             "<ChildNode1>1</ChildNode1>"
+             "<ChildNode2>value-2</ChildNode2>"
+             "<ChildNode3>true</ChildNode3>"
+             "</SomeEntity>",
+        auth=("custom-username", "custom-password"),
+    )
 
 
 @assert_throws(err_type=EnvironmentsFileNotFoundError,
@@ -951,8 +977,3 @@ def test_logging_mode_fine():
     mimeo_cli.main()
 
     assert logger.getEffectiveLevel() == logging.FINE
-
-
-def _generate_authorization(username: str, password: str):
-    token = b64encode(f"{username}:{password}".encode()).decode("ascii")
-    return f"Basic {token}"
