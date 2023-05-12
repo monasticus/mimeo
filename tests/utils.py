@@ -70,7 +70,7 @@ def assert_request_sent(
 
 def assert_requests_count(
         mock: aioresponses,
-        expected_count: int
+        expected_count: int,
 ):
     actual_count = 0
     for key in mock.requests:
