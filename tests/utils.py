@@ -12,8 +12,9 @@ from yarl import URL
 __all__ = [
     "get_class_impl_error_msg",
     "assert_throws",
-    "assert_requests_count",
+    "assert_requests_sent",
     "assert_request_sent",
+    "assert_requests_count",
 ]
 
 
@@ -45,13 +46,13 @@ def assert_throws(
     return test
 
 
-def assert_requests_count(
+def assert_requests_sent(
         mock: aioresponses,
-        expected_count: int):
-    actual_count = 0
-    for key in mock.requests:
-        actual_count += len(mock.requests[key])
-    assert actual_count == expected_count
+        requests: list,
+):
+    assert_requests_count(mock, len(requests))
+    for request in requests:
+        assert_request_sent(mock, **request)
 
 
 def assert_request_sent(
@@ -66,6 +67,15 @@ def assert_request_sent(
 
     found = next(filter(lambda r: _matches_request(r, body, auth), requests))
     assert found is not None
+
+
+def assert_requests_count(
+        mock: aioresponses,
+        expected_count: int):
+    actual_count = 0
+    for key in mock.requests:
+        actual_count += len(mock.requests[key])
+    assert actual_count == expected_count
 
 
 def _matches_request(

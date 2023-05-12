@@ -45,15 +45,22 @@ def test_consume_post():
             data = [generator.stringify(root)
                     for root in generator.generate(mimeo_config.templates)]
             asyncio.run(consumer.consume(data))
-            utils.assert_requests_count(mock, 2)
-            utils.assert_request_sent(
-                mock, consumer.method, consumer.url,
-                body="<SomeEntity><Id>1</Id></SomeEntity>",
-                auth=("admin", "admin"))
-            utils.assert_request_sent(
-                mock, consumer.method, consumer.url,
-                body="<SomeEntity><Id>2</Id></SomeEntity>",
-                auth=("admin", "admin"))
+            utils.assert_requests_sent(
+                mock, [
+                    {
+                        "method": consumer.method,
+                        "url": consumer.url,
+                        "body": "<SomeEntity><Id>1</Id></SomeEntity>",
+                        "auth": ("admin", "admin"),
+                    },
+                    {
+                        "method": consumer.method,
+                        "url": consumer.url,
+                        "body": "<SomeEntity><Id>2</Id></SomeEntity>",
+                        "auth": ("admin", "admin"),
+                    },
+                ],
+            )
 
 
 def test_consume_put():
@@ -92,15 +99,22 @@ def test_consume_put():
             data = [generator.stringify(root)
                     for root in generator.generate(mimeo_config.templates)]
             asyncio.run(consumer.consume(data))
-            utils.assert_requests_count(mock, 2)
-            utils.assert_request_sent(
-                mock, consumer.method, consumer.url,
-                body="<SomeEntity><Id>1</Id></SomeEntity>",
-                auth=("admin", "admin"))
-            utils.assert_request_sent(
-                mock, consumer.method, consumer.url,
-                body="<SomeEntity><Id>2</Id></SomeEntity>",
-                auth=("admin", "admin"))
+            utils.assert_requests_sent(
+                mock, [
+                    {
+                        "method": consumer.method,
+                        "url": consumer.url,
+                        "body": "<SomeEntity><Id>1</Id></SomeEntity>",
+                        "auth": ("admin", "admin"),
+                    },
+                    {
+                        "method": consumer.method,
+                        "url": consumer.url,
+                        "body": "<SomeEntity><Id>2</Id></SomeEntity>",
+                        "auth": ("admin", "admin"),
+                    },
+                ],
+            )
 
 
 @responses.activate
@@ -137,12 +151,19 @@ def test_consume_without_port():
             data = [generator.stringify(root)
                     for root in generator.generate(mimeo_config.templates)]
             asyncio.run(consumer.consume(data))
-            utils.assert_requests_count(mock, 2)
-            utils.assert_request_sent(
-                mock, consumer.method, consumer.url,
-                body="<SomeEntity><Id>1</Id></SomeEntity>",
-                auth=("admin", "admin"))
-            utils.assert_request_sent(
-                mock, consumer.method, consumer.url,
-                body="<SomeEntity><Id>2</Id></SomeEntity>",
-                auth=("admin", "admin"))
+            utils.assert_requests_sent(
+                mock, [
+                    {
+                        "method": consumer.method,
+                        "url": consumer.url,
+                        "body": "<SomeEntity><Id>1</Id></SomeEntity>",
+                        "auth": ("admin", "admin"),
+                    },
+                    {
+                        "method": consumer.method,
+                        "url": consumer.url,
+                        "body": "<SomeEntity><Id>2</Id></SomeEntity>",
+                        "auth": ("admin", "admin"),
+                    },
+                ],
+            )
