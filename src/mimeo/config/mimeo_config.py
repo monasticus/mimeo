@@ -89,8 +89,6 @@ class MimeoConfig(MimeoDTO):
         A Mimeo Configuration http port key
     OUTPUT_ENDPOINT_KEY : str
         A Mimeo Configuration http endpoint key
-    OUTPUT_AUTH_KEY : str
-        A Mimeo Configuration http auth key
     OUTPUT_USERNAME_KEY : str
         A Mimeo Configuration http username key
     OUTPUT_PASSWORD_KEY : str
@@ -125,16 +123,10 @@ class MimeoConfig(MimeoDTO):
         The 'POST' http request method
     OUTPUT_DIRECTION_HTTP_REQUEST_PUT : str
         The 'PUT' http request method
-    OUTPUT_DIRECTION_HTTP_AUTH_BASIC : str
-        The 'basic' http auth method
-    OUTPUT_DIRECTION_HTTP_AUTH_DIGEST : str
-        The 'digest' http auth method
     SUPPORTED_OUTPUT_DIRECTIONS : set
         List of supported output directions
     SUPPORTED_REQUEST_METHODS : set
         List of supported http request methods
-    SUPPORTED_AUTH_METHODS : set
-        List of supported auth request methods
     REQUIRED_HTTP_DETAILS : set
         List of required http request output direction details
 
@@ -158,7 +150,6 @@ class MimeoConfig(MimeoDTO):
     OUTPUT_HOST_KEY = "host"
     OUTPUT_PORT_KEY = "port"
     OUTPUT_ENDPOINT_KEY = "endpoint"
-    OUTPUT_AUTH_KEY = "auth"
     OUTPUT_USERNAME_KEY = "username"
     OUTPUT_PASSWORD_KEY = "password"
     VARS_KEY = "vars"
@@ -180,9 +171,6 @@ class MimeoConfig(MimeoDTO):
     OUTPUT_DIRECTION_HTTP_REQUEST_POST = "POST"
     OUTPUT_DIRECTION_HTTP_REQUEST_PUT = "PUT"
 
-    OUTPUT_DIRECTION_HTTP_AUTH_BASIC = "basic"
-    OUTPUT_DIRECTION_HTTP_AUTH_DIGEST = "digest"
-
     SUPPORTED_OUTPUT_FORMATS = (OUTPUT_FORMAT_XML,)
 
     SUPPORTED_OUTPUT_DIRECTIONS = (OUTPUT_DIRECTION_STD_OUT,
@@ -190,8 +178,6 @@ class MimeoConfig(MimeoDTO):
                                    OUTPUT_DIRECTION_HTTP)
     SUPPORTED_REQUEST_METHODS = (OUTPUT_DIRECTION_HTTP_REQUEST_POST,
                                  OUTPUT_DIRECTION_HTTP_REQUEST_PUT)
-    SUPPORTED_AUTH_METHODS = (OUTPUT_DIRECTION_HTTP_AUTH_BASIC,
-                              OUTPUT_DIRECTION_HTTP_AUTH_DIGEST)
     REQUIRED_HTTP_DETAILS = (OUTPUT_HOST_KEY,
                              OUTPUT_ENDPOINT_KEY,
                              OUTPUT_USERNAME_KEY,
@@ -375,7 +361,6 @@ class MimeoOutput(MimeoDTO):
         self.host = self._get_host(self.direction, output)
         self.port = self._get_port(self.direction, output)
         self.endpoint = self._get_endpoint(self.direction, output)
-        self.auth = self._get_auth(self.direction, output)
         self.username = self._get_username(self.direction, output)
         self.password = self._get_password(self.direction, output)
 
@@ -663,41 +648,6 @@ class MimeoOutput(MimeoDTO):
         if direction == MimeoConfig.OUTPUT_DIRECTION_HTTP:
             return output.get(MimeoConfig.OUTPUT_ENDPOINT_KEY)
         return None
-
-    @staticmethod
-    def _get_auth(
-            direction: str,
-            output: dict,
-    ) -> str | None:
-        """Extract an HTTP auth method from the source dictionary.
-
-        It is extracted only when the output direction is 'http'.
-
-        Parameters
-        ----------
-        direction : str
-            The configured output direction
-        output : dict
-            A source config output details dictionary
-
-        Returns
-        -------
-        auth: str | None
-            The configured HTTP auth method when the output direction is 'http'.
-            Otherwise, None. If the 'auth' setting is missing returns
-            'basic' by default.
-        """
-        auth = None
-        if direction == MimeoConfig.OUTPUT_DIRECTION_HTTP:
-            auth = output.get(
-                MimeoConfig.OUTPUT_AUTH_KEY,
-                MimeoConfig.OUTPUT_DIRECTION_HTTP_AUTH_BASIC)
-            if auth not in MimeoConfig.SUPPORTED_AUTH_METHODS:
-                raise UnsupportedPropertyValueError(
-                    MimeoConfig.OUTPUT_AUTH_KEY,
-                    auth,
-                    MimeoConfig.SUPPORTED_AUTH_METHODS)
-        return auth
 
     @staticmethod
     def _get_username(
