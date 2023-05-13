@@ -123,10 +123,16 @@ class MimeoConfig(MimeoDTO):
         The 'POST' http request method
     OUTPUT_DIRECTION_HTTP_REQUEST_PUT : str
         The 'PUT' http request method
+    OUTPUT_DIRECTION_HTTP_PROTOCOL_HTTP : str
+        The 'http' request protocol
+    OUTPUT_DIRECTION_HTTP_PROTOCOL_HTTPS : str
+        The 'https' request protocol
     SUPPORTED_OUTPUT_DIRECTIONS : set
         List of supported output directions
     SUPPORTED_REQUEST_METHODS : set
         List of supported http request methods
+    SUPPORTED_REQUEST_PROTOCOLS : set
+        List of supported request protocols
     REQUIRED_HTTP_DETAILS : set
         List of required http request output direction details
 
@@ -171,6 +177,9 @@ class MimeoConfig(MimeoDTO):
     OUTPUT_DIRECTION_HTTP_REQUEST_POST = "POST"
     OUTPUT_DIRECTION_HTTP_REQUEST_PUT = "PUT"
 
+    OUTPUT_DIRECTION_HTTP_PROTOCOL_HTTP = "http"
+    OUTPUT_DIRECTION_HTTP_PROTOCOL_HTTPS = "https"
+
     SUPPORTED_OUTPUT_FORMATS = (OUTPUT_FORMAT_XML,)
 
     SUPPORTED_OUTPUT_DIRECTIONS = (OUTPUT_DIRECTION_STD_OUT,
@@ -178,6 +187,8 @@ class MimeoConfig(MimeoDTO):
                                    OUTPUT_DIRECTION_HTTP)
     SUPPORTED_REQUEST_METHODS = (OUTPUT_DIRECTION_HTTP_REQUEST_POST,
                                  OUTPUT_DIRECTION_HTTP_REQUEST_PUT)
+    SUPPORTED_REQUEST_PROTOCOLS = (OUTPUT_DIRECTION_HTTP_PROTOCOL_HTTP,
+                                   OUTPUT_DIRECTION_HTTP_PROTOCOL_HTTPS)
     REQUIRED_HTTP_DETAILS = (OUTPUT_HOST_KEY,
                              OUTPUT_ENDPOINT_KEY,
                              OUTPUT_USERNAME_KEY,
@@ -530,6 +541,11 @@ class MimeoOutput(MimeoDTO):
             The configured HTTP request method when the output direction is 'http'.
             Otherwise, None. If the 'method' setting is missing returns
             'POST' by default.
+
+        Raises
+        ------
+        UnsupportedPropertyValueError
+            If the configured request method is not supported
         """
         method = None
         if direction == MimeoConfig.OUTPUT_DIRECTION_HTTP:
@@ -565,11 +581,23 @@ class MimeoOutput(MimeoDTO):
             The configured HTTP request method when the output direction is 'http'.
             Otherwise, None. If the 'protocol' setting is missing returns
             'http' by default.
+
+        Raises
+        ------
+        UnsupportedPropertyValueError
+            If the configured request protocol is not supported
         """
+        protocol = None
         if direction == MimeoConfig.OUTPUT_DIRECTION_HTTP:
-            return output.get(MimeoConfig.OUTPUT_PROTOCOL_KEY,
-                              MimeoConfig.OUTPUT_DIRECTION_HTTP)
-        return None
+            protocol = output.get(
+                MimeoConfig.OUTPUT_PROTOCOL_KEY,
+                MimeoConfig.OUTPUT_DIRECTION_HTTP_PROTOCOL_HTTP)
+            if protocol not in MimeoConfig.SUPPORTED_REQUEST_PROTOCOLS:
+                raise UnsupportedPropertyValueError(
+                    MimeoConfig.OUTPUT_PROTOCOL_KEY,
+                    protocol,
+                    MimeoConfig.SUPPORTED_REQUEST_PROTOCOLS)
+        return protocol
 
     @staticmethod
     def _get_host(
