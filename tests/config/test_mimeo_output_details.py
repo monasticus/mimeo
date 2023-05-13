@@ -233,6 +233,23 @@ def test_parsing_output_unsupported_direction():
 
 
 @assert_throws(err_type=UnsupportedPropertyValueError,
+               msg="Provided protocol [{protocol}] is not supported! "
+                   "Supported values: [{values}].",
+               params={"protocol": "unsupported_request_protocol",
+                       "values": "http, https"})
+def test_parsing_output_unsupported_request_protocol():
+    output = {
+        "direction": "http",
+        "protocol": "unsupported_request_protocol",
+        "host": "localhost",
+        "endpoint": "/documents",
+        "username": "admin",
+        "password": "admin",
+    }
+    MimeoOutput(output)
+
+
+@assert_throws(err_type=UnsupportedPropertyValueError,
                msg="Provided method [{method}] is not supported! "
                    "Supported values: [{values}].",
                params={"method": "unsupported_request_method",
