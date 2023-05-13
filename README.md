@@ -190,7 +190,6 @@ They are configured in a JSON file (by default: mimeo.envs.json) and support the
 - `protocol`
 - `host`
 - `port`
-- `auth`
 - `username`
 - `password`
 
@@ -207,7 +206,6 @@ Example
         "protocol": "https",
         "host": "11.111.11.111",
         "port": 8000,
-        "auth": "digest",
         "username": "some-user",
         "password": "some-password"
     }
@@ -537,7 +535,7 @@ When context is indicated and iteration is not, then the current iteration **of 
 
 ```json
 {
-  "SomeEntity": {
+  "SomeEntity2": {
     "_mimeo_util": {
       "_name": "key",
       "context": "SomeEntity",
