@@ -7,7 +7,7 @@ It exports a class related to all Mimeo CSV data:
 from __future__ import annotations
 
 from mimeo.database import (CitiesDB, City, CountriesDB, Country, FirstName,
-                            FirstNamesDB, LastNamesDB)
+                            FirstNamesDB, LastNamesDB, CurrenciesDB, Currency)
 
 
 class MimeoDB:
@@ -17,6 +17,7 @@ class MimeoDB:
     classes:
     - CitiesDB
     - CountriesDB
+    - CurrenciesDB
     - FirstNamesDB
     - LastNamesDB
 
@@ -26,6 +27,8 @@ class MimeoDB:
         A number of rows in cities CSV data
     NUM_OF_COUNTRIES : int
         A number of rows in countries CSV data
+    NUM_OF_CURRENCIES : int
+        A number of rows in currencies CSV data
     NUM_OF_FIRST_NAMES : int
         A number of rows in forenames CSV data
     NUM_OF_LAST_NAMES : int
@@ -63,6 +66,7 @@ class MimeoDB:
 
     NUM_OF_CITIES = CitiesDB.NUM_OF_RECORDS
     NUM_OF_COUNTRIES = CountriesDB.NUM_OF_RECORDS
+    NUM_OF_CURRENCIES = CurrenciesDB.NUM_OF_RECORDS
     NUM_OF_FIRST_NAMES = FirstNamesDB.NUM_OF_RECORDS
     NUM_OF_LAST_NAMES = LastNamesDB.NUM_OF_RECORDS
 
@@ -71,6 +75,7 @@ class MimeoDB:
     ):
         self.__cities_db = CitiesDB()
         self.__countries_db = CountriesDB()
+        self.__currencies_db = CurrenciesDB()
         self.__first_names_db = FirstNamesDB()
         self.__last_names_db = LastNamesDB()
 
@@ -138,6 +143,18 @@ class MimeoDB:
             If the provided `index` is out of bounds
         """
         return self.__cities_db.get_city_at(index)
+
+    def get_currencies(
+            self,
+    ) -> list[Currency]:
+        """Get all currencies.
+
+        Returns
+        -------
+        list[Currency]
+            List of all currencies
+        """
+        return self.__currencies_db.get_currencies()
 
     def get_countries(
             self,

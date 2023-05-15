@@ -118,7 +118,7 @@ class FirstNamesDB:
         InvalidIndexError
             If the provided `index` is out of bounds
         """
-        first_names = self.__get_first_names()
+        first_names = FirstNamesDB._get_first_names()
         try:
             return first_names[index]
         except IndexError:
@@ -148,11 +148,10 @@ class FirstNamesDB:
         """
         if sex not in FirstNamesDB.__SUPPORTED_SEX:
             raise InvalidSexError(FirstNamesDB.__SUPPORTED_SEX)
-        return self.__get_first_names_by_sex(sex).copy()
+        return FirstNamesDB._get_first_names_by_sex(sex).copy()
 
-    @classmethod
     def get_first_names(
-            cls,
+            self,
     ) -> list[FirstName]:
         """Get all first names.
 
@@ -161,10 +160,10 @@ class FirstNamesDB:
         list[FirstName]
             List of all first names
         """
-        return cls.__get_first_names().copy()
+        return FirstNamesDB._get_first_names().copy()
 
     @classmethod
-    def __get_first_names_by_sex(
+    def _get_first_names_by_sex(
             cls,
             sex: str,
     ) -> list[FirstName]:
@@ -184,12 +183,12 @@ class FirstNamesDB:
             List of first names filtered by sex
         """
         if sex not in cls.__NAMES_FOR_SEX:
-            first_names = cls.__get_first_names()
+            first_names = cls._get_first_names()
             cls.__NAMES_FOR_SEX[sex] = list(filter(lambda n: n.sex == sex, first_names))
         return cls.__NAMES_FOR_SEX[sex]
 
     @classmethod
-    def __get_first_names(
+    def _get_first_names(
             cls,
     ) -> list[FirstName]:
         """Get all first names from cache.
@@ -204,15 +203,15 @@ class FirstNamesDB:
         """
         if cls.__FIRST_NAMES is None:
             cls.__FIRST_NAMES = [FirstName(row.NAME, row.SEX)
-                                 for row in cls.__get_first_names_df().itertuples()]
+                                 for row in cls._get_first_names_df().itertuples()]
         return cls.__FIRST_NAMES
 
     @classmethod
-    def __get_first_names_df(
+    def _get_first_names_df(
             cls,
     ) -> pandas.DataFrame:
         """Load forenames CSV data and save in internal class attribute."""
         if cls.__FIRST_NAMES_DF is None:
-            data = tools.get_resource(FirstNamesDB.__FIRST_NAMES_DB)
+            data = tools.get_resource(cls.__FIRST_NAMES_DB)
             cls.__FIRST_NAMES_DF = pandas.read_csv(data)
         return cls.__FIRST_NAMES_DF

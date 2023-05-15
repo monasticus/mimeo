@@ -1,10 +1,10 @@
 from mimeo.database import (CitiesDB, CountriesDB, FirstNamesDB, LastNamesDB,
-                            MimeoDB)
+                            MimeoDB, CurrenciesDB)
 
 
 def test_get_cities():
     mimeo_db = MimeoDB()
-    cities_from_cities_db = CitiesDB.get_cities()
+    cities_from_cities_db = CitiesDB().get_cities()
     cities_from_mimeo_db = mimeo_db.get_cities()
     mimeo_db_count = len(cities_from_mimeo_db)
     assert mimeo_db_count > 0
@@ -72,7 +72,7 @@ def test_get_city_of_non_existing_country():
 
 def test_get_countries():
     mimeo_db = MimeoDB()
-    countries_from_countries_db = CountriesDB.get_countries()
+    countries_from_countries_db = CountriesDB().get_countries()
     countries_from_mimeo_db = mimeo_db.get_countries()
     mimeo_db_count = len(countries_from_mimeo_db)
     assert mimeo_db_count > 0
@@ -124,7 +124,7 @@ def test_get_country_by_name():
 
 def test_get_first_names():
     mimeo_db = MimeoDB()
-    first_names_form_first_names_db = FirstNamesDB.get_first_names()
+    first_names_form_first_names_db = FirstNamesDB().get_first_names()
     first_names_from_mimeo_db = mimeo_db.get_first_names()
     mimeo_db_count = len(first_names_from_mimeo_db)
     assert mimeo_db_count > 0
@@ -161,7 +161,7 @@ def test_get_first_names_by_sex():
 
 def test_get_last_names():
     mimeo_db = MimeoDB()
-    last_names_form_last_names_db = LastNamesDB.get_last_names()
+    last_names_form_last_names_db = LastNamesDB().get_last_names()
     last_names_from_mimeo_db = mimeo_db.get_last_names()
     mimeo_db_count = len(last_names_from_mimeo_db)
     assert mimeo_db_count > 0

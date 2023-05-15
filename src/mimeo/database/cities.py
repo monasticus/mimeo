@@ -133,7 +133,7 @@ class CitiesDB:
         InvalidIndexError
             If the provided `index` is out of bounds
         """
-        cities = self._get_cities()
+        cities = CitiesDB._get_cities()
         try:
             return cities[index]
         except IndexError:
@@ -156,11 +156,10 @@ class CitiesDB:
         list[City]
             List of cities filtered by country
         """
-        return self._get_country_cities(country_iso3).copy()
+        return CitiesDB._get_country_cities(country_iso3).copy()
 
-    @classmethod
     def get_cities(
-            cls,
+            self,
     ) -> list[City]:
         """Get all cities.
 
@@ -169,7 +168,7 @@ class CitiesDB:
         list[City]
             List of all cities
         """
-        return cls._get_cities().copy()
+        return CitiesDB._get_cities().copy()
 
     @classmethod
     def _get_country_cities(
@@ -222,6 +221,6 @@ class CitiesDB:
     ) -> pandas.DataFrame:
         """Load cities CSV data and save in internal class attribute."""
         if cls._CITIES_DF is None:
-            data = tools.get_resource(CitiesDB._CITIES_DB)
+            data = tools.get_resource(cls._CITIES_DB)
             cls._CITIES_DF = pandas.read_csv(data)
         return cls._CITIES_DF

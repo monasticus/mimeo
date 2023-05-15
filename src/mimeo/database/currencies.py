@@ -125,7 +125,7 @@ class CurrenciesDB:
         InvalidIndexError
             If the provided `index` is out of bounds
         """
-        currencies = self._get_currencies()
+        currencies = CurrenciesDB._get_currencies()
         try:
             return currencies[index]
         except IndexError:
@@ -148,11 +148,10 @@ class CurrenciesDB:
         Currency
             A currency used in a specific country
         """
-        return self._get_country_currency(country_name)
+        return CurrenciesDB._get_country_currency(country_name)
 
-    @classmethod
     def get_currencies(
-            cls,
+            self,
     ) -> list[Currency]:
         """Get all currencies.
 
@@ -161,7 +160,7 @@ class CurrenciesDB:
         list[Currency]
             List of all currencies
         """
-        return cls._get_currencies().copy()
+        return CurrenciesDB._get_currencies().copy()
 
     @classmethod
     def _get_country_currency(
@@ -214,6 +213,6 @@ class CurrenciesDB:
     ) -> pandas.DataFrame:
         """Load currencies CSV data and save in internal class attribute."""
         if cls._CURRENCIES_DF is None:
-            data = tools.get_resource(CurrenciesDB._CURRENCIES_DB)
+            data = tools.get_resource(cls._CURRENCIES_DB)
             cls._CURRENCIES_DF = pandas.read_csv(data)
         return cls._CURRENCIES_DF

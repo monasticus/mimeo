@@ -6,13 +6,15 @@ from tests.utils import assert_throws
 
 
 def test_get_currencies():
-    currencies = CurrenciesDB.get_currencies()
+    db = CurrenciesDB()
+
+    currencies = db.get_currencies()
     assert len(currencies) == CurrenciesDB.NUM_OF_RECORDS
 
     currencies.pop(0)
     assert len(currencies) == CurrenciesDB.NUM_OF_RECORDS - 1
 
-    currencies = CurrenciesDB.get_currencies()
+    currencies = db.get_currencies()
     assert len(currencies) == CurrenciesDB.NUM_OF_RECORDS
 
 

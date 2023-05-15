@@ -129,7 +129,7 @@ class CountriesDB:
         InvalidIndexError
             If the provided `index` is out of bounds
         """
-        countries = self._get_countries()
+        countries = CountriesDB._get_countries()
         try:
             return countries[index]
         except IndexError:
@@ -152,7 +152,7 @@ class CountriesDB:
         Country
             A specific country or None
         """
-        countries = self._get_countries()
+        countries = CountriesDB._get_countries()
         return next(filter(lambda country: country.iso_3 == iso_3, countries), None)
 
     def get_country_by_iso_2(
@@ -171,7 +171,7 @@ class CountriesDB:
         Country
             A specific country or None
         """
-        countries = self._get_countries()
+        countries = CountriesDB._get_countries()
         return next(filter(lambda country: country.iso_2 == iso_2, countries), None)
 
     def get_country_by_name(
@@ -190,12 +190,11 @@ class CountriesDB:
         Country
             A specific country or None
         """
-        countries = self._get_countries()
+        countries = CountriesDB._get_countries()
         return next(filter(lambda country: country.name == name, countries), None)
 
-    @classmethod
     def get_countries(
-            cls,
+            self,
     ) -> list[Country]:
         """Get all countries.
 
@@ -204,7 +203,7 @@ class CountriesDB:
         list[Country]
             List of all countries
         """
-        return cls._get_countries().copy()
+        return CountriesDB._get_countries().copy()
 
     @classmethod
     def _get_countries(
@@ -231,6 +230,6 @@ class CountriesDB:
     ) -> pandas.DataFrame:
         """Load countries CSV data and save in internal class attribute."""
         if cls._COUNTRIES_DF is None:
-            data = tools.get_resource(CountriesDB._COUNTRIES_DB)
+            data = tools.get_resource(cls._COUNTRIES_DB)
             cls._COUNTRIES_DF = pandas.read_csv(data)
         return cls._COUNTRIES_DF

@@ -51,16 +51,15 @@ class LastNamesDB:
         InvalidIndexError
             If the provided `index` is out of bounds
         """
-        last_names = self.__get_last_names()
+        last_names = LastNamesDB._get_last_names()
         try:
             return last_names[index]
         except IndexError:
             last_index = LastNamesDB.NUM_OF_RECORDS-1
             raise InvalidIndexError(index, last_index) from IndexError
 
-    @classmethod
     def get_last_names(
-            cls,
+            self,
     ) -> list[str]:
         """Get all last names.
 
@@ -69,10 +68,10 @@ class LastNamesDB:
         list[str]
             List of all last names
         """
-        return cls.__get_last_names().copy()
+        return LastNamesDB._get_last_names().copy()
 
     @classmethod
-    def __get_last_names(
+    def _get_last_names(
             cls,
     ) -> list:
         """Get all last names from cache.
@@ -86,6 +85,6 @@ class LastNamesDB:
             List of all last names
         """
         if cls._LAST_NAMES is None:
-            with tools.get_resource(LastNamesDB._LAST_NAMES_DB) as last_names:
+            with tools.get_resource(cls._LAST_NAMES_DB) as last_names:
                 cls._LAST_NAMES = [line.rstrip() for line in last_names.readlines()]
         return cls._LAST_NAMES
