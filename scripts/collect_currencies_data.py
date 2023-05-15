@@ -29,7 +29,8 @@ def _modify_source_data(source_df: pandas.DataFrame) -> pandas.DataFrame:
     """Modify source data frame.
 
     This function introduces following modifications:
-    * applies ASCII encoding on a Entity column
+    * applies ASCII encoding on an Entity column
+    * removes rows with Entity starting with 'ZZ'
     * renames headers (
       Entity -> COUNTRY,
       AlphabeticCode -> CODE,
@@ -57,6 +58,7 @@ def _modify_source_data(source_df: pandas.DataFrame) -> pandas.DataFrame:
     sort_column = "COUNTRY"
 
     source_df["Entity"] = utils.apply_ascii_encoding_on_column(source_df, "Entity")
+    source_df = source_df[~source_df["Entity"].str.startswith("ZZ")]
     currencies_df = (
         source_df
         .loc[source_df["WithdrawalDate"].isna()]
