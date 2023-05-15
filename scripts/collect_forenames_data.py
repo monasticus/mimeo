@@ -26,7 +26,9 @@ def main():
                       _modify_source_data)
 
 
-def _modify_source_data(source_df: pandas.DataFrame) -> pandas.DataFrame:
+def _modify_source_data(
+        source_df: pandas.DataFrame,
+) -> pandas.DataFrame:
     """Modify source data frame.
 
     This function introduces following modifications:

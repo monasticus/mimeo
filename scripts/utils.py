@@ -73,7 +73,9 @@ MIMEO_RESOURCES_FORENAMES = "forenames.csv"
 MIMEO_RESOURCES_SURNAMES = "surnames.txt"
 
 
-def download_file(url: str) -> str:
+def download_file(
+        url: str,
+) -> str:
     """Download a file from `url`.
 
     Parameters
@@ -99,7 +101,10 @@ def download_file(url: str) -> str:
     return target_path
 
 
-def extract_zip_data(zip_path: str, files_to_extract: list = None):
+def extract_zip_data(
+        zip_path: str,
+        files_to_extract: list = None,
+):
     """Extract data from ZIP file.
 
     Parameters
@@ -159,7 +164,10 @@ def adjust_data(
     remove_file(source_data_path)
 
 
-def dump_to_database(data_frame: pandas.DataFrame, target_file: str):
+def dump_to_database(
+        data_frame: pandas.DataFrame,
+        target_file: str,
+):
     """Save data frame to a file.
 
     If the `target_file` is not a CSV file, then header will not be
@@ -177,7 +185,10 @@ def dump_to_database(data_frame: pandas.DataFrame, target_file: str):
     data_frame.to_csv(target_path, index=False, header=target_file.endswith(".csv"))
 
 
-def overwrite_num_of_records(mimeo_db: str, data_frame: pandas.DataFrame):
+def overwrite_num_of_records(
+        mimeo_db: str,
+        data_frame: pandas.DataFrame,
+):
     """Overwrite a number of records in Mimeo Database package.
 
     Parameters

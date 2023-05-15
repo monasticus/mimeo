@@ -30,7 +30,9 @@ def main():
     _adjust_data(SOURCE_DATA_FILE)
 
 
-def _adjust_data(source_data_path: str):
+def _adjust_data(
+        source_data_path: str,
+):
     """Adjust source data for Mimeo usage.
 
     This function creates two files based on the source data. First,
@@ -59,7 +61,9 @@ def _adjust_data(source_data_path: str):
     utils.remove_file(source_data_path)
 
 
-def _preprocess_source_data(source_df: pandas.DataFrame) -> pandas.DataFrame:
+def _preprocess_source_data(
+        source_df: pandas.DataFrame,
+) -> pandas.DataFrame:
     """Pre-process source data frame.
 
     This function introduces following modifications:
@@ -83,7 +87,9 @@ def _preprocess_source_data(source_df: pandas.DataFrame) -> pandas.DataFrame:
     return source_df
 
 
-def _modify_source_data_for_cities(source_df: pandas.DataFrame) -> pandas.DataFrame:
+def _modify_source_data_for_cities(
+        source_df: pandas.DataFrame,
+) -> pandas.DataFrame:
     """Modify source data frame.
 
     This function introduces following modifications:
@@ -125,7 +131,9 @@ def _modify_source_data_for_cities(source_df: pandas.DataFrame) -> pandas.DataFr
     return cities_df
 
 
-def _modify_source_data_for_countries(source_df: pandas.DataFrame) -> pandas.DataFrame:
+def _modify_source_data_for_countries(
+        source_df: pandas.DataFrame,
+) -> pandas.DataFrame:
     """Modify source data frame.
 
     This function introduces following modifications:
