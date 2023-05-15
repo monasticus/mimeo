@@ -30,15 +30,17 @@ def _modify_source_data(source_df: pandas.DataFrame) -> pandas.DataFrame:
 
     This function introduces following modifications:
     * applies ASCII encoding on an Entity column
-    * removes rows with Entity starting with 'ZZ'
+    * gets rid of " (THE)" suffix and capitalizes COUNTRIES values
+    * removes rows with Entity starting with 'Zz'
+    * removes rows having non-empty WithdrawalDate value
     * renames headers (
-      Entity -> COUNTRY,
       AlphabeticCode -> CODE,
-      Currency -> NAME)
-    * updates order of columns (COUNTRY, CODE, NAME) and removes all remaining
+      Currency -> NAME,
+      Entity -> COUNTRIES)
+    * updates order of columns (CODE, NAME, COUNTRIES) and removes all remaining
     * drops duplicates
-    * applies sorting by COUNTRY column
-    * capitalizes COUNTRY values and gets rid of " (The)" suffix
+    * aggregates rows based on the CODE column
+    * applies sorting by CODE column
 
     Parameters
     ----------
@@ -51,27 +53,28 @@ def _modify_source_data(source_df: pandas.DataFrame) -> pandas.DataFrame:
         A modified data frame
     """
     columns_mapping = {
-        "Entity": "COUNTRY",
         "AlphabeticCode": "CODE",
         "Currency": "NAME",
+        "Entity": "COUNTRIES",
     }
-    sort_column = "COUNTRY"
+    sort_column = "CODE"
 
-    source_df["Entity"] = utils.apply_ascii_encoding_on_column(source_df, "Entity")
-    source_df = source_df[~source_df["Entity"].str.startswith("ZZ")]
+    source_df["Entity"] = (
+        utils.apply_ascii_encoding_on_column(source_df, "Entity")
+        .map(lambda c: c.replace(" (THE)", ""))
+        .str.title())
+    source_df = source_df[~source_df["Entity"].str.startswith("Zz")]
     currencies_df = (
         source_df
         .loc[source_df["WithdrawalDate"].isna()]
         .rename(columns=columns_mapping)
         .loc[:, columns_mapping.values()]
         .drop_duplicates()
+        .groupby("CODE")
+        .agg({"CODE": "first", "NAME": "first", "COUNTRIES": lambda c: list(c)})
+        .reset_index(drop=True)
         .sort_values(sort_column))
-    currencies_df["COUNTRY"] = (
-        currencies_df["COUNTRY"]
-        .str.title()
-        .map(lambda c: c.replace(" (The)", ""))
-    )
-    print("Forenames data has been prepared.")
+    print("Currencies data has been prepared.")
     return currencies_df
 
 
