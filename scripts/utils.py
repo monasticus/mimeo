@@ -38,10 +38,15 @@ It exports the following functions:
         Save data frame to a file.
     * overwrite_num_of_records
         Overwrite a number of records in Mimeo Database package.
+    * apply_ascii_encoding_on_column
+        Apply ASCII encoding on a specific data frame's column.
+    * apply_ascii_encoding
+        Apply ASCII encoding.
 """
 from __future__ import annotations
 
 import re
+import unicodedata
 import zipfile
 from pathlib import Path
 from typing import Callable
@@ -52,12 +57,14 @@ from requests import Session
 MIMEO_DB_PACKAGE = "src/mimeo/database"
 MIMEO_DB_CITIES = "cities.py"
 MIMEO_DB_COUNTRIES = "countries.py"
+MIMEO_DB_CURRENCIES = "currencies.py"
 MIMEO_DB_FORENAMES = "first_names.py"
 MIMEO_DB_SURNAMES = "last_names.py"
 
 MIMEO_RESOURCES_PACKAGE = "src/mimeo/resources"
 MIMEO_RESOURCES_CITIES = "cities.csv"
 MIMEO_RESOURCES_COUNTRIES = "countries.csv"
+MIMEO_RESOURCES_CURRENCIES = "currencies.csv"
 MIMEO_RESOURCES_FORENAMES = "forenames.csv"
 MIMEO_RESOURCES_SURNAMES = "surnames.txt"
 
@@ -107,7 +114,9 @@ def extract_zip_data(zip_path: str, files_to_extract: list = None):
         zip_file.extractall(members=files_to_extract)
 
 
-def remove_file(file_path: str):
+def remove_file(
+        file_path: str,
+):
     """Remove a file if it exists."""
     if Path(file_path).exists():
         print(f"Removing file: {file_path}.")
@@ -196,3 +205,18 @@ def overwrite_num_of_records(mimeo_db: str, data_frame: pandas.DataFrame):
     else:
         print("Number of records has not been overwritten "
               f"as {mimeo_db} is not a registered Mimeo Database.")
+
+
+def apply_ascii_encoding_on_column(
+        data_frame: pandas.DataFrame,
+        column_name: str,
+) -> pandas.Series:
+    """Apply ASCII encoding on a specific data frame's column."""
+    return data_frame[column_name].apply(apply_ascii_encoding)
+
+
+def apply_ascii_encoding(
+        value: str,
+) -> str:
+    """Apply ASCII encoding."""
+    return unicodedata.normalize("NFKD", value).encode("ascii", "ignore").decode()

@@ -11,8 +11,6 @@ All source files are removed.
 """
 from __future__ import annotations
 
-import unicodedata
-
 import pandas
 import utils
 
@@ -140,6 +138,7 @@ def _modify_source_data_for_countries(source_df: pandas.DataFrame) -> pandas.Dat
     * updates order of columns (ISO_3, ISO_2, NAME) and removes all
       remaining
     * applies sorting by ISO_3 column
+    * applies ASCII encoding on a NAME column
 
     Parameters
     ----------
@@ -169,14 +168,9 @@ def _modify_source_data_for_countries(source_df: pandas.DataFrame) -> pandas.Dat
         .rename(columns=columns_mapping)
         .loc[:, columns_mapping.values()]
         .sort_values(sort_column))
-    countries_df["NAME"] = countries_df["NAME"].apply(_ascii_encoding)
+    countries_df["NAME"] = utils.apply_ascii_encoding_on_column(countries_df, "NAME")
     print("Countries data has been prepared.")
     return countries_df
-
-
-def _ascii_encoding(value: str):
-    """Apply ASCII encoding."""
-    return unicodedata.normalize("NFKD", value).encode("ascii", "ignore").decode()
 
 
 if __name__ == "__main__":
