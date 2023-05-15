@@ -180,6 +180,25 @@ def test_next_city_index_non_existing_country():
     ctx.next_city_index("NEC")
 
 
+def test_next_currency_index():
+    ctx = MimeoContext("SomeContext")
+    for _ in range(MimeoDB.NUM_OF_CURRENCIES):
+        currency_index = ctx.next_currency_index()
+        assert currency_index >= 0
+        assert currency_index < MimeoDB.NUM_OF_CURRENCIES
+
+
+@assert_throws(err_type=OutOfStockError,
+               msg="No more unique values, database contain only {c} currencies.",
+               params={"c": 169})
+def test_next_currency_index_out_of_stock():
+    ctx = MimeoContext("SomeContext")
+    for _ in range(MimeoDB.NUM_OF_CURRENCIES):
+        ctx.next_currency_index()
+
+    ctx.next_currency_index()
+
+
 def test_next_first_name_index_default():
     ctx = MimeoContext("SomeContext")
     for _ in range(MimeoDB.NUM_OF_FIRST_NAMES):
