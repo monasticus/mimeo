@@ -9,6 +9,8 @@ It contains the following modules:
     The Cities module.
 * countries
     The Countries module.
+* currencies
+    The Currencies module.
 * first_names
     The First Names module.
 * last_names
@@ -31,6 +33,8 @@ The Mimeo Context package exports the following classes:
     DTO class representing a single row in cities CSV data.
 * Country
     DTO class representing a single row in countries CSV data.
+* Currency
+    DTO class representing a single row in currencies CSV data.
 * FirstName
     DTO class representing a single row in forenames CSV data.
 
@@ -42,6 +46,7 @@ from __future__ import annotations
 
 from .cities import CitiesDB, City
 from .countries import CountriesDB, Country
+from .currencies import Currency
 from .first_names import FirstName, FirstNamesDB
 from .last_names import LastNamesDB
 from .mimeo_db import MimeoDB
@@ -49,6 +54,7 @@ from .mimeo_db import MimeoDB
 __all__ = [
     "City",
     "Country",
+    "Currency",
     "FirstName",
     "CitiesDB",
     "CountriesDB",
