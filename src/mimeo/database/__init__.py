@@ -25,6 +25,8 @@ The Mimeo Context package exports the following classes:
     Class exposing READ operations on cities CSV data.
 * CountriesDB
     Class exposing READ operations on countries CSV data.
+* CurrenciesDB
+    Class exposing READ operations on currencies CSV data.
 * FirstNamesDB
     Class exposing READ operations on forenames CSV data.
 * LastNamesDB
@@ -46,7 +48,7 @@ from __future__ import annotations
 
 from .cities import CitiesDB, City
 from .countries import CountriesDB, Country
-from .currencies import Currency
+from .currencies import CurrenciesDB, Currency
 from .first_names import FirstName, FirstNamesDB
 from .last_names import LastNamesDB
 from .mimeo_db import MimeoDB
@@ -58,6 +60,7 @@ __all__ = [
     "FirstName",
     "CitiesDB",
     "CountriesDB",
+    "CurrenciesDB",
     "FirstNamesDB",
     "LastNamesDB",
     "MimeoDB",

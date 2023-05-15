@@ -189,7 +189,7 @@ def overwrite_num_of_records(mimeo_db: str, data_frame: pandas.DataFrame):
     """
     print(f"Updating number of records in {mimeo_db}")
     num_of_records = len(data_frame.index)
-    if mimeo_db in [MIMEO_DB_CITIES, MIMEO_DB_COUNTRIES,
+    if mimeo_db in [MIMEO_DB_CITIES, MIMEO_DB_COUNTRIES, MIMEO_DB_CURRENCIES,
                     MIMEO_DB_FORENAMES, MIMEO_DB_SURNAMES]:
         mimeo_db_path = f"{MIMEO_DB_PACKAGE}/{mimeo_db}"
         with Path(mimeo_db_path).open() as module_file:
