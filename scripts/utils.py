@@ -10,6 +10,8 @@ It exports the following constants:
         A Mimeo Cities module file name
     * MIMEO_DB_COUNTRIES
         A Mimeo Countries module file name
+    * MIMEO_DB_CURRENCIES
+        A Mimeo Currencies module file name
     * MIMEO_DB_FORENAMES
         A Mimeo First Names module file name
     * MIMEO_DB_SURNAMES
@@ -20,6 +22,8 @@ It exports the following constants:
         A cities CSV file name
     * MIMEO_RESOURCES_COUNTRIES
         A countries CSV file name
+    * MIMEO_RESOURCES_CURRENCIES
+        A currencies CSV file name
     * MIMEO_RESOURCES_FORENAMES
         A forenames CSV file name
     * MIMEO_RESOURCES_SURNAMES

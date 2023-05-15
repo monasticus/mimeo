@@ -38,7 +38,7 @@ def _modify_source_data(source_df: pandas.DataFrame) -> pandas.DataFrame:
     * updates order of columns (COUNTRY, CODE, NAME) and removes all remaining
     * drops duplicates
     * applies sorting by COUNTRY column
-    * capitalizes COUNTRY values
+    * capitalizes COUNTRY values and gets rid of " (The)" suffix
 
     Parameters
     ----------
@@ -66,7 +66,11 @@ def _modify_source_data(source_df: pandas.DataFrame) -> pandas.DataFrame:
         .loc[:, columns_mapping.values()]
         .drop_duplicates()
         .sort_values(sort_column))
-    currencies_df["COUNTRY"] = currencies_df["COUNTRY"].str.title()
+    currencies_df["COUNTRY"] = (
+        currencies_df["COUNTRY"]
+        .str.title()
+        .map(lambda c: c.replace(" (The)", ""))
+    )
     print("Forenames data has been prepared.")
     return currencies_df
 
