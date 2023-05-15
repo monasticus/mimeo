@@ -42,6 +42,12 @@ class MimeoDB:
         Get cities of a specific country.
     get_city_at(index: int) -> City
         Get a city at `index` position.
+    get_currencies() -> list[Currency]
+        Get all currencies.
+    get_currency_at(index: int) -> Currency
+        Get a currency at `index` position.
+    get_currency_of(country: str) -> Currency | None
+        Get a currency at `index` position.
     get_countries() -> list[Country]
         Get all countries.
     get_country_at(index: int) -> Country
@@ -73,11 +79,11 @@ class MimeoDB:
     def __init__(
             self,
     ):
-        self.__cities_db = CitiesDB()
-        self.__countries_db = CountriesDB()
-        self.__currencies_db = CurrenciesDB()
-        self.__first_names_db = FirstNamesDB()
-        self.__last_names_db = LastNamesDB()
+        self._cities_db = CitiesDB()
+        self._countries_db = CountriesDB()
+        self._currencies_db = CurrenciesDB()
+        self._first_names_db = FirstNamesDB()
+        self._last_names_db = LastNamesDB()
 
     def get_cities(
             self,
@@ -89,7 +95,7 @@ class MimeoDB:
         list[City]
             List of all cities
         """
-        return self.__cities_db.get_cities()
+        return self._cities_db.get_cities()
 
     def get_cities_of(
             self,
@@ -119,7 +125,7 @@ class MimeoDB:
         country = next(countries, None)
         if country is None:
             return []
-        return self.__cities_db.get_cities_of(country.iso_3)
+        return self._cities_db.get_cities_of(country.iso_3)
 
     def get_city_at(
             self,
@@ -142,7 +148,7 @@ class MimeoDB:
         InvalidIndexError
             If the provided `index` is out of bounds
         """
-        return self.__cities_db.get_city_at(index)
+        return self._cities_db.get_city_at(index)
 
     def get_currencies(
             self,
@@ -154,7 +160,60 @@ class MimeoDB:
         list[Currency]
             List of all currencies
         """
-        return self.__currencies_db.get_currencies()
+        return self._currencies_db.get_currencies()
+
+    def get_currency_at(
+            self,
+            index: int,
+    ) -> Currency:
+        """Get a currency at `index` position.
+
+        Parameters
+        ----------
+        index : int
+            A currency row index
+
+        Returns
+        -------
+        Currency
+            A specific currency
+
+        Raises
+        ------
+        InvalidIndexError
+            If the provided `index` is out of bounds
+        """
+        return self._currencies_db.get_currency_at(index)
+
+    def get_currency_of(
+            self,
+            country: str,
+    ) -> Currency | None:
+        """Get a currency of a specific country.
+
+        In contrast to CurrenciesDB.get_currency_of() method it combines
+        CurrenciesDB and CountriesDB to allow for any country detail
+        providing. It can be ISO3 code, ISO2 code and name.
+        First it will find the specific country and extract its
+        name to use in CurrenciesDB.get_currency_of() call.
+
+        Parameters
+        ----------
+        country : str
+            A country ISO3 / ISO2 code or name to filter currency
+
+        Returns
+        -------
+        Currency
+            A currency used in a specific country
+        """
+        countries = filter(
+            lambda c: country in [c.iso_3, c.iso_2, c.name],
+            self.get_countries())
+        country = next(countries, None)
+        if country is None:
+            return None
+        return self._currencies_db.get_currency_of(country.name)
 
     def get_countries(
             self,
@@ -166,7 +225,7 @@ class MimeoDB:
         list[Country]
             List of all countries
         """
-        return self.__countries_db.get_countries()
+        return self._countries_db.get_countries()
 
     def get_country_at(
             self,
@@ -189,7 +248,7 @@ class MimeoDB:
         InvalidIndexError
             If the provided `index` is out of bounds
         """
-        return self.__countries_db.get_country_at(index)
+        return self._countries_db.get_country_at(index)
 
     def get_country_by_iso_3(
             self,
@@ -207,7 +266,7 @@ class MimeoDB:
         Country
             A specific country or None
         """
-        return self.__countries_db.get_country_by_iso_3(iso_3)
+        return self._countries_db.get_country_by_iso_3(iso_3)
 
     def get_country_by_iso_2(
             self,
@@ -225,7 +284,7 @@ class MimeoDB:
         Country
             A specific country or None
         """
-        return self.__countries_db.get_country_by_iso_2(iso_2)
+        return self._countries_db.get_country_by_iso_2(iso_2)
 
     def get_country_by_name(
             self,
@@ -243,7 +302,7 @@ class MimeoDB:
         Country
             A specific country or None
         """
-        return self.__countries_db.get_country_by_name(name)
+        return self._countries_db.get_country_by_name(name)
 
     def get_first_names(
             self,
@@ -255,7 +314,7 @@ class MimeoDB:
         list[FirstName]
             List of all first names
         """
-        return self.__first_names_db.get_first_names()
+        return self._first_names_db.get_first_names()
 
     def get_first_names_by_sex(
             self,
@@ -278,7 +337,7 @@ class MimeoDB:
         InvalidSexError
             If the provided `sex` value is not supported
         """
-        return self.__first_names_db.get_first_names_by_sex(sex)
+        return self._first_names_db.get_first_names_by_sex(sex)
 
     def get_first_name_at(
             self,
@@ -301,7 +360,7 @@ class MimeoDB:
         InvalidIndexError
             If the provided `index` is out of bounds
         """
-        return self.__first_names_db.get_first_name_at(index)
+        return self._first_names_db.get_first_name_at(index)
 
     def get_last_names(
             self,
@@ -313,7 +372,7 @@ class MimeoDB:
         list[str]
             List of all last names
         """
-        return self.__last_names_db.get_last_names()
+        return self._last_names_db.get_last_names()
 
     def get_last_name_at(
             self,
@@ -336,4 +395,4 @@ class MimeoDB:
         InvalidIndexError
             If the provided `index` is out of bounds
         """
-        return self.__last_names_db.get_last_name_at(index)
+        return self._last_names_db.get_last_name_at(index)

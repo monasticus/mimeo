@@ -92,7 +92,7 @@ class CurrenciesDB:
     -------
     get_currencies() -> list[Currency]
         Get all currencies.
-    get_currency_of(country_name: str) -> Currency
+    get_currency_of(country_name: str) -> Currency | None
         Get currency of a specific country.
     get_currency_at(index: int) -> Currency
         Get a currency at `index` position.
@@ -135,8 +135,8 @@ class CurrenciesDB:
     def get_currency_of(
             self,
             country_name: str,
-    ) -> Currency:
-        """Get currency of a specific country.
+    ) -> Currency | None:
+        """Get a currency of a specific country.
 
         Parameters
         ----------
@@ -145,8 +145,8 @@ class CurrenciesDB:
 
         Returns
         -------
-        Currency
-            A currency used in a specific country
+        Currency | None
+            A currency used in a specific country or None
         """
         return CurrenciesDB._get_country_currency(country_name)
 
@@ -166,7 +166,7 @@ class CurrenciesDB:
     def _get_country_currency(
             cls,
             country_name: str,
-    ) -> Currency:
+    ) -> Currency | None:
         """Get currency of a specific country from cache.
 
         The country's currency is initialized for the first time and cached in internal
@@ -179,8 +179,8 @@ class CurrenciesDB:
 
         Returns
         -------
-        Currency
-            A currency used in a specific country
+        Currency | None
+            A currency used in a specific country or None
         """
         if country_name not in cls._COUNTRY_CURRENCIES:
             currencies = cls._get_currencies()
