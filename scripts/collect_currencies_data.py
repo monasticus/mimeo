@@ -25,12 +25,14 @@ def main():
                       _modify_source_data)
 
 
-def _modify_source_data(source_df: pandas.DataFrame) -> pandas.DataFrame:
+def _modify_source_data(
+        source_df: pandas.DataFrame,
+) -> pandas.DataFrame:
     """Modify source data frame.
 
     This function introduces following modifications:
     * applies ASCII encoding on an Entity column
-    * gets rid of " (THE)" suffix and capitalizes COUNTRIES values
+    * customizes Entity and capitalizes Entity values
     * removes rows with Entity starting with 'Zz'
     * removes rows having non-empty WithdrawalDate value
     * renames headers (
@@ -61,7 +63,7 @@ def _modify_source_data(source_df: pandas.DataFrame) -> pandas.DataFrame:
 
     source_df["Entity"] = (
         utils.apply_ascii_encoding_on_column(source_df, "Entity")
-        .map(lambda c: c.replace(" (THE)", ""))
+        .map(_apply_specific_countries_modifications)
         .str.title())
     source_df = source_df[~source_df["Entity"].str.startswith("Zz")]
     currencies_df = (
@@ -76,6 +78,34 @@ def _modify_source_data(source_df: pandas.DataFrame) -> pandas.DataFrame:
         .sort_values(sort_column))
     print("Currencies data has been prepared.")
     return currencies_df
+
+
+def _apply_specific_countries_modifications(
+        country: str,
+) -> str:
+    """Modify a country name.
+
+    This function introduces following modifications:
+    * gets rid of " (THE)" suffix
+    * replaces an extended form of the United Kingdom name
+
+    Parameters
+    ----------
+    country : str
+        A country name
+
+    Returns
+    -------
+    country : str
+        A modified country name
+    """
+    country = country.replace(
+        " (THE)",
+        "")
+    country = country.replace(
+        "UNITED KINGDOM OF GREAT BRITAIN AND NORTHERN IRELAND",
+        "UNITED KINGDOM")
+    return country
 
 
 if __name__ == "__main__":
