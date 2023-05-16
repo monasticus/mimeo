@@ -83,9 +83,7 @@ class UtilsRenderer:
             If the Mimeo Util name does not match any existing Mimeo
             Util.
         """
-        return cls.render_parametrized({
-            cc.MODEL_MIMEO_UTIL_NAME_KEY: mimeo_util_key,
-        })
+        return cls.render_parametrized({cc.MODEL_MIMEO_UTIL_NAME_KEY: mimeo_util_key})
 
     @classmethod
     def render_parametrized(

@@ -232,53 +232,41 @@ class MimeoConfigParser:
     _GET_VALUE_KEY = "get_value"
     _ARGS_MAPPING = {
         "output": {
-            "entry_path": [cc.OUTPUT_KEY,
-                           cc.OUTPUT_DIRECTION_KEY],
+            "entry_path": [cc.OUTPUT_KEY, cc.OUTPUT_DIRECTION_KEY],
         },
         "xml_declaration": {
-            "entry_path": [cc.OUTPUT_KEY,
-                           cc.OUTPUT_XML_DECLARATION_KEY],
+            "entry_path": [cc.OUTPUT_KEY, cc.OUTPUT_XML_DECLARATION_KEY],
             "get_value": lambda arg: arg.lower() == "true",
         },
         "indent": {
-            "entry_path": [cc.OUTPUT_KEY,
-                           cc.OUTPUT_INDENT_KEY],
+            "entry_path": [cc.OUTPUT_KEY, cc.OUTPUT_INDENT_KEY],
         },
         "directory": {
-            "entry_path": [cc.OUTPUT_KEY,
-                           cc.OUTPUT_DIRECTORY_PATH_KEY],
+            "entry_path": [cc.OUTPUT_KEY, cc.OUTPUT_DIRECTORY_PATH_KEY],
         },
         "file": {
-            "entry_path": [cc.OUTPUT_KEY,
-                           cc.OUTPUT_FILE_NAME_KEY],
+            "entry_path": [cc.OUTPUT_KEY, cc.OUTPUT_FILE_NAME_KEY],
         },
         "http_method": {
-            "entry_path": [cc.OUTPUT_KEY,
-                           cc.OUTPUT_METHOD_KEY],
+            "entry_path": [cc.OUTPUT_KEY, cc.OUTPUT_METHOD_KEY],
         },
         "http_protocol": {
-            "entry_path": [cc.OUTPUT_KEY,
-                           cc.OUTPUT_PROTOCOL_KEY],
+            "entry_path": [cc.OUTPUT_KEY, cc.OUTPUT_PROTOCOL_KEY],
         },
         "http_host": {
-            "entry_path": [cc.OUTPUT_KEY,
-                           cc.OUTPUT_HOST_KEY],
+            "entry_path": [cc.OUTPUT_KEY, cc.OUTPUT_HOST_KEY],
         },
         "http_port": {
-            "entry_path": [cc.OUTPUT_KEY,
-                           cc.OUTPUT_PORT_KEY],
+            "entry_path": [cc.OUTPUT_KEY, cc.OUTPUT_PORT_KEY],
         },
         "http_endpoint": {
-            "entry_path": [cc.OUTPUT_KEY,
-                           cc.OUTPUT_ENDPOINT_KEY],
+            "entry_path": [cc.OUTPUT_KEY, cc.OUTPUT_ENDPOINT_KEY],
         },
         "http_user": {
-            "entry_path": [cc.OUTPUT_KEY,
-                           cc.OUTPUT_USERNAME_KEY],
+            "entry_path": [cc.OUTPUT_KEY, cc.OUTPUT_USERNAME_KEY],
         },
         "http_password": {
-            "entry_path": [cc.OUTPUT_KEY,
-                           cc.OUTPUT_PASSWORD_KEY],
+            "entry_path": [cc.OUTPUT_KEY, cc.OUTPUT_PASSWORD_KEY],
         },
     }
 

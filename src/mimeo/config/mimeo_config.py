@@ -272,9 +272,7 @@ class MimeoOutput(MimeoDTO):
         UnsupportedPropertyValueError
             If the configured output direction is not supported
         """
-        direction = output.get(
-            cc.OUTPUT_DIRECTION_KEY,
-            cc.OUTPUT_DIRECTION_FILE)
+        direction = output.get(cc.OUTPUT_DIRECTION_KEY, cc.OUTPUT_DIRECTION_FILE)
         if direction not in cc.SUPPORTED_OUTPUT_DIRECTIONS:
             raise UnsupportedPropertyValueError(
                 cc.OUTPUT_DIRECTION_KEY,
@@ -303,9 +301,7 @@ class MimeoOutput(MimeoDTO):
         UnsupportedPropertyValueError
             If the customized output format is not supported
         """
-        output_format = config.get(
-            cc.OUTPUT_FORMAT_KEY,
-            cc.OUTPUT_FORMAT_XML)
+        output_format = config.get(cc.OUTPUT_FORMAT_KEY, cc.OUTPUT_FORMAT_XML)
         if output_format not in cc.SUPPORTED_OUTPUT_FORMATS:
             raise UnsupportedPropertyValueError(
                 cc.OUTPUT_FORMAT_KEY,
@@ -425,9 +421,7 @@ class MimeoOutput(MimeoDTO):
         """
         method = None
         if direction == cc.OUTPUT_DIRECTION_HTTP:
-            method = output.get(
-                cc.OUTPUT_METHOD_KEY,
-                cc.OUTPUT_HTTP_REQUEST_POST)
+            method = output.get(cc.OUTPUT_METHOD_KEY, cc.OUTPUT_HTTP_REQUEST_POST)
             if method not in cc.SUPPORTED_REQUEST_METHODS:
                 raise UnsupportedPropertyValueError(
                     cc.OUTPUT_METHOD_KEY,
@@ -465,9 +459,7 @@ class MimeoOutput(MimeoDTO):
         """
         protocol = None
         if direction == cc.OUTPUT_DIRECTION_HTTP:
-            protocol = output.get(
-                cc.OUTPUT_PROTOCOL_KEY,
-                cc.OUTPUT_PROTOCOL_HTTP)
+            protocol = output.get(cc.OUTPUT_PROTOCOL_KEY, cc.OUTPUT_PROTOCOL_HTTP)
             if protocol not in cc.SUPPORTED_REQUEST_PROTOCOLS:
                 raise UnsupportedPropertyValueError(
                     cc.OUTPUT_PROTOCOL_KEY,
