@@ -6,6 +6,7 @@ It exports only one class:
 """
 from __future__ import annotations
 
+from mimeo.config import constants as cc
 from mimeo.config.exc import UnsupportedPropertyValueError
 from mimeo.config.mimeo_config import MimeoConfig
 from mimeo.consumers import Consumer, FileConsumer, HttpConsumer, RawConsumer
@@ -31,9 +32,9 @@ class ConsumerFactory:
         Initialize a Consumer based on the Mimeo Output Direction.
     """
 
-    FILE_DIRECTION = MimeoConfig.OUTPUT_DIRECTION_FILE
-    STD_OUT_DIRECTION = MimeoConfig.OUTPUT_DIRECTION_STD_OUT
-    HTTP_DIRECTION = MimeoConfig.OUTPUT_DIRECTION_HTTP
+    FILE_DIRECTION = cc.OUTPUT_DIRECTION_FILE
+    STD_OUT_DIRECTION = cc.OUTPUT_DIRECTION_STD_OUT
+    HTTP_DIRECTION = cc.OUTPUT_DIRECTION_HTTP
 
     @staticmethod
     def get_consumer(
@@ -64,6 +65,6 @@ class ConsumerFactory:
         if direction == ConsumerFactory.HTTP_DIRECTION:
             return HttpConsumer(mimeo_config.output)
         raise UnsupportedPropertyValueError(
-            MimeoConfig.OUTPUT_DIRECTION_KEY,
+            cc.OUTPUT_DIRECTION_KEY,
             direction,
-            MimeoConfig.SUPPORTED_OUTPUT_DIRECTIONS)
+            cc.SUPPORTED_OUTPUT_DIRECTIONS)

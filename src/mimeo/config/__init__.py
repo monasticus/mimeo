@@ -3,6 +3,8 @@
 It contains the following modules:
 * mimeo_config
     The Mimeo Configuration module
+* constants
+    The Mimeo Configuration Constants module
 * exc
     The Mimeo Configuration Exceptions module
 
@@ -13,6 +15,7 @@ root Mimeo Configuration component:
 
 To use this package, simply import it:
     from mimeo.config import MimeoConfig
+    from mimeo.config import constants as cc
     from mimeo.config.exc import UnsupportedPropertyValueError
 """
 from __future__ import annotations
