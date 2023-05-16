@@ -1,0 +1,69 @@
+{
+  "_templates_": [
+    {
+      "count": 30,
+      "model": {
+        "SomeEntity": {
+          "UniqueCurrencyCode": {
+            "_mimeo_util": {
+              "_name": "currency",
+              "unique": true
+            }
+          },
+          "CurrencyCodeForCountryISO2": {
+            "_mimeo_util": {
+              "_name": "currency",
+              "country": "GB"
+            }
+          },
+          "CurrencyCodeForCountryISO3": {
+            "_mimeo_util": {
+              "_name": "currency",
+              "country": "GBR"
+            }
+          },
+          "CurrencyCodeForCountryName": {
+            "_mimeo_util": {
+              "_name": "currency",
+              "country": "United Kingdom"
+            }
+          },
+          "CurrencyName": {
+            "_mimeo_util": {
+              "_name": "currency",
+              "value": "name"
+            }
+          },
+          "UniqueCurrencyName": {
+            "_mimeo_util": {
+              "_name": "currency",
+              "value": "name",
+              "unique": false
+            }
+          },
+          "CurrencyNameForCountryISO2": {
+            "_mimeo_util": {
+              "_name": "currency",
+              "value": "name",
+              "country": "GB"
+            }
+          },
+          "CurrencyNameForCountryISO3": {
+            "_mimeo_util": {
+              "_name": "currency",
+              "value": "name",
+              "country": "GBR"
+            }
+          },
+          "CurrencyNameForCountryName": {
+            "_mimeo_util": {
+              "_name": "currency",
+              "value": "name",
+              "country": "United Kingdom"
+            }
+          }
+        }
+      }
+    }
+  ]
+}

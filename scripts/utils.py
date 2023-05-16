@@ -10,6 +10,8 @@ It exports the following constants:
         A Mimeo Cities module file name
     * MIMEO_DB_COUNTRIES
         A Mimeo Countries module file name
+    * MIMEO_DB_CURRENCIES
+        A Mimeo Currencies module file name
     * MIMEO_DB_FORENAMES
         A Mimeo First Names module file name
     * MIMEO_DB_SURNAMES
@@ -20,6 +22,8 @@ It exports the following constants:
         A cities CSV file name
     * MIMEO_RESOURCES_COUNTRIES
         A countries CSV file name
+    * MIMEO_RESOURCES_CURRENCIES
+        A currencies CSV file name
     * MIMEO_RESOURCES_FORENAMES
         A forenames CSV file name
     * MIMEO_RESOURCES_SURNAMES
@@ -38,10 +42,15 @@ It exports the following functions:
         Save data frame to a file.
     * overwrite_num_of_records
         Overwrite a number of records in Mimeo Database package.
+    * apply_ascii_encoding_on_column
+        Apply ASCII encoding on a specific data frame's column.
+    * apply_ascii_encoding
+        Apply ASCII encoding.
 """
 from __future__ import annotations
 
 import re
+import unicodedata
 import zipfile
 from pathlib import Path
 from typing import Callable
@@ -52,17 +61,21 @@ from requests import Session
 MIMEO_DB_PACKAGE = "src/mimeo/database"
 MIMEO_DB_CITIES = "cities.py"
 MIMEO_DB_COUNTRIES = "countries.py"
+MIMEO_DB_CURRENCIES = "currencies.py"
 MIMEO_DB_FORENAMES = "first_names.py"
 MIMEO_DB_SURNAMES = "last_names.py"
 
 MIMEO_RESOURCES_PACKAGE = "src/mimeo/resources"
 MIMEO_RESOURCES_CITIES = "cities.csv"
 MIMEO_RESOURCES_COUNTRIES = "countries.csv"
+MIMEO_RESOURCES_CURRENCIES = "currencies.csv"
 MIMEO_RESOURCES_FORENAMES = "forenames.csv"
 MIMEO_RESOURCES_SURNAMES = "surnames.txt"
 
 
-def download_file(url: str) -> str:
+def download_file(
+        url: str,
+) -> str:
     """Download a file from `url`.
 
     Parameters
@@ -88,7 +101,10 @@ def download_file(url: str) -> str:
     return target_path
 
 
-def extract_zip_data(zip_path: str, files_to_extract: list = None):
+def extract_zip_data(
+        zip_path: str,
+        files_to_extract: list = None,
+):
     """Extract data from ZIP file.
 
     Parameters
@@ -107,7 +123,9 @@ def extract_zip_data(zip_path: str, files_to_extract: list = None):
         zip_file.extractall(members=files_to_extract)
 
 
-def remove_file(file_path: str):
+def remove_file(
+        file_path: str,
+):
     """Remove a file if it exists."""
     if Path(file_path).exists():
         print(f"Removing file: {file_path}.")
@@ -146,7 +164,10 @@ def adjust_data(
     remove_file(source_data_path)
 
 
-def dump_to_database(data_frame: pandas.DataFrame, target_file: str):
+def dump_to_database(
+        data_frame: pandas.DataFrame,
+        target_file: str,
+):
     """Save data frame to a file.
 
     If the `target_file` is not a CSV file, then header will not be
@@ -164,7 +185,10 @@ def dump_to_database(data_frame: pandas.DataFrame, target_file: str):
     data_frame.to_csv(target_path, index=False, header=target_file.endswith(".csv"))
 
 
-def overwrite_num_of_records(mimeo_db: str, data_frame: pandas.DataFrame):
+def overwrite_num_of_records(
+        mimeo_db: str,
+        data_frame: pandas.DataFrame,
+):
     """Overwrite a number of records in Mimeo Database package.
 
     Parameters
@@ -176,7 +200,7 @@ def overwrite_num_of_records(mimeo_db: str, data_frame: pandas.DataFrame):
     """
     print(f"Updating number of records in {mimeo_db}")
     num_of_records = len(data_frame.index)
-    if mimeo_db in [MIMEO_DB_CITIES, MIMEO_DB_COUNTRIES,
+    if mimeo_db in [MIMEO_DB_CITIES, MIMEO_DB_COUNTRIES, MIMEO_DB_CURRENCIES,
                     MIMEO_DB_FORENAMES, MIMEO_DB_SURNAMES]:
         mimeo_db_path = f"{MIMEO_DB_PACKAGE}/{mimeo_db}"
         with Path(mimeo_db_path).open() as module_file:
@@ -196,3 +220,18 @@ def overwrite_num_of_records(mimeo_db: str, data_frame: pandas.DataFrame):
     else:
         print("Number of records has not been overwritten "
               f"as {mimeo_db} is not a registered Mimeo Database.")
+
+
+def apply_ascii_encoding_on_column(
+        data_frame: pandas.DataFrame,
+        column_name: str,
+) -> pandas.Series:
+    """Apply ASCII encoding on a specific data frame's column."""
+    return data_frame[column_name].apply(apply_ascii_encoding)
+
+
+def apply_ascii_encoding(
+        value: str,
+) -> str:
+    """Apply ASCII encoding."""
+    return unicodedata.normalize("NFKD", value).encode("ascii", "ignore").decode()

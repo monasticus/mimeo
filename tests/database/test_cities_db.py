@@ -6,13 +6,15 @@ from tests.utils import assert_throws
 
 
 def test_get_cities():
-    cities = CitiesDB.get_cities()
+    db = CitiesDB()
+
+    cities = db.get_cities()
     assert len(cities) == CitiesDB.NUM_OF_RECORDS
 
     cities.pop(0)
     assert len(cities) == CitiesDB.NUM_OF_RECORDS - 1
 
-    cities = CitiesDB.get_cities()
+    cities = db.get_cities()
     assert len(cities) == CitiesDB.NUM_OF_RECORDS
 
 
@@ -55,6 +57,6 @@ def test_get_city_of():
 
 def test_get_city_of_non_existing_country():
     db = CitiesDB()
-    gbr_cities = db.get_cities_of("NEC")
+    nec_cities = db.get_cities_of("NEC")
 
-    assert len(gbr_cities) == 0
+    assert len(nec_cities) == 0

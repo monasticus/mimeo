@@ -6,13 +6,15 @@ from tests.utils import assert_throws
 
 
 def test_get_last_names():
-    last_names = LastNamesDB.get_last_names()
+    db = LastNamesDB()
+
+    last_names = db.get_last_names()
     assert len(last_names) == LastNamesDB.NUM_OF_RECORDS
 
     last_names.pop(0)
     assert len(last_names) == LastNamesDB.NUM_OF_RECORDS - 1
 
-    last_names = LastNamesDB.get_last_names()
+    last_names = db.get_last_names()
     assert len(last_names) == LastNamesDB.NUM_OF_RECORDS
 
 

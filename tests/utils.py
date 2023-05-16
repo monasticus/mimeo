@@ -1,6 +1,6 @@
 import functools
 import sys
-from typing import Callable, List, Type, Tuple
+from typing import Callable, List, Tuple, Type
 
 import pytest
 from aiohttp import BasicAuth

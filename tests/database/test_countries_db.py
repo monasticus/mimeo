@@ -6,13 +6,15 @@ from tests.utils import assert_throws
 
 
 def test_get_countries():
-    countries = CountriesDB.get_countries()
+    db = CountriesDB()
+
+    countries = db.get_countries()
     assert len(countries) == CountriesDB.NUM_OF_RECORDS
 
     countries.pop(0)
     assert len(countries) == CountriesDB.NUM_OF_RECORDS - 1
 
-    countries = CountriesDB.get_countries()
+    countries = db.get_countries()
     assert len(countries) == CountriesDB.NUM_OF_RECORDS
 
 

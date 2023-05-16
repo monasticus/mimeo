@@ -51,6 +51,8 @@ class MimeoContext:
         Provide next unique country index.
     next_city_index(country: str = None) -> int
         Provide next unique city index.
+    next_currency_index() -> int
+        Provide next unique currency index.
     next_first_name_index(sex: str = None) -> int
         Provide next unique first name index.
     next_last_name_index() -> int
@@ -77,6 +79,7 @@ class MimeoContext:
         self._iterations = []
         self._countries_indexes = None
         self._cities_indexes = {}
+        self._currencies_indexes = None
         self._first_names_indexes = {}
         self._last_names_indexes = None
 
@@ -274,6 +277,34 @@ class MimeoContext:
 
         return self._cities_indexes[country][MimeoContext._INDEXES].pop()
 
+    def next_currency_index(
+            self,
+    ) -> int:
+        """Provide next unique currency index.
+
+        When used for the first time in the specific context
+        it populates internal currencies' indexes list. This approach
+        ensures country uniqueness without time-consuming operations.
+        Each time it verifies if the internal list still contains some
+        indexes.
+        This method is used by the Currency Mimeo Util to get a currency
+        entry at a specific index in database.
+
+        Returns
+        -------
+        int
+            Next unique currency identifier
+
+        Raises
+        ------
+        OutOfStockError
+            If all currencies' indexes have been consumed already
+        """
+        self._initialize_currencies_indexes()
+        self._validate_currencies()
+
+        return self._currencies_indexes.pop()
+
     def next_first_name_index(
             self,
             sex: str = None,
@@ -386,6 +417,19 @@ class MimeoContext:
                 MimeoContext._INDEXES: cities_indexes,
             }
 
+    def _initialize_currencies_indexes(
+            self,
+    ):
+        """Initialize currencies' indexes with unique integers.
+
+        The list length and range depends on the number of currency
+        records in database.
+        """
+        if self._currencies_indexes is None:
+            num_of_entries = MimeoDB.NUM_OF_CURRENCIES
+            currencies_indexes = random.sample(range(num_of_entries), num_of_entries)
+            self._currencies_indexes = currencies_indexes
+
     def _initialize_first_names_indexes(
             self,
             sex: str,
@@ -460,6 +504,21 @@ class MimeoContext:
             else:
                 msg = (f"No more unique values, "
                        f"database contain only {init_count} cities of {country}.")
+            raise OutOfStockError(msg)
+
+    def _validate_currencies(
+            self,
+    ):
+        """Verify if all currencies' indexes have been consumed.
+
+        Raises
+        ------
+        OutOfStockError
+            If all currencies' indexes have been consumed already
+        """
+        if len(self._currencies_indexes) == 0:
+            msg = (f"No more unique values, "
+                   f"database contain only {MimeoDB.NUM_OF_CURRENCIES} currencies.")
             raise OutOfStockError(msg)
 
     def _validate_first_names(

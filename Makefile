@@ -10,6 +10,7 @@ imports:
 
 data:
 	@./scripts/collect_cities_and_countries_data.py
+	@./scripts/collect_currencies_data.py
 	@./scripts/collect_forenames_data.py
 	@./scripts/collect_surnames_data.py
 

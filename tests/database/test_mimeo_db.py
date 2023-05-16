@@ -1,10 +1,10 @@
-from mimeo.database import (CitiesDB, CountriesDB, FirstNamesDB, LastNamesDB,
-                            MimeoDB)
+from mimeo.database import (CitiesDB, CountriesDB, CurrenciesDB, FirstNamesDB,
+                            LastNamesDB, MimeoDB)
 
 
 def test_get_cities():
     mimeo_db = MimeoDB()
-    cities_from_cities_db = CitiesDB.get_cities()
+    cities_from_cities_db = CitiesDB().get_cities()
     cities_from_mimeo_db = mimeo_db.get_cities()
     mimeo_db_count = len(cities_from_mimeo_db)
     assert mimeo_db_count > 0
@@ -72,7 +72,7 @@ def test_get_city_of_non_existing_country():
 
 def test_get_countries():
     mimeo_db = MimeoDB()
-    countries_from_countries_db = CountriesDB.get_countries()
+    countries_from_countries_db = CountriesDB().get_countries()
     countries_from_mimeo_db = mimeo_db.get_countries()
     mimeo_db_count = len(countries_from_mimeo_db)
     assert mimeo_db_count > 0
@@ -124,7 +124,7 @@ def test_get_country_by_name():
 
 def test_get_first_names():
     mimeo_db = MimeoDB()
-    first_names_form_first_names_db = FirstNamesDB.get_first_names()
+    first_names_form_first_names_db = FirstNamesDB().get_first_names()
     first_names_from_mimeo_db = mimeo_db.get_first_names()
     mimeo_db_count = len(first_names_from_mimeo_db)
     assert mimeo_db_count > 0
@@ -161,7 +161,7 @@ def test_get_first_names_by_sex():
 
 def test_get_last_names():
     mimeo_db = MimeoDB()
-    last_names_form_last_names_db = LastNamesDB.get_last_names()
+    last_names_form_last_names_db = LastNamesDB().get_last_names()
     last_names_from_mimeo_db = mimeo_db.get_last_names()
     mimeo_db_count = len(last_names_from_mimeo_db)
     assert mimeo_db_count > 0
@@ -182,3 +182,62 @@ def test_get_last_name_at():
     last_name_from_mimeo_db = mimeo_db.get_last_name_at(1)
     assert last_name_from_mimeo_db is not None
     assert last_name_from_mimeo_db is last_name_from_last_names_db
+
+
+def test_get_currencies():
+    mimeo_db = MimeoDB()
+    currencies_from_currencies_db = CurrenciesDB().get_currencies()
+    currencies_from_mimeo_db = mimeo_db.get_currencies()
+    mimeo_db_count = len(currencies_from_mimeo_db)
+    assert mimeo_db_count > 0
+    assert mimeo_db_count == len(currencies_from_currencies_db)
+    for i in range(mimeo_db_count):
+        assert currencies_from_mimeo_db[i] is currencies_from_currencies_db[i]
+
+
+def test_get_currency_at():
+    mimeo_db = MimeoDB()
+    currencies_db = CurrenciesDB()
+    currency_from_currencies_db = currencies_db.get_currency_at(0)
+    currency_from_mimeo_db = mimeo_db.get_currency_at(0)
+    assert currency_from_mimeo_db is not None
+    assert currency_from_mimeo_db is currency_from_currencies_db
+
+    currency_from_currencies_db = currencies_db.get_currency_at(1)
+    currency_from_mimeo_db = mimeo_db.get_currency_at(1)
+    assert currency_from_mimeo_db is not None
+    assert currency_from_mimeo_db is currency_from_currencies_db
+
+
+def test_get_currency_of_using_country_name():
+    mimeo_db = MimeoDB()
+    currencies_db = CurrenciesDB()
+    currency_from_currencies_db = currencies_db.get_currency_of("United Kingdom")
+    currency_from_mimeo_db = mimeo_db.get_currency_of("United Kingdom")
+    assert currency_from_mimeo_db is not None
+    assert currency_from_mimeo_db is currency_from_currencies_db
+
+
+def test_get_currency_of_using_country_iso3():
+    mimeo_db = MimeoDB()
+    currencies_db = CurrenciesDB()
+    currency_from_currencies_db = currencies_db.get_currency_of("United Kingdom")
+    currency_from_mimeo_db = mimeo_db.get_currency_of("GBR")
+    assert currency_from_mimeo_db is not None
+    assert currency_from_mimeo_db is currency_from_currencies_db
+
+
+def test_get_currency_of_using_country_iso2():
+    mimeo_db = MimeoDB()
+    currencies_db = CurrenciesDB()
+    currency_from_currencies_db = currencies_db.get_currency_of("United Kingdom")
+    currency_from_mimeo_db = mimeo_db.get_currency_of("GB")
+    assert currency_from_mimeo_db is not None
+    assert currency_from_mimeo_db is currency_from_currencies_db
+
+
+def test_get_currency_of_non_existing_country():
+    mimeo_db = MimeoDB()
+    currency = mimeo_db.get_currency_of("NEC")
+
+    assert currency is None

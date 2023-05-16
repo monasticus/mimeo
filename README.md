@@ -304,6 +304,10 @@ You can use several predefined functions to generate data. They can be used in a
 
 Generates a random string value.
 
+| Parameter | Supported values | Default |
+|:---------:|:----------------:|:-------:|
+|  length   |      `int`       |  `20`   |
+
 ###### Raw
 
 Uses the default length: 20 characters.
@@ -332,6 +336,11 @@ Uses the customized length.
 ##### Random Integer
 
 Generates a random integer value between `start` and `limit` parameters (inclusive).
+
+| Parameter | Supported values | Default |
+|:---------:|:----------------:|:-------:|
+|   start   |      `int`       |   `1`   |
+|   limit   |      `int`       |  `100`  |
 
 ###### Raw
 
@@ -376,6 +385,10 @@ Uses the customized limit.
 Generates a random value from items provided.  
 NOTICE: The raw form of this Mimeo Util will generate a blank string value (as same as no items parametrized).
 
+| Parameter | Supported values | Default |
+|:---------:|:----------------:|:-------:|
+|   items   |      `list`      | `[""]`  |
+
 ###### Parametrized
 
 ```json
@@ -392,6 +405,10 @@ NOTICE: The raw form of this Mimeo Util will generate a blank string value (as s
 ##### Date
 
 Generates a date value in format `YYYY-MM-DD`.
+
+| Parameter  | Supported values | Default |
+|:----------:|:----------------:|:-------:|
+| days_delta |      `int`       |   `0`   |
 
 ###### Raw
 
@@ -428,6 +445,13 @@ Uses the customized days delta.
 
 Generates a date time value in format `YYYY-MM-DD'T'HH:mm:SS`.
 
+|   Parameter   | Supported values | Default |
+|:-------------:|:----------------:|:-------:|
+|  days_delta   |      `int`       |   `0`   |
+|  hours_delta  |      `int`       |   `0`   |
+| minutes_delta |      `int`       |   `0`   |
+| seconds_delta |      `int`       |   `0`   |
+
 ###### Raw
 
 Uses the current timestamp.
@@ -460,6 +484,10 @@ Uses the customized deltas.
 
 Generates a next integer in context of a model (in nested templates it will use a separated context).
 
+| Parameter | Supported values | Default  |
+|:---------:|:----------------:|:--------:|
+|  pattern  |      `str`       | `{:05d}` |
+
 ###### Raw
 
 Uses a default pattern: **{:05d}** (an integer with 5 leading zeros).
@@ -489,6 +517,10 @@ Uses the string pattern provided.
 
 Generates a value of the current iteration in a Mimeo Template context.
 
+| Parameter | Supported values |      Default      |
+|:---------:|:----------------:|:-----------------:|
+|  context  |      `str`       | a current context |
+
 ###### Raw
 
 Uses the current context.
@@ -517,6 +549,11 @@ Uses a specific Mimeo Model context (model name when `context` is not configured
 ##### Key
 
 Generates a key unique across all Mimeo Models and being the same within a single Mimeo Model context.
+
+| Parameter | Supported values |              Default               |
+|:---------:|:----------------:|:----------------------------------:|
+|  context  |      `str`       |         a current context          |
+| iteration |      `int`       | a current iteration of the context |
 
 ###### Raw
 
@@ -548,6 +585,11 @@ When context is indicated and iteration is not, then the current iteration **of 
 ##### City
 
 Generates a city name.
+
+| Parameter | Supported values | Default |
+|:---------:|:----------------:|:-------:|
+|  unique   |      `bool`      | `True`  |
+|  country  |      `str`       | `None`  |
 
 ###### Raw
 
@@ -602,6 +644,12 @@ Uses country (name, iso2, iso3) and `unique` flag to generate a city name.
 ##### Country
 
 Generates a country name (by default), iso2 or iso3.
+
+| Parameter |       Supported values       | Default  |
+|:---------:|:----------------------------:|:--------:|
+|  unique   |            `bool`            |  `True`  |
+|   value   | `"name"`, `"iso3"`, `"iso2"` | `"name"` |
+|  country  |            `str`             |  `None`  |
 
 ###### Raw
 
@@ -660,9 +708,80 @@ When the `country` param is provided then the `unique` flag is ignored.
 }
 ```
 
+##### Currency
+
+Generates a currency code (by default) or name.
+
+| Parameter |  Supported values  | Default  |
+|:---------:|:------------------:|:--------:|
+|  unique   |       `bool`       | `False`  |
+|   value   | `"code"`, `"name"` | `"code"` |
+|  country  |       `str`        |  `None`  |
+
+###### Raw
+
+By default city names will _NOT_ be unique across a Mimeo Context.
+
+```json
+{
+  "Currency": "{currency}"
+}
+```
+
+###### Parametrized
+
+It can generate:
+- unique currencies
+- currency name instead of code
+- currency code or name of a specific country (using iso3, iso2 or name)
+
+When the `country` param is provided then the `unique` flag is ignored.
+
+```json
+{
+  "UniqueCurrencyCode": {
+    "_mimeo_util": {
+      "_name": "currency",
+      "unique": true
+    }
+  },
+  "CurrencyName": {
+    "_mimeo_util": {
+      "_name": "currency",
+      "value": "name"
+    }
+  },
+  "CurrencyCodeForCountryISO3": {
+    "_mimeo_util": {
+      "_name": "currency",
+      "country": "GBR"
+    }
+  },
+  "CurrencyNameForCountryISO2": {
+    "_mimeo_util": {
+      "_name": "currency",
+      "value": "name",
+      "country": "GB"
+    }
+  },
+  "CurrencyNameForCountryName": {
+    "_mimeo_util": {
+      "_name": "currency",
+      "value": "name",
+      "country": "United Kingdom"
+    }
+  }
+}
+```
+
 ##### First Name
 
 Generates a first name.
+
+| Parameter |      Supported values      | Default  |
+|:---------:|:--------------------------:|:--------:|
+|  unique   |           `bool`           |  `True`  |
+|    sex    | `M`, `Male`, `F`, `Female` |  `None`  |
 
 ###### Raw
 
@@ -711,6 +830,10 @@ Uses sex (`M` / `Male` / `F` / `Female`) and `unique` flag to generate a first n
 ##### Last Name
 
 Generates a last name.
+
+| Parameter | Supported values | Default  |
+|:---------:|:----------------:|:--------:|
+|  unique   |      `bool`      |  `True`  |
 
 ###### Raw
 
