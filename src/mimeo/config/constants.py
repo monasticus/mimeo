@@ -51,15 +51,15 @@ OUTPUT_ENDPOINT_KEY = _http_direction_details["endpoint"]["key"]
 OUTPUT_USERNAME_KEY = _http_direction_details["username"]["key"]
 OUTPUT_PASSWORD_KEY = _http_direction_details["password"]["key"]
 
-_http_method_details = _http_direction_details["method"]
-SUPPORTED_REQUEST_METHODS = _http_method_details["supported-values"].values()
-OUTPUT_DIRECTION_HTTP_REQUEST_POST = _http_method_details["supported-values"]["post"]
-OUTPUT_DIRECTION_HTTP_REQUEST_PUT = _http_method_details["supported-values"]["put"]
+_req_method_details = _http_direction_details["method"]
+SUPPORTED_REQUEST_METHODS = _req_method_details["supported-values"].values()
+OUTPUT_HTTP_REQUEST_POST = _req_method_details["supported-values"]["post"]
+OUTPUT_HTTP_REQUEST_PUT = _req_method_details["supported-values"]["put"]
 
-_protocol_details = _http_direction_details["protocol"]
-SUPPORTED_REQUEST_PROTOCOLS = _protocol_details["supported-values"].values()
-OUTPUT_DIRECTION_HTTP_PROTOCOL_HTTP = _protocol_details["supported-values"]["http"]
-OUTPUT_DIRECTION_HTTP_PROTOCOL_HTTPS = _protocol_details["supported-values"]["https"]
+_req_protocol_details = _http_direction_details["protocol"]
+SUPPORTED_REQUEST_PROTOCOLS = _req_protocol_details["supported-values"].values()
+OUTPUT_PROTOCOL_HTTP = _req_protocol_details["supported-values"]["http"]
+OUTPUT_PROTOCOL_HTTPS = _req_protocol_details["supported-values"]["https"]
 
 ########################################################################################
 #                                      MIMEO VARS                                      #
@@ -107,11 +107,11 @@ __all__ = [
     "OUTPUT_USERNAME_KEY",
     "OUTPUT_PASSWORD_KEY",
     "SUPPORTED_REQUEST_METHODS",
-    "OUTPUT_DIRECTION_HTTP_REQUEST_POST",
-    "OUTPUT_DIRECTION_HTTP_REQUEST_PUT",
+    "OUTPUT_HTTP_REQUEST_POST",
+    "OUTPUT_HTTP_REQUEST_PUT",
     "SUPPORTED_REQUEST_PROTOCOLS",
-    "OUTPUT_DIRECTION_HTTP_PROTOCOL_HTTP",
-    "OUTPUT_DIRECTION_HTTP_PROTOCOL_HTTPS",
+    "OUTPUT_PROTOCOL_HTTP",
+    "OUTPUT_PROTOCOL_HTTPS",
     "VARS_KEY",
     "TEMPLATES_KEY",
     "TEMPLATES_COUNT_KEY",

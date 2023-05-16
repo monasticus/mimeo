@@ -427,7 +427,7 @@ class MimeoOutput(MimeoDTO):
         if direction == cc.OUTPUT_DIRECTION_HTTP:
             method = output.get(
                 cc.OUTPUT_METHOD_KEY,
-                cc.OUTPUT_DIRECTION_HTTP_REQUEST_POST)
+                cc.OUTPUT_HTTP_REQUEST_POST)
             if method not in cc.SUPPORTED_REQUEST_METHODS:
                 raise UnsupportedPropertyValueError(
                     cc.OUTPUT_METHOD_KEY,
@@ -467,7 +467,7 @@ class MimeoOutput(MimeoDTO):
         if direction == cc.OUTPUT_DIRECTION_HTTP:
             protocol = output.get(
                 cc.OUTPUT_PROTOCOL_KEY,
-                cc.OUTPUT_DIRECTION_HTTP_PROTOCOL_HTTP)
+                cc.OUTPUT_PROTOCOL_HTTP)
             if protocol not in cc.SUPPORTED_REQUEST_PROTOCOLS:
                 raise UnsupportedPropertyValueError(
                     cc.OUTPUT_PROTOCOL_KEY,
