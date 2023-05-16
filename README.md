@@ -660,6 +660,66 @@ When the `country` param is provided then the `unique` flag is ignored.
 }
 ```
 
+##### Currency
+
+Generates a currency code (by default) or name.
+
+###### Raw
+
+By default city names will _NOT_ be unique across a Mimeo Context.
+
+```json
+{
+  "Currency": "{currency}"
+}
+```
+
+###### Parametrized
+
+It can generate:
+- unique currencies
+- currency name instead of code
+- currency code or name of a specific country (using iso3, iso2 or name)
+
+When the `country` param is provided then the `unique` flag is ignored.
+
+```json
+{
+  "UniqueCurrencyCode": {
+    "_mimeo_util": {
+      "_name": "currency",
+      "unique": true
+    }
+  },
+  "CurrencyName": {
+    "_mimeo_util": {
+      "_name": "currency",
+      "value": "name"
+    }
+  },
+  "CurrencyCodeForCountryISO3": {
+    "_mimeo_util": {
+      "_name": "currency",
+      "country": "GBR"
+    }
+  },
+  "CurrencyNameForCountryISO2": {
+    "_mimeo_util": {
+      "_name": "currency",
+      "value": "name",
+      "country": "GB"
+    }
+  },
+  "CurrencyNameForCountryName": {
+    "_mimeo_util": {
+      "_name": "currency",
+      "value": "name",
+      "country": "United Kingdom"
+    }
+  }
+}
+```
+
 ##### First Name
 
 Generates a first name.
