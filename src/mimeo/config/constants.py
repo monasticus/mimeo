@@ -17,9 +17,9 @@ OUTPUT_DIRECTION_KEY = _output_constants["direction"]["key"]
 
 ########################################################################################
 # --------------------------------- format specific ---------------------------------- #
-_format_details = _output_constants["format"]
-SUPPORTED_OUTPUT_FORMATS = _format_details["supported-values"].values()
-OUTPUT_FORMAT_XML = _format_details["supported-values"]["xml"]
+_format_details = _output_constants["format"]["values"]
+SUPPORTED_OUTPUT_FORMATS = tuple(format_["key"] for format_ in _format_details.values())
+OUTPUT_FORMAT_XML = _format_details["xml"]["key"]
 
 # -------------------------------- xml format specific ------------------------------- #
 _xml_format_details = _format_details["xml"]["details"]
@@ -28,21 +28,25 @@ OUTPUT_INDENT_KEY = _xml_format_details["indent"]["key"]
 
 ########################################################################################
 # -------------------------------- direction specific -------------------------------- #
-_direction_details = _output_constants["direction"]
-SUPPORTED_OUTPUT_DIRECTIONS = _direction_details["supported-values"].values()
-OUTPUT_DIRECTION_FILE = _direction_details["supported-values"]["file"]
-OUTPUT_DIRECTION_STD_OUT = _direction_details["supported-values"]["std-out"]
-OUTPUT_DIRECTION_HTTP = _direction_details["supported-values"]["http"]
+_direction_details = _output_constants["direction"]["values"]
+SUPPORTED_OUTPUT_DIRECTIONS = tuple(
+    direction["key"]
+    for direction in _direction_details.values())
+OUTPUT_DIRECTION_FILE = _direction_details["file"]["key"]
+OUTPUT_DIRECTION_STD_OUT = _direction_details["std-out"]["key"]
+OUTPUT_DIRECTION_HTTP = _direction_details["http"]["key"]
 
 # ----------------------------- file direction specific ------------------------------ #
-_file_direction_details = _output_constants["direction"]["file"]["details"]
+_file_direction_details = _direction_details["file"]["details"]
 OUTPUT_DIRECTORY_PATH_KEY = _file_direction_details["directory-path"]["key"]
 OUTPUT_FILE_NAME_KEY = _file_direction_details["file-name"]["key"]
 
 # ----------------------------- http direction specific ------------------------------ #
-REQUIRED_HTTP_DETAILS = _output_constants["direction"]["http"]["required"]
+_http_direction_details = _direction_details["http"]["details"]
+REQUIRED_HTTP_DETAILS = tuple(
+    prop["key"] for prop in _http_direction_details.values()
+    if prop.get("required", False) is True)
 
-_http_direction_details = _output_constants["direction"]["http"]["details"]
 OUTPUT_METHOD_KEY = _http_direction_details["method"]["key"]
 OUTPUT_PROTOCOL_KEY = _http_direction_details["protocol"]["key"]
 OUTPUT_HOST_KEY = _http_direction_details["host"]["key"]
@@ -51,15 +55,15 @@ OUTPUT_ENDPOINT_KEY = _http_direction_details["endpoint"]["key"]
 OUTPUT_USERNAME_KEY = _http_direction_details["username"]["key"]
 OUTPUT_PASSWORD_KEY = _http_direction_details["password"]["key"]
 
-_req_method_details = _http_direction_details["method"]
-SUPPORTED_REQUEST_METHODS = _req_method_details["supported-values"].values()
-OUTPUT_HTTP_REQUEST_POST = _req_method_details["supported-values"]["post"]
-OUTPUT_HTTP_REQUEST_PUT = _req_method_details["supported-values"]["put"]
+_req_method_details = _http_direction_details["method"]["values"]
+SUPPORTED_REQUEST_METHODS = _req_method_details.values()
+OUTPUT_HTTP_REQUEST_POST = _req_method_details["post"]
+OUTPUT_HTTP_REQUEST_PUT = _req_method_details["put"]
 
-_req_protocol_details = _http_direction_details["protocol"]
-SUPPORTED_REQUEST_PROTOCOLS = _req_protocol_details["supported-values"].values()
-OUTPUT_PROTOCOL_HTTP = _req_protocol_details["supported-values"]["http"]
-OUTPUT_PROTOCOL_HTTPS = _req_protocol_details["supported-values"]["https"]
+_req_protocol_details = _http_direction_details["protocol"]["values"]
+SUPPORTED_REQUEST_PROTOCOLS = _req_protocol_details.values()
+OUTPUT_PROTOCOL_HTTP = _req_protocol_details["http"]
+OUTPUT_PROTOCOL_HTTPS = _req_protocol_details["https"]
 
 ########################################################################################
 #                                      MIMEO VARS                                      #
