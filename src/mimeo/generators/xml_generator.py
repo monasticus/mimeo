@@ -11,6 +11,7 @@ import xml.etree.ElementTree as ElemTree
 from typing import Iterator
 from xml.dom import minidom
 
+from mimeo.config import constants as cc
 from mimeo.config.mimeo_config import MimeoConfig, MimeoTemplate
 from mimeo.context import MimeoContext
 from mimeo.context.decorators import (mimeo_clear_iterations, mimeo_context,
@@ -276,10 +277,10 @@ class XMLGenerator(Generator):
         is_special_field = MimeoRenderer.is_special_field(tag)
         if is_special_field:
             tag = MimeoRenderer.get_special_field_name(tag)
-        if isinstance(value, dict) and MimeoConfig.MODEL_ATTRIBUTES_KEY in value:
+        if isinstance(value, dict) and cc.MODEL_ATTRIBUTES_KEY in value:
             value = dict(value)
-            attrs = value.pop(MimeoConfig.MODEL_ATTRIBUTES_KEY)
-            value = value.get(MimeoConfig.MODEL_VALUE_KEY, value)
+            attrs = value.pop(cc.MODEL_ATTRIBUTES_KEY)
+            value = value.get(cc.MODEL_VALUE_KEY, value)
         if attrs is None:
             attrs = {}
 
@@ -346,7 +347,7 @@ class XMLGenerator(Generator):
         if isinstance(element_meta["value"], dict):
             func = cls._process_dict_value
         elif (isinstance(element_meta["value"], list) and
-              element_meta["tag"] != MimeoConfig.TEMPLATES_KEY):
+              element_meta["tag"] != cc.TEMPLATES_KEY):
             func = cls._process_list_value
         else:
             func = cls._process_templates_value

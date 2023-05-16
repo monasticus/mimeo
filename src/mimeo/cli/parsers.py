@@ -17,6 +17,7 @@ from pathlib import Path
 from mimeo import MimeoConfig
 from mimeo.cli.exc import (EnvironmentNotFoundError,
                            EnvironmentsFileNotFoundError)
+from mimeo.config import constants as cc
 
 logger = logging.getLogger(__name__)
 
@@ -221,63 +222,51 @@ class MimeoConfigParser:
         Parse a Mimeo Configuration using Mimeo arguments.
     """
 
-    _ENVIRONMENT_PROPS = [MimeoConfig.OUTPUT_PROTOCOL_KEY,
-                          MimeoConfig.OUTPUT_HOST_KEY,
-                          MimeoConfig.OUTPUT_PORT_KEY,
-                          MimeoConfig.OUTPUT_USERNAME_KEY,
-                          MimeoConfig.OUTPUT_PASSWORD_KEY]
+    _ENVIRONMENT_PROPS = [cc.OUTPUT_PROTOCOL_KEY,
+                          cc.OUTPUT_HOST_KEY,
+                          cc.OUTPUT_PORT_KEY,
+                          cc.OUTPUT_USERNAME_KEY,
+                          cc.OUTPUT_PASSWORD_KEY]
 
     _ENTRY_PATH_KEY = "entry_path"
     _GET_VALUE_KEY = "get_value"
     _ARGS_MAPPING = {
         "output": {
-            "entry_path": [MimeoConfig.OUTPUT_KEY,
-                           MimeoConfig.OUTPUT_DIRECTION_KEY],
+            "entry_path": [cc.OUTPUT_KEY, cc.OUTPUT_DIRECTION_KEY],
         },
         "xml_declaration": {
-            "entry_path": [MimeoConfig.OUTPUT_KEY,
-                           MimeoConfig.OUTPUT_XML_DECLARATION_KEY],
+            "entry_path": [cc.OUTPUT_KEY, cc.OUTPUT_XML_DECLARATION_KEY],
             "get_value": lambda arg: arg.lower() == "true",
         },
         "indent": {
-            "entry_path": [MimeoConfig.OUTPUT_KEY,
-                           MimeoConfig.OUTPUT_INDENT_KEY],
+            "entry_path": [cc.OUTPUT_KEY, cc.OUTPUT_INDENT_KEY],
         },
         "directory": {
-            "entry_path": [MimeoConfig.OUTPUT_KEY,
-                           MimeoConfig.OUTPUT_DIRECTORY_PATH_KEY],
+            "entry_path": [cc.OUTPUT_KEY, cc.OUTPUT_DIRECTORY_PATH_KEY],
         },
         "file": {
-            "entry_path": [MimeoConfig.OUTPUT_KEY,
-                           MimeoConfig.OUTPUT_FILE_NAME_KEY],
+            "entry_path": [cc.OUTPUT_KEY, cc.OUTPUT_FILE_NAME_KEY],
         },
         "http_method": {
-            "entry_path": [MimeoConfig.OUTPUT_KEY,
-                           MimeoConfig.OUTPUT_METHOD_KEY],
+            "entry_path": [cc.OUTPUT_KEY, cc.OUTPUT_METHOD_KEY],
         },
         "http_protocol": {
-            "entry_path": [MimeoConfig.OUTPUT_KEY,
-                           MimeoConfig.OUTPUT_PROTOCOL_KEY],
+            "entry_path": [cc.OUTPUT_KEY, cc.OUTPUT_PROTOCOL_KEY],
         },
         "http_host": {
-            "entry_path": [MimeoConfig.OUTPUT_KEY,
-                           MimeoConfig.OUTPUT_HOST_KEY],
+            "entry_path": [cc.OUTPUT_KEY, cc.OUTPUT_HOST_KEY],
         },
         "http_port": {
-            "entry_path": [MimeoConfig.OUTPUT_KEY,
-                           MimeoConfig.OUTPUT_PORT_KEY],
+            "entry_path": [cc.OUTPUT_KEY, cc.OUTPUT_PORT_KEY],
         },
         "http_endpoint": {
-            "entry_path": [MimeoConfig.OUTPUT_KEY,
-                           MimeoConfig.OUTPUT_ENDPOINT_KEY],
+            "entry_path": [cc.OUTPUT_KEY, cc.OUTPUT_ENDPOINT_KEY],
         },
         "http_user": {
-            "entry_path": [MimeoConfig.OUTPUT_KEY,
-                           MimeoConfig.OUTPUT_USERNAME_KEY],
+            "entry_path": [cc.OUTPUT_KEY, cc.OUTPUT_USERNAME_KEY],
         },
         "http_password": {
-            "entry_path": [MimeoConfig.OUTPUT_KEY,
-                           MimeoConfig.OUTPUT_PASSWORD_KEY],
+            "entry_path": [cc.OUTPUT_KEY, cc.OUTPUT_PASSWORD_KEY],
         },
     }
 
@@ -420,7 +409,7 @@ class MimeoConfigParser:
         for prop in cls._ENVIRONMENT_PROPS:
             value = env.get(prop)
             if value is not None:
-                config_entry_path = [MimeoConfig.OUTPUT_KEY, prop]
+                config_entry_path = [cc.OUTPUT_KEY, prop]
                 config = cls._overwrite_config_entry(config, config_entry_path, value)
         return config
 

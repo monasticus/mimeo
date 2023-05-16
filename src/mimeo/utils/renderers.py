@@ -17,7 +17,7 @@ import logging
 import re
 from typing import Any
 
-from mimeo.config import MimeoConfig
+from mimeo.config import constants as cc
 from mimeo.context import MimeoContext, MimeoContextManager
 from mimeo.context.decorators import mimeo_context
 from mimeo.utils import (AutoIncrementUtil, CityUtil, CountryUtil,
@@ -83,9 +83,7 @@ class UtilsRenderer:
             If the Mimeo Util name does not match any existing Mimeo
             Util.
         """
-        return cls.render_parametrized({
-            MimeoConfig.MODEL_MIMEO_UTIL_NAME_KEY: mimeo_util_key,
-        })
+        return cls.render_parametrized({cc.MODEL_MIMEO_UTIL_NAME_KEY: mimeo_util_key})
 
     @classmethod
     def render_parametrized(
@@ -232,7 +230,7 @@ class UtilsRenderer:
             Util name, or the parametrized name does not match any
             existing Mimeo Util.
         """
-        mimeo_util_name = config.get(MimeoConfig.MODEL_MIMEO_UTIL_NAME_KEY)
+        mimeo_util_name = config.get(cc.MODEL_MIMEO_UTIL_NAME_KEY)
         if mimeo_util_name is None:
             msg = f"Missing Mimeo Util name in configuration [{config}]!"
             raise InvalidMimeoUtilError(msg)
@@ -436,7 +434,7 @@ class MimeoRenderer:
         """
         return (isinstance(value, dict) and
                 len(value) == 1 and
-                MimeoConfig.MODEL_MIMEO_UTIL_KEY in value)
+                cc.MODEL_MIMEO_UTIL_KEY in value)
 
     @classmethod
     def render(
@@ -659,7 +657,7 @@ class MimeoRenderer:
             If the First Name Mimeo Util has not supported `sex`
             parameter value assigned.
         """
-        mimeo_util = value[MimeoConfig.MODEL_MIMEO_UTIL_KEY]
+        mimeo_util = value[cc.MODEL_MIMEO_UTIL_KEY]
         mimeo_util = cls._render_mimeo_util_parameters(mimeo_util)
         logger.fine("Pre-rendered mimeo util [%s]", mimeo_util)
         r_val = UtilsRenderer.render_parametrized(mimeo_util)

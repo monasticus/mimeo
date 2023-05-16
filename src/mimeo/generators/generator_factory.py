@@ -6,6 +6,7 @@ It exports only one class:
 """
 from __future__ import annotations
 
+from mimeo.config import constants as cc
 from mimeo.config.exc import UnsupportedPropertyValueError
 from mimeo.config.mimeo_config import MimeoConfig
 from mimeo.generators import Generator, XMLGenerator
@@ -28,7 +29,7 @@ class GeneratorFactory:
         Initialize a Generator based on the Mimeo Output Format.
     """
 
-    XML = MimeoConfig.OUTPUT_FORMAT_XML
+    XML = cc.OUTPUT_FORMAT_XML
 
     @staticmethod
     def get_generator(
@@ -55,6 +56,6 @@ class GeneratorFactory:
         if output_format == GeneratorFactory.XML:
             return XMLGenerator(mimeo_config)
         raise UnsupportedPropertyValueError(
-            MimeoConfig.OUTPUT_FORMAT_KEY,
+            cc.OUTPUT_FORMAT_KEY,
             output_format,
-            MimeoConfig.SUPPORTED_OUTPUT_FORMATS)
+            cc.SUPPORTED_OUTPUT_FORMATS)
