@@ -31,6 +31,8 @@ This package exports the following classes:
     A MimeoUtil implementation rendering city names.
 * CountryUtil
     A MimeoUtil implementation rendering country details.
+* CurrencyUtil
+    A MimeoUtil implementation rendering currency details.
 * FirstNameUtil
     A MimeoUtil implementation rendering forenames.
 * LastNameUtil

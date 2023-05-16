@@ -23,6 +23,8 @@ This module contains all Mimeo Utils. It exports the following classes:
         A MimeoUtil implementation rendering city names.
     * CountryUtil
         A MimeoUtil implementation rendering country details.
+    * CurrencyUtil
+        A MimeoUtil implementation rendering currency details.
     * FirstNameUtil
         A MimeoUtil implementation rendering forenames.
     * LastNameUtil
@@ -637,7 +639,7 @@ class CountryUtil(MimeoUtil):
     Methods
     -------
     render
-        Render a country name.
+        Render a country detail (name, ISO3 or ISO2 code).
 
     Attributes
     ----------
@@ -747,7 +749,7 @@ class CountryUtil(MimeoUtil):
 
 
 class CurrencyUtil(MimeoUtil):
-    """A MimeoUtil implementation rendering currency codes.
+    """A MimeoUtil implementation rendering currency details.
 
     It is a Mimeo Context-dependent Mimeo Util only when parametrized
     to generate unique currency codes.
@@ -755,7 +757,7 @@ class CurrencyUtil(MimeoUtil):
     Methods
     -------
     render
-        Render a currency code.
+        Render a currency detail (code or name).
 
     Attributes
     ----------
