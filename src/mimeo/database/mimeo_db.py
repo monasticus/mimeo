@@ -6,8 +6,8 @@ It exports a class related to all Mimeo CSV data:
 """
 from __future__ import annotations
 
-from mimeo.database import (CitiesDB, City, CountriesDB, Country, FirstName,
-                            FirstNamesDB, LastNamesDB, CurrenciesDB, Currency)
+from mimeo.database import (CitiesDB, City, CountriesDB, Country, CurrenciesDB,
+                            Currency, FirstName, FirstNamesDB, LastNamesDB)
 
 
 class MimeoDB:

@@ -44,12 +44,13 @@ To use this package, simply import the desired class:
 from __future__ import annotations
 
 from .mimeo_utils import (AutoIncrementUtil, CityUtil, CountryUtil,
-                          CurrentIterationUtil, DateTimeUtil, DateUtil,
-                          FirstNameUtil, KeyUtil, LastNameUtil, MimeoUtil,
-                          RandomIntegerUtil, RandomItemUtil, RandomStringUtil)
+                          CurrencyUtil, CurrentIterationUtil, DateTimeUtil,
+                          DateUtil, FirstNameUtil, KeyUtil, LastNameUtil,
+                          MimeoUtil, RandomIntegerUtil, RandomItemUtil,
+                          RandomStringUtil)
 from .renderers import MimeoRenderer
 
-__all__ = ["AutoIncrementUtil", "CityUtil", "CountryUtil", "CurrentIterationUtil",
-           "DateTimeUtil", "DateUtil", "FirstNameUtil", "KeyUtil", "LastNameUtil",
-           "MimeoUtil", "RandomIntegerUtil", "RandomItemUtil", "RandomStringUtil",
-           "MimeoRenderer"]
+__all__ = ["AutoIncrementUtil", "CityUtil", "CountryUtil", "CurrencyUtil",
+           "CurrentIterationUtil", "DateTimeUtil", "DateUtil", "FirstNameUtil",
+           "KeyUtil", "LastNameUtil", "MimeoUtil", "RandomIntegerUtil",
+           "RandomItemUtil", "RandomStringUtil", "MimeoRenderer"]

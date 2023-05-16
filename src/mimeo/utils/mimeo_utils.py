@@ -38,7 +38,7 @@ from typing import Any
 
 from mimeo.context import MimeoContext, MimeoContextManager
 from mimeo.context.decorators import mimeo_context
-from mimeo.database import Country, MimeoDB
+from mimeo.database import Country, Currency, MimeoDB
 from mimeo.database.exc import DataNotFoundError, InvalidSexError
 from mimeo.utils.exc import InvalidValueError
 
@@ -706,7 +706,7 @@ class CountryUtil(MimeoUtil):
         Raises
         ------
         InvalidValue
-            If the `country` parameter value is not supported
+            If the `value` parameter value is not supported
         OutOfStockError
             If all unique countries have been consumed already
         DataNotFoundError
@@ -744,6 +744,115 @@ class CountryUtil(MimeoUtil):
         else:
             index = random.randrange(MimeoDB.NUM_OF_COUNTRIES)
         return self.__MIMEO_DB.get_country_at(index)
+
+
+class CurrencyUtil(MimeoUtil):
+    """A MimeoUtil implementation rendering currency codes.
+
+    It is a Mimeo Context-dependent Mimeo Util only when parametrized
+    to generate unique currency codes.
+
+    Methods
+    -------
+    render
+        Render a currency code.
+
+    Attributes
+    ----------
+    KEY : str
+        A Mimeo Util key
+    """
+
+    KEY = "currency"
+
+    _VALUE_CODE = "code"
+    _VALUE_NAME = "name"
+    _MIMEO_DB = MimeoDB()
+
+    def __init__(
+            self,
+            value: str = None,
+            unique: bool = False,
+            country: str = None,
+            **kwargs,
+    ):
+        """Initialize CurrencyUtil class.
+
+        Parameters
+        ----------
+        value : str, default 'code'
+            Indicates which currency detail should be rendered:
+            code or name.
+        unique : bool, default False
+            Indicates if rendered currency codes will be unique across
+            a Mimeo Context
+        country : str, default None
+            A country of which the currency should be rendered
+        kwargs : dict
+            Arbitrary keyword arguments (ignored)
+        """
+        self._value = value if value is not None else self._VALUE_CODE
+        self._unique = unique
+        self._country = country
+
+    @mimeo_context
+    def render(
+            self,
+            context: MimeoContext = None,
+    ) -> str:
+        """Render a currency code.
+
+        By default, Currency Mimeo Util generates a non-unique currency code across
+        a Mimeo Context. If `value` is parametrized, then it will render a specific
+        currency detail (code or name). This Mimeo Util allows you to provide
+        a `country` to get a currency being used there. When `country` is parametrized,
+        then the 'unique' parameter is ignored.
+
+        Parameters
+        ----------
+        context : MimeoContext, default None
+            A current Mimeo Context injected by a decorator
+
+        Returns
+        -------
+        str
+            A currency code
+
+        Raises
+        ------
+        InvalidValue
+            If the `value` parameter value is not supported
+        OutOfStockError
+            If all unique currencies have been consumed already
+        DataNotFoundError
+            If database does not contain a currency of the provided `country`
+        """
+        if self._value == self._VALUE_CODE:
+            return self._get_currency(context).code
+        if self._value == self._VALUE_NAME:
+            return self._get_currency(context).name
+        msg = (f"The currency Mimeo Util does not support a value [{self._value}]. "
+               f"Supported values are: {self._VALUE_CODE} (default), "
+               f"{self._VALUE_NAME}.")
+        raise InvalidValueError(msg)
+
+    def _get_currency(
+            self,
+            context: MimeoContext,
+    ) -> Currency:
+        if self._country is None:
+            if self._unique:
+                index = context.next_currency_index()
+            else:
+                index = random.randrange(MimeoDB.NUM_OF_CURRENCIES)
+            currency = self._MIMEO_DB.get_currency_at(index)
+        else:
+            currency = self._MIMEO_DB.get_currency_of(self._country)
+            if currency is None:
+                msg = (f"Mimeo database doesn't contain a currency "
+                       f"of the provided country [{self._country}].")
+                raise DataNotFoundError(msg)
+        return currency
 
 
 class FirstNameUtil(MimeoUtil):
