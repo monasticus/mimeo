@@ -204,6 +204,10 @@
     "name": "tryceratops"
   },
   {
+    "prefix": "FLY",
+    "name": "flynt"
+  },
+  {
     "prefix": "NPY",
     "name": "NumPy-specific rules"
   },
