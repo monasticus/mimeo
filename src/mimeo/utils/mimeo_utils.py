@@ -181,6 +181,10 @@ class RandomIntegerUtil(MimeoUtil):
         int
             A random integer value
         """
+        if self._start > self._limit:
+            msg = ("The random_int Mimeo Util cannot be parametrized with "
+                   f"limit [{self._limit}] lower than start [{self._start}]")
+            raise InvalidValueError(msg)
         return random.randrange(self._start, self._limit + 1)
 
 
