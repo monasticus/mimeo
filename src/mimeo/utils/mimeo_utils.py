@@ -131,7 +131,16 @@ class RandomStringUtil(MimeoUtil):
         -------
         str
             A random string value
+
+        Raises
+        ------
+        InvalidValueError
+            If the length param is negative
         """
+        if self._length < 0:
+            msg = ("The random_str Mimeo Util cannot be parametrized with negative "
+                   f"length [{self._length}] value")
+            raise InvalidValueError(msg)
         return "".join(random.choice(string.ascii_letters) for _ in range(self._length))
 
 
