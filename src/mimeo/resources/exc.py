@@ -1,7 +1,7 @@
 """The Mimeo Resources Exceptions module.
 
 It contains all custom exceptions related to Mimeo resources:
-    * ResourceNotFound
+    * ResourceNotFoundError
         A custom Exception class for a not found resource.
 """
 

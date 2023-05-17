@@ -1,4 +1,6 @@
+from mimeo.utils.exc import InvalidValueError
 from mimeo.utils.renderers import UtilsRenderer
+from tests.utils import assert_throws
 
 
 def test_random_int_raw():
@@ -58,3 +60,20 @@ def test_random_int_parametrized_with_limit_and_start():
         assert random_int <= 10
         random_integers.add(random_int)
     assert len(random_integers) > 1
+
+
+def test_random_int_parametrized_with_limit_same_as_start():
+    mimeo_util = {"_name": "random_int", "start": 1, "limit": 1}
+    for _ in range(100):
+        random_int = UtilsRenderer.render_parametrized(mimeo_util)
+        assert isinstance(random_int, int)
+        assert random_int == 1
+
+
+@assert_throws(err_type=InvalidValueError,
+               msg=("The random_int Mimeo Util cannot be parametrized with limit "
+                    "[{limit}] lower than start [{start}]"),
+               params={"start": 2, "limit": 1})
+def test_random_int_parametrized_with_limit_lower_than_start():
+    mimeo_util = {"_name": "random_int", "start": 2, "limit": 1}
+    UtilsRenderer.render_parametrized(mimeo_util)

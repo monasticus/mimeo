@@ -1,11 +1,11 @@
 """The Mimeo Utils Exceptions module.
 
 It contains all custom exceptions related to Mimeo Utils:
-    * InvalidMimeoUtil
+    * InvalidMimeoUtilError
         A custom Exception class for an invalid Mimeo Util.
-    * InvalidValue
+    * InvalidValueError
         A custom Exception class for an invalid value in Mimeo Util.
-    * NotASpecialField
+    * NotASpecialFieldError
         A custom Exception class for a field used as a special.
 """
 

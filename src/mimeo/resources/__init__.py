@@ -7,5 +7,5 @@ custom exceptions module:
     The Mimeo Resources Exceptions module.
 
 To use this package, simply import the desired exception:
-    from mimeo.resources.exc import ResourceNotFound
+    from mimeo.resources.exc import ResourceNotFoundError
 """

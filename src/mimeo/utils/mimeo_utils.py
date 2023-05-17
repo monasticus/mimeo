@@ -180,7 +180,16 @@ class RandomIntegerUtil(MimeoUtil):
         -------
         int
             A random integer value
+
+        Raises
+        ------
+        InvalidValueError
+            If the limit param is lower than start
         """
+        if self._start > self._limit:
+            msg = ("The random_int Mimeo Util cannot be parametrized with "
+                   f"limit [{self._limit}] lower than start [{self._start}]")
+            raise InvalidValueError(msg)
         return random.randrange(self._start, self._limit + 1)
 
 
@@ -392,7 +401,7 @@ class AutoIncrementUtil(MimeoUtil):
 
         Raises
         ------
-        InvalidValue
+        InvalidValueError
             If the pattern is not a string value
         """
         try:
@@ -707,7 +716,7 @@ class CountryUtil(MimeoUtil):
 
         Raises
         ------
-        InvalidValue
+        InvalidValueError
             If the `value` parameter value is not supported
         OutOfStockError
             If all unique countries have been consumed already
@@ -822,7 +831,7 @@ class CurrencyUtil(MimeoUtil):
 
         Raises
         ------
-        InvalidValue
+        InvalidValueError
             If the `value` parameter value is not supported
         OutOfStockError
             If all unique currencies have been consumed already
