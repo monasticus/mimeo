@@ -10,7 +10,7 @@ import pytest
 
 import mimeo.__main__ as mimeo_cli
 from mimeo.cli.exc import (EnvironmentNotFoundError,
-                           EnvironmentsFileNotFoundError)
+                           EnvironmentsFileNotFoundError, PathNotFoundError)
 from mimeo.config.exc import MissingRequiredPropertyError
 from tests import utils
 from tests.utils import assert_throws
@@ -149,7 +149,7 @@ def _setup_and_teardown(
         Path("mimeo-output").rmdir()
 
 
-def test_basic_use():
+def test_file_path():
     sys.argv = ["mimeo", "test_mimeo_cli-dir/default-config.json"]
 
     assert not Path("test_mimeo_cli-dir/output").exists()
@@ -213,6 +213,22 @@ def test_directory_path(aioresponses):
                                                "<ChildNode2>value-2</ChildNode2>"
                                                "<ChildNode3>true</ChildNode3>"
                                                "</SomeEntity>")
+
+
+@assert_throws(err_type=PathNotFoundError,
+               msg="No such file or directory [{path}]",
+               params={"path": "non-existing-path"})
+def test_non_existing_path():
+    sys.argv = ["mimeo", "non-existing-path"]
+    mimeo_cli.main()
+
+
+@assert_throws(err_type=PathNotFoundError,
+               msg="No such file or directory [{path}]",
+               params={"path": "non-existing-path"})
+def test_existing_and_non_existing_path():
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/default-config.json", "non-existing-path"]
+    mimeo_cli.main()
 
 
 def test_custom_short_xml_declaration_false():
