@@ -15,6 +15,7 @@ from pathlib import Path
 
 from mimeo import MimeoConfig, Mimeograph
 from mimeo.cli import MimeoArgumentParser, MimeoConfigParser
+from mimeo.cli.exc import PathNotFoundError
 
 logger = logging.getLogger(__name__)
 
@@ -94,9 +95,11 @@ class MimeoJob:
             if Path(file_path).is_dir():
                 for dir_path, _, file_names in walk(file_path):
                     for file_name in file_names:
-                        file_paths.append(f"{dir_path}/{file_name}")
+                        file_paths.append(Path(f"{dir_path}/{file_name}"))
             elif Path(file_path).is_file():
-                file_paths.append(file_path)
+                file_paths.append(Path(file_path))
+            else:
+                raise PathNotFoundError(file_path)
         return file_paths
 
     @classmethod

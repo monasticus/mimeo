@@ -1,6 +1,8 @@
 """The Mimeo CLI Exceptions module.
 
 It contains all custom exceptions related to Mimeo CLI:
+    * PathNotFoundError
+        A custom Exception class for not found path.
     * EnvironmentNotFoundError
         A custom Exception class for not found environment.
     * EnvironmentsFileNotFoundError
@@ -9,6 +11,29 @@ It contains all custom exceptions related to Mimeo CLI:
 
 
 from __future__ import annotations
+
+
+class PathNotFoundError(Exception):
+    """A custom Exception class for not found path.
+
+    Raised while attempting to access a Mimeo Config file or directory that doesn't
+    exist.
+    """
+
+    def __init__(
+            self,
+            path: str,
+    ):
+        """Initialize PathNotFoundError exception with details.
+
+        Extends Exception constructor with a custom message.
+
+        Parameters
+        ----------
+        path : str
+            A non existing path
+        """
+        super().__init__(f"No such file or directory [{path}]")
 
 
 class EnvironmentNotFoundError(Exception):
