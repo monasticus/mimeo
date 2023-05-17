@@ -180,6 +180,11 @@ class RandomIntegerUtil(MimeoUtil):
         -------
         int
             A random integer value
+
+        Raises
+        ------
+        InvalidValueError
+            If the limit param is lower than start
         """
         if self._start > self._limit:
             msg = ("The random_int Mimeo Util cannot be parametrized with "
