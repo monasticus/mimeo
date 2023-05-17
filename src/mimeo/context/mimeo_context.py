@@ -265,7 +265,7 @@ class MimeoContext:
 
         Raises
         ------
-        CountryNotFound
+        DataNotFoundError
             If database does not contain any cities for the provided
             `country`
         OutOfStockError
@@ -396,7 +396,7 @@ class MimeoContext:
 
         Raises
         ------
-        CountryNotFound
+        DataNotFoundError
             If database does not contain any cities for the provided
             `country`
         """

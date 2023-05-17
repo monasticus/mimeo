@@ -144,7 +144,7 @@ class Alive:
 
         Raises
         ------
-        InstanceNotAlive
+        InstanceNotAliveError
             If the instance is not alive
         """
         if not self.is_alive():

@@ -79,7 +79,7 @@ class UtilsRenderer:
 
         Raises
         ------
-        InvalidMimeoUtil
+        InvalidMimeoUtilError
             If the Mimeo Util name does not match any existing Mimeo
             Util.
         """
@@ -104,11 +104,11 @@ class UtilsRenderer:
 
         Raises
         ------
-        InvalidMimeoUtil
+        InvalidMimeoUtilError
             If the Mimeo Util configuration does not include Mimeo
             Util name, or the parametrized name does not match any
             existing Mimeo Util.
-        InvalidValue
+        InvalidValueError
             If a Mimeo Util is incorrectly parametrized.
         InvalidSexError
             If the First Name Mimeo Util has not supported `sex`
@@ -141,7 +141,7 @@ class UtilsRenderer:
 
         Raises
         ------
-        InvalidMimeoUtil
+        InvalidMimeoUtilError
             If the Mimeo Util configuration does not include Mimeo
             Util name, or the parametrized name does not match any
             existing Mimeo Util.
@@ -196,7 +196,7 @@ class UtilsRenderer:
 
         Raises
         ------
-        InvalidMimeoUtil
+        InvalidMimeoUtilError
             If the Mimeo Util configuration does not include Mimeo
             Util name, or the parametrized name does not match any
             existing Mimeo Util.
@@ -225,7 +225,7 @@ class UtilsRenderer:
 
         Raises
         ------
-        InvalidMimeoUtil
+        InvalidMimeoUtilError
             If the Mimeo Util configuration does not include Mimeo
             Util name, or the parametrized name does not match any
             existing Mimeo Util.
@@ -270,7 +270,7 @@ class VarsRenderer:
 
         Raises
         ------
-        InstanceNotAlive
+        InstanceNotAliveError
             If the MimeoContextManager instance is not alive
         VarNotFoundError
             If the Mimeo Var with the `var` provided does not exist
@@ -364,7 +364,7 @@ class MimeoRenderer:
 
         Raises
         ------
-        NotASpecialField
+        NotASpecialFieldError
             If the `wrapped_field_name` is not of form {:FIELD_NAME:}
         """
         if not cls.is_special_field(wrapped_field_name):
@@ -464,16 +464,16 @@ class MimeoRenderer:
 
         Raises
         ------
-        InstanceNotAlive
+        InstanceNotAliveError
             If the MimeoContextManager instance is not alive
         UninitializedContextIterationError
             If no iteration has been initialized yet for the context
         VarNotFoundError
             If the Mimeo Var does not exist
-        InvalidMimeoUtil
+        InvalidMimeoUtilError
             If the Mimeo Util node has missing _name property, or it
             does not match any Mimeo Util.
-        InvalidValue
+        InvalidValueError
             If Mimeo Util node is incorrectly parametrized
         OutOfStockError
             If all unique values have been consumed already
@@ -582,7 +582,7 @@ class MimeoRenderer:
 
         Raises
         ------
-        InstanceNotAlive
+        InstanceNotAliveError
             If the MimeoContextManager instance is not alive
         VarNotFoundError
             If the Mimeo Var with the `var` provided does not exist
@@ -647,7 +647,7 @@ class MimeoRenderer:
 
         Raises
         ------
-        InvalidValue
+        InvalidValueError
             If a Mimeo Util is incorrectly parametrized.
         OutOfStockError
             If all unique values have been consumed already
@@ -682,7 +682,7 @@ class MimeoRenderer:
 
         Raises
         ------
-        InvalidValue
+        InvalidValueError
             If a Mimeo Util is incorrectly parametrized.
         OutOfStockError
             If all unique values have been consumed already

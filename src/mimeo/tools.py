@@ -34,7 +34,7 @@ def get_resource(
 
     Raises
     ------
-    ResourceNotFound
+    ResourceNotFoundError
         If the resource does not exist
     """
     try:

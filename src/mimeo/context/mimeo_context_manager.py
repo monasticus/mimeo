@@ -118,7 +118,7 @@ class MimeoContextManager(Alive, metaclass=OnlyOneAlive):
 
         Raises
         ------
-        InstanceNotAlive
+        InstanceNotAliveError
             If the MimeoContextManager instance is not alive
         """
         super().assert_alive()
@@ -138,7 +138,7 @@ class MimeoContextManager(Alive, metaclass=OnlyOneAlive):
 
         Raises
         ------
-        InstanceNotAlive
+        InstanceNotAliveError
             If the MimeoContextManager instance is not alive
         """
         super().assert_alive()
@@ -157,7 +157,7 @@ class MimeoContextManager(Alive, metaclass=OnlyOneAlive):
 
         Raises
         ------
-        InstanceNotAlive
+        InstanceNotAliveError
             If the MimeoContextManager instance is not alive
         """
         super().assert_alive()
@@ -181,7 +181,7 @@ class MimeoContextManager(Alive, metaclass=OnlyOneAlive):
 
         Raises
         ------
-        InstanceNotAlive
+        InstanceNotAliveError
             If the MimeoContextManager instance is not alive
         VarNotFoundError
             If the Mimeo Var with the `variable_name` provided does not

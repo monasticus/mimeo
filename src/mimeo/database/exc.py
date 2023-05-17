@@ -5,8 +5,8 @@ It contains all custom exceptions related to Mimeo Context:
         A custom Exception class for invalid row index.
     * InvalidSexError
         A custom Exception class for uninitialized context's iteration.
-    * CountryNotFound
-        A custom Exception class for not found context's iteration.
+    * DataNotFoundError
+        A custom Exception class for not found data.
     * OutOfStockError
         A custom Exception class for invalid special field's name.
 """

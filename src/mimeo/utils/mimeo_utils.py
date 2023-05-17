@@ -401,7 +401,7 @@ class AutoIncrementUtil(MimeoUtil):
 
         Raises
         ------
-        InvalidValue
+        InvalidValueError
             If the pattern is not a string value
         """
         try:
@@ -716,7 +716,7 @@ class CountryUtil(MimeoUtil):
 
         Raises
         ------
-        InvalidValue
+        InvalidValueError
             If the `value` parameter value is not supported
         OutOfStockError
             If all unique countries have been consumed already
@@ -831,7 +831,7 @@ class CurrencyUtil(MimeoUtil):
 
         Raises
         ------
-        InvalidValue
+        InvalidValueError
             If the `value` parameter value is not supported
         OutOfStockError
             If all unique currencies have been consumed already

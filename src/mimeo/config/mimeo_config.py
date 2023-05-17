@@ -150,7 +150,7 @@ class MimeoConfig(MimeoDTO):
 
         Raises
         ------
-        IncorrectMimeoConfig
+        InvalidMimeoConfigError
             If (1) the source dictionary does not include the _templates_ key or
             (2) the _templates_ key does not point to a list
         """
@@ -675,7 +675,7 @@ class MimeoTemplate(MimeoDTO):
 
         Raises
         ------
-        IncorrectMimeoTemplate
+        InvalidMimeoTemplateError
             If the source config doesn't include count or model properties
         """
         if cc.TEMPLATES_COUNT_KEY not in template:
@@ -737,7 +737,7 @@ class MimeoModel(MimeoDTO):
 
         Raises
         ------
-        IncorrectMimeoModel
+        InvalidMimeoModelError
             If the source config has no or more than one root nodes
         """
         model_keys = list(filter(MimeoModel._is_not_configuration_key, iter(model)))
@@ -771,7 +771,7 @@ class MimeoModel(MimeoDTO):
 
         Raises
         ------
-        IncorrectMimeoModel
+        InvalidMimeoModelError
             If the source config has a context name not being a string value
         """
         context_name = model.get(cc.MODEL_CONTEXT_KEY, root_name)

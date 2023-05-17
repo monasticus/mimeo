@@ -1,7 +1,7 @@
 """The Mimeo Meta Exceptions module.
 
 It contains all custom exceptions related to useful abstract classes:
-    * InstanceNotAlive
+    * InstanceNotAliveError
         A custom Exception class for using non-alive instance.
 """
 
