@@ -37,8 +37,9 @@ def assert_throws(
         def test_wrapper(*args, **kwargs):
             with pytest.raises(err_type) as err:
                 func(*args, **kwargs)
+            actual_msg = err.value.args[0]
             expected_msg = msg if params is None else msg.format(**params)
-            assert err.value.args[0] == expected_msg
+            assert actual_msg == expected_msg
 
         return test_wrapper
 
