@@ -407,9 +407,10 @@ class MimeoContext:
                 country_cities = MimeoDB().get_cities_of(country)
                 num_of_entries = len(country_cities)
                 if num_of_entries == 0:
-                    msg = (f"Mimeo database doesn't contain any cities "
-                           f"of provided country [{country}].")
-                    raise DataNotFoundError(msg)
+                    raise DataNotFoundError(DataNotFoundError.Code.ERR_2,
+                                            data="city",
+                                            param_name="country",
+                                            param_val=country)
 
             cities_indexes = random.sample(range(num_of_entries), num_of_entries)
             self._cities_indexes[country] = {

@@ -638,9 +638,10 @@ class CityUtil(MimeoUtil):
             country_cities = self._MIMEO_DB.get_cities_of(self._country)
             country_cities_count = len(country_cities)
             if country_cities_count == 0:
-                msg = (f"Mimeo database doesn't contain any cities "
-                       f"of provided country [{self._country}].")
-                raise DataNotFoundError(msg)
+                raise DataNotFoundError(DataNotFoundError.Code.ERR_2,
+                                        data="city",
+                                        param_name="country",
+                                        param_val=self._country)
 
             if self._unique:
                 index = context.next_city_index(self._country)
@@ -759,8 +760,9 @@ class CountryUtil(MimeoUtil):
                 None,
             )
             if country_found is None:
-                msg = f"Mimeo database doesn't contain a country [{self._country}]."
-                raise DataNotFoundError(msg)
+                raise DataNotFoundError(DataNotFoundError.Code.ERR_1,
+                                        data="country",
+                                        value=self._country)
             return country_found
 
         if self._unique:
@@ -874,9 +876,10 @@ class CurrencyUtil(MimeoUtil):
         else:
             currency = self._MIMEO_DB.get_currency_of(self._country)
             if currency is None:
-                msg = (f"Mimeo database doesn't contain a currency "
-                       f"of the provided country [{self._country}].")
-                raise DataNotFoundError(msg)
+                raise DataNotFoundError(DataNotFoundError.Code.ERR_2,
+                                        data="currency",
+                                        param_name="country",
+                                        param_val=self._country)
         return currency
 
 
