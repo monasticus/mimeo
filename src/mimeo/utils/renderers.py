@@ -232,11 +232,11 @@ class UtilsRenderer:
         """
         mimeo_util_name = config.get(cc.MODEL_MIMEO_UTIL_NAME_KEY)
         if mimeo_util_name is None:
-            msg = f"Missing Mimeo Util name in configuration [{config}]!"
-            raise InvalidMimeoUtilError(msg)
+            code = InvalidMimeoUtilError.Code.ERR_1
+            raise InvalidMimeoUtilError(code, config)
         if mimeo_util_name not in cls.MIMEO_UTILS:
-            msg = f"No such Mimeo Util [{mimeo_util_name}]!"
-            raise InvalidMimeoUtilError(msg)
+            code = InvalidMimeoUtilError.Code.ERR_2
+            raise InvalidMimeoUtilError(code, mimeo_util_name)
         return mimeo_util_name
 
 
