@@ -4,11 +4,11 @@ It contains all custom exceptions related to Mimeo Utils:
     * InvalidMimeoUtilError
         A custom Exception class for an invalid Mimeo Util.
     * InvalidMimeoUtilError.Code
-        A custom Enum class storing error codes for InvalidMimeoUtilError.
+        An Enumeration class for InvalidMimeoUtilError error codes.
     * InvalidValueError
         A custom Exception class for an invalid value in Mimeo Util.
     * InvalidValueError.Code
-        A custom Enum class storing error codes for InvalidValueError.
+        An Enumeration class for InvalidValueError error codes.
     * NotASpecialFieldError
         A custom Exception class for a field used as a special.
 """
@@ -43,7 +43,7 @@ class InvalidMimeoUtilError(Exception):
     def __init__(
             self,
             code: InvalidMimeoUtilError.Code,
-            details: dict | str,
+            **kwargs,
     ):
         """Initialize InvalidMimeoUtilError exception with details.
 
@@ -54,17 +54,17 @@ class InvalidMimeoUtilError(Exception):
         ----------
         code : InvalidMimeoUtilError.Code
             An internal error code
-        details : dict | str
+        kwargs
             A Mimeo Util config for ERR_1, and a _name param for ERR_2
         """
-        msg = self._get_msg(code, details)
+        msg = self._get_msg(code, kwargs)
         super().__init__(msg)
 
     @classmethod
     def _get_msg(
             cls,
             code: InvalidMimeoUtilError.Code,
-            details: dict | str,
+            details: dict,
     ):
         """Return a custom message based on an error code.
 
@@ -72,8 +72,8 @@ class InvalidMimeoUtilError(Exception):
         ----------
         code : InvalidMimeoUtilError.Code
             An internal error code
-        details : dict | str
-            A Mimeo Util config for ERR_1, and a _name param for ERR_2
+        details : dict
+            An error details
 
         Returns
         -------
@@ -86,9 +86,9 @@ class InvalidMimeoUtilError(Exception):
             If the code argument is not InvalidMimeoUtilError.Code enum
         """
         if code == cls.Code.ERR_1:
-            return f"Missing Mimeo Util name in configuration [{details}]!"
+            return f"Missing Mimeo Util name in configuration [{details['config']}]!"
         if code == cls.Code.ERR_2:
-            return f"No such Mimeo Util [{details}]!"
+            return f"No such Mimeo Util [{details['name']}]!"
 
         msg = "Provided error code is not a InvalidMimeoUtilError.Code enum!"
         raise ValueError(msg)
