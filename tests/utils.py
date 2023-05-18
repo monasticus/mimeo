@@ -31,7 +31,15 @@ def assert_throws(
         err_type: Type[Exception],
         msg: str,
         params: dict = None,
+        **outer_kwargs,
 ) -> Callable:
+    if params is None and outer_kwargs == {}:
+        params = None
+    elif params is None:
+        params = outer_kwargs
+    else:
+        params = params | outer_kwargs
+
     def test(func: Callable) -> Callable:
         @functools.wraps(func)
         def test_wrapper(*args, **kwargs):

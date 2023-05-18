@@ -11,6 +11,8 @@ It contains all custom exceptions related to Mimeo Context:
         An Enumeration class for DataNotFoundError error codes.
     * OutOfStockError
         A custom Exception class for invalid special field's name.
+    * DataNotFoundError.Code
+        An Enumeration class for OutOfStockError error codes.
 """
 
 
@@ -103,7 +105,7 @@ class DataNotFoundError(Exception):
         code : DataNotFoundError.Code
             An internal error code
         kwargs
-            A Mimeo Util config for ERR_1, and a _name param for ERR_2
+            An error details
         """
         msg = self._get_msg(code, kwargs)
         super().__init__(msg)
@@ -140,7 +142,7 @@ class DataNotFoundError(Exception):
             return (f"Mimeo database doesn't contain any {details['data']} of "
                     f"the provided {details['param_name']} [{details['param_val']}].")
 
-        msg = "Provided error code is not a DataNotFoundError.Code enum!"
+        msg = f"Provided error code is not a {cls.__name__}.Code enum!"
         raise ValueError(msg)
 
 
@@ -150,3 +152,73 @@ class OutOfStockError(Exception):
     Raised while attempting to get next unique value when all were
     consumed already.
     """
+
+    class Code(Enum):
+        """An Enumeration class for OutOfStockError error codes.
+
+        Attributes
+        ----------
+        ERR_1: str
+            An error code for no more unique values
+        ERR_2: str
+            An error code for no more unique values depending on a custom param
+        """
+
+        ERR_1 = "NO_MORE_UNIQUE_VALUES"
+        ERR_2 = "NO_MORE_UNIQUE_VALUES_FOR"
+
+    def __init__(
+            self,
+            code: OutOfStockError.Code,
+            **kwargs,
+    ):
+        """Initialize OutOfStockError exception with details.
+
+        Extends Exception constructor with a custom message. The message depends on
+        an internal OutOfStockError code.
+
+        Parameters
+        ----------
+        code : OutOfStockError.Code
+            An internal error code
+        kwargs
+            A Mimeo Util config for ERR_1, and a _name param for ERR_2
+        """
+        msg = self._get_msg(code, kwargs)
+        super().__init__(msg)
+
+    @classmethod
+    def _get_msg(
+            cls,
+            code: OutOfStockError.Code,
+            details: dict,
+    ):
+        """Return a custom message based on an error code.
+
+        Parameters
+        ----------
+        code : OutOfStockError.Code
+            An internal error code
+        details : dict
+            An error details
+
+        Returns
+        -------
+        str
+            A custom error message
+
+        Raises
+        ------
+        ValueError
+            If the code argument is not OutOfStockError.Code enum
+        """
+        if code == cls.Code.ERR_1:
+            return (f"No more unique values, "
+                    f"database contain only {details['num']} {details['data']}.")
+        if code == cls.Code.ERR_2:
+            return (f"No more unique values, "
+                    f"database contain only {details['num']} {details['data']} of "
+                    f"{details['param_val']}.")
+
+        msg = f"Provided error code is not a {cls.__name__}.Code enum!"
+        raise ValueError(msg)
