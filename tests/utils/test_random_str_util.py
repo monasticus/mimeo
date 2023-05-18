@@ -33,7 +33,7 @@ def test_random_str_parametrized_with_length_zero():
 @assert_throws(err_type=InvalidValueError,
                msg=("The random_str Mimeo Util cannot be parametrized with negative "
                     "length [{length}] value"),
-               params={"length": -1})
+               length=-1)
 def test_random_str_parametrized_with_negative_length():
     mimeo_util = {"_name": "random_str", "length": -1}
     UtilsRenderer.render_parametrized(mimeo_util)

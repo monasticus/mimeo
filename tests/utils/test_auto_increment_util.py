@@ -67,7 +67,7 @@ def test_auto_increment_parametrized_with_pattern(default_config):
 @assert_throws(err_type=InvalidValueError,
                msg="The auto_increment Mimeo Util require a string value "
                    "for the pattern parameter and was: [{pattern}].",
-               params={"pattern": 1})
+               pattern=1)
 def test_auto_increment_parametrized_with_non_str_pattern(default_config):
     with MimeoContextManager(default_config) as mimeo_manager:
         context = mimeo_manager.get_context("SomeEntity")

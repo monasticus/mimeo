@@ -39,7 +39,7 @@ def test_get_country_at():
 
 @assert_throws(err_type=InvalidIndexError,
                msg="Provided index [{i}] is out or the range: 0-238!",
-               params={"i": 999})
+               i=999)
 def test_get_country_at_out_of_range():
     db = CountriesDB()
     db.get_country_at(999)

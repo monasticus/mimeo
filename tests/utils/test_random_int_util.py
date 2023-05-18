@@ -73,7 +73,7 @@ def test_random_int_parametrized_with_limit_same_as_start():
 @assert_throws(err_type=InvalidValueError,
                msg=("The random_int Mimeo Util cannot be parametrized with limit "
                     "[{limit}] lower than start [{start}]"),
-               params={"start": 2, "limit": 1})
+               start=2, limit=1)
 def test_random_int_parametrized_with_limit_lower_than_start():
     mimeo_util = {"_name": "random_int", "start": 2, "limit": 1}
     UtilsRenderer.render_parametrized(mimeo_util)

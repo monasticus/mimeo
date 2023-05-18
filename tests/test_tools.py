@@ -10,6 +10,6 @@ def test_get_resource_existing():
 
 @assert_throws(err_type=ResourceNotFoundError,
                msg="No such resource: [{res}]",
-               params={"res": "non-existing-file.yaml"})
+               res="non-existing-file.yaml")
 def test_get_resource_non_existing():
     tools.get_resource("non-existing-file.yaml")
