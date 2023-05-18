@@ -7,6 +7,8 @@ It contains all custom exceptions related to Mimeo Utils:
         A custom Enum class storing error codes for InvalidMimeoUtilError.
     * InvalidValueError
         A custom Exception class for an invalid value in Mimeo Util.
+    * InvalidValueError.Code
+        A custom Enum class storing error codes for InvalidValueError.
     * NotASpecialFieldError
         A custom Exception class for a field used as a special.
 """
@@ -29,13 +31,13 @@ class InvalidMimeoUtilError(Exception):
 
         Attributes
         ----------
-        ERR_1: int
+        ERR_1: str
             An error code for a missing Mimeo Util name in configuration
-        ERR_2: int
+        ERR_2: str
             An error code for an unsupported Mimeo Util
         """
 
-        ERR_1 = "MISSING_MIMEO_UTIL"
+        ERR_1 = "MISSING_NAME"
         ERR_2 = "UNSUPPORTED_MIMEO_UTIL"
 
     def __init__(
@@ -97,6 +99,90 @@ class InvalidValueError(Exception):
 
     Raised when Mimeo Util node is incorrectly parametrized.
     """
+
+    class Code(Enum):
+        """An Enumeration class for InvalidValueError error codes.
+
+        Attributes
+        ----------
+        ERR_1: str
+            An error code for a negative length in Mimeo Util configuration
+        ERR_2: str
+            An error code for a limit param lower than start
+        ERR_3: str
+            An error code for an invalid param type
+        ERR_3: str
+            An error code for an unsupported value
+        """
+
+        ERR_1 = "NEGATIVE_LENGTH"
+        ERR_2 = "LIMIT_LOWER_THAN_START"
+        ERR_3 = "INVALID_TYPE"
+        ERR_4 = "UNSUPPORTED_VALUE"
+
+    def __init__(
+            self,
+            code: InvalidValueError.Code,
+            **kwargs,
+    ):
+        """Initialize InvalidValueError exception with details.
+
+        Extends Exception constructor with a custom message. The message depends on
+        an internal InvalidValueError code.
+
+        Parameters
+        ----------
+        code : InvalidValueError.Code
+            An internal error code
+        kwargs
+            An error details
+        """
+        msg = self._get_msg(code, kwargs)
+        super().__init__(msg)
+
+    @classmethod
+    def _get_msg(
+            cls,
+            code: InvalidMimeoUtilError.Code,
+            details: dict,
+    ):
+        """Return a custom message based on an error code.
+
+        Parameters
+        ----------
+        code : InvalidValueError.Code
+            An internal error code
+        details : dict
+            An error details
+
+        Returns
+        -------
+        str
+            A custom error message
+
+        Raises
+        ------
+        ValueError
+            If the code argument is not InvalidValueError.Code enum
+        """
+        if code == cls.Code.ERR_1:
+            msg = (f"The {details['util']} Mimeo Util cannot be parametrized with "
+                   f"negative length [{details['length']}] value")
+        elif code == cls.Code.ERR_2:
+            msg = (f"The {details['util']} Mimeo Util cannot be parametrized with "
+                   f"limit [{details['limit']}] lower than start [{details['start']}]")
+        elif code == cls.Code.ERR_3:
+            msg = (f"The {details['util']} Mimeo Util require a {details['type']} "
+                   f"value for the {details['param_name']} parameter and was: "
+                   f"[{details['param_val']}].")
+        elif code == cls.Code.ERR_4:
+            msg = (f"The {details['util']} Mimeo Util does not support a value "
+                   f"[{details['value']}]. "
+                   f"Supported values are: {', '.join(details['supported_values'])}.")
+        else:
+            msg = "Provided error code is not a InvalidValueError.Code enum!"
+            raise ValueError(msg)
+        return msg
 
 
 class NotASpecialFieldError(Exception):

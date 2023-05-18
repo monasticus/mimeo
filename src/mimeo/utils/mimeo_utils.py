@@ -138,9 +138,9 @@ class RandomStringUtil(MimeoUtil):
             If the length param is negative
         """
         if self._length < 0:
-            msg = ("The random_str Mimeo Util cannot be parametrized with negative "
-                   f"length [{self._length}] value")
-            raise InvalidValueError(msg)
+            raise InvalidValueError(InvalidValueError.Code.ERR_1,
+                                    util=self.KEY,
+                                    length=self._length)
         return "".join(random.choice(string.ascii_letters) for _ in range(self._length))
 
 
@@ -196,9 +196,10 @@ class RandomIntegerUtil(MimeoUtil):
             If the limit param is lower than start
         """
         if self._start > self._limit:
-            msg = ("The random_int Mimeo Util cannot be parametrized with "
-                   f"limit [{self._limit}] lower than start [{self._start}]")
-            raise InvalidValueError(msg)
+            raise InvalidValueError(InvalidValueError.Code.ERR_2,
+                                    util=self.KEY,
+                                    limit=self._limit,
+                                    start=self._start)
         return random.randrange(self._start, self._limit + 1)
 
 
@@ -418,9 +419,11 @@ class AutoIncrementUtil(MimeoUtil):
             return self._pattern.format(identifier)
         except AttributeError:
             context.prev_id()
-            msg = (f"The {self.KEY} Mimeo Util require a string value for the pattern "
-                   f"parameter and was: [{self._pattern}].")
-            raise InvalidValueError(msg) from AttributeError
+            raise InvalidValueError(InvalidValueError.Code.ERR_3,
+                                    util=self.KEY,
+                                    type="string",
+                                    param_name="pattern",
+                                    param_val=self._pattern) from AttributeError
 
 
 class CurrentIterationUtil(MimeoUtil):
@@ -667,10 +670,11 @@ class CountryUtil(MimeoUtil):
 
     KEY = "country"
 
-    __VALUE_NAME = "name"
-    __VALUE_ISO3 = "iso3"
-    __VALUE_ISO2 = "iso2"
-    __MIMEO_DB = MimeoDB()
+    _VALUE_NAME = "name"
+    _VALUE_ISO3 = "iso3"
+    _VALUE_ISO2 = "iso2"
+    _SUPPORTED_VALUES = (_VALUE_NAME, _VALUE_ISO3, _VALUE_ISO2)
+    _MIMEO_DB = MimeoDB()
 
     def __init__(
             self,
@@ -694,7 +698,7 @@ class CountryUtil(MimeoUtil):
         kwargs : dict
             Arbitrary keyword arguments (ignored)
         """
-        self._value = value if value is not None else self.__VALUE_NAME
+        self._value = value if value is not None else self._VALUE_NAME
         self._unique = unique
         self._country = country
 
@@ -732,23 +736,23 @@ class CountryUtil(MimeoUtil):
         DataNotFoundError
             If database does not contain the provided `country`
         """
-        if self._value == self.__VALUE_NAME:
+        if self._value == self._VALUE_NAME:
             return self._get_country(context).name
-        if self._value == self.__VALUE_ISO3:
+        if self._value == self._VALUE_ISO3:
             return self._get_country(context).iso_3
-        if self._value == self.__VALUE_ISO2:
+        if self._value == self._VALUE_ISO2:
             return self._get_country(context).iso_2
-        msg = (f"The country Mimeo Util does not support a value [{self._value}]. "
-               f"Supported values are: {self.__VALUE_NAME} (default), "
-               f"{self.__VALUE_ISO3}, {self.__VALUE_ISO2}.")
-        raise InvalidValueError(msg)
+        raise InvalidValueError(InvalidValueError.Code.ERR_4,
+                                util=self.KEY,
+                                value=self._value,
+                                supported_values=self._SUPPORTED_VALUES)
 
     def _get_country(
             self,
             context: MimeoContext,
     ) -> Country:
         if self._country is not None:
-            countries = self.__MIMEO_DB.get_countries()
+            countries = self._MIMEO_DB.get_countries()
             country_found = next(
                 filter(lambda c: self._country in [c.name, c.iso_3, c.iso_2],
                        countries),
@@ -763,7 +767,7 @@ class CountryUtil(MimeoUtil):
             index = context.next_country_index()
         else:
             index = random.randrange(MimeoDB.NUM_OF_COUNTRIES)
-        return self.__MIMEO_DB.get_country_at(index)
+        return self._MIMEO_DB.get_country_at(index)
 
 
 class CurrencyUtil(MimeoUtil):
@@ -787,6 +791,7 @@ class CurrencyUtil(MimeoUtil):
 
     _VALUE_CODE = "code"
     _VALUE_NAME = "name"
+    _SUPPORTED_VALUES = (_VALUE_CODE, _VALUE_NAME)
     _MIMEO_DB = MimeoDB()
 
     def __init__(
@@ -851,10 +856,10 @@ class CurrencyUtil(MimeoUtil):
             return self._get_currency(context).code
         if self._value == self._VALUE_NAME:
             return self._get_currency(context).name
-        msg = (f"The currency Mimeo Util does not support a value [{self._value}]. "
-               f"Supported values are: {self._VALUE_CODE} (default), "
-               f"{self._VALUE_NAME}.")
-        raise InvalidValueError(msg)
+        raise InvalidValueError(InvalidValueError.Code.ERR_4,
+                                util=self.KEY,
+                                value=self._value,
+                                supported_values=self._SUPPORTED_VALUES)
 
     def _get_currency(
             self,

@@ -208,7 +208,7 @@ def test_country_parametrized_with_value_iso2_and_non_existing_country(default_c
 
 @assert_throws(err_type=InvalidValueError,
                msg="The country Mimeo Util does not support a value [{val}]. "
-                   "Supported values are: name (default), iso3, iso2.",
+                   "Supported values are: name, iso3, iso2.",
                params={"val": "not_supported"})
 def test_country_parametrized_with_invalid_value(default_config):
     with MimeoContextManager(default_config) as mimeo_manager:

@@ -219,7 +219,7 @@ def test_currency_parametrized_with_value_unique_and_country(default_config):
 
 @assert_throws(err_type=InvalidValueError,
                msg="The currency Mimeo Util does not support a value [{val}]. "
-                   "Supported values are: code (default), name.",
+                   "Supported values are: code, name.",
                params={"val": "not_supported"})
 def test_currency_parametrized_with_invalid_value(default_config):
     with MimeoContextManager(default_config) as mimeo_manager:
