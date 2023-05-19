@@ -33,7 +33,10 @@ class UnsupportedPropertyValueError(Exception):
     """
 
     def __init__(
-            self, prop: str, val: str, supported_values: tuple,
+            self,
+            prop: str,
+            val: str,
+            supported_values: tuple,
     ):
         """Initialize UnsupportedPropertyValueError exception with details.
 
@@ -58,6 +61,23 @@ class MissingRequiredPropertyError(Exception):
     Raised when a Mimeo Configuration does not contain a required
     property.
     """
+
+    def __init__(
+            self,
+            details: list,
+    ):
+        """Initialize MissingRequiredPropertyError exception with details.
+
+        Extends Exception constructor with a custom message.
+
+        Parameters
+        ----------
+        details : list
+            Missing details
+        """
+        details_str = ", ".join(details)
+        super().__init__(f"Missing required fields in HTTP output details: "
+                         f"{details_str}")
 
 
 class InvalidIndentError(Exception):

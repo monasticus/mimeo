@@ -620,9 +620,7 @@ class MimeoOutput(MimeoDTO):
                 if detail not in output:
                     missing_details.append(detail)
             if len(missing_details) > 0:
-                details_str = ", ".join(missing_details)
-                msg = f"Missing required fields is HTTP output details: {details_str}"
-                raise MissingRequiredPropertyError(msg)
+                raise MissingRequiredPropertyError(missing_details)
 
 
 class MimeoTemplate(MimeoDTO):

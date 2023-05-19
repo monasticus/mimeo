@@ -263,7 +263,7 @@ def test_parsing_output_unsupported_request_method():
 
 
 @assert_throws(err_type=MissingRequiredPropertyError,
-               msg="Missing required fields is HTTP output details: {fields}",
+               msg="Missing required fields in HTTP output details: {fields}",
                fields="endpoint")
 def test_parsing_output_missing_required_field():
     output = {
@@ -276,7 +276,7 @@ def test_parsing_output_missing_required_field():
 
 
 @assert_throws(err_type=MissingRequiredPropertyError,
-               msg="Missing required fields is HTTP output details: {fields}",
+               msg="Missing required fields in HTTP output details: {fields}",
                fields="host, endpoint, username, password")
 def test_parsing_output_missing_required_fields():
     output = {
