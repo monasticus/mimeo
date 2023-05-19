@@ -272,6 +272,25 @@ class InvalidMimeoTemplateError(Exception):
     Raised when a Mimeo Template is not configured properly.
     """
 
+    def __init__(
+            self,
+            property_name: str,
+            template: dict,
+    ):
+        """Initialize InvalidMimeoTemplateError exception with details.
+
+        Extends Exception constructor with a custom message.
+
+        Parameters
+        ----------
+        property_name : str
+            A missing property
+        template : dict
+            A Mimeo Template
+        """
+        super().__init__(f"No {property_name} property in the Mimeo Template: "
+                         f"{template}")
+
 
 class InvalidMimeoConfigError(Exception):
     """A custom Exception class for invalid mimeo configuration.

@@ -671,11 +671,11 @@ class MimeoTemplate(MimeoDTO):
             If the source config doesn't include count or model properties
         """
         if cc.TEMPLATES_COUNT_KEY not in template:
-            msg = f"No count value in the Mimeo Template: {template}"
-            raise InvalidMimeoTemplateError(msg)
+            prop_name = "count"
+            raise InvalidMimeoTemplateError(prop_name, template)
         if cc.TEMPLATES_MODEL_KEY not in template:
-            msg = f"No model data in the Mimeo Template: {template}"
-            raise InvalidMimeoTemplateError(msg)
+            prop_name = "model"
+            raise InvalidMimeoTemplateError(prop_name, template)
 
 
 class MimeoModel(MimeoDTO):
