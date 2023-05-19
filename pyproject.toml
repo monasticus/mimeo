@@ -132,6 +132,7 @@ max-complexity = 10
 ]
 "tests/*" = [
     "D", # disable pydocstyle for tests
+    "EM101", # allow string literals in exceptions' tests
     "PLC1901", # allow comparison to blank string in tests
     "PLR2004" # allow magic values in tests
 ]

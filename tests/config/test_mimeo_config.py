@@ -89,7 +89,7 @@ def test_parsing_config_default():
 
 @assert_throws(err_type=InvalidMimeoConfigError,
                msg="No templates in the Mimeo Config: {config}",
-               params={"config": "{'output': {'direction': 'stdout'}}"})
+               config="{'output': {'direction': 'stdout'}}")
 def test_parsing_config_without_templates():
     config = {
         "output": {
@@ -101,8 +101,8 @@ def test_parsing_config_without_templates():
 
 @assert_throws(err_type=InvalidMimeoConfigError,
                msg="_templates_ property does not store an array: {config}",
-               params={"config": "{'_templates_': {'count': 5, 'model': "
-                                 "{'SomeEntity': {'ChildNode': 'value'}}}}"})
+               config="{'_templates_': {'count': 5, 'model': {'SomeEntity': "
+                      "{'ChildNode': 'value'}}}}")
 def test_parsing_config_with_templates_object():
     config = {
         "_templates_": {
@@ -120,7 +120,7 @@ def test_parsing_config_with_templates_object():
 @assert_throws(err_type=InvalidVarsError,
                msg="Provided var [{var}] is invalid (you can use upper-cased name "
                    "with underscore and digits, starting with a letter)!",
-               params={"var": "CuSTOM_KEY2"})
+               var="CuSTOM_KEY2")
 def test_parsing_config_with_invalid_vars_forbidden_character():
     config = {
         "vars": {
@@ -144,7 +144,7 @@ def test_parsing_config_with_invalid_vars_forbidden_character():
 @assert_throws(err_type=InvalidVarsError,
                msg="Provided var [{var}] is invalid (you can use upper-cased name "
                    "with underscore and digits, starting with a letter)!",
-               params={"var": "2CUSTOM_KEY"})
+               var="2CUSTOM_KEY")
 def test_parsing_config_with_invalid_vars_starting_with_digit():
     config = {
         "vars": {
@@ -168,7 +168,7 @@ def test_parsing_config_with_invalid_vars_starting_with_digit():
 @assert_throws(err_type=InvalidVarsError,
                msg="Provided var [{var}] is invalid (you can use ony atomic values "
                    "and Mimeo Utils)!",
-               params={"var": "CUSTOM_KEY1"})
+               var="CUSTOM_KEY1")
 def test_parsing_config_with_invalid_vars_using_non_atomic_value_and_non_mimeo_util():
     config = {
         "vars": {
@@ -190,7 +190,7 @@ def test_parsing_config_with_invalid_vars_using_non_atomic_value_and_non_mimeo_u
 
 @assert_throws(err_type=InvalidVarsError,
                msg="vars property does not store an object: {vars}",
-               params={"vars": "[{'CUSTOM_KEY1': 'value1', 'CuSTOM_KEY1': 'value2'}]"})
+               vars="[{'CUSTOM_KEY1': 'value1', 'CuSTOM_KEY1': 'value2'}]")
 def test_parsing_config_invalid_vars_not_being_object():
     config = {
         "vars": [

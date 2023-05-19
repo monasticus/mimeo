@@ -39,7 +39,7 @@ def test_get_currency_at():
 
 @assert_throws(err_type=InvalidIndexError,
                msg="Provided index [{i}] is out or the range: 0-168!",
-               params={"i": 300})
+               i=300)
 def test_get_currency_at_out_of_range():
     db = CurrenciesDB()
     db.get_currency_at(300)

@@ -66,7 +66,7 @@ def test_curr_iteration():
 
 @assert_throws(err_type=UninitializedContextIterationError,
                msg="No iteration has been initialized for the current context [{ctx}]",
-               params={"ctx": "SomeContext"})
+               ctx="SomeContext")
 def test_curr_iteration_id_without_initialization():
     ctx = MimeoContext("SomeContext")
     ctx.curr_iteration()
@@ -86,8 +86,7 @@ def test_get_iteration():
 @assert_throws(err_type=ContextIterationNotFoundError,
                msg="No iteration with id [{iter}] has been initialized "
                    "for the current context [{ctx}]",
-               params={"iter": 1,
-                       "ctx": "SomeContext"})
+               iter=1, ctx="SomeContext")
 def test_get_iteration_id_without_initialization():
     ctx = MimeoContext("SomeContext")
     ctx.get_iteration(1)
@@ -115,7 +114,7 @@ def test_next_country_index():
 
 @assert_throws(err_type=OutOfStockError,
                msg="No more unique values, database contain only {c} countries.",
-               params={"c": 239})
+               c=239)
 def test_next_country_index_out_of_stock():
     ctx = MimeoContext("SomeContext")
     for _ in range(MimeoDB.NUM_OF_COUNTRIES):
@@ -134,7 +133,7 @@ def test_next_city_index_default():
 
 @assert_throws(err_type=OutOfStockError,
                msg="No more unique values, database contain only {c} cities.",
-               params={"c": 42905})
+               c=42905)
 def test_next_city_index_default_out_of_stock():
     ctx = MimeoContext("SomeContext")
     for _ in range(MimeoDB.NUM_OF_CITIES):
@@ -158,7 +157,7 @@ def test_next_city_index_custom_country():
 @assert_throws(err_type=OutOfStockError,
                msg="No more unique values, database contain only {c} cities of "
                    "{country}.",
-               params={"c": 858, "country": "United Kingdom"})
+               c=858, country="United Kingdom")
 def test_next_city_index_custom_country_out_of_stock():
     mimeo_db = MimeoDB()
     cities = [city.name_ascii for city in mimeo_db.get_cities_of("United Kingdom")]
@@ -172,9 +171,9 @@ def test_next_city_index_custom_country_out_of_stock():
 
 
 @assert_throws(err_type=DataNotFoundError,
-               msg="Mimeo database doesn't contain any cities of provided "
+               msg="Mimeo database doesn't contain any city of the provided "
                    "country [{country}].",
-               params={"country": "NEC"})
+               country="NEC")
 def test_next_city_index_non_existing_country():
     ctx = MimeoContext("SomeContext")
     ctx.next_city_index("NEC")
@@ -190,7 +189,7 @@ def test_next_currency_index():
 
 @assert_throws(err_type=OutOfStockError,
                msg="No more unique values, database contain only {c} currencies.",
-               params={"c": 169})
+               c=169)
 def test_next_currency_index_out_of_stock():
     ctx = MimeoContext("SomeContext")
     for _ in range(MimeoDB.NUM_OF_CURRENCIES):
@@ -209,7 +208,7 @@ def test_next_first_name_index_default():
 
 @assert_throws(err_type=OutOfStockError,
                msg="No more unique values, database contain only {c} first names.",
-               params={"c": 7455})
+               c=7455)
 def test_next_first_name_index_default_out_of_stock():
     ctx = MimeoContext("SomeContext")
     for _ in range(MimeoDB.NUM_OF_FIRST_NAMES):
@@ -233,7 +232,7 @@ def test_next_first_name_index_custom_sex():
 @assert_throws(err_type=OutOfStockError,
                msg="No more unique values, database contain only {c} male "
                    "first names.",
-               params={"c": 3437})
+               c=3437)
 def test_next_first_name_index_male_sex_out_of_stock():
     mimeo_db = MimeoDB()
     first_names = [n.name for n in mimeo_db.get_first_names_by_sex("M")]
@@ -249,7 +248,7 @@ def test_next_first_name_index_male_sex_out_of_stock():
 @assert_throws(err_type=OutOfStockError,
                msg="No more unique values, database contain only {c} female "
                    "first names.",
-               params={"c": 4018})
+               c=4018)
 def test_next_first_name_index_female_sex_out_of_stock():
     mimeo_db = MimeoDB()
     first_names = [n.name for n in mimeo_db.get_first_names_by_sex("F")]
@@ -279,7 +278,7 @@ def test_next_last_name_index():
 
 @assert_throws(err_type=OutOfStockError,
                msg="No more unique values, database contain only {c} last names.",
-               params={"c": 151670})
+               c=151670)
 def test_next_last_name_index_out_of_stock():
     ctx = MimeoContext("SomeContext")
     for _ in range(MimeoDB.NUM_OF_LAST_NAMES):

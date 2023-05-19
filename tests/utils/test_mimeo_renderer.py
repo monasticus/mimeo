@@ -282,7 +282,7 @@ def test_vars_pointing_to_var():
 
 @assert_throws(err_type=VarNotFoundError,
                msg="Provided variable [{var}] is not defined!",
-               params={"var": "NON_EXISTING_VAR"})
+               var="NON_EXISTING_VAR")
 def test_vars_pointing_to_non_existing_var():
     config = MimeoConfig({
         "vars": {
@@ -316,7 +316,7 @@ def test_vars_pointing_to_funct():
 @assert_throws(err_type=InvalidValueError,
                msg="The auto_increment Mimeo Util require a string value "
                    "for the pattern parameter and was: [{pattern}].",
-               params={"pattern": 1})
+               pattern=1)
 def test_vars_pointing_to_invalid_funct():
     config = MimeoConfig({
         "vars": {

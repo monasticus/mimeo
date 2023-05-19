@@ -34,7 +34,7 @@ def test_get_last_name_at():
 
 @assert_throws(err_type=InvalidIndexError,
                msg="Provided index [{i}] is out or the range: 0-151669!",
-               params={"i": 151670})
+               i=151670)
 def test_get_last_name_at_out_of_range():
     db = LastNamesDB()
     db.get_last_name_at(151670)

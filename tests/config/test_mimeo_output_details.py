@@ -200,7 +200,7 @@ def test_parsing_output_http_customized():
 
 @assert_throws(err_type=InvalidIndentError,
                msg="Provided indent [{indent}] is negative!",
-               params={"indent": -1})
+               indent=-1)
 def test_parsing_output_with_invalid_indent():
     output = {
         "indent": -1,
@@ -211,8 +211,7 @@ def test_parsing_output_with_invalid_indent():
 @assert_throws(err_type=UnsupportedPropertyValueError,
                msg="Provided format [{format}] is not supported! "
                    "Supported values: [{values}].",
-               params={"format": "unsupported_format",
-                       "values": "xml"})
+               format="unsupported_format", values="xml")
 def test_parsing_output_with_unsupported_format():
     output = {
         "format": "unsupported_format",
@@ -223,8 +222,7 @@ def test_parsing_output_with_unsupported_format():
 @assert_throws(err_type=UnsupportedPropertyValueError,
                msg="Provided direction [{direction}] is not supported! "
                    "Supported values: [{values}].",
-               params={"direction": "unsupported_direction",
-                       "values": "stdout, file, http"})
+               direction="unsupported_direction", values="stdout, file, http")
 def test_parsing_output_unsupported_direction():
     output = {
         "direction": "unsupported_direction",
@@ -235,8 +233,7 @@ def test_parsing_output_unsupported_direction():
 @assert_throws(err_type=UnsupportedPropertyValueError,
                msg="Provided protocol [{protocol}] is not supported! "
                    "Supported values: [{values}].",
-               params={"protocol": "unsupported_request_protocol",
-                       "values": "http, https"})
+               protocol="unsupported_request_protocol", values="http, https")
 def test_parsing_output_unsupported_request_protocol():
     output = {
         "direction": "http",
@@ -252,8 +249,7 @@ def test_parsing_output_unsupported_request_protocol():
 @assert_throws(err_type=UnsupportedPropertyValueError,
                msg="Provided method [{method}] is not supported! "
                    "Supported values: [{values}].",
-               params={"method": "unsupported_request_method",
-                       "values": "POST, PUT"})
+               method="unsupported_request_method", values="POST, PUT")
 def test_parsing_output_unsupported_request_method():
     output = {
         "direction": "http",
@@ -267,8 +263,8 @@ def test_parsing_output_unsupported_request_method():
 
 
 @assert_throws(err_type=MissingRequiredPropertyError,
-               msg="Missing required fields is HTTP output details: {fields}",
-               params={"fields": "endpoint"})
+               msg="Missing required fields in HTTP output details: {fields}",
+               fields="endpoint")
 def test_parsing_output_missing_required_field():
     output = {
         "direction": "http",
@@ -280,8 +276,8 @@ def test_parsing_output_missing_required_field():
 
 
 @assert_throws(err_type=MissingRequiredPropertyError,
-               msg="Missing required fields is HTTP output details: {fields}",
-               params={"fields": "host, endpoint, username, password"})
+               msg="Missing required fields in HTTP output details: {fields}",
+               fields="host, endpoint, username, password")
 def test_parsing_output_missing_required_fields():
     output = {
         "direction": "http",

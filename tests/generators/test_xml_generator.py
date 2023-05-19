@@ -657,7 +657,7 @@ def test_generate_single_template_only_atomic_child_elements_with_mimeo_util_in_
 @assert_throws(err_type=UnsupportedStructureError,
                msg="An array can include only atomic types (including Mimeo Utils) or "
                    "only JSON objects! Unsupported structure found in {e}: {s}",
-               params={"e": "ChildNode", "s": "[['atomic']]"})
+               e="ChildNode", s="[['atomic']]")
 def test_generate_single_template_list_child_element_in_array():
     config = MimeoConfig({
         "output": {
@@ -688,7 +688,7 @@ def test_generate_single_template_list_child_element_in_array():
 @assert_throws(err_type=UnsupportedStructureError,
                msg="An array can include only atomic types (including Mimeo Utils) or "
                    "only JSON objects! Unsupported structure found in {e}: {s}",
-               params={"e": "ChildNodes", "s": "['atomic', {'ChildNode': 'value-1'}]"})
+               e="ChildNodes", s="['atomic', {'ChildNode': 'value-1'}]")
 def test_generate_single_template_mixed_child_elements_in_array():
     config = MimeoConfig({
         "output": {
@@ -720,9 +720,9 @@ def test_generate_single_template_mixed_child_elements_in_array():
 @assert_throws(err_type=UnsupportedStructureError,
                msg="An array can include only atomic types (including Mimeo Utils) or "
                    "only JSON objects! Unsupported structure found in {e}: {s}",
-               params={"e": "ChildNodes",
-                       "s": "[{'_mimeo_util': {'_name': 'auto_increment', "
-                            "'pattern': '{}'}}, {'ChildNode': 'value-1'}]"})
+               e="ChildNodes",
+               s="[{'_mimeo_util': {'_name': 'auto_increment',"
+                 " 'pattern': '{}'}}, {'ChildNode': 'value-1'}]")
 def test_generate_single_template_complex_child_elements_with_mimeo_util_in_array():
     config = MimeoConfig({
         "output": {
@@ -1080,7 +1080,7 @@ def test_generate_using_mimeo_util_parametrized():
 @assert_throws(err_type=InvalidValueError,
                msg="The auto_increment Mimeo Util require a string value "
                    "for the pattern parameter and was: [{pattern}].",
-               params={"pattern": 1})
+               pattern=1)
 def test_generate_using_mimeo_util_parametrized_invalid():
     config = MimeoConfig({
         "output": {

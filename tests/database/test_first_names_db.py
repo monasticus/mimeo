@@ -37,7 +37,7 @@ def test_get_first_name_at():
 
 @assert_throws(err_type=InvalidIndexError,
                msg="Provided index [{i}] is out or the range: 0-7454!",
-               params={"i": 9999})
+               i=9999)
 def test_get_first_name_at_out_of_range():
     db = FirstNamesDB()
     db.get_first_name_at(9999)

@@ -30,15 +30,16 @@ def get_class_impl_error_msg(
 def assert_throws(
         err_type: Type[Exception],
         msg: str,
-        params: dict = None,
+        **params,
 ) -> Callable:
     def test(func: Callable) -> Callable:
         @functools.wraps(func)
         def test_wrapper(*args, **kwargs):
             with pytest.raises(err_type) as err:
                 func(*args, **kwargs)
-            expected_msg = msg if params is None else msg.format(**params)
-            assert err.value.args[0] == expected_msg
+            actual_msg = err.value.args[0]
+            expected_msg = msg if params == {} else msg.format(**params)
+            assert actual_msg == expected_msg
 
         return test_wrapper
 

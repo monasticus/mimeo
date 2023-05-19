@@ -114,9 +114,9 @@ def test_currency_parametrized_country_name(default_config):
 
 
 @assert_throws(err_type=DataNotFoundError,
-               msg="Mimeo database doesn't contain a currency of the provided "
+               msg="Mimeo database doesn't contain any currency of the provided "
                    "country [{country}].",
-               params={"country": "NEC"})
+               country="NEC")
 def test_currency_parametrized_with_non_existing_country(default_config):
     with MimeoContextManager(default_config) as mimeo_manager:
         context = mimeo_manager.get_context("SomeEntity")
@@ -187,9 +187,9 @@ def test_currency_parametrized_with_value_and_country_name(default_config):
 
 
 @assert_throws(err_type=DataNotFoundError,
-               msg="Mimeo database doesn't contain a currency of the provided "
+               msg="Mimeo database doesn't contain any currency of the provided "
                    "country [{country}].",
-               params={"country": "NEC"})
+               country="NEC")
 def test_currency_parametrized_with_value_and_non_existing_country(default_config):
     with MimeoContextManager(default_config) as mimeo_manager:
         context = mimeo_manager.get_context("SomeEntity")
@@ -219,8 +219,8 @@ def test_currency_parametrized_with_value_unique_and_country(default_config):
 
 @assert_throws(err_type=InvalidValueError,
                msg="The currency Mimeo Util does not support a value [{val}]. "
-                   "Supported values are: code (default), name.",
-               params={"val": "not_supported"})
+                   "Supported values are: code, name.",
+               val="not_supported")
 def test_currency_parametrized_with_invalid_value(default_config):
     with MimeoContextManager(default_config) as mimeo_manager:
         context = mimeo_manager.get_context("SomeEntity")

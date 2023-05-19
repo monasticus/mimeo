@@ -36,8 +36,8 @@ def test_parsing_template():
 
 
 @assert_throws(err_type=InvalidMimeoTemplateError,
-               msg="No count value in the Mimeo Template: {tmplt}",
-               params={"tmplt": "{'model': {'SomeEntity': {'ChildNode': 'value'}}}"})
+               msg="No count property in the Mimeo Template: {tmplt}",
+               tmplt="{'model': {'SomeEntity': {'ChildNode': 'value'}}}")
 def test_parsing_template_without_count():
     template = {
       "model": {
@@ -50,8 +50,8 @@ def test_parsing_template_without_count():
 
 
 @assert_throws(err_type=InvalidMimeoTemplateError,
-               msg="No model data in the Mimeo Template: {tmplt}",
-               params={"tmplt": "{'count': 30}"})
+               msg="No model property in the Mimeo Template: {tmplt}",
+               tmplt="{'count': 30}")
 def test_parsing_template_with_multiple_roots():
     template = {
       "count": 30,

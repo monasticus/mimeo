@@ -217,7 +217,7 @@ def test_directory_path(aioresponses):
 
 @assert_throws(err_type=PathNotFoundError,
                msg="No such file or directory [{path}]",
-               params={"path": "non-existing-path"})
+               path="non-existing-path")
 def test_non_existing_path():
     sys.argv = ["mimeo", "non-existing-path"]
     mimeo_cli.main()
@@ -225,7 +225,7 @@ def test_non_existing_path():
 
 @assert_throws(err_type=PathNotFoundError,
                msg="No such file or directory [{path}]",
-               params={"path": "non-existing-path"})
+               path="non-existing-path")
 def test_existing_and_non_existing_path():
     sys.argv = ["mimeo", "test_mimeo_cli-dir/default-config.json", "non-existing-path"]
     mimeo_cli.main()
@@ -925,7 +925,7 @@ def test_custom_env_file(aioresponses):
 
 @assert_throws(err_type=EnvironmentsFileNotFoundError,
                msg="Environments file not found [{file}]",
-               params={"file": "non-existing-environments-file.json"})
+               file="non-existing-environments-file.json")
 def test_custom_env_file_does_throw_error_when_file_does_not_exist():
     sys.argv = ["mimeo", "test_mimeo_cli-dir/http-config.json",
                 "--http-envs-file", "non-existing-environments-file.json",
@@ -948,7 +948,7 @@ def test_custom_env_does_not_throw_error_when_output_is_none():
 
 @assert_throws(err_type=EnvironmentNotFoundError,
                msg="No such env [{env}] in environments file [{file}]",
-               params={"env": "non-existing", "file": "mimeo.envs.json"})
+               env="non-existing", file="mimeo.envs.json")
 def test_custom_env_does_throw_error_when_environment_does_not_exist():
     sys.argv = ["mimeo", "test_mimeo_cli-dir/minimum-config.json",
                 "-o", "http",

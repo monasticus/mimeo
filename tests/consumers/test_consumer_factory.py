@@ -70,8 +70,7 @@ def test_get_consumer_for_http_direction():
 @assert_throws(err_type=UnsupportedPropertyValueError,
                msg="Provided direction [{direction}] is not supported! "
                    "Supported values: [{values}].",
-               params={"direction": "unsupported_direction",
-                       "values": "stdout, file, http"})
+               direction="unsupported_direction", values="stdout, file, http")
 def test_get_consumer_for_unsupported_format():
     config = {
         "output": {
