@@ -9,6 +9,8 @@ It contains all custom exceptions related to Mimeo Configuration:
         A custom Exception class for invalid indent configuration.
     * InvalidVarsError
         A custom Exception class for invalid vars' configuration.
+    * InvalidVarsError.Code
+        An Enumeration class for InvalidVarsError error codes.
     * InvalidMimeoModelError
         A custom Exception class for invalid model configuration.
     * InvalidMimeoTemplateError
@@ -19,6 +21,8 @@ It contains all custom exceptions related to Mimeo Configuration:
 
 
 from __future__ import annotations
+
+from enum import Enum
 
 
 class UnsupportedPropertyValueError(Exception):
@@ -83,6 +87,81 @@ class InvalidVarsError(Exception):
 
     Raised when vars are not configured properly.
     """
+
+    class Code(Enum):
+        """An Enumeration class for InvalidVarsError error codes.
+
+        Attributes
+        ----------
+        ERR_1: str
+            An error code for vars not being a dictionary
+        ERR_2: str
+            An error code for vars with non-atomic values
+        ERR_2: str
+            An error code for vars with not allowed characters
+        """
+
+        ERR_1 = "NOT_A_DICT"
+        ERR_2 = "COMPLEX_VALUE"
+        ERR_3 = "INVALID_NAME"
+
+    def __init__(
+            self,
+            code: InvalidVarsError.Code,
+            **kwargs,
+    ):
+        """Initialize InvalidVarsError exception with details.
+
+        Extends Exception constructor with a custom message. The message depends on
+        an internal InvalidVarsError code.
+
+        Parameters
+        ----------
+        code : InvalidVarsError.Code
+            An internal error code
+        kwargs
+            An error details
+        """
+        msg = self._get_msg(code, kwargs)
+        super().__init__(msg)
+
+    @classmethod
+    def _get_msg(
+            cls,
+            code: InvalidVarsError.Code,
+            details: dict,
+    ):
+        """Return a custom message based on an error code.
+
+        Parameters
+        ----------
+        code : InvalidVarsError.Code
+            An internal error code
+        details : dict
+            An error details
+
+        Returns
+        -------
+        str
+            A custom error message
+
+        Raises
+        ------
+        ValueError
+            If the code argument is not InvalidVarsError.Code enum
+        """
+        if code == cls.Code.ERR_1:
+            return f"vars property does not store an object: {details['vars']}"
+        if code == cls.Code.ERR_2:
+            return (f"Provided var [{details['var']}] is invalid "
+                    f"(you can use ony atomic values and Mimeo Utils)!")
+        if code == cls.Code.ERR_3:
+            return (f"Provided var [{details['var']}] is invalid "
+                    f"(you can use upper-cased name with underscore and digits, "
+                    f"starting with a letter)!")
+
+        msg = f"Provided error code is not a {cls.__name__}.Code enum!"
+        raise ValueError(msg)
 
 
 class InvalidMimeoModelError(Exception):

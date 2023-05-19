@@ -182,7 +182,7 @@ class OutOfStockError(Exception):
         code : OutOfStockError.Code
             An internal error code
         kwargs
-            A Mimeo Util config for ERR_1, and a _name param for ERR_2
+            An error details
         """
         msg = self._get_msg(code, kwargs)
         super().__init__(msg)

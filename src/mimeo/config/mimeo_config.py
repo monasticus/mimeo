@@ -117,18 +117,12 @@ class MimeoConfig(MimeoDTO):
         """
         variables = config.get(cc.VARS_KEY, {})
         if not isinstance(variables, dict):
-            msg = f"vars property does not store an object: {variables}"
-            raise InvalidVarsError(msg)
+            raise InvalidVarsError(InvalidVarsError.Code.ERR_1, vars=variables)
         for var, val in variables.items():
-            if not re.match(r"^[A-Z][A-Z_0-9]*$", var):
-                msg = (f"Provided var [{var}] is invalid "
-                       f"(you can use upper-cased name with underscore and digits, "
-                       f"starting with a letter)!")
-                raise InvalidVarsError(msg)
             if isinstance(val, (list, dict)) and not cls._is_mimeo_util_object(val):
-                msg = (f"Provided var [{var}] is invalid "
-                       f"(you can use ony atomic values and Mimeo Utils)!")
-                raise InvalidVarsError(msg)
+                raise InvalidVarsError(InvalidVarsError.Code.ERR_2, var=var)
+            if not re.match(r"^[A-Z][A-Z_0-9]*$", var):
+                raise InvalidVarsError(InvalidVarsError.Code.ERR_3, var=var)
         return variables
 
     @classmethod
