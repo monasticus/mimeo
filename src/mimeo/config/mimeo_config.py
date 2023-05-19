@@ -734,11 +734,9 @@ class MimeoModel(MimeoDTO):
         """
         model_keys = list(filter(MimeoModel._is_not_configuration_key, iter(model)))
         if len(model_keys) == 0:
-            msg = f"No root data in Mimeo Model: {model}"
-            raise InvalidMimeoModelError(msg)
+            raise InvalidMimeoModelError(InvalidMimeoModelError.Code.ERR_1, model=model)
         if len(model_keys) > 1:
-            msg = f"Multiple root data in Mimeo Model: {model}"
-            raise InvalidMimeoModelError(msg)
+            raise InvalidMimeoModelError(InvalidMimeoModelError.Code.ERR_2, model=model)
         return model_keys[0]
 
     @staticmethod
@@ -768,8 +766,7 @@ class MimeoModel(MimeoDTO):
         """
         context_name = model.get(cc.MODEL_CONTEXT_KEY, root_name)
         if not isinstance(context_name, str):
-            msg = f"Invalid context name in Mimeo Model (not a string value): {model}"
-            raise InvalidMimeoModelError(msg)
+            raise InvalidMimeoModelError(InvalidMimeoModelError.Code.ERR_3, model=model)
         return context_name
 
     @staticmethod

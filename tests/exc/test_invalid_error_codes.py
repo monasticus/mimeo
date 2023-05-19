@@ -1,4 +1,4 @@
-from mimeo.config.exc import InvalidVarsError
+from mimeo.config.exc import InvalidMimeoModelError, InvalidVarsError
 from mimeo.database.exc import DataNotFoundError, OutOfStockError
 from mimeo.utils.exc import InvalidMimeoUtilError, InvalidValueError
 from tests.utils import assert_throws
@@ -8,7 +8,12 @@ common_msg = "Provided error code is not a {cls} enum!"
 
 @assert_throws(err_type=ValueError, msg=common_msg, cls="InvalidVarsError.Code")
 def test_invalid_vars_error_code():
-    raise InvalidVarsError("INVALID_NAME", data="aaa")
+    raise InvalidVarsError("INVALID_NAME", var="aaa")
+
+
+@assert_throws(err_type=ValueError, msg=common_msg, cls="InvalidMimeoModelError.Code")
+def test_invalid_mimeo_model_error_code():
+    raise InvalidMimeoModelError("MISSING_ROOT", model={})
 
 
 @assert_throws(err_type=ValueError, msg=common_msg, cls="DataNotFoundError.Code")

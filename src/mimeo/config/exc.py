@@ -13,6 +13,8 @@ It contains all custom exceptions related to Mimeo Configuration:
         An Enumeration class for InvalidVarsError error codes.
     * InvalidMimeoModelError
         A custom Exception class for invalid model configuration.
+    * InvalidMimeoModelError.Code
+        An Enumeration class for InvalidMimeoModelError error codes.
     * InvalidMimeoTemplateError
         A custom Exception class for invalid template configuration.
     * InvalidMimeoConfigError
@@ -189,6 +191,79 @@ class InvalidMimeoModelError(Exception):
 
     Raised when a Mimeo Model is not configured properly.
     """
+
+    class Code(Enum):
+        """An Enumeration class for InvalidMimeoModelError error codes.
+
+        Attributes
+        ----------
+        ERR_1: str
+            An error code for missing root in the Mimeo Model
+        ERR_2: str
+            An error code for multiple roots in the Mimeo Model
+        ERR_2: str
+            An error code for invalid context name in Mimeo Model
+        """
+
+        ERR_1 = "MISSING_ROOT"
+        ERR_2 = "MULTIPLE_ROOTS"
+        ERR_3 = "INVALID_CONTEXT_NAME"
+
+    def __init__(
+            self,
+            code: InvalidMimeoModelError.Code,
+            **kwargs,
+    ):
+        """Initialize InvalidMimeoModelError exception with details.
+
+        Extends Exception constructor with a custom message. The message depends on
+        an internal InvalidMimeoModelError code.
+
+        Parameters
+        ----------
+        code : InvalidMimeoModelError.Code
+            An internal error code
+        kwargs
+            An error details
+        """
+        msg = self._get_msg(code, kwargs)
+        super().__init__(msg)
+
+    @classmethod
+    def _get_msg(
+            cls,
+            code: InvalidMimeoModelError.Code,
+            details: dict,
+    ):
+        """Return a custom message based on an error code.
+
+        Parameters
+        ----------
+        code : InvalidMimeoModelError.Code
+            An internal error code
+        details : dict
+            An error details
+
+        Returns
+        -------
+        str
+            A custom error message
+
+        Raises
+        ------
+        ValueError
+            If the code argument is not InvalidMimeoModelError.Code enum
+        """
+        if code == cls.Code.ERR_1:
+            return f"No root data in Mimeo Model: {details['model']}"
+        if code == cls.Code.ERR_2:
+            return f"Multiple root data in Mimeo Model: {details['model']}"
+        if code == cls.Code.ERR_3:
+            return (f"Invalid context name in Mimeo Model (not a string value): "
+                    f"{details['model']}")
+
+        msg = f"Provided error code is not a {cls.__name__}.Code enum!"
+        raise ValueError(msg)
 
 
 class InvalidMimeoTemplateError(Exception):
