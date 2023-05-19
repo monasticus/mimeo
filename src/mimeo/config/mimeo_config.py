@@ -150,11 +150,11 @@ class MimeoConfig(MimeoDTO):
         """
         templates = config.get(cc.TEMPLATES_KEY)
         if templates is None:
-            msg = f"No templates in the Mimeo Config: {config}"
-            raise InvalidMimeoConfigError(msg)
+            raise InvalidMimeoConfigError(InvalidMimeoConfigError.Code.ERR_1,
+                                          config=config)
         if not isinstance(templates, list):
-            msg = f"_templates_ property does not store an array: {config}"
-            raise InvalidMimeoConfigError(msg)
+            raise InvalidMimeoConfigError(InvalidMimeoConfigError.Code.ERR_2,
+                                          config=config)
         return [MimeoTemplate(template)
                 for template in config.get(cc.TEMPLATES_KEY)]
 

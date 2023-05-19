@@ -1,4 +1,5 @@
-from mimeo.config.exc import InvalidMimeoModelError, InvalidVarsError
+from mimeo.config.exc import (InvalidMimeoConfigError, InvalidMimeoModelError,
+                              InvalidVarsError)
 from mimeo.database.exc import DataNotFoundError, OutOfStockError
 from mimeo.utils.exc import InvalidMimeoUtilError, InvalidValueError
 from tests.utils import assert_throws
@@ -14,6 +15,11 @@ def test_invalid_vars_error_code():
 @assert_throws(err_type=ValueError, msg=common_msg, cls="InvalidMimeoModelError.Code")
 def test_invalid_mimeo_model_error_code():
     raise InvalidMimeoModelError("MISSING_ROOT", model={})
+
+
+@assert_throws(err_type=ValueError, msg=common_msg, cls="InvalidMimeoConfigError.Code")
+def test_invalid_mimeo_config_error_code():
+    raise InvalidMimeoConfigError("MISSING_TEMPLATES", cofig={})
 
 
 @assert_throws(err_type=ValueError, msg=common_msg, cls="DataNotFoundError.Code")

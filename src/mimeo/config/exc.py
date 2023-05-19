@@ -19,6 +19,8 @@ It contains all custom exceptions related to Mimeo Configuration:
         A custom Exception class for invalid template configuration.
     * InvalidMimeoConfigError
         A custom Exception class for invalid mimeo configuration.
+    * InvalidMimeoConfigError.Code
+        An Enumeration class for InvalidMimeoConfigError error codes.
 """
 
 
@@ -297,3 +299,70 @@ class InvalidMimeoConfigError(Exception):
 
     Raised when a Mimeo Configuration is not configured properly.
     """
+
+    class Code(Enum):
+        """An Enumeration class for InvalidMimeoConfigError error codes.
+
+        Attributes
+        ----------
+        ERR_1: str
+            An error code for missing templates in the Mimeo Configuration
+        ERR_2: str
+            An error code for invalid templates in the Mimeo Configuration
+        """
+
+        ERR_1 = "MISSING_TEMPLATES"
+        ERR_2 = "NOT_AN_ARRAY"
+
+    def __init__(
+            self,
+            code: InvalidMimeoConfigError.Code,
+            **kwargs,
+    ):
+        """Initialize InvalidMimeoConfigError exception with details.
+
+        Extends Exception constructor with a custom message. The message depends on
+        an internal InvalidMimeoConfigError code.
+
+        Parameters
+        ----------
+        code : InvalidMimeoConfigError.Code
+            An internal error code
+        kwargs
+            An error details
+        """
+        msg = self._get_msg(code, kwargs)
+        super().__init__(msg)
+
+    @classmethod
+    def _get_msg(
+            cls,
+            code: InvalidMimeoConfigError.Code,
+            details: dict,
+    ):
+        """Return a custom message based on an error code.
+
+        Parameters
+        ----------
+        code : InvalidMimeoConfigError.Code
+            An internal error code
+        details : dict
+            An error details
+
+        Returns
+        -------
+        str
+            A custom error message
+
+        Raises
+        ------
+        ValueError
+            If the code argument is not InvalidMimeoConfigError.Code enum
+        """
+        if code == cls.Code.ERR_1:
+            return f"No templates in the Mimeo Config: {details['config']}"
+        if code == cls.Code.ERR_2:
+            return f"_templates_ property does not store an array: {details['config']}"
+
+        msg = f"Provided error code is not a {cls.__name__}.Code enum!"
+        raise ValueError(msg)
