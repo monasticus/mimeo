@@ -48,5 +48,5 @@ from __future__ import annotations
 from .config import MimeoConfig
 from .mimeo import Mimeograph
 
-__version__ = "0.5.0"
+__version__ = "0.6.0"
 __all__ = ["MimeoConfig", "Mimeograph"]
