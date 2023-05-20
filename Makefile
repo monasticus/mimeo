@@ -20,11 +20,6 @@ test:
 latest_tag:
 	@git tag --sort=committerdate --list '[0-9]*' | tail -1
 
-bump:
-	@bumpver update $(v)
-	@git push
-	@git push origin `make --no-print-directory latest_tag`
-
 build:
 	@mkdir -p dist/archive
 	@if [ 0 -ne `find dist -maxdepth 1 -type f | wc -l` ] ; then\
@@ -35,9 +30,7 @@ build:
 publish:
 	@twine upload dist/mimeograph-$(v)*
 
-upgrade:
-	@git pull
-	@make --no-print-directory bump v=$(v)
+build_and_publish:
 	@make --no-print-directory build
 	@make --no-print-directory publish v=`make --no-print-directory latest_tag`
 
