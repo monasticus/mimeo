@@ -84,7 +84,7 @@ TEMPLATES_MODEL_KEY = _templates_constants["model"]["key"]
 _model_constants = _templates_constants["model"]
 MODEL_CONTEXT_KEY = _model_constants["context"]["key"]
 MODEL_ATTRIBUTES_KEY = _model_constants["attributes"]["key"]
-MODEL_VALUE_KEY = _model_constants["text-node-value"]["key"]
+MODEL_TEXT_VALUE_KEY = _model_constants["text-node-value"]["key"]
 MODEL_MIMEO_UTIL_KEY = _model_constants["mimeo-util"]["key"]
 MODEL_MIMEO_UTIL_NAME_KEY = _model_constants["mimeo-util"]["name"]["key"]
 
@@ -122,7 +122,7 @@ __all__ = [
     "TEMPLATES_MODEL_KEY",
     "MODEL_CONTEXT_KEY",
     "MODEL_ATTRIBUTES_KEY",
-    "MODEL_VALUE_KEY",
+    "MODEL_TEXT_VALUE_KEY",
     "MODEL_MIMEO_UTIL_KEY",
     "MODEL_MIMEO_UTIL_NAME_KEY",
 ]

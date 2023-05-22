@@ -34,10 +34,8 @@ Prepare Mimeo Configuration first
       "count": 30,
       "model": {
         "SomeEntity": {
-          "_attrs": {
-            "xmlns": "http://mimeo.arch.com/default-namespace",
-            "xmlns:pn": "http://mimeo.arch.com/prefixed-namespace"
-          },
+          "@xmlns": "http://mimeo.arch.com/default-namespace",
+          "@xmlns:pn": "http://mimeo.arch.com/prefixed-namespace",
           "ChildNode1": 1,
           "ChildNode2": "value-2",
           "ChildNode3": true

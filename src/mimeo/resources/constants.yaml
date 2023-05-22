@@ -70,7 +70,7 @@ mimeo-config:
       context:
         key: context
       attributes:
-        key: _attrs
+        key: "@"
       text-node-value:
         key: "#text"
       mimeo-util:
