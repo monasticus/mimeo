@@ -486,7 +486,7 @@ def test_generate_single_template_child_elements():
         assert count == 5
 
 
-def test_generate_single_template_complex_child_elements_in_array():
+def test_generate_single_template_only_atomic_child_elements_in_array():
     config = MimeoConfig({
         "output": {
             "format": "xml",
@@ -496,14 +496,154 @@ def test_generate_single_template_complex_child_elements_in_array():
                 "count": 5,
                 "model": {
                     "SomeEntity": {
-                        "ChildNodes": [
-                            {
-                                "ChildNode": "value-1",
-                            },
-                            {
-                                "ChildNode": "value-2",
-                            },
-                        ],
+                        "ChildNodes": {
+                            "ChildNode": [
+                                "value-1",
+                                1,
+                                True,
+                            ],
+                        },
+                    },
+                },
+            },
+        ],
+    })
+
+    with MimeoContextManager(config):
+        generator = XMLGenerator(config)
+        count = 0
+        for data in generator.generate(config.templates):
+            assert data.tag == "SomeEntity"
+            assert data.attrib == {}
+            assert len(list(data)) == 1  # number of children
+
+            child_nodes_node = data.find("ChildNodes")
+            assert child_nodes_node.tag == "ChildNodes"
+            assert child_nodes_node.attrib == {}
+            assert len(list(child_nodes_node)) == 3  # number of children
+
+            child_nodes = child_nodes_node.findall("ChildNode")
+
+            child_node1 = child_nodes[0]
+            assert child_node1.tag == "ChildNode"
+            assert child_node1.attrib == {}
+            assert child_node1.text == "value-1"
+            assert len(list(child_node1)) == 0  # number of children
+            child_node2 = child_nodes[1]
+            assert child_node2.tag == "ChildNode"
+            assert child_node2.attrib == {}
+            assert child_node2.text == "1"
+            assert len(list(child_node2)) == 0  # number of children
+            child_node3 = child_nodes[2]
+            assert child_node3.tag == "ChildNode"
+            assert child_node3.attrib == {}
+            assert child_node3.text == "true"
+            assert len(list(child_node3)) == 0  # number of children
+
+            count += 1
+
+        assert count == 5
+
+
+def test_generate_single_template_only_complex_child_elements_in_array():
+    config = MimeoConfig({
+        "output": {
+            "format": "xml",
+        },
+        "_templates_": [
+            {
+                "count": 5,
+                "model": {
+                    "SomeEntity": {
+                        "ChildNodes": {
+                            "ChildNode": [
+                                {
+                                    "SomeValue1": "value-1-1",
+                                    "SomeValue2": "value-1-2",
+                                },
+                                {
+                                    "SomeValue1": "value-2-1",
+                                    "SomeValue2": "value-2-2",
+                                },
+                            ],
+                        },
+                    },
+                },
+            },
+        ],
+    })
+
+    with MimeoContextManager(config):
+        generator = XMLGenerator(config)
+        count = 0
+        for data in generator.generate(config.templates):
+            assert data.tag == "SomeEntity"
+            assert data.attrib == {}
+            assert len(list(data)) == 1  # number of children
+
+            child_nodes_node = data.find("ChildNodes")
+            assert child_nodes_node.tag == "ChildNodes"
+            assert child_nodes_node.attrib == {}
+            assert len(list(child_nodes_node)) == 2  # number of children
+
+            child_nodes = child_nodes_node.findall("ChildNode")
+
+            child_node1 = child_nodes[0]
+            assert child_node1.tag == "ChildNode"
+            assert child_node1.attrib == {}
+            assert len(list(child_node1)) == 2  # number of children
+            some_value_1_1 = child_node1.find("SomeValue1")
+            assert some_value_1_1.tag == "SomeValue1"
+            assert some_value_1_1.attrib == {}
+            assert some_value_1_1.text == "value-1-1"
+            assert len(list(some_value_1_1)) == 0  # number of children
+            some_value_1_2 = child_node1.find("SomeValue2")
+            assert some_value_1_2.tag == "SomeValue2"
+            assert some_value_1_2.attrib == {}
+            assert some_value_1_2.text == "value-1-2"
+            assert len(list(some_value_1_2)) == 0  # number of children
+
+            child_node2 = child_nodes[1]
+            assert child_node2.tag == "ChildNode"
+            assert child_node2.attrib == {}
+            assert len(list(child_node2)) == 2  # number of children
+            some_value_2_1 = child_node2.find("SomeValue1")
+            assert some_value_2_1.tag == "SomeValue1"
+            assert some_value_2_1.attrib == {}
+            assert some_value_2_1.text == "value-2-1"
+            assert len(list(some_value_2_1)) == 0  # number of children
+            some_value_2_2 = child_node2.find("SomeValue2")
+            assert some_value_2_2.tag == "SomeValue2"
+            assert some_value_2_2.attrib == {}
+            assert some_value_2_2.text == "value-2-2"
+            assert len(list(some_value_2_2)) == 0  # number of children
+
+            count += 1
+
+        assert count == 5
+
+
+def test_generate_single_template_atomic_child_elements_with_mimeo_util_in_array():
+    config = MimeoConfig({
+        "output": {
+            "format": "xml",
+        },
+        "_templates_": [
+            {
+                "count": 5,
+                "model": {
+                    "SomeEntity": {
+                        "ChildNodes": {
+                            "ChildNode": [
+                                "value-1",
+                                {
+                                    "_mimeo_util": {
+                                        "_name": "auto_increment",
+                                        "pattern": "{}",
+                                    },
+                                },
+                            ],
+                        },
                     },
                 },
             },
@@ -533,7 +673,7 @@ def test_generate_single_template_complex_child_elements_in_array():
             child_node2 = child_nodes[1]
             assert child_node2.tag == "ChildNode"
             assert child_node2.attrib == {}
-            assert child_node2.text == "value-2"
+            assert child_node2.text == str(count + 1)
             assert len(list(child_node2)) == 0  # number of children
 
             count += 1
@@ -541,7 +681,7 @@ def test_generate_single_template_complex_child_elements_in_array():
         assert count == 5
 
 
-def test_generate_single_template_only_atomic_child_elements_in_array():
+def test_generate_single_template_mixed_child_elements_in_array():
     config = MimeoConfig({
         "output": {
             "format": "xml",
@@ -551,11 +691,21 @@ def test_generate_single_template_only_atomic_child_elements_in_array():
                 "count": 5,
                 "model": {
                     "SomeEntity": {
-                        "ChildNode": [
-                            "value-1",
-                            1,
-                            True,
-                        ],
+                        "ChildNodes": {
+                            "ChildNode": [
+                                "value-1",
+                                {
+                                    "SomeValue1": "value-2-1",
+                                    "SomeValue2": "value-2-2",
+                                },
+                                {
+                                    "_mimeo_util": {
+                                        "_name": "auto_increment",
+                                        "pattern": "{}",
+                                    },
+                                },
+                            ],
+                        },
                     },
                 },
             },
@@ -568,76 +718,41 @@ def test_generate_single_template_only_atomic_child_elements_in_array():
         for data in generator.generate(config.templates):
             assert data.tag == "SomeEntity"
             assert data.attrib == {}
-            assert len(list(data)) == 3  # number of children
+            assert len(list(data)) == 1  # number of children
 
-            child_nodes = data.findall("ChildNode")
+            child_nodes_node = data.find("ChildNodes")
+            assert child_nodes_node.tag == "ChildNodes"
+            assert child_nodes_node.attrib == {}
+            assert len(list(child_nodes_node)) == 3  # number of children
+
+            child_nodes = child_nodes_node.findall("ChildNode")
 
             child_node1 = child_nodes[0]
             assert child_node1.tag == "ChildNode"
             assert child_node1.attrib == {}
             assert child_node1.text == "value-1"
             assert len(list(child_node1)) == 0  # number of children
+
             child_node2 = child_nodes[1]
             assert child_node2.tag == "ChildNode"
             assert child_node2.attrib == {}
-            assert child_node2.text == "1"
-            assert len(list(child_node2)) == 0  # number of children
+            assert len(list(child_node2)) == 2  # number of children
+            some_value_1 = child_node2.find("SomeValue1")
+            assert some_value_1.tag == "SomeValue1"
+            assert some_value_1.attrib == {}
+            assert some_value_1.text == "value-2-1"
+            assert len(list(some_value_1)) == 0  # number of children
+            some_value_2 = child_node2.find("SomeValue2")
+            assert some_value_2.tag == "SomeValue2"
+            assert some_value_2.attrib == {}
+            assert some_value_2.text == "value-2-2"
+            assert len(list(some_value_2)) == 0  # number of children
+
             child_node3 = child_nodes[2]
             assert child_node3.tag == "ChildNode"
             assert child_node3.attrib == {}
-            assert child_node3.text == "true"
+            assert child_node3.text == str(count + 1)
             assert len(list(child_node3)) == 0  # number of children
-
-            count += 1
-
-        assert count == 5
-
-
-def test_generate_single_template_only_atomic_child_elements_with_mimeo_util_in_array():
-    config = MimeoConfig({
-        "output": {
-            "format": "xml",
-        },
-        "_templates_": [
-            {
-                "count": 5,
-                "model": {
-                    "SomeEntity": {
-                        "ChildNode": [
-                            "value-1",
-                            {
-                                "_mimeo_util": {
-                                    "_name": "auto_increment",
-                                    "pattern": "{}",
-                                },
-                            },
-                        ],
-                    },
-                },
-            },
-        ],
-    })
-
-    with MimeoContextManager(config):
-        generator = XMLGenerator(config)
-        count = 0
-        for data in generator.generate(config.templates):
-            assert data.tag == "SomeEntity"
-            assert data.attrib == {}
-            assert len(list(data)) == 2  # number of children
-
-            child_nodes = data.findall("ChildNode")
-
-            child_node1 = child_nodes[0]
-            assert child_node1.tag == "ChildNode"
-            assert child_node1.attrib == {}
-            assert child_node1.text == "value-1"
-            assert len(list(child_node1)) == 0  # number of children
-            child_node2 = child_nodes[1]
-            assert child_node2.tag == "ChildNode"
-            assert child_node2.attrib == {}
-            assert child_node2.text == str(count + 1)
-            assert len(list(child_node2)) == 0  # number of children
 
             count += 1
 
@@ -662,77 +777,6 @@ def test_generate_single_template_list_child_element_in_array():
                             [
                                 "atomic",
                             ],
-                        ],
-                    },
-                },
-            },
-        ],
-    })
-
-    with MimeoContextManager(config):
-        generator = XMLGenerator(config)
-        for _ in generator.generate(config.templates):
-            pass
-
-
-@assert_throws(err_type=UnsupportedStructureError,
-               msg="An array can include only atomic types (including Mimeo Utils) or "
-                   "only JSON objects! Unsupported structure found in {e}: {s}",
-               e="ChildNodes", s="['atomic', {'ChildNode': 'value-1'}]")
-def test_generate_single_template_mixed_child_elements_in_array():
-    config = MimeoConfig({
-        "output": {
-            "format": "xml",
-        },
-        "_templates_": [
-            {
-                "count": 5,
-                "model": {
-                    "SomeEntity": {
-                        "ChildNodes": [
-                            "atomic",
-                            {
-                                "ChildNode": "value-1",
-                            },
-                        ],
-                    },
-                },
-            },
-        ],
-    })
-
-    with MimeoContextManager(config):
-        generator = XMLGenerator(config)
-        for _ in generator.generate(config.templates):
-            pass
-
-
-@assert_throws(err_type=UnsupportedStructureError,
-               msg="An array can include only atomic types (including Mimeo Utils) or "
-                   "only JSON objects! Unsupported structure found in {e}: {s}",
-               e="ChildNodes",
-               s="[{'_mimeo_util': {'_name': 'auto_increment',"
-                 " 'pattern': '{}'}}, {'ChildNode': 'value-1'}]")
-def test_generate_single_template_complex_child_elements_with_mimeo_util_in_array():
-    config = MimeoConfig({
-        "output": {
-            "format": "xml",
-        },
-        "_templates_": [
-            {
-                "count": 5,
-                "model": {
-                    "SomeEntity": {
-                        "ChildNodes": [
-                            {
-                                "_mimeo_util": {
-                                    "_name": "auto_increment",
-                                    "pattern": "{}",
-                                },
-                            },
-                            {
-                                "ChildNode": "value-1",
-                            },
                         ],
                     },
                 },
