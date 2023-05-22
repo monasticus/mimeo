@@ -4,28 +4,24 @@
       "count": 30,
       "model": {
         "SomeEntity": {
-          "ChildNode1": {
+          "ChildNode": {
             "GrandChild1-1": "value-1-1"
           },
-          "ChildNode2": [
-            {
-              "GrandChild": {
+          "GrandChildNodes": {
+            "GrandChild": [
+              "value",
+              true,
+              1,
+              {
                 "GrandGrandChild1": "value-1-1",
                 "GrandGrandChild2": "value-2-1"
-              }
-            },
-            {
-              "GrandChild": {
+              },
+              {
                 "GrandGrandChild1": "value-1-2",
                 "GrandGrandChild2": "value-2-2"
               }
-            }
-          ],
-          "ChildNodeWithAtomicValue": [
-            "value",
-            true,
-            1
-          ]
+            ]
+          }
         }
       }
     }
