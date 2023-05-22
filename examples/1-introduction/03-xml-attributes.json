@@ -21,7 +21,7 @@
           "_attrs": {
             "xmlns": "http://mimeo.arch.com/default-namespace"
           },
-          "_value": "atomic-value"
+          "#text": "atomic-value"
         }
       }
     },
@@ -33,7 +33,7 @@
             "xmlns": "http://mimeo.arch.com/default-namespace",
             "xmlns:pn": "http://mimeo.arch.com/prefixed-namespace"
           },
-          "_value": [
+          "#text": [
             {
               "pn:ChildNode" : {
                 "pn:GrandChildNode": 1

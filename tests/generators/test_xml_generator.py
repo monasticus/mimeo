@@ -112,7 +112,7 @@ def test_generate_single_template_model_with_attributes_in_atomic_child():
                             "_attrs": {
                                 "xmlns:pn": "http://mimeo.arch.com/prefixed-namespace",
                             },
-                            "_value": "string-value",
+                            "#text": "string-value",
                         },
                     },
                 },
@@ -199,7 +199,7 @@ def test_generate_single_template_model_with_attributes_in_child_mixed():
                             "_attrs": {
                                 "xmlns:pn": "http://mimeo.arch.com/prefixed-namespace",
                             },
-                            "_value": "string-value",
+                            "#text": "string-value",
                             "GrandChild": "string-value",  # will be ignored
                         },
                     },

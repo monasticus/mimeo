@@ -72,7 +72,7 @@ mimeo-config:
       attributes:
         key: _attrs
       text-node-value:
-        key: _value
+        key: "#text"
       mimeo-util:
         key: _mimeo_util
         name:
