@@ -411,7 +411,8 @@ class XMLGenerator(Generator):
     ) -> ElemTree.Element:
         """Process a node with a list value.
 
-        The node is processed accordingly to its children types.
+        It iterates through the list items and processes each of them: generates
+        a child element for each value as direct children of the parent.
 
         Parameters
         ----------
@@ -428,138 +429,42 @@ class XMLGenerator(Generator):
         Raises
         ------
         UnsupportedStructureError
-            If the list value elements are not atomic-only or dict-only.
+            If any of the list value element is a list.
         InvalidSpecialFieldValueError
             If the special field value is dict or list
         SpecialFieldNotFoundError
             If the special field does not exist.
-        """
-        has_only_atomic_values = all(
-            not isinstance(child, (list, dict)) or
-            MimeoRenderer.is_parametrized_mimeo_util(child)
-            for child in element_meta["value"])
-        if has_only_atomic_values:
-            return cls._process_list_value_with_atomic_children(parent, element_meta)
-
-        has_only_dict_values = all(
-            isinstance(child, dict) and
-            not MimeoRenderer.is_parametrized_mimeo_util(child)
-            for child in element_meta["value"])
-        if has_only_dict_values:
-            return cls._process_list_value_with_complex_children(parent, element_meta)
-
-        raise UnsupportedStructureError(element_meta["tag"], element_meta["value"])
-
-    @classmethod
-    def _process_list_value_with_atomic_children(
-            cls,
-            parent: ElemTree.Element,
-            element_meta: dict,
-    ) -> ElemTree.Element:
-        """Process a node with a list value having atomic children.
-
-        This method generates a child element for each atomic value as direct children
-        of the parent.
-
-        Parameters
-        ----------
-        parent : ElemTree.Element | None
-            A parent node
-        element_meta : dict
-            Element's metadata
-
-        Returns
-        -------
-        ElemTree.Element
-            A processed node
-
-        Raises
-        ------
-        UnsupportedStructureError
-            If a list value elements are not atomic-only or dict-only.
-        InvalidSpecialFieldValueError
-            If a special field value is dict or list
-        SpecialFieldNotFoundError
-            If a special field does not exist.
 
         Examples
         --------
         parent = ElemTree.Element("Root")
         element_meta = cls._element_meta(
             tag="SomeField",
-            value=[],
+            value=[
+                'value-1',
+                {'SomeChild1': True, 'SomeChild2': False},
+                {'_mimeo_util': {'_name': 'auto_increment', 'pattern': '{}'}}
+            ],
         )
         cls._process_list_value_with_atomic_children(parent, element_meta)
         ->
         <Root>
+            <SomeField>value-1</SomeField>
+            <SomeField>
+                <SomeChild1>true</SomeChild1>
+                <SomeChild2>false</SomeChild2>
+            </SomeField>
             <SomeField>1</SomeField>
-            <SomeField>2</SomeField>
         </Root>
         """
         for child in element_meta["value"]:
+            if isinstance(child, list):
+                raise UnsupportedStructureError(
+                    element_meta["tag"],
+                    element_meta["value"])
             element_meta = cls._element_meta(element_meta["tag"], child)
             cls._process_node(parent, element_meta)
         return parent
-
-    @classmethod
-    def _process_list_value_with_complex_children(
-            cls,
-            parent: ElemTree.Element,
-            element_meta: dict,
-    ) -> ElemTree.Element:
-        """Process a node with a list value having complex children.
-
-        It iterates through the list items and processes each of them.
-
-        Parameters
-        ----------
-        parent : ElemTree.Element | None
-            A parent node
-        element_meta : dict
-            Element's metadata
-
-        Returns
-        -------
-        ElemTree.Element
-            A processed node
-
-        Raises
-        ------
-        UnsupportedStructureError
-            If a list value elements are not atomic-only or dict-only.
-        InvalidSpecialFieldValueError
-            If a special field value is dict or list
-        SpecialFieldNotFoundError
-            If a special field does not exist.
-
-        Examples
-        --------
-        parent = ElemTree.Element("Root")
-        element_meta = cls._element_meta(
-            tag="SomeField",
-            value=[{"SomeChild": {"SomeGrandChild1": 1, "SomeGrandChild2": 2}},
-                   {"SomeChild": {"SomeGrandChild1": 'A', "SomeGrandChild2": 'B'}}],
-        )
-        cls._process_list_value_with_complex_children(parent, element_meta)
-        ->
-        <SomeField>
-            <SomeChild>
-                <SomeGrandChild1>1</SomeGrandChild1>
-                <SomeGrandChild2>2</SomeGrandChild2>
-            </SomeChild>
-            <SomeChild>
-                <SomeGrandChild1>A</SomeGrandChild1>
-                <SomeGrandChild2>B</SomeGrandChild2>
-            </SomeChild>
-        </SomeField>
-        """
-        element = cls._create_xml_element(parent, element_meta)
-        for child in element_meta["value"]:
-            grand_child_tag = next(iter(child))
-            grand_child_data = child[grand_child_tag]
-            element_meta = cls._element_meta(grand_child_tag, grand_child_data)
-            cls._process_node(element, element_meta)
-        return element
 
     @classmethod
     def _process_templates_value(
