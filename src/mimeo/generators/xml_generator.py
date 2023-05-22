@@ -250,11 +250,11 @@ class XMLGenerator(Generator):
         properties:
         * the tag property is changed only for special fields
           - field name is extracted
-        * the value property is being modified for dicts including '_attrs' key
-          - the 'attrs' key is removed from the dict
+        * the value property is being modified for dicts including attributes
+          - properties starting with '@' are being removed from the dict
         * the attrs property
-          - takes the '_attrs' property value from dicts including '_attrs' key
-          - takes the default value (an empty dict) when is None
+          - is being populated by all properties starting with '@'
+          - takes the default value (an empty dict) when there's no such properties
         * the mimeo_util property is being initialized
           - True if element's value is a parametrized mimeo_util. Otherwise, False.
         * the special property is being initialized
@@ -272,17 +272,17 @@ class XMLGenerator(Generator):
         """
         tag = element_meta["tag"]
         value = element_meta["value"]
-        attrs = element_meta["attrs"]
+        attrs = {}
         is_mimeo_util = MimeoRenderer.is_parametrized_mimeo_util(value)
         is_special_field = MimeoRenderer.is_special_field(tag)
         if is_special_field:
             tag = MimeoRenderer.get_special_field_name(tag)
-        if isinstance(value, dict) and cc.MODEL_ATTRIBUTES_KEY in value:
-            value = dict(value)
-            attrs = value.pop(cc.MODEL_ATTRIBUTES_KEY)
-            value = value.get(cc.MODEL_VALUE_KEY, value)
-        if attrs is None:
-            attrs = {}
+        if isinstance(value, dict):
+            value_copy = dict(value)
+            for prop in value:
+                if prop.startswith(cc.MODEL_ATTRIBUTES_KEY):
+                    attrs[prop[1:]] = value_copy.pop(prop)
+            value = value.get(cc.MODEL_TEXT_VALUE_KEY, value_copy)
 
         return cls._element_meta(
             tag,
