@@ -17,6 +17,29 @@ def test_str():
     assert str(mimeo_template) == str(template)
 
 
+def test_parse_source():
+    template_xml = """
+    <_template_>
+        <count>30</count>
+        <model>
+            <SomeEntity>
+                <ChildNode>value</ChildNode>
+            </SomeEntity>
+        </model>
+    </_template_>
+    """
+    expected_source = {
+      "count": 30,
+      "model": {
+        "SomeEntity": {
+          "ChildNode": "value",
+        },
+      },
+    }
+
+    assert MimeoTemplate.parse_source(template_xml) == expected_source
+
+
 def test_parsing_template():
     template = {
       "count": 30,
