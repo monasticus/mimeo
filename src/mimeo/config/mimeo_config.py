@@ -62,8 +62,11 @@ class MimeoDTO:
         """Return the stringified source dictionary of a DTO."""
         return str(self._source)
 
-    @staticmethod
-    def parse_source(source: str) -> dict:
+    @classmethod
+    def parse_source(
+            cls,
+            source: str
+    ) -> dict:
         """Parse source Mimeo Configuration to dict.
 
         Parameters
@@ -73,20 +76,44 @@ class MimeoDTO:
 
         Returns
         -------
-        parsed_source : dict
+        dict
             A parsed source Mimeo Configuration ready to be used in MimeoConfig
             initialization.
         """
         parsed_source = xmltodict.parse(source)
         source_key = list(parsed_source.keys())[0]
         parsed_source = parsed_source[source_key]
+        return cls._parse_source_values(parsed_source)
+
+    @classmethod
+    def _parse_source_values(
+            cls,
+            parsed_source: dict
+    ) -> dict:
+        """Parse source values.
+
+        This method recursively parses boolean strings to boolean and numeric strings
+        to floats.
+
+        Parameters
+        ----------
+        parsed_source : dict
+            A parsed source Mimeo Configuration
+
+        Returns
+        -------
+        parsed_source : dict
+            A parsed source Mimeo Configuration with parsed nested values.
+        """
         for key, value in parsed_source.items():
             if value == "true":
                 parsed_source[key] = True
             elif value == "false":
                 parsed_source[key] = False
-            elif value.isnumeric():
+            elif isinstance(value, str) and value.isnumeric():
                 parsed_source[key] = float(value)
+            elif isinstance(value, dict):
+                parsed_source[key] = cls._parse_source_values(value)
         return parsed_source
 
 
