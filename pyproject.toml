@@ -29,6 +29,7 @@ classifiers = [
 ]
 keywords = ["mimeograph", "mimeo", "generate", "generator", "data", "xml"]
 dependencies = [
+    "xmltodict",
     "aiohttp",
     "aiofiles",
     "pandas",

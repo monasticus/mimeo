@@ -1,7 +1,7 @@
 """The Mimeo Configuration module.
 
-It contains classes representing Mimeo Configuration components
-at all levels. All of them are Data Transfer Objects:
+It contains classes representing Mimeo Configuration components at all levels.
+All of them are Data Transfer Objects:
     * MimeoDTO
         A superclass for all Mimeo configuration DTOs
     * MimeoConfig
@@ -16,6 +16,8 @@ at all levels. All of them are Data Transfer Objects:
 from __future__ import annotations
 
 import re
+
+import xmltodict
 
 from mimeo.config import constants as cc
 from mimeo.config.exc import (InvalidIndentError, InvalidMimeoConfigError,
@@ -36,8 +38,10 @@ class MimeoDTO:
 
     Methods
     -------
-    __str__
+    __str__() -> str
         Return the stringified source dictionary of a DTO.
+    parse_source(source: str) -> dict
+        Parse source Mimeo Configuration to dict.
     """
 
     def __init__(
@@ -54,9 +58,36 @@ class MimeoDTO:
 
     def __str__(
             self,
-    ):
+    ) -> str:
         """Return the stringified source dictionary of a DTO."""
         return str(self._source)
+
+    @staticmethod
+    def parse_source(source: str) -> dict:
+        """Parse source Mimeo Configuration to dict.
+
+        Parameters
+        ----------
+        source : str
+            A source string to parse
+
+        Returns
+        -------
+        parsed_source : dict
+            A parsed source Mimeo Configuration ready to be used in MimeoConfig
+            initialization.
+        """
+        parsed_source = xmltodict.parse(source)
+        source_key = list(parsed_source.keys())[0]
+        parsed_source = parsed_source[source_key]
+        for key, value in parsed_source.items():
+            if value == "true":
+                parsed_source[key] = True
+            elif value == "false":
+                parsed_source[key] = False
+            elif value.isnumeric():
+                parsed_source[key] = float(value)
+        return parsed_source
 
 
 class MimeoConfig(MimeoDTO):
