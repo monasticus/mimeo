@@ -65,7 +65,7 @@ class MimeoDTO:
     @classmethod
     def parse_source(
             cls,
-            source: str
+            source: str,
     ) -> dict:
         """Parse source Mimeo Configuration to dict.
 
@@ -88,33 +88,199 @@ class MimeoDTO:
     @classmethod
     def _parse_source_values(
             cls,
-            parsed_source: dict
-    ) -> dict:
+            source_node: None | str | bool | int | float | dict | list,
+    ) -> None | str | bool | int | float | dict | list:
         """Parse source values.
 
-        This method recursively parses boolean strings to boolean and numeric strings
-        to floats.
+        This method recursively parses result of parsing XML to dict.
 
         Parameters
         ----------
-        parsed_source : dict
-            A parsed source Mimeo Configuration
+        source_node : None | str | bool | int | float | dict | list
+            An XML Mimeo Configuration's node parsed to dict
 
         Returns
         -------
-        parsed_source : dict
-            A parsed source Mimeo Configuration with parsed nested values.
+        None | str | bool | int | float | dict | list
+            An XML Mimeo Configuration's node with parsed nested values.
         """
-        for key, value in parsed_source.items():
-            if value == "true":
-                parsed_source[key] = True
-            elif value == "false":
-                parsed_source[key] = False
-            elif isinstance(value, str) and value.isnumeric():
-                parsed_source[key] = float(value)
-            elif isinstance(value, dict):
-                parsed_source[key] = cls._parse_source_values(value)
-        return parsed_source
+        if isinstance(source_node, str):
+            return cls._parse_str_source_value(source_node)
+        if isinstance(source_node, list):
+            return cls._parse_list_source_value(source_node)
+        if isinstance(source_node, dict):
+            return cls._parse_dict_source_value(source_node)
+        return None
+
+    @classmethod
+    def _parse_str_source_value(
+            cls,
+            source_node: str,
+    ) -> bool | float | int | str:
+        """Parse a string value.
+
+        This method returns boolean values for 'true' and 'false' strings and casts
+        to float or int numeric ones. Otherwise, returns a source value.
+
+        Parameters
+        ----------
+        source_node : str
+            An XML Mimeo Configuration's node
+
+        Returns
+        -------
+        bool | float | int | str
+            A parsed string value
+
+        Examples
+        --------
+        MimeoDTO._parse_str_source_value('true')
+        -> True
+
+        MimeoDTO._parse_str_source_value('false')
+        -> False
+
+        MimeoDTO._parse_str_source_value('1.5')
+        -> 1.5
+
+        MimeoDTO._parse_str_source_value('1')
+        -> 1
+
+        MimeoDTO._parse_str_source_value('value')
+        -> 'value'
+        """
+        if source_node == "true":
+            return True
+        if source_node == "false":
+            return False
+        if source_node.isnumeric():
+            return float(source_node) if "." in source_node else int(source_node)
+        return source_node
+
+    @classmethod
+    def _parse_list_source_value(
+            cls,
+            source_node: list,
+    ) -> list:
+        """Parse a list value.
+
+        This method parses all list items.
+
+        Parameters
+        ----------
+        source_node : list
+            An XML Mimeo Configuration's node
+
+        Returns
+        -------
+        list
+            A list with parsed items
+
+        Examples
+        --------
+        MimeoDTO._parse_list_source_value(['true', 'false', '1.5', '1', 'value'])
+        -> [True, False, 1.5, 1, 'value']
+        """
+        return [cls._parse_source_values(value) for value in source_node]
+
+    @classmethod
+    def _parse_dict_source_value(
+            cls,
+            source_node: dict,
+    ) -> dict:
+        """Parse a dict value.
+
+        This method parses all dict values. Additionally, it applies a specific logic
+        for Mimeo Templates. As XML Mimeo Configuration needs a template node in
+        templates, it assigns them to the "_templates_" key (moves one level up).
+
+        Parameters
+        ----------
+        source_node : dict
+            An XML Mimeo Configuration's node
+
+        Returns
+        -------
+        dict
+            A dict with parsed values
+
+        Examples
+        --------
+        MimeoDTO._parse_dict_source_value({
+            'SomeField1': 'true',
+            'SomeField2': 'false',
+            'SomeField3': '1.5',
+            'SomeField4': '1',
+            'SomeField5': 'value',
+        })
+        -> {
+            'SomeField1': True,
+            'SomeField2': False,
+            'SomeField3': 1.5,
+            'SomeField4': 1,
+            'SomeField5': 'value',
+        }
+
+        MimeoDTO._parse_dict_source_value({
+            '_templates_': None,
+        })
+        -> {
+            '_templates_': [],
+        }
+
+        MimeoDTO._parse_dict_source_value({
+            '_templates_': {
+                '_template_' : {
+                    'SomeField': 'true',
+                },
+            }
+        })
+        -> {
+            '_templates_': [
+                {
+                    'SomeField': 'true',
+                },
+            ],
+        }
+
+        MimeoDTO._parse_dict_source_value({
+            '_templates_': {
+                '_template_' : [
+                    {
+                        'SomeField': 'true',
+                    },
+                    {
+                        'SomeField': 'false',
+                    },
+                ],
+            },
+        })
+        -> {
+            '_templates_': [
+               {
+                   'SomeField': 'true',
+               },
+               {
+                   'SomeField': 'false',
+               },
+            ],
+        }
+        """
+        for key, value in source_node.items():
+            if key == cc.TEMPLATES_KEY:
+                if value is None:
+                    source_node[key] = []
+                else:
+                    templates = source_node[key].get(cc.TEMPLATES_XML_TEMPLATE_TAG)
+                    if isinstance(templates, dict):
+                        source_node[key] = [cls._parse_source_values(templates)]
+                    elif isinstance(templates, list):
+                        source_node[key] = cls._parse_source_values(templates)
+                    else:
+                        source_node[key] = cls._parse_source_values(value)
+            else:
+                source_node[key] = cls._parse_source_values(value)
+        return source_node
 
 
 class MimeoConfig(MimeoDTO):

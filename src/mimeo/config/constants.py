@@ -76,6 +76,7 @@ VARS_KEY = _vars_constants["key"]
 ########################################################################################
 _templates_constants = _cc["templates"]
 TEMPLATES_KEY = _templates_constants["key"]
+TEMPLATES_XML_TEMPLATE_TAG = _templates_constants["xml-template-tag"]["key"]
 TEMPLATES_COUNT_KEY = _templates_constants["count"]["key"]
 TEMPLATES_MODEL_KEY = _templates_constants["model"]["key"]
 
@@ -118,6 +119,7 @@ __all__ = [
     "OUTPUT_PROTOCOL_HTTPS",
     "VARS_KEY",
     "TEMPLATES_KEY",
+    "TEMPLATES_XML_TEMPLATE_TAG",
     "TEMPLATES_COUNT_KEY",
     "TEMPLATES_MODEL_KEY",
     "MODEL_CONTEXT_KEY",
