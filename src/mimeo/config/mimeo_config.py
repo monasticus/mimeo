@@ -193,6 +193,9 @@ class MimeoDTO:
         This method parses all dict values. Additionally, it applies a specific logic
         for Mimeo Templates. As XML Mimeo Configuration needs a template node in
         templates, it assigns them to the "_templates_" key (moves one level up).
+        Since XML tag cannot use curly brackets, there's also a modification made for
+        special fields. In XML Mimeo Configuration we use <:SpecialField:> and in dict
+        it needs to be changed to "{:SpecialField:}".
 
         Parameters
         ----------
@@ -265,7 +268,19 @@ class MimeoDTO:
                },
             ],
         }
+
+        Examples
+        --------
+        MimeoDTO._parse_dict_source_value({
+            ':SomeField1:': 'true',
+            'SomeField2': '{:SomeField1:}'
+        })
+        -> {
+            '{:SomeField1:}': 'true',
+            'SomeField2': '{:SomeField1:}'
+        }
         """
+        keys_mapping = {}
         for key, value in source_node.items():
             if key == cc.TEMPLATES_KEY:
                 if value is None:
@@ -280,7 +295,53 @@ class MimeoDTO:
                         source_node[key] = cls._parse_source_values(value)
             else:
                 source_node[key] = cls._parse_source_values(value)
+
+            keys_mapping[key] = cls._get_key_mapping(key)
+
+        cls._map_keys(keys_mapping, source_node)
         return source_node
+
+    @classmethod
+    def _get_key_mapping(
+            cls,
+            key: str,
+    ):
+        """Return a key mapping.
+
+        Wraps source tag with curly braces if it is a special field.
+
+        Parameters
+        ----------
+        key : str
+            A source key
+
+        Returns
+        -------
+        str
+            A key mapping
+        """
+        return "{" + key + "}" if key.startswith(":") and key.endswith(":") else key
+
+    @classmethod
+    def _map_keys(
+            cls,
+            keys_mapping: dict,
+            source_node: dict,
+    ):
+        """Apply mapping for dict keys.
+
+        When an XML Mimeo Configuration has some special fields they need to be renamed
+        while parsing to dict - wrapped with curly braces. As fields' order needs to be
+        preserved we need to iterate through all dict items and reassign values.
+
+        Parameters
+        ----------
+        keys_mapping
+        source_node
+        """
+        if any(key != value for key, value in keys_mapping.items()):
+            for key, value in keys_mapping.items():
+                source_node[value] = source_node.pop(key)
 
 
 class MimeoConfig(MimeoDTO):
