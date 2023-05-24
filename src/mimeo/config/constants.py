@@ -1,4 +1,6 @@
 """The Mimeo Configuration Constants module."""
+from __future__ import annotations
+
 import yaml
 
 from mimeo import tools

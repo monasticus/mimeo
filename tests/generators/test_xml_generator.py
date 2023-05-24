@@ -20,6 +20,21 @@ def test_generate_single_template_model_without_attributes():
             },
         ],
     })
+    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+        <mimeo_configuration>
+            <output>
+                <format>xml</format>
+            </output>
+            <_templates_>
+                <_template_>
+                    <count>5</count>
+                    <model>
+                        <SomeEntity/>
+                    </model>
+                </_template_>
+            </_templates_>
+        </mimeo_configuration>
+    """))
 
     def _test(
             config: MimeoConfig,
@@ -37,6 +52,7 @@ def test_generate_single_template_model_without_attributes():
             assert count == 5
 
     _test(config_from_dict)
+    _test(config_from_xml)
 
 
 def test_generate_single_template_model_with_attributes():
@@ -55,6 +71,21 @@ def test_generate_single_template_model_with_attributes():
             },
         ],
     })
+    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+        <mimeo_configuration>
+            <output>
+                <format>xml</format>
+            </output>
+            <_templates_>
+                <_template_>
+                    <count>5</count>
+                    <model>
+                        <SomeEntity xmlns="http://mimeo.arch.com/default-namespace"/>
+                    </model>
+                </_template_>
+            </_templates_>
+        </mimeo_configuration>
+    """))
 
     def _test(
             config: MimeoConfig,
@@ -72,6 +103,7 @@ def test_generate_single_template_model_with_attributes():
             assert count == 5
 
     _test(config_from_dict)
+    _test(config_from_xml)
 
 
 def test_generate_single_template_model_with_prefixed_ns():
@@ -90,6 +122,21 @@ def test_generate_single_template_model_with_prefixed_ns():
             },
         ],
     })
+    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+        <mimeo_configuration>
+            <output>
+                <format>xml</format>
+            </output>
+            <_templates_>
+                <_template_>
+                    <count>5</count>
+                    <model>
+                        <pn:SomeEntity xmlns:pn="http://mimeo.arch.com/prefixed-namespace"/>
+                    </model>
+                </_template_>
+            </_templates_>
+        </mimeo_configuration>
+    """))
 
     def _test(
             config: MimeoConfig,
@@ -107,6 +154,7 @@ def test_generate_single_template_model_with_prefixed_ns():
             assert count == 5
 
     _test(config_from_dict)
+    _test(config_from_xml)
 
 
 def test_generate_single_template_model_with_attributes_in_atomic_child():
@@ -128,6 +176,23 @@ def test_generate_single_template_model_with_attributes_in_atomic_child():
             },
         ],
     })
+    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+        <mimeo_configuration>
+            <output>
+                <format>xml</format>
+            </output>
+            <_templates_>
+                <_template_>
+                    <count>5</count>
+                    <model>
+                        <SomeEntity>
+                            <pn:ChildNode xmlns:pn="http://mimeo.arch.com/prefixed-namespace">string-value</pn:ChildNode>
+                        </SomeEntity>
+                    </model>
+                </_template_>
+            </_templates_>
+        </mimeo_configuration>
+    """))
 
     def _test(
             config: MimeoConfig,
@@ -151,6 +216,7 @@ def test_generate_single_template_model_with_attributes_in_atomic_child():
             assert count == 5
 
     _test(config_from_dict)
+    _test(config_from_xml)
 
 
 def test_generate_single_template_model_with_attributes_in_complex_child():
@@ -172,6 +238,25 @@ def test_generate_single_template_model_with_attributes_in_complex_child():
             },
         ],
     })
+    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+        <mimeo_configuration>
+            <output>
+                <format>xml</format>
+            </output>
+            <_templates_>
+                <_template_>
+                    <count>5</count>
+                    <model>
+                        <SomeEntity>
+                            <pn:ChildNode xmlns:pn="http://mimeo.arch.com/prefixed-namespace">
+                                <pn:GrandChild>string-value</pn:GrandChild>
+                            </pn:ChildNode>
+                        </SomeEntity>
+                    </model>
+                </_template_>
+            </_templates_>
+        </mimeo_configuration>
+    """))
 
     def _test(
             config: MimeoConfig,
@@ -200,6 +285,7 @@ def test_generate_single_template_model_with_attributes_in_complex_child():
             assert count == 5
 
     _test(config_from_dict)
+    _test(config_from_xml)
 
 
 def test_generate_single_template_model_with_attributes_in_child_mixed():
@@ -261,6 +347,23 @@ def test_generate_single_template_str_value():
             },
         ],
     })
+    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+        <mimeo_configuration>
+            <output>
+                <format>xml</format>
+            </output>
+            <_templates_>
+                <_template_>
+                    <count>5</count>
+                    <model>
+                        <SomeEntity>
+                            <ChildNode>value</ChildNode>
+                        </SomeEntity>
+                    </model>
+                </_template_>
+            </_templates_>
+        </mimeo_configuration>
+    """))
 
     def _test(
             config: MimeoConfig,
@@ -284,6 +387,7 @@ def test_generate_single_template_str_value():
             assert count == 5
 
     _test(config_from_dict)
+    _test(config_from_xml)
 
 
 def test_generate_single_template_int_value():
@@ -302,6 +406,23 @@ def test_generate_single_template_int_value():
             },
         ],
     })
+    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+        <mimeo_configuration>
+            <output>
+                <format>xml</format>
+            </output>
+            <_templates_>
+                <_template_>
+                    <count>5</count>
+                    <model>
+                        <SomeEntity>
+                            <ChildNode>1</ChildNode>
+                        </SomeEntity>
+                    </model>
+                </_template_>
+            </_templates_>
+        </mimeo_configuration>
+    """))
 
     def _test(
             config: MimeoConfig,
@@ -325,6 +446,7 @@ def test_generate_single_template_int_value():
             assert count == 5
 
     _test(config_from_dict)
+    _test(config_from_xml)
 
 
 def test_generate_single_template_bool_value():
@@ -343,6 +465,23 @@ def test_generate_single_template_bool_value():
             },
         ],
     })
+    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+        <mimeo_configuration>
+            <output>
+                <format>xml</format>
+            </output>
+            <_templates_>
+                <_template_>
+                    <count>5</count>
+                    <model>
+                        <SomeEntity>
+                            <ChildNode>true</ChildNode>
+                        </SomeEntity>
+                    </model>
+                </_template_>
+            </_templates_>
+        </mimeo_configuration>
+    """))
 
     def _test(
             config: MimeoConfig,
@@ -366,6 +505,7 @@ def test_generate_single_template_bool_value():
             assert count == 5
 
     _test(config_from_dict)
+    _test(config_from_xml)
 
 
 def test_generate_single_template_none_value():
@@ -384,6 +524,23 @@ def test_generate_single_template_none_value():
             },
         ],
     })
+    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+        <mimeo_configuration>
+            <output>
+                <format>xml</format>
+            </output>
+            <_templates_>
+                <_template_>
+                    <count>5</count>
+                    <model>
+                        <SomeEntity>
+                            <ChildNode />
+                        </SomeEntity>
+                    </model>
+                </_template_>
+            </_templates_>
+        </mimeo_configuration>
+    """))
 
     def _test(
             config: MimeoConfig,
@@ -407,6 +564,7 @@ def test_generate_single_template_none_value():
             assert count == 5
 
     _test(config_from_dict)
+    _test(config_from_xml)
 
 
 def test_generate_single_template_using_variables():
@@ -443,6 +601,41 @@ def test_generate_single_template_using_variables():
             },
         ],
     })
+    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+        <mimeo_configuration>
+            <output>
+                <format>xml</format>
+            </output>
+            <vars>
+                <CUSTOM_VAR_1>custom-value-1</CUSTOM_VAR_1>
+                <CUSTOM_VAR_2>1</CUSTOM_VAR_2>
+                <CUSTOM_VAR_3>true</CUSTOM_VAR_3>
+                <CUSTOM_VAR_4>{CUSTOM_VAR_2}</CUSTOM_VAR_4>
+                <CUSTOM_VAR_5>{curr_iter}</CUSTOM_VAR_5>
+                <CUSTOM_VAR_6>
+                    <_mimeo_util>
+                        <_name>auto_increment</_name>
+                        <pattern>{}</pattern>
+                    </_mimeo_util>
+                </CUSTOM_VAR_6>
+            </vars>
+            <_templates_>
+                <_template_>
+                    <count>5</count>
+                    <model>
+                        <SomeEntity>
+                            <ChildNode1>{CUSTOM_VAR_1}</ChildNode1>
+                            <ChildNode2>{CUSTOM_VAR_2}</ChildNode2>
+                            <ChildNode3>{CUSTOM_VAR_3}</ChildNode3>
+                            <ChildNode4>{CUSTOM_VAR_4}</ChildNode4>
+                            <ChildNode5>{CUSTOM_VAR_5}</ChildNode5>
+                            <ChildNode6>{CUSTOM_VAR_6}</ChildNode6>
+                        </SomeEntity>
+                    </model>
+                </_template_>
+            </_templates_>
+        </mimeo_configuration>
+    """))
 
     def _test(
             config: MimeoConfig,
@@ -496,6 +689,7 @@ def test_generate_single_template_using_variables():
             assert count == 5
 
     _test(config_from_dict)
+    _test(config_from_xml)
 
 
 def test_generate_single_template_child_elements():
@@ -516,6 +710,25 @@ def test_generate_single_template_child_elements():
             },
         ],
     })
+    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+        <mimeo_configuration>
+            <output>
+                <format>xml</format>
+            </output>
+            <_templates_>
+                <_template_>
+                    <count>5</count>
+                    <model>
+                        <SomeEntity>
+                            <ChildNode>
+                                <GrandChildNode>value</GrandChildNode>
+                            </ChildNode>
+                        </SomeEntity>
+                    </model>
+                </_template_>
+            </_templates_>
+        </mimeo_configuration>
+    """))
 
     def _test(
             config: MimeoConfig,
@@ -544,6 +757,7 @@ def test_generate_single_template_child_elements():
             assert count == 5
 
     _test(config_from_dict)
+    _test(config_from_xml)
 
 
 def test_generate_single_template_only_atomic_child_elements_in_array():
@@ -568,6 +782,27 @@ def test_generate_single_template_only_atomic_child_elements_in_array():
             },
         ],
     })
+    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+        <mimeo_configuration>
+            <output>
+                <format>xml</format>
+            </output>
+            <_templates_>
+                <_template_>
+                    <count>5</count>
+                    <model>
+                        <SomeEntity>
+                            <ChildNodes>
+                                <ChildNode>value-1</ChildNode>
+                                <ChildNode>1</ChildNode>
+                                <ChildNode>true</ChildNode>
+                            </ChildNodes>
+                        </SomeEntity>
+                    </model>
+                </_template_>
+            </_templates_>
+        </mimeo_configuration>
+    """))
 
     def _test(
             config: MimeoConfig,
@@ -608,6 +843,7 @@ def test_generate_single_template_only_atomic_child_elements_in_array():
             assert count == 5
 
     _test(config_from_dict)
+    _test(config_from_xml)
 
 
 def test_generate_single_template_only_complex_child_elements_in_array():
@@ -637,6 +873,32 @@ def test_generate_single_template_only_complex_child_elements_in_array():
             },
         ],
     })
+    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+        <mimeo_configuration>
+            <output>
+                <format>xml</format>
+            </output>
+            <_templates_>
+                <_template_>
+                    <count>5</count>
+                    <model>
+                        <SomeEntity>
+                            <ChildNodes>
+                                <ChildNode>
+                                    <SomeValue1>value-1-1</SomeValue1>
+                                    <SomeValue2>value-1-2</SomeValue2>
+                                </ChildNode>
+                                <ChildNode>
+                                    <SomeValue1>value-2-1</SomeValue1>
+                                    <SomeValue2>value-2-2</SomeValue2>
+                                </ChildNode>
+                            </ChildNodes>
+                        </SomeEntity>
+                    </model>
+                </_template_>
+            </_templates_>
+        </mimeo_configuration>
+    """))
 
     def _test(
             config: MimeoConfig,
@@ -691,6 +953,7 @@ def test_generate_single_template_only_complex_child_elements_in_array():
             assert count == 5
 
     _test(config_from_dict)
+    _test(config_from_xml)
 
 
 def test_generate_single_template_atomic_child_elements_with_mimeo_util_in_array():
@@ -719,6 +982,31 @@ def test_generate_single_template_atomic_child_elements_with_mimeo_util_in_array
             },
         ],
     })
+    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+        <mimeo_configuration>
+            <output>
+                <format>xml</format>
+            </output>
+            <_templates_>
+                <_template_>
+                    <count>5</count>
+                    <model>
+                        <SomeEntity>
+                            <ChildNodes>
+                                <ChildNode>value-1</ChildNode>
+                                <ChildNode>
+                                    <_mimeo_util>
+                                        <_name>auto_increment</_name>
+                                        <pattern>{}</pattern>
+                                    </_mimeo_util>
+                                </ChildNode>
+                            </ChildNodes>
+                        </SomeEntity>
+                    </model>
+                </_template_>
+            </_templates_>
+        </mimeo_configuration>
+    """))
 
     def _test(
             config: MimeoConfig,
@@ -754,6 +1042,7 @@ def test_generate_single_template_atomic_child_elements_with_mimeo_util_in_array
             assert count == 5
 
     _test(config_from_dict)
+    _test(config_from_xml)
 
 
 def test_generate_single_template_mixed_child_elements_in_array():
@@ -786,6 +1075,35 @@ def test_generate_single_template_mixed_child_elements_in_array():
             },
         ],
     })
+    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+        <mimeo_configuration>
+            <output>
+                <format>xml</format>
+            </output>
+            <_templates_>
+                <_template_>
+                    <count>5</count>
+                    <model>
+                        <SomeEntity>
+                            <ChildNodes>
+                                <ChildNode>value-1</ChildNode>
+                                <ChildNode>
+                                    <SomeValue1>value-2-1</SomeValue1>
+                                    <SomeValue2>value-2-2</SomeValue2>
+                                </ChildNode>
+                                <ChildNode>
+                                    <_mimeo_util>
+                                        <_name>auto_increment</_name>
+                                        <pattern>{}</pattern>
+                                    </_mimeo_util>
+                                </ChildNode>
+                            </ChildNodes>
+                        </SomeEntity>
+                    </model>
+                </_template_>
+            </_templates_>
+        </mimeo_configuration>
+    """))
 
     def _test(
             config: MimeoConfig,
@@ -837,6 +1155,7 @@ def test_generate_single_template_mixed_child_elements_in_array():
             assert count == 5
 
     _test(config_from_dict)
+    _test(config_from_xml)
 
 
 def test_generate_single_template_list_child_element_in_array():
@@ -895,6 +1214,27 @@ def test_generate_multiple_templates():
             },
         ],
     })
+    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+        <mimeo_configuration>
+            <output>
+                <format>xml</format>
+            </output>
+            <_templates_>
+                <_template_>
+                    <count>2</count>
+                    <model>
+                        <SomeEntity />
+                    </model>
+                </_template_>
+                <_template_>
+                    <count>3</count>
+                    <model>
+                        <SomeEntity2 />
+                    </model>
+                </_template_>
+            </_templates_>
+        </mimeo_configuration>
+    """))
 
     def _test(
             config: MimeoConfig,
@@ -920,6 +1260,7 @@ def test_generate_multiple_templates():
                 assert len(list(data)) == 0  # number of children
 
     _test(config_from_dict)
+    _test(config_from_xml)
 
 
 def test_generate_nested_templates():
@@ -950,6 +1291,35 @@ def test_generate_nested_templates():
             },
         ],
     })
+    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+        <mimeo_configuration>
+            <output>
+                <format>xml</format>
+            </output>
+            <_templates_>
+                <_template_>
+                    <count>5</count>
+                    <model>
+                        <SomeEntity>
+                            <SingleNode>value</SingleNode>
+                            <MultipleNodes>
+                                <_templates_>
+                                    <_template_>
+                                        <count>4</count>
+                                        <model>
+                                            <Node>
+                                                <ChildNode>true</ChildNode>
+                                            </Node>
+                                        </model>
+                                    </_template_>
+                                </_templates_>
+                            </MultipleNodes>
+                        </SomeEntity>
+                    </model>
+                </_template_>
+            </_templates_>
+        </mimeo_configuration>
+    """))
 
     def _test(
             config: MimeoConfig,
@@ -990,6 +1360,7 @@ def test_generate_nested_templates():
             assert count == 5
 
     _test(config_from_dict)
+    _test(config_from_xml)
 
 
 def test_stringify_with_indent_and_xml_declaration():
@@ -1012,6 +1383,27 @@ def test_stringify_with_indent_and_xml_declaration():
             },
         ],
     })
+    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+        <mimeo_configuration>
+            <output>
+                <format>xml</format>
+                <xml_declaration>true</xml_declaration>
+                <indent>4</indent>
+            </output>
+            <_templates_>
+                <_template_>
+                    <count>5</count>
+                    <model>
+                        <SomeEntity
+                            xmlns="http://mimeo.arch.com/default-namespace"
+                            xmlns:pn="http://mimeo.arch.com/prefixed-namespace">
+                            <pn:ChildNode>value</pn:ChildNode>
+                        </SomeEntity>
+                    </model>
+                </_template_>
+            </_templates_>
+        </mimeo_configuration>
+    """))
 
     def _test(
             config: MimeoConfig,
@@ -1028,6 +1420,7 @@ def test_stringify_with_indent_and_xml_declaration():
                                     '</SomeEntity>\n')
 
     _test(config_from_dict)
+    _test(config_from_xml)
 
 
 def test_stringify_with_indent_and_without_xml_declaration():
@@ -1050,6 +1443,27 @@ def test_stringify_with_indent_and_without_xml_declaration():
             },
         ],
     })
+    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+        <mimeo_configuration>
+            <output>
+                <format>xml</format>
+                <xml_declaration>false</xml_declaration>
+                <indent>4</indent>
+            </output>
+            <_templates_>
+                <_template_>
+                    <count>1</count>
+                    <model>
+                        <SomeEntity
+                            xmlns="http://mimeo.arch.com/default-namespace"
+                            xmlns:pn="http://mimeo.arch.com/prefixed-namespace">
+                            <pn:ChildNode>value</pn:ChildNode>
+                        </SomeEntity>
+                    </model>
+                </_template_>
+            </_templates_>
+        </mimeo_configuration>
+    """))
 
     def _test(
             config: MimeoConfig,
@@ -1065,6 +1479,7 @@ def test_stringify_with_indent_and_without_xml_declaration():
                                     '</SomeEntity>\n')
 
     _test(config_from_dict)
+    _test(config_from_xml)
 
 
 def test_stringify_without_indent_and_with_xml_declaration():
@@ -1086,6 +1501,26 @@ def test_stringify_without_indent_and_with_xml_declaration():
             },
         ],
     })
+    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+        <mimeo_configuration>
+            <output>
+                <format>xml</format>
+                <xml_declaration>true</xml_declaration>
+            </output>
+            <_templates_>
+                <_template_>
+                    <count>1</count>
+                    <model>
+                        <SomeEntity
+                            xmlns="http://mimeo.arch.com/default-namespace"
+                            xmlns:pn="http://mimeo.arch.com/prefixed-namespace">
+                            <pn:ChildNode>value</pn:ChildNode>
+                        </SomeEntity>
+                    </model>
+                </_template_>
+            </_templates_>
+        </mimeo_configuration>
+    """))
 
     def _test(
             config: MimeoConfig,
@@ -1103,6 +1538,7 @@ def test_stringify_without_indent_and_with_xml_declaration():
                                     '</SomeEntity>')
 
     _test(config_from_dict)
+    _test(config_from_xml)
 
 
 def test_stringify_without_indent_and_xml_declaration():
@@ -1123,6 +1559,25 @@ def test_stringify_without_indent_and_xml_declaration():
             },
         ],
     })
+    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+        <mimeo_configuration>
+            <output>
+                <format>xml</format>
+            </output>
+            <_templates_>
+                <_template_>
+                    <count>1</count>
+                    <model>
+                        <SomeEntity
+                            xmlns="http://mimeo.arch.com/default-namespace"
+                            xmlns:pn="http://mimeo.arch.com/prefixed-namespace">
+                            <pn:ChildNode>value</pn:ChildNode>
+                        </SomeEntity>
+                    </model>
+                </_template_>
+            </_templates_>
+        </mimeo_configuration>
+    """))
 
     def _test(
             config: MimeoConfig,
@@ -1139,6 +1594,7 @@ def test_stringify_without_indent_and_xml_declaration():
                                     '</SomeEntity>')
 
     _test(config_from_dict)
+    _test(config_from_xml)
 
 
 def test_generate_using_mimeo_util_raw():
@@ -1157,6 +1613,23 @@ def test_generate_using_mimeo_util_raw():
             },
         ],
     })
+    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+        <mimeo_configuration>
+            <output>
+                <format>xml</format>
+            </output>
+            <_templates_>
+                <_template_>
+                    <count>5</count>
+                    <model>
+                        <SomeEntity>
+                            <ChildNode>{auto_increment}</ChildNode>
+                        </SomeEntity>
+                    </model>
+                </_template_>
+            </_templates_>
+        </mimeo_configuration>
+    """))
 
     def _test(
             config: MimeoConfig,
@@ -1180,6 +1653,7 @@ def test_generate_using_mimeo_util_raw():
             assert count == 5
 
     _test(config_from_dict)
+    _test(config_from_xml)
 
 
 def test_generate_using_mimeo_util_parametrized():
@@ -1203,6 +1677,28 @@ def test_generate_using_mimeo_util_parametrized():
             },
         ],
     })
+    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+        <mimeo_configuration>
+            <output>
+                <format>xml</format>
+            </output>
+            <_templates_>
+                <_template_>
+                    <count>5</count>
+                    <model>
+                        <SomeEntity>
+                            <ChildNode>
+                                <_mimeo_util>
+                                    <_name>auto_increment</_name>
+                                    <pattern>{}</pattern>
+                                </_mimeo_util>
+                            </ChildNode>
+                        </SomeEntity>
+                    </model>
+                </_template_>
+            </_templates_>
+        </mimeo_configuration>
+    """))
 
     def _test(
             config: MimeoConfig,
@@ -1226,6 +1722,7 @@ def test_generate_using_mimeo_util_parametrized():
             assert count == 5
 
     _test(config_from_dict)
+    _test(config_from_xml)
 
 
 def test_generate_using_mimeo_util_parametrized_invalid():
@@ -1249,6 +1746,28 @@ def test_generate_using_mimeo_util_parametrized_invalid():
             },
         ],
     })
+    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+        <mimeo_configuration>
+            <output>
+                <format>xml</format>
+            </output>
+            <_templates_>
+                <_template_>
+                    <count>5</count>
+                    <model>
+                        <SomeEntity>
+                            <ChildNode>
+                                <_mimeo_util>
+                                    <_name>auto_increment</_name>
+                                    <pattern>1</pattern>
+                                </_mimeo_util>
+                            </ChildNode>
+                        </SomeEntity>
+                    </model>
+                </_template_>
+            </_templates_>
+        </mimeo_configuration>
+    """))
 
     @assert_throws(err_type=InvalidValueError,
                    msg="The auto_increment Mimeo Util require a string value "
@@ -1263,6 +1782,7 @@ def test_generate_using_mimeo_util_parametrized_invalid():
                 pass
 
     _test(config_from_dict)
+    _test(config_from_xml)
 
 
 def test_generate_using_auto_increment():
@@ -1281,6 +1801,23 @@ def test_generate_using_auto_increment():
             },
         ],
     })
+    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+        <mimeo_configuration>
+            <output>
+                <format>xml</format>
+            </output>
+            <_templates_>
+                <_template_>
+                    <count>5</count>
+                    <model>
+                        <SomeEntity>
+                            <ChildNode>{auto_increment}</ChildNode>
+                        </SomeEntity>
+                    </model>
+                </_template_>
+            </_templates_>
+        </mimeo_configuration>
+    """))
 
     def _test(
             config: MimeoConfig,
@@ -1304,6 +1841,7 @@ def test_generate_using_auto_increment():
             assert count == 5
 
     _test(config_from_dict)
+    _test(config_from_xml)
 
 
 def test_generate_using_auto_increment_in_two_templates():
@@ -1330,6 +1868,31 @@ def test_generate_using_auto_increment_in_two_templates():
             },
         ],
     })
+    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+        <mimeo_configuration>
+            <output>
+                <format>xml</format>
+            </output>
+            <_templates_>
+                <_template_>
+                    <count>5</count>
+                    <model>
+                        <SomeEntity>
+                            <ChildNode>{auto_increment}</ChildNode>
+                        </SomeEntity>
+                    </model>
+                </_template_>
+                <_template_>
+                    <count>3</count>
+                    <model>
+                        <SomeEntity>
+                            <ChildNode>{auto_increment}</ChildNode>
+                        </SomeEntity>
+                    </model>
+                </_template_>
+            </_templates_>
+        </mimeo_configuration>
+    """))
 
     def _test(
             config: MimeoConfig,
@@ -1353,6 +1916,7 @@ def test_generate_using_auto_increment_in_two_templates():
             assert count == 8
 
     _test(config_from_dict)
+    _test(config_from_xml)
 
 
 def test_generate_using_auto_increment_in_two_templates_with_customized_context_name():
@@ -1380,6 +1944,32 @@ def test_generate_using_auto_increment_in_two_templates_with_customized_context_
             },
         ],
     })
+    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+        <mimeo_configuration>
+            <output>
+                <format>xml</format>
+            </output>
+            <_templates_>
+                <_template_>
+                    <count>5</count>
+                    <model>
+                        <SomeEntity>
+                            <ChildNode>{auto_increment}</ChildNode>
+                        </SomeEntity>
+                    </model>
+                </_template_>
+                <_template_>
+                    <count>3</count>
+                    <model>
+                        <context>A different set</context>
+                        <SomeEntity>
+                            <ChildNode>{auto_increment}</ChildNode>
+                        </SomeEntity>
+                    </model>
+                </_template_>
+            </_templates_>
+        </mimeo_configuration>
+    """))
 
     def _test(
             config: MimeoConfig,
@@ -1405,6 +1995,7 @@ def test_generate_using_auto_increment_in_two_templates_with_customized_context_
             assert count == 8
 
     _test(config_from_dict)
+    _test(config_from_xml)
 
 
 def test_generate_using_curr_iter_util():
@@ -1423,6 +2014,23 @@ def test_generate_using_curr_iter_util():
             },
         ],
     })
+    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+        <mimeo_configuration>
+            <output>
+                <format>xml</format>
+            </output>
+            <_templates_>
+                <_template_>
+                    <count>5</count>
+                    <model>
+                        <SomeEntity>
+                            <ChildNode>{curr_iter}</ChildNode>
+                        </SomeEntity>
+                    </model>
+                </_template_>
+            </_templates_>
+        </mimeo_configuration>
+    """))
 
     def _test(
             config: MimeoConfig,
@@ -1447,6 +2055,7 @@ def test_generate_using_curr_iter_util():
             assert count == 5
 
     _test(config_from_dict)
+    _test(config_from_xml)
 
 
 def test_generate_using_curr_iter_util_in_two_templates():
@@ -1473,6 +2082,31 @@ def test_generate_using_curr_iter_util_in_two_templates():
             },
         ],
     })
+    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+        <mimeo_configuration>
+            <output>
+                <format>xml</format>
+            </output>
+            <_templates_>
+                <_template_>
+                    <count>5</count>
+                    <model>
+                        <SomeEntity>
+                            <ChildNode>{curr_iter}</ChildNode>
+                        </SomeEntity>
+                    </model>
+                </_template_>
+                <_template_>
+                    <count>3</count>
+                    <model>
+                        <SomeEntity>
+                            <ChildNode>{curr_iter}</ChildNode>
+                        </SomeEntity>
+                    </model>
+                </_template_>
+            </_templates_>
+        </mimeo_configuration>
+    """))
 
     def _test(
             config: MimeoConfig,
@@ -1498,6 +2132,7 @@ def test_generate_using_curr_iter_util_in_two_templates():
             assert count == 8
 
     _test(config_from_dict)
+    _test(config_from_xml)
 
 
 def test_generates_using_curr_iter_util_in_nested_templates():
@@ -1528,6 +2163,35 @@ def test_generates_using_curr_iter_util_in_nested_templates():
             },
         ],
     })
+    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+        <mimeo_configuration>
+            <output>
+                <format>xml</format>
+            </output>
+            <_templates_>
+                <_template_>
+                    <count>5</count>
+                    <model>
+                        <SomeEntity>
+                            <SingleNode>{curr_iter}</SingleNode>
+                            <MultipleNodes>
+                                <_templates_>
+                                    <_template_>
+                                        <count>4</count>
+                                        <model>
+                                            <Node>
+                                                <ChildNode>{curr_iter}</ChildNode>
+                                            </Node>
+                                        </model>
+                                    </_template_>
+                                </_templates_>
+                            </MultipleNodes>
+                        </SomeEntity>
+                    </model>
+                </_template_>
+            </_templates_>
+        </mimeo_configuration>
+    """))
 
     def _test(
             config: MimeoConfig,
@@ -1570,6 +2234,7 @@ def test_generates_using_curr_iter_util_in_nested_templates():
             assert count == 5
 
     _test(config_from_dict)
+    _test(config_from_xml)
 
 
 def test_generates_using_curr_iter_util_in_nested_templates_indicating_one():
@@ -1605,6 +2270,40 @@ def test_generates_using_curr_iter_util_in_nested_templates_indicating_one():
             },
         ],
     })
+    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+        <mimeo_configuration>
+            <output>
+                <format>xml</format>
+            </output>
+            <_templates_>
+                <_template_>
+                    <count>5</count>
+                    <model>
+                        <SomeEntity>
+                            <SingleNode>{curr_iter}</SingleNode>
+                            <MultipleNodes>
+                                <_templates_>
+                                    <_template_>
+                                        <count>4</count>
+                                        <model>
+                                            <Node>
+                                                <ChildNode>
+                                                    <_mimeo_util>
+                                                        <_name>curr_iter</_name>
+                                                        <context>SomeEntity</context>
+                                                    </_mimeo_util>
+                                                </ChildNode>
+                                            </Node>
+                                        </model>
+                                    </_template_>
+                                </_templates_>
+                            </MultipleNodes>
+                        </SomeEntity>
+                    </model>
+                </_template_>
+            </_templates_>
+        </mimeo_configuration>
+    """))
 
     def _test(
             config: MimeoConfig,
@@ -1646,6 +2345,7 @@ def test_generates_using_curr_iter_util_in_nested_templates_indicating_one():
             assert count == 5
 
     _test(config_from_dict)
+    _test(config_from_xml)
 
 
 def test_generates_using_curr_iter_util_in_nested_templates_indicating_customized_one():
@@ -1682,6 +2382,41 @@ def test_generates_using_curr_iter_util_in_nested_templates_indicating_customize
             },
         ],
     })
+    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+        <mimeo_configuration>
+            <output>
+                <format>xml</format>
+            </output>
+            <_templates_>
+                <_template_>
+                    <count>5</count>
+                    <model>
+                        <context>ROOT</context>
+                        <SomeEntity>
+                            <SingleNode>{curr_iter}</SingleNode>
+                            <MultipleNodes>
+                                <_templates_>
+                                    <_template_>
+                                        <count>4</count>
+                                        <model>
+                                            <Node>
+                                                <ChildNode>
+                                                    <_mimeo_util>
+                                                        <_name>curr_iter</_name>
+                                                        <context>ROOT</context>
+                                                    </_mimeo_util>
+                                                </ChildNode>
+                                            </Node>
+                                        </model>
+                                    </_template_>
+                                </_templates_>
+                            </MultipleNodes>
+                        </SomeEntity>
+                    </model>
+                </_template_>
+            </_templates_>
+        </mimeo_configuration>
+    """))
 
     def _test(
             config: MimeoConfig,
@@ -1723,6 +2458,7 @@ def test_generates_using_curr_iter_util_in_nested_templates_indicating_customize
             assert count == 5
 
     _test(config_from_dict)
+    _test(config_from_xml)
 
 
 def test_generate_using_curr_iter_and_auto_increment_utils():
@@ -1744,6 +2480,26 @@ def test_generate_using_curr_iter_and_auto_increment_utils():
             },
         ],
     })
+    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+        <mimeo_configuration>
+            <output>
+                <format>xml</format>
+            </output>
+            <_templates_>
+                <_template_>
+                    <count>5</count>
+                    <model>
+                        <SomeEntity>
+                            <ChildNode1>{curr_iter}</ChildNode1>
+                            <ChildNode2>{curr_iter}</ChildNode2>
+                            <ChildNode3>{auto_increment}</ChildNode3>
+                            <ChildNode4>{auto_increment}</ChildNode4>
+                        </SomeEntity>
+                    </model>
+                </_template_>
+            </_templates_>
+        </mimeo_configuration>
+    """))
 
     def _test(
             config: MimeoConfig,
@@ -1786,6 +2542,7 @@ def test_generate_using_curr_iter_and_auto_increment_utils():
             assert count == 5
 
     _test(config_from_dict)
+    _test(config_from_xml)
 
 
 def test_generate_using_key_util():
@@ -1806,6 +2563,25 @@ def test_generate_using_key_util():
             },
         ],
     })
+    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+        <mimeo_configuration>
+            <output>
+                <format>xml</format>
+            </output>
+            <_templates_>
+                <_template_>
+                    <count>5</count>
+                    <model>
+                        <SomeEntity>
+                            <ChildNode1>{key}</ChildNode1>
+                            <ChildNode2>{key}</ChildNode2>
+                            <ChildNode3>{key}</ChildNode3>
+                        </SomeEntity>
+                    </model>
+                </_template_>
+            </_templates_>
+        </mimeo_configuration>
+    """))
 
     def _test(
             config: MimeoConfig,
@@ -1847,6 +2623,7 @@ def test_generate_using_key_util():
             assert len(set(keys)) == len(keys)
 
     _test(config_from_dict)
+    _test(config_from_xml)
 
 
 def test_generate_using_key_util_in_separated_contexts():
@@ -1875,6 +2652,33 @@ def test_generate_using_key_util_in_separated_contexts():
             },
         ],
     })
+    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+        <mimeo_configuration>
+            <output>
+                <format>xml</format>
+            </output>
+            <_templates_>
+                <_template_>
+                    <count>5</count>
+                    <model>
+                        <SomeEntity>
+                            <ChildNode1>{key}</ChildNode1>
+                            <_templates_>
+                                <_template_>
+                                    <count>1</count>
+                                    <model>
+                                        <NewContextNode>
+                                            <GrandChild>{key}</GrandChild>
+                                        </NewContextNode>
+                                    </model>
+                                </_template_>
+                            </_templates_>
+                        </SomeEntity>
+                    </model>
+                </_template_>
+            </_templates_>
+        </mimeo_configuration>
+    """))
 
     def _test(
             config: MimeoConfig,
@@ -1911,6 +2715,7 @@ def test_generate_using_key_util_in_separated_contexts():
             assert count == 5
 
     _test(config_from_dict)
+    _test(config_from_xml)
 
 
 def test_generate_using_key_util_in_separated_contexts_indicating_one():
@@ -1944,6 +2749,38 @@ def test_generate_using_key_util_in_separated_contexts_indicating_one():
             },
         ],
     })
+    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+        <mimeo_configuration>
+            <output>
+                <format>xml</format>
+            </output>
+            <_templates_>
+                <_template_>
+                    <count>5</count>
+                    <model>
+                        <SomeEntity>
+                            <ChildNode1>{key}</ChildNode1>
+                            <_templates_>
+                                <_template_>
+                                    <count>1</count>
+                                    <model>
+                                        <NewContextNode>
+                                            <GrandChild>
+                                                <_mimeo_util>
+                                                    <_name>key</_name>
+                                                    <context>SomeEntity</context>
+                                                </_mimeo_util>
+                                            </GrandChild>
+                                        </NewContextNode>
+                                    </model>
+                                </_template_>
+                            </_templates_>
+                        </SomeEntity>
+                    </model>
+                </_template_>
+            </_templates_>
+        </mimeo_configuration>
+    """))
 
     def _test(
             config: MimeoConfig,
@@ -1980,6 +2817,7 @@ def test_generate_using_key_util_in_separated_contexts_indicating_one():
             assert count == 5
 
     _test(config_from_dict)
+    _test(config_from_xml)
 
 
 def test_generate_using_key_util_in_two_templates_with_customized_iteration():
@@ -2012,6 +2850,37 @@ def test_generate_using_key_util_in_two_templates_with_customized_iteration():
             },
         ],
     })
+    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+        <mimeo_configuration>
+            <output>
+                <format>xml</format>
+            </output>
+            <_templates_>
+                <_template_>
+                    <count>5</count>
+                    <model>
+                        <CustomIteration1>
+                            <ChildNode1>{key}</ChildNode1>
+                        </CustomIteration1>
+                    </model>
+                </_template_>
+                <_template_>
+                    <count>5</count>
+                    <model>
+                        <CustomIteration2>
+                            <ChildNode1>
+                                <_mimeo_util>
+                                    <_name>key</_name>
+                                    <context>CustomIteration1</context>
+                                    <iteration>{curr_iter}</iteration>
+                                </_mimeo_util>
+                            </ChildNode1>
+                        </CustomIteration2>
+                    </model>
+                </_template_>
+            </_templates_>
+        </mimeo_configuration>
+    """))
 
     def _test(
             config: MimeoConfig,
@@ -2054,6 +2923,7 @@ def test_generate_using_key_util_in_two_templates_with_customized_iteration():
                 assert some_entity_keys[i] == some_other_entity_keys[i]
 
     _test(config_from_dict)
+    _test(config_from_xml)
 
 
 def test_generate_using_get_key_util_in_two_templates_with_customized_context_name():
@@ -2087,6 +2957,38 @@ def test_generate_using_get_key_util_in_two_templates_with_customized_context_na
             },
         ],
     })
+    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+        <mimeo_configuration>
+            <output>
+                <format>xml</format>
+            </output>
+            <_templates_>
+                <_template_>
+                    <count>5</count>
+                    <model>
+                        <context>First SomeEntity set</context>
+                        <SomeEntity>
+                            <ChildNode1>{key}</ChildNode1>
+                        </SomeEntity>
+                    </model>
+                </_template_>
+                <_template_>
+                    <count>5</count>
+                    <model>
+                        <context>Second SomeEntity set</context>
+                        <SomeEntity>
+                            <ChildNode1>
+                                <_mimeo_util>
+                                    <_name>key</_name>
+                                    <context>First SomeEntity set</context>
+                                </_mimeo_util>
+                            </ChildNode1>
+                        </SomeEntity>
+                    </model>
+                </_template_>
+            </_templates_>
+        </mimeo_configuration>
+    """))
 
     def _test(
             config: MimeoConfig,
@@ -2125,6 +3027,7 @@ def test_generate_using_get_key_util_in_two_templates_with_customized_context_na
                 assert len(list(child)) == 0  # number of children
 
     _test(config_from_dict)
+    _test(config_from_xml)
 
 
 def test_generate_using_special_fields():
@@ -2144,6 +3047,24 @@ def test_generate_using_special_fields():
             },
         ],
     })
+    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+        <mimeo_configuration>
+            <output>
+                <format>xml</format>
+            </output>
+            <_templates_>
+                <_template_>
+                    <count>5</count>
+                    <model>
+                        <SomeEntity>
+                            <:ChildNode1:>value-1</:ChildNode1:>
+                            <ChildNode2>{:ChildNode1:}</ChildNode2>
+                        </SomeEntity>
+                    </model>
+                </_template_>
+            </_templates_>
+        </mimeo_configuration>
+    """))
 
     def _test(
             config: MimeoConfig,
@@ -2173,6 +3094,7 @@ def test_generate_using_special_fields():
             assert count == 5
 
     _test(config_from_dict)
+    _test(config_from_xml)
 
 
 def test_generate_using_special_fields_as_partial_values():
@@ -2197,6 +3119,29 @@ def test_generate_using_special_fields_as_partial_values():
             },
         ],
     })
+    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+        <mimeo_configuration>
+            <output>
+                <format>xml</format>
+            </output>
+            <_templates_>
+                <_template_>
+                    <count>5</count>
+                    <model>
+                        <SomeEntity>
+                            <:ChildNode1:>value-1</:ChildNode1:>
+                            <:ChildNode2:>value-2</:ChildNode2:>
+                            <ChildNode3>{:ChildNode1:}-2</ChildNode3>
+                            <ChildNode4>3-{:ChildNode1:}-3</ChildNode4>
+                            <ChildNode5>4-{:ChildNode1:}</ChildNode5>
+                            <ChildNode6>{:ChildNode1:}-{:ChildNode1:}</ChildNode6>
+                            <ChildNode7>{:ChildNode1:}-{:ChildNode2:}</ChildNode7>
+                        </SomeEntity>
+                    </model>
+                </_template_>
+            </_templates_>
+        </mimeo_configuration>
+    """))
 
     def _test(
             config: MimeoConfig,
@@ -2256,6 +3201,7 @@ def test_generate_using_special_fields_as_partial_values():
             assert count == 5
 
     _test(config_from_dict)
+    _test(config_from_xml)
 
 
 def test_generate_using_special_fields_using_namespace():
@@ -2276,6 +3222,24 @@ def test_generate_using_special_fields_using_namespace():
             },
         ],
     })
+    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+        <mimeo_configuration>
+            <output>
+                <format>xml</format>
+            </output>
+            <_templates_>
+                <_template_>
+                    <count>5</count>
+                    <model>
+                        <ns:SomeEntity xmlns:ns="http://mimeo.arch.com/prefixed-namespace">
+                            <:ns:ChildNode1:>value-1</:ns:ChildNode1:>
+                            <ns:ChildNode2>{:ns:ChildNode1:}</ns:ChildNode2>
+                        </ns:SomeEntity>
+                    </model>
+                </_template_>
+            </_templates_>
+        </mimeo_configuration>
+    """))
 
     def _test(
             config: MimeoConfig,
@@ -2307,6 +3271,7 @@ def test_generate_using_special_fields_using_namespace():
             assert count == 5
 
     _test(config_from_dict)
+    _test(config_from_xml)
 
 
 def test_generate_using_special_fields_recursive():
@@ -2327,6 +3292,25 @@ def test_generate_using_special_fields_recursive():
             },
         ],
     })
+    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+        <mimeo_configuration>
+            <output>
+                <format>xml</format>
+            </output>
+            <_templates_>
+                <_template_>
+                    <count>5</count>
+                    <model>
+                        <SomeEntity>
+                            <:ChildNode1:>value-1</:ChildNode1:>
+                            <:ChildNode2:>{:ChildNode1:}</:ChildNode2:>
+                            <ChildNode3>{:ChildNode2:}</ChildNode3>
+                        </SomeEntity>
+                    </model>
+                </_template_>
+            </_templates_>
+        </mimeo_configuration>
+    """))
 
     def _test(
             config: MimeoConfig,
@@ -2362,6 +3346,7 @@ def test_generate_using_special_fields_recursive():
             assert count == 5
 
     _test(config_from_dict)
+    _test(config_from_xml)
 
 
 def test_generate_using_special_fields_in_template_context():
@@ -2381,6 +3366,24 @@ def test_generate_using_special_fields_in_template_context():
             },
         ],
     })
+    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+        <mimeo_configuration>
+            <output>
+                <format>xml</format>
+            </output>
+            <_templates_>
+                <_template_>
+                    <count>5</count>
+                    <model>
+                        <SomeEntity>
+                            <:ChildNode1:>{curr_iter}</:ChildNode1:>
+                            <ChildNode2>{:ChildNode1:}</ChildNode2>
+                        </SomeEntity>
+                    </model>
+                </_template_>
+            </_templates_>
+        </mimeo_configuration>
+    """))
 
     def _test(
             config: MimeoConfig,
@@ -2411,3 +3414,4 @@ def test_generate_using_special_fields_in_template_context():
             assert count == 5
 
     _test(config_from_dict)
+    _test(config_from_xml)
