@@ -16,25 +16,6 @@ def test_str():
     assert str(mimeo_model) == str(model)
 
 
-def test_parse_source():
-    model_xml = """
-    <model>
-        <context>My Context</context>
-        <SomeEntity>
-            <ChildNode>false</ChildNode>
-        </SomeEntity>
-    </model>
-    """
-    expected_source = {
-        "context": "My Context",
-        "SomeEntity": {
-            "ChildNode": False,
-        },
-    }
-
-    assert MimeoModel.parse_source(model_xml) == expected_source
-
-
 def test_parsing_model_with_context_name():
     model = {
         "context": "My Context",

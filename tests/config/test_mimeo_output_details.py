@@ -26,43 +26,6 @@ def test_str():
     assert str(mimeo_output) == str(output)
 
 
-def test_parse_source():
-    output_xml = """
-    <output>
-        <direction>stdout</direction>
-        <format>xml</format>
-        <xml_declaration>true</xml_declaration>
-        <indent>4</indent>
-        <directory_path>out</directory_path>
-        <file_name>out-file</file_name>
-        <method>PUT</method>
-        <protocol>https</protocol>
-        <host>localhost</host>
-        <port>8080</port>
-        <endpoint>/document</endpoint>
-        <username>admin</username>
-        <password>admin</password>
-    </output>
-    """
-    expected_source = {
-        "direction": "stdout",
-        "format": "xml",
-        "xml_declaration": True,
-        "indent": 4,
-        "directory_path": "out",
-        "file_name": "out-file",
-        "method": "PUT",
-        "protocol": "https",
-        "host": "localhost",
-        "port": 8080,
-        "endpoint": "/document",
-        "username": "admin",
-        "password": "admin",
-    }
-
-    assert MimeoOutput.parse_source(output_xml) == expected_source
-
-
 def test_parsing_output_with_default_direction_independent_settings():
     output = {}
 

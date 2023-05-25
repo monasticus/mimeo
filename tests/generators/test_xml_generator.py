@@ -1,4 +1,4 @@
-from mimeo.config import MimeoConfig
+from mimeo.config import MimeoConfig, MimeoConfigFactory
 from mimeo.context import MimeoContextManager
 from mimeo.generators import XMLGenerator
 from mimeo.generators.exc import UnsupportedStructureError
@@ -20,7 +20,7 @@ def test_generate_single_template_model_without_attributes():
             },
         ],
     })
-    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+    config_from_xml = MimeoConfig(MimeoConfigFactory.parse_source("""
         <mimeo_configuration>
             <output>
                 <format>xml</format>
@@ -71,7 +71,7 @@ def test_generate_single_template_model_with_attributes():
             },
         ],
     })
-    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+    config_from_xml = MimeoConfig(MimeoConfigFactory.parse_source("""
         <mimeo_configuration>
             <output>
                 <format>xml</format>
@@ -122,7 +122,7 @@ def test_generate_single_template_model_with_prefixed_ns():
             },
         ],
     })
-    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+    config_from_xml = MimeoConfig(MimeoConfigFactory.parse_source("""
         <mimeo_configuration>
             <output>
                 <format>xml</format>
@@ -176,7 +176,7 @@ def test_generate_single_template_model_with_attributes_in_atomic_child():
             },
         ],
     })
-    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+    config_from_xml = MimeoConfig(MimeoConfigFactory.parse_source("""
         <mimeo_configuration>
             <output>
                 <format>xml</format>
@@ -238,7 +238,7 @@ def test_generate_single_template_model_with_attributes_in_complex_child():
             },
         ],
     })
-    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+    config_from_xml = MimeoConfig(MimeoConfigFactory.parse_source("""
         <mimeo_configuration>
             <output>
                 <format>xml</format>
@@ -347,7 +347,7 @@ def test_generate_single_template_str_value():
             },
         ],
     })
-    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+    config_from_xml = MimeoConfig(MimeoConfigFactory.parse_source("""
         <mimeo_configuration>
             <output>
                 <format>xml</format>
@@ -406,7 +406,7 @@ def test_generate_single_template_int_value():
             },
         ],
     })
-    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+    config_from_xml = MimeoConfig(MimeoConfigFactory.parse_source("""
         <mimeo_configuration>
             <output>
                 <format>xml</format>
@@ -465,7 +465,7 @@ def test_generate_single_template_bool_value():
             },
         ],
     })
-    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+    config_from_xml = MimeoConfig(MimeoConfigFactory.parse_source("""
         <mimeo_configuration>
             <output>
                 <format>xml</format>
@@ -524,7 +524,7 @@ def test_generate_single_template_none_value():
             },
         ],
     })
-    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+    config_from_xml = MimeoConfig(MimeoConfigFactory.parse_source("""
         <mimeo_configuration>
             <output>
                 <format>xml</format>
@@ -601,7 +601,7 @@ def test_generate_single_template_using_variables():
             },
         ],
     })
-    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+    config_from_xml = MimeoConfig(MimeoConfigFactory.parse_source("""
         <mimeo_configuration>
             <output>
                 <format>xml</format>
@@ -710,7 +710,7 @@ def test_generate_single_template_child_elements():
             },
         ],
     })
-    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+    config_from_xml = MimeoConfig(MimeoConfigFactory.parse_source("""
         <mimeo_configuration>
             <output>
                 <format>xml</format>
@@ -782,7 +782,7 @@ def test_generate_single_template_only_atomic_child_elements_in_array():
             },
         ],
     })
-    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+    config_from_xml = MimeoConfig(MimeoConfigFactory.parse_source("""
         <mimeo_configuration>
             <output>
                 <format>xml</format>
@@ -873,7 +873,7 @@ def test_generate_single_template_only_complex_child_elements_in_array():
             },
         ],
     })
-    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+    config_from_xml = MimeoConfig(MimeoConfigFactory.parse_source("""
         <mimeo_configuration>
             <output>
                 <format>xml</format>
@@ -982,7 +982,7 @@ def test_generate_single_template_atomic_child_elements_with_mimeo_util_in_array
             },
         ],
     })
-    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+    config_from_xml = MimeoConfig(MimeoConfigFactory.parse_source("""
         <mimeo_configuration>
             <output>
                 <format>xml</format>
@@ -1075,7 +1075,7 @@ def test_generate_single_template_mixed_child_elements_in_array():
             },
         ],
     })
-    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+    config_from_xml = MimeoConfig(MimeoConfigFactory.parse_source("""
         <mimeo_configuration>
             <output>
                 <format>xml</format>
@@ -1214,7 +1214,7 @@ def test_generate_multiple_templates():
             },
         ],
     })
-    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+    config_from_xml = MimeoConfig(MimeoConfigFactory.parse_source("""
         <mimeo_configuration>
             <output>
                 <format>xml</format>
@@ -1291,7 +1291,7 @@ def test_generate_nested_templates():
             },
         ],
     })
-    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+    config_from_xml = MimeoConfig(MimeoConfigFactory.parse_source("""
         <mimeo_configuration>
             <output>
                 <format>xml</format>
@@ -1383,7 +1383,7 @@ def test_stringify_with_indent_and_xml_declaration():
             },
         ],
     })
-    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+    config_from_xml = MimeoConfig(MimeoConfigFactory.parse_source("""
         <mimeo_configuration>
             <output>
                 <format>xml</format>
@@ -1443,7 +1443,7 @@ def test_stringify_with_indent_and_without_xml_declaration():
             },
         ],
     })
-    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+    config_from_xml = MimeoConfig(MimeoConfigFactory.parse_source("""
         <mimeo_configuration>
             <output>
                 <format>xml</format>
@@ -1501,7 +1501,7 @@ def test_stringify_without_indent_and_with_xml_declaration():
             },
         ],
     })
-    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+    config_from_xml = MimeoConfig(MimeoConfigFactory.parse_source("""
         <mimeo_configuration>
             <output>
                 <format>xml</format>
@@ -1559,7 +1559,7 @@ def test_stringify_without_indent_and_xml_declaration():
             },
         ],
     })
-    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+    config_from_xml = MimeoConfig(MimeoConfigFactory.parse_source("""
         <mimeo_configuration>
             <output>
                 <format>xml</format>
@@ -1613,7 +1613,7 @@ def test_generate_using_mimeo_util_raw():
             },
         ],
     })
-    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+    config_from_xml = MimeoConfig(MimeoConfigFactory.parse_source("""
         <mimeo_configuration>
             <output>
                 <format>xml</format>
@@ -1677,7 +1677,7 @@ def test_generate_using_mimeo_util_parametrized():
             },
         ],
     })
-    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+    config_from_xml = MimeoConfig(MimeoConfigFactory.parse_source("""
         <mimeo_configuration>
             <output>
                 <format>xml</format>
@@ -1746,7 +1746,7 @@ def test_generate_using_mimeo_util_parametrized_invalid():
             },
         ],
     })
-    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+    config_from_xml = MimeoConfig(MimeoConfigFactory.parse_source("""
         <mimeo_configuration>
             <output>
                 <format>xml</format>
@@ -1801,7 +1801,7 @@ def test_generate_using_auto_increment():
             },
         ],
     })
-    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+    config_from_xml = MimeoConfig(MimeoConfigFactory.parse_source("""
         <mimeo_configuration>
             <output>
                 <format>xml</format>
@@ -1868,7 +1868,7 @@ def test_generate_using_auto_increment_in_two_templates():
             },
         ],
     })
-    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+    config_from_xml = MimeoConfig(MimeoConfigFactory.parse_source("""
         <mimeo_configuration>
             <output>
                 <format>xml</format>
@@ -1944,7 +1944,7 @@ def test_generate_using_auto_increment_in_two_templates_with_customized_context_
             },
         ],
     })
-    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+    config_from_xml = MimeoConfig(MimeoConfigFactory.parse_source("""
         <mimeo_configuration>
             <output>
                 <format>xml</format>
@@ -2014,7 +2014,7 @@ def test_generate_using_curr_iter_util():
             },
         ],
     })
-    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+    config_from_xml = MimeoConfig(MimeoConfigFactory.parse_source("""
         <mimeo_configuration>
             <output>
                 <format>xml</format>
@@ -2082,7 +2082,7 @@ def test_generate_using_curr_iter_util_in_two_templates():
             },
         ],
     })
-    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+    config_from_xml = MimeoConfig(MimeoConfigFactory.parse_source("""
         <mimeo_configuration>
             <output>
                 <format>xml</format>
@@ -2163,7 +2163,7 @@ def test_generates_using_curr_iter_util_in_nested_templates():
             },
         ],
     })
-    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+    config_from_xml = MimeoConfig(MimeoConfigFactory.parse_source("""
         <mimeo_configuration>
             <output>
                 <format>xml</format>
@@ -2270,7 +2270,7 @@ def test_generates_using_curr_iter_util_in_nested_templates_indicating_one():
             },
         ],
     })
-    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+    config_from_xml = MimeoConfig(MimeoConfigFactory.parse_source("""
         <mimeo_configuration>
             <output>
                 <format>xml</format>
@@ -2382,7 +2382,7 @@ def test_generates_using_curr_iter_util_in_nested_templates_indicating_customize
             },
         ],
     })
-    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+    config_from_xml = MimeoConfig(MimeoConfigFactory.parse_source("""
         <mimeo_configuration>
             <output>
                 <format>xml</format>
@@ -2480,7 +2480,7 @@ def test_generate_using_curr_iter_and_auto_increment_utils():
             },
         ],
     })
-    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+    config_from_xml = MimeoConfig(MimeoConfigFactory.parse_source("""
         <mimeo_configuration>
             <output>
                 <format>xml</format>
@@ -2563,7 +2563,7 @@ def test_generate_using_key_util():
             },
         ],
     })
-    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+    config_from_xml = MimeoConfig(MimeoConfigFactory.parse_source("""
         <mimeo_configuration>
             <output>
                 <format>xml</format>
@@ -2652,7 +2652,7 @@ def test_generate_using_key_util_in_separated_contexts():
             },
         ],
     })
-    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+    config_from_xml = MimeoConfig(MimeoConfigFactory.parse_source("""
         <mimeo_configuration>
             <output>
                 <format>xml</format>
@@ -2749,7 +2749,7 @@ def test_generate_using_key_util_in_separated_contexts_indicating_one():
             },
         ],
     })
-    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+    config_from_xml = MimeoConfig(MimeoConfigFactory.parse_source("""
         <mimeo_configuration>
             <output>
                 <format>xml</format>
@@ -2850,7 +2850,7 @@ def test_generate_using_key_util_in_two_templates_with_customized_iteration():
             },
         ],
     })
-    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+    config_from_xml = MimeoConfig(MimeoConfigFactory.parse_source("""
         <mimeo_configuration>
             <output>
                 <format>xml</format>
@@ -2957,7 +2957,7 @@ def test_generate_using_get_key_util_in_two_templates_with_customized_context_na
             },
         ],
     })
-    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+    config_from_xml = MimeoConfig(MimeoConfigFactory.parse_source("""
         <mimeo_configuration>
             <output>
                 <format>xml</format>
@@ -3047,7 +3047,7 @@ def test_generate_using_special_fields():
             },
         ],
     })
-    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+    config_from_xml = MimeoConfig(MimeoConfigFactory.parse_source("""
         <mimeo_configuration>
             <output>
                 <format>xml</format>
@@ -3119,7 +3119,7 @@ def test_generate_using_special_fields_as_partial_values():
             },
         ],
     })
-    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+    config_from_xml = MimeoConfig(MimeoConfigFactory.parse_source("""
         <mimeo_configuration>
             <output>
                 <format>xml</format>
@@ -3222,7 +3222,7 @@ def test_generate_using_special_fields_using_namespace():
             },
         ],
     })
-    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+    config_from_xml = MimeoConfig(MimeoConfigFactory.parse_source("""
         <mimeo_configuration>
             <output>
                 <format>xml</format>
@@ -3292,7 +3292,7 @@ def test_generate_using_special_fields_recursive():
             },
         ],
     })
-    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+    config_from_xml = MimeoConfig(MimeoConfigFactory.parse_source("""
         <mimeo_configuration>
             <output>
                 <format>xml</format>
@@ -3366,7 +3366,7 @@ def test_generate_using_special_fields_in_template_context():
             },
         ],
     })
-    config_from_xml = MimeoConfig(MimeoConfig.parse_source("""
+    config_from_xml = MimeoConfig(MimeoConfigFactory.parse_source("""
         <mimeo_configuration>
             <output>
                 <format>xml</format>

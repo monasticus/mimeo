@@ -16,6 +16,7 @@ from pathlib import Path
 from mimeo import MimeoConfig, Mimeograph
 from mimeo.cli import MimeoArgumentParser, MimeoConfigParser
 from mimeo.cli.exc import PathNotFoundError
+from mimeo.config import MimeoConfigFactory
 
 logger = logging.getLogger(__name__)
 
@@ -145,4 +146,4 @@ class MimeoJob:
         with Path(config_path).open() as config_file:
             if str(config_path).endswith(".json"):
                 return json.load(config_file)
-            return MimeoConfig.parse_source(config_file.read())
+            return MimeoConfigFactory.parse_source(config_file.read())

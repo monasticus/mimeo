@@ -38,6 +38,8 @@ class MimeoConfigFactory:
     -------
     from_dict(config: dict) -> MimeoConfig
         Instantiate MimeoConfig from a dict.
+    parse_source(source: str) -> dict
+        Parse a string Mimeo Configuration to source dict.
     """
 
     @staticmethod
@@ -58,44 +60,12 @@ class MimeoConfigFactory:
         """
         return MimeoConfig(config)
 
-
-class MimeoDTO:
-    """A superclass for all Mimeo configuration DTOs.
-
-    It is meant to store a source dictionary for logging purposes.
-
-    Methods
-    -------
-    __str__() -> str
-        Return the stringified source dictionary of a DTO.
-    parse_source(source: str) -> dict
-        Parse source Mimeo Configuration to dict.
-    """
-
-    def __init__(
-            self, source: dict,
-    ):
-        """Initialize MimeoDTO class.
-
-        Parameters
-        ----------
-        source : dict
-            The source dictionary for a Mimeo DTO
-        """
-        self._source = source
-
-    def __str__(
-            self,
-    ) -> str:
-        """Return the stringified source dictionary of a DTO."""
-        return str(self._source)
-
     @classmethod
     def parse_source(
             cls,
             source: str,
     ) -> dict:
-        """Parse source Mimeo Configuration to dict.
+        """Parse a source Mimeo Configuration to dict.
 
         Parameters
         ----------
@@ -182,7 +152,9 @@ class MimeoDTO:
         if source_node == "false":
             return False
         if source_node.isnumeric():
-            return float(source_node) if "." in source_node else int(source_node)
+            return int(source_node)
+        if source_node.replace(".", "").isnumeric():
+            return float(source_node)
         return source_node
 
     @classmethod
@@ -370,6 +342,36 @@ class MimeoDTO:
         if any(key != value for key, value in keys_mapping.items()):
             for key, value in keys_mapping.items():
                 source_node[value] = source_node.pop(key)
+
+
+class MimeoDTO:
+    """A superclass for all Mimeo configuration DTOs.
+
+    It is meant to store a source dictionary for logging purposes.
+
+    Methods
+    -------
+    __str__() -> str
+        Return the stringified source dictionary of a DTO.
+    """
+
+    def __init__(
+            self, source: dict,
+    ):
+        """Initialize MimeoDTO class.
+
+        Parameters
+        ----------
+        source : dict
+            The source dictionary for a Mimeo DTO
+        """
+        self._source = source
+
+    def __str__(
+            self,
+    ) -> str:
+        """Return the stringified source dictionary of a DTO."""
+        return str(self._source)
 
 
 class MimeoConfig(MimeoDTO):
