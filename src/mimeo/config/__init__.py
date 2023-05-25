@@ -22,6 +22,6 @@ To use this package, simply import it:
 """
 from __future__ import annotations
 
-from .mimeo_config import MimeoConfigFactory, MimeoConfig
+from .mimeo_config import MimeoConfig, MimeoConfigFactory
 
-__all__ = ["MimeoConfigFactory", "MimeoConfig"]
+__all__ = ["MimeoConfig", "MimeoConfigFactory"]

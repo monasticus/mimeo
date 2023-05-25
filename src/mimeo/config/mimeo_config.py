@@ -2,6 +2,8 @@
 
 It contains classes representing Mimeo Configuration components at all levels.
 All of them are Data Transfer Objects:
+    * MimeoConfigFactory
+        A factory class to instantiate a MimeoConfig.
     * MimeoDTO
         A superclass for all Mimeo configuration DTOs
     * MimeoConfig
@@ -36,11 +38,39 @@ class MimeoConfigFactory:
 
     Methods
     -------
+    parse(source: dict | str) -> MimeoConfig | None
+        Instantiate MimeoConfig from a source configuration.
     from_dict(config: dict) -> MimeoConfig
         Instantiate MimeoConfig from a dict.
     parse_source(source: str) -> dict
         Parse a string Mimeo Configuration to source dict.
     """
+
+    @classmethod
+    def parse(
+            cls,
+            source: dict | str,
+    ) -> MimeoConfig | None:
+        """Instantiate MimeoConfig from a source configuration.
+
+        It uses internal methods to instantiate Mimeo Config depending on source type.
+
+        Parameters
+        ----------
+        source : dict | str
+            A source configuration
+
+        Returns
+        -------
+        mimeo_config : MimeoConfig | None
+            A parsed MimeoConfig instance
+        """
+        mimeo_config = None
+        if isinstance(source, dict):
+            mimeo_config = cls.from_dict(source)
+        elif isinstance(source, str):
+            mimeo_config = cls.parse_source(source)
+        return mimeo_config
 
     @staticmethod
     def from_dict(
