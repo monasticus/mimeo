@@ -31,6 +31,34 @@ from mimeo.logging import setup_logging
 setup_logging()
 
 
+class MimeoConfigFactory:
+    """A factory class to instantiate a MimeoConfig.
+
+    Methods
+    -------
+    from_dict(config: dict) -> MimeoConfig
+        Instantiate MimeoConfig from a dict.
+    """
+
+    @staticmethod
+    def from_dict(
+            config: dict,
+    ) -> MimeoConfig:
+        """Instantiate MimeoConfig from a dict.
+
+        Parameters
+        ----------
+        config : dict
+            A source dictionary
+
+        Returns
+        -------
+        MimeoConfig
+            A MimeoConfig instance
+        """
+        return MimeoConfig(config)
+
+
 class MimeoDTO:
     """A superclass for all Mimeo configuration DTOs.
 
