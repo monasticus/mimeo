@@ -38,7 +38,7 @@ class MimeoConfigFactory:
 
     Methods
     -------
-    parse(source: dict | str) -> MimeoConfig | None
+    parse(source: dict | str) -> MimeoConfig
         Instantiate MimeoConfig from a source configuration.
     from_dict(config: dict) -> MimeoConfig
         Instantiate MimeoConfig from a dict.
@@ -50,7 +50,7 @@ class MimeoConfigFactory:
     def parse(
             cls,
             source: dict | str,
-    ) -> MimeoConfig | None:
+    ) -> MimeoConfig:
         """Instantiate MimeoConfig from a source configuration.
 
         It uses internal methods to instantiate Mimeo Config depending on source type.
@@ -62,15 +62,13 @@ class MimeoConfigFactory:
 
         Returns
         -------
-        mimeo_config : MimeoConfig | None
+        MimeoConfig
             A parsed MimeoConfig instance
         """
-        mimeo_config = None
-        if isinstance(source, dict):
-            mimeo_config = cls.from_dict(source)
-        elif isinstance(source, str):
-            mimeo_config = cls.parse_source(source)
-        return mimeo_config
+        if isinstance(source, str):
+            source = cls.parse_source(source)
+
+        return cls.from_dict(source)
 
     @staticmethod
     def from_dict(

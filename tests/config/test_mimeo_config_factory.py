@@ -1,3 +1,4 @@
+from mimeo import MimeoConfig
 from mimeo.config import MimeoConfigFactory
 
 
@@ -515,6 +516,7 @@ def test_mimeo_config_from_dict():
     }
 
     mimeo_config = MimeoConfigFactory.from_dict(config)
+    assert isinstance(mimeo_config, MimeoConfig)
     assert str(mimeo_config) == str(config)
 
 
@@ -533,6 +535,7 @@ def test_parse_mimeo_config_from_dict():
     }
 
     mimeo_config = MimeoConfigFactory.parse(config)
+    assert isinstance(mimeo_config, MimeoConfig)
     assert str(mimeo_config) == str(config)
 
 
@@ -565,4 +568,5 @@ def test_parse_mimeo_config_from_xml_str():
     }
 
     mimeo_config = MimeoConfigFactory.parse(config_str)
+    assert isinstance(mimeo_config, MimeoConfig)
     assert str(mimeo_config) == str(expected_config)
