@@ -24,8 +24,8 @@ pip install mimeograph
 ### Mimeo Configuration
 
 Prepare Mimeo Configuration first
-- for a command line tool: in a JSON file
-- for a `Mimeograph` python class: in a `dict`
+- for a command line tool: in a JSON or XML file
+- for a `Mimeograph` python class: in a `dict` or stringified XML
 
 ```json
 {
@@ -45,6 +45,26 @@ Prepare Mimeo Configuration first
   ]
 }
 ```
+```xml
+<mimeo_configuration>
+    <_templates_>
+        <_template_>
+            <count>30</count>
+            <model>
+
+                <SomeEntity
+                    xmlns="http://mimeo.arch.com/default-namespace"
+                    xmlns:pn="http://mimeo.arch.com/prefixed-namespace">
+                    <ChildNode1>1</ChildNode1>
+                    <pn:ChildNode2>value-2</pn:ChildNode2>
+                    <ChildNode3>true</ChildNode3>
+                </SomeEntity>
+
+            </model>
+        </_template_>
+    </_templates_>
+</mimeo_configuration>
+```
 _You can find more configuration examples in the `examples` folder._
 
 ### Mimeograph
@@ -53,6 +73,7 @@ _You can find more configuration examples in the `examples` folder._
 
 ```sh
 mimeo SomeEntity-config.json
+mimeo SomeEntity-config.xml
 ```
 
 #### Python library
@@ -73,7 +94,7 @@ The Mimeo Configuration above will produce 2 files:
 <!-- mimeo-output/mimeo-output-1.xml-->
 <SomeEntity xmlns="http://mimeo.arch.com/default-namespace" xmlns:pn="http://mimeo.arch.com/prefixed-namespace">
     <ChildNode1>1</ChildNode1>
-    <ChildNode2>value-2</ChildNode2>
+    <pn:ChildNode2>value-2</pn:ChildNode2>
     <ChildNode3>true</ChildNode3>
 </SomeEntity>
 ```
@@ -81,7 +102,7 @@ The Mimeo Configuration above will produce 2 files:
 <!-- mimeo-output/mimeo-output-2.xml-->
 <SomeEntity xmlns="http://mimeo.arch.com/default-namespace" xmlns:pn="http://mimeo.arch.com/prefixed-namespace">
     <ChildNode1>1</ChildNode1>
-    <ChildNode2>value-2</ChildNode2>
+    <pn:ChildNode2>value-2</pn:ChildNode2>
     <ChildNode3>true</ChildNode3>
 </SomeEntity>
 ```
@@ -103,6 +124,20 @@ Mimeo exposes several functions for data generation that will make it more usefu
     }
   }
 }
+```
+```xml
+<_template_>
+    <count>2</count>
+    <model>
+        
+        <SomeEntity>
+            <id>{auto_increment}</id>
+            <randomstring>{random_str}</randomstring>
+            <randomint>{random_int}</randomint>
+        </SomeEntity>
+        
+    </model>
+</_template_>
 ```
 
 **XML Data**
