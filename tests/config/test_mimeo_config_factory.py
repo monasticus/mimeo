@@ -64,7 +64,7 @@ def test_parse_source_output():
         ],
     }
 
-    assert MimeoConfigFactory.parse_source(output_xml) == expected_source
+    assert MimeoConfigFactory.parse_source_from_str(output_xml) == expected_source
 
 
 def test_parse_source_config_vars():
@@ -107,7 +107,7 @@ def test_parse_source_config_vars():
         ],
     }
 
-    assert MimeoConfigFactory.parse_source(config_xml) == expected_source
+    assert MimeoConfigFactory.parse_source_from_str(config_xml) == expected_source
 
 
 def test_parse_source_templates_with_single_template():
@@ -144,7 +144,7 @@ def test_parse_source_templates_with_single_template():
         ],
     }
 
-    assert MimeoConfigFactory.parse_source(config_xml) == expected_source
+    assert MimeoConfigFactory.parse_source_from_str(config_xml) == expected_source
 
 
 def test_parse_source_templates_with_multiple_templates():
@@ -197,7 +197,7 @@ def test_parse_source_templates_with_multiple_templates():
         ],
     }
 
-    assert MimeoConfigFactory.parse_source(config_xml) == expected_source
+    assert MimeoConfigFactory.parse_source_from_str(config_xml) == expected_source
 
 
 def test_parse_source_templates_with_empty_templates():
@@ -216,7 +216,7 @@ def test_parse_source_templates_with_empty_templates():
         "_templates_": [],
     }
 
-    assert MimeoConfigFactory.parse_source(config_xml) == expected_source
+    assert MimeoConfigFactory.parse_source_from_str(config_xml) == expected_source
 
 
 def test_parse_source_templates_with_no_template_child_in_templates():
@@ -255,7 +255,7 @@ def test_parse_source_templates_with_no_template_child_in_templates():
         },
     }
 
-    assert MimeoConfigFactory.parse_source(config_xml) == expected_source
+    assert MimeoConfigFactory.parse_source_from_str(config_xml) == expected_source
 
 
 def test_parse_source_model():
@@ -288,7 +288,7 @@ def test_parse_source_model():
         ],
     }
 
-    assert MimeoConfigFactory.parse_source(model_xml) == expected_source
+    assert MimeoConfigFactory.parse_source_from_str(model_xml) == expected_source
 
 
 def test_parse_source_config_str_value():
@@ -325,7 +325,7 @@ def test_parse_source_config_str_value():
         ],
     }
 
-    assert MimeoConfigFactory.parse_source(config_xml) == expected_source
+    assert MimeoConfigFactory.parse_source_from_str(config_xml) == expected_source
 
 
 def test_parse_source_config_int_value():
@@ -362,7 +362,7 @@ def test_parse_source_config_int_value():
         ],
     }
 
-    assert MimeoConfigFactory.parse_source(config_xml) == expected_source
+    assert MimeoConfigFactory.parse_source_from_str(config_xml) == expected_source
 
 
 def test_parse_source_config_float_value():
@@ -399,7 +399,7 @@ def test_parse_source_config_float_value():
         ],
     }
 
-    assert MimeoConfigFactory.parse_source(config_xml) == expected_source
+    assert MimeoConfigFactory.parse_source_from_str(config_xml) == expected_source
 
 
 def test_parse_source_config_bool_values():
@@ -438,7 +438,7 @@ def test_parse_source_config_bool_values():
         ],
     }
 
-    assert MimeoConfigFactory.parse_source(config_xml) == expected_source
+    assert MimeoConfigFactory.parse_source_from_str(config_xml) == expected_source
 
 
 def test_parse_source_config_list_value():
@@ -477,7 +477,7 @@ def test_parse_source_config_list_value():
         ],
     }
 
-    assert MimeoConfigFactory.parse_source(config_xml) == expected_source
+    assert MimeoConfigFactory.parse_source_from_str(config_xml) == expected_source
 
 
 def test_parse_source_config_special_fields():
@@ -516,7 +516,7 @@ def test_parse_source_config_special_fields():
         ],
     }
 
-    assert MimeoConfigFactory.parse_source(config_xml) == expected_source
+    assert MimeoConfigFactory.parse_source_from_str(config_xml) == expected_source
 
 
 def test_parse_source_from_json_file():

@@ -48,7 +48,7 @@ class MimeoConfigFactory:
         Instantiate MimeoConfig from a dict.
     parse_source_from_file(config_path: str) -> dict
         Parse a Mimeo Configuration file to a source dict.
-    parse_source(source: str) -> dict
+    parse_source_from_str(source: str) -> dict
         Parse a string Mimeo Configuration to a source dict.
     """
 
@@ -72,7 +72,7 @@ class MimeoConfigFactory:
             A parsed MimeoConfig instance
         """
         if isinstance(source, str):
-            source = cls.parse_source(source)
+            source = cls.parse_source_from_str(source)
 
         return cls.from_dict(source)
 
@@ -136,11 +136,11 @@ class MimeoConfigFactory:
             if config_path.endswith(".json"):
                 config = json.load(config_file)
             elif config_path.endswith(".xml"):
-                config = cls.parse_source(config_file.read())
+                config = cls.parse_source_from_str(config_file.read())
         return config
 
     @classmethod
-    def parse_source(
+    def parse_source_from_str(
             cls,
             source: str,
     ) -> dict:
