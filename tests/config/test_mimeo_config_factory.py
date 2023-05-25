@@ -1,3 +1,7 @@
+import json
+import shutil
+from pathlib import Path
+
 from mimeo import MimeoConfig
 from mimeo.config import MimeoConfigFactory
 
@@ -518,6 +522,92 @@ def test_mimeo_config_from_dict():
     mimeo_config = MimeoConfigFactory.from_dict(config)
     assert isinstance(mimeo_config, MimeoConfig)
     assert str(mimeo_config) == str(config)
+
+
+def test_from_json_file():
+    config = {
+        "output": {
+            "direction": "file",
+            "format": "xml",
+        },
+        "_templates_": [
+            {
+                "count": 10,
+                "model": {
+                    "SomeEntity": {
+                        "ChildNode1": 1,
+                        "ChildNode2": "value-2",
+                        "ChildNode3": True,
+                    },
+                },
+            },
+        ],
+    }
+    dir_path = "test_mimeo_config_factory-dir"
+    file_path = f"{dir_path}/config.json"
+    Path(dir_path).mkdir(parents=True, exist_ok=True)
+    with Path(file_path).open("w") as file:
+        json.dump(config, file)
+
+    mimeo_config = MimeoConfigFactory.from_file(file_path)
+    assert isinstance(mimeo_config, MimeoConfig)
+    assert str(mimeo_config) == str(config)
+
+    shutil.rmtree(dir_path)
+
+
+def test_from_xml_file():
+    config = ('<?xml version="1.0" encoding="utf-8"?>\n'
+              "<mimeo_configuration>\n"
+              "    <output>\n"
+              "        <direction>file</direction>\n"
+              "        <format>xml</format>\n"
+              "    </output>\n"
+              "    <_templates_>\n"
+              "        <_template_>\n"
+              "            <count>10</count>\n"
+              "            <model>\n"
+              "\n"
+              "                <SomeEntity>\n"
+              "                    <ChildNode1>1</ChildNode1>\n"
+              "                    <ChildNode2>value-2</ChildNode2>\n"
+              "                    <ChildNode3>true</ChildNode3>\n"
+              "                </SomeEntity>\n"
+              "\n"
+              "            </model>\n"
+              "        </_template_>\n"
+              "    </_templates_>\n"
+              "</mimeo_configuration>")
+    expected_config = {
+        "output": {
+            "direction": "file",
+            "format": "xml",
+        },
+        "_templates_": [
+            {
+                "count": 10,
+                "model": {
+                    "SomeEntity": {
+                        "ChildNode1": 1,
+                        "ChildNode2": "value-2",
+                        "ChildNode3": True,
+                    },
+                },
+            },
+        ],
+    }
+
+    dir_path = "test_mimeo_config_factory-dir"
+    file_path = f"{dir_path}/config.xml"
+    Path(dir_path).mkdir(parents=True, exist_ok=True)
+    with Path(file_path).open("w") as file:
+        file.write(config)
+
+    mimeo_config = MimeoConfigFactory.from_file(file_path)
+    assert isinstance(mimeo_config, MimeoConfig)
+    assert str(mimeo_config) == str(expected_config)
+
+    shutil.rmtree(dir_path)
 
 
 def test_parse_mimeo_config_from_dict():

@@ -17,7 +17,9 @@ All of them are Data Transfer Objects:
 """
 from __future__ import annotations
 
+import json
 import re
+from pathlib import Path
 
 import xmltodict
 
@@ -69,6 +71,30 @@ class MimeoConfigFactory:
             source = cls.parse_source(source)
 
         return cls.from_dict(source)
+
+    @classmethod
+    def from_file(
+            cls,
+            config_path: str,
+    ) -> MimeoConfig:
+        """Instantiate MimeoConfig from a config file.
+
+        Parameters
+        ----------
+        config_path : str
+            A source config file path
+
+        Returns
+        -------
+        MimeoConfig
+            A MimeoConfig instance
+        """
+        with Path(config_path).open() as config_file:
+            if config_path.endswith(".json"):
+                config = json.load(config_file)
+            elif config_path.endswith(".xml"):
+                config = cls.parse_source(config_file.read())
+        return cls.from_dict(config)
 
     @staticmethod
     def from_dict(
