@@ -1,0 +1,29 @@
+<mimeo-configuration>
+    <_templates_>
+        <_template_>
+            <count>30</count>
+            <model>
+
+                <SomeEntity>
+                    <ChildNode1>
+                        <GrandChild1-1>value-1-1</GrandChild1-1>
+                    </ChildNode1>
+                    <GrandChildNodes>
+                        <GrandChild>value</GrandChild>
+                        <GrandChild>true</GrandChild>
+                        <GrandChild>1</GrandChild>
+                        <GrandChild>
+                            <GrandGrandChild1>value-1-1</GrandGrandChild1>
+                            <GrandGrandChild2>value-2-1</GrandGrandChild2>
+                        </GrandChild>
+                        <GrandChild>
+                            <GrandGrandChild1>value-1-2</GrandGrandChild1>
+                            <GrandGrandChild2>value-2-2</GrandGrandChild2>
+                        </GrandChild>
+                    </GrandChildNodes>
+                </SomeEntity>
+
+            </model>
+        </_template_>
+    </_templates_>
+</mimeo-configuration>

@@ -1,0 +1,24 @@
+<mimeo-configuration>
+    <output>
+        <direction>file</direction>
+        <format>xml</format>
+        <xml_declaration>false</xml_declaration>
+        <indent>0</indent>
+        <directory_path>mimeo-output</directory_path>
+        <file_name>mimeo-output</file_name>
+    </output>
+    <_templates_>
+        <_template_>
+            <count>30</count>
+            <model>
+
+                <SomeEntity>
+                    <ChildNode1>1</ChildNode1>
+                    <ChildNode2>value-2</ChildNode2>
+                    <ChildNode3>true</ChildNode3>
+                </SomeEntity>
+
+            </model>
+        </_template_>
+    </_templates_>
+</mimeo-configuration>
