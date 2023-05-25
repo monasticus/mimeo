@@ -4,7 +4,13 @@
     "CUSTOM_VAR_2": 1,
     "CUSTOM_VAR_3": true,
     "CUSTOM_VAR_4": "{CUSTOM_VAR_2}",
-    "CUSTOM_VAR_5": "{auto_increment('{}')}"
+    "CUSTOM_VAR_5": "{auto_increment}",
+    "CUSTOM_VAR_6": {
+      "_mimeo_util": {
+        "_name": "random_int",
+        "limit": 99
+      }
+    }
   },
   "_templates_": [
     {
@@ -16,7 +22,8 @@
           "ChildNode3": "{CUSTOM_VAR_3}",
           "ChildNode4": "{CUSTOM_VAR_4}",
           "ChildNode5": "{CUSTOM_VAR_5}",
-          "ChildNode6": "{CUSTOM_VAR_1}-with-suffix"
+          "ChildNode6": "{CUSTOM_VAR_6}",
+          "ChildNode7": "{CUSTOM_VAR_1}-with-suffix"
         }
       }
     }
