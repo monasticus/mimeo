@@ -1,4 +1,4 @@
-<mimeo-configuration>
+<mimeo_configuration>
     <_templates_>
 
         <_template_>
@@ -28,4 +28,4 @@
         </_template_>
 
     </_templates_>
-</mimeo-configuration>
+</mimeo_configuration>

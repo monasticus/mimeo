@@ -37,7 +37,7 @@ def minimum_json_config():
 @pytest.fixture(autouse=True)
 def minimum_xml_config():
     return ('<?xml version="1.0" encoding="utf-8"?>\n'
-            "<mimeo-configuration>\n"
+            "<mimeo_configuration>\n"
             "    <_templates_>\n"
             "        <_template_>\n"
             "            <count>10</count>\n"
@@ -52,7 +52,7 @@ def minimum_xml_config():
             "            </model>\n"
             "        </_template_>\n"
             "    </_templates_>\n"
-            "</mimeo-configuration>")
+            "</mimeo_configuration>")
 
 
 @pytest.fixture(autouse=True)
@@ -84,7 +84,7 @@ def default_json_config():
 @pytest.fixture(autouse=True)
 def default_xml_config():
     return ('<?xml version="1.0" encoding="utf-8"?>\n'
-            "<mimeo-configuration>\n"
+            "<mimeo_configuration>\n"
             "    <output>\n"
             "        <direction>file</direction>\n"
             "        <format>xml</format>\n"
@@ -107,7 +107,7 @@ def default_xml_config():
             "            </model>\n"
             "        </_template_>\n"
             "    </_templates_>\n"
-            "</mimeo-configuration>")
+            "</mimeo_configuration>")
 
 
 @pytest.fixture(autouse=True)
@@ -141,7 +141,7 @@ def http_json_config():
 @pytest.fixture(autouse=True)
 def http_xml_config():
     return ('<?xml version="1.0" encoding="utf-8"?>\n'
-            "<mimeo-configuration>\n"
+            "<mimeo_configuration>\n"
             "    <output>\n"
             "        <direction>http</direction>\n"
             "        <method>POST</method>\n"
@@ -166,7 +166,7 @@ def http_xml_config():
             "            </model>\n"
             "        </_template_>\n"
             "    </_templates_>\n"
-            "</mimeo-configuration>")
+            "</mimeo_configuration>")
 
 
 @pytest.fixture(autouse=True)

@@ -1,4 +1,4 @@
-<mimeo-configuration>
+<mimeo_configuration>
     <output>
         <xml_declaration>true</xml_declaration>
         <indent>4</indent>
@@ -17,4 +17,4 @@
             </model>
         </_template_>
     </_templates_>
-</mimeo-configuration>
+</mimeo_configuration>

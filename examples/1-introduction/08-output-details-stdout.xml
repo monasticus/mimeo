@@ -1,4 +1,4 @@
-<mimeo-configuration>
+<mimeo_configuration>
     <output>
         <direction>stdout</direction>
         <format>xml</format>
@@ -17,4 +17,4 @@
             </model>
         </_template_>
     </_templates_>
-</mimeo-configuration>
+</mimeo_configuration>
