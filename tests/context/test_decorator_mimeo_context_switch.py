@@ -1,14 +1,14 @@
 import pytest
 
 from mimeo.config import MimeoConfig
-from mimeo.config.mimeo_config import MimeoTemplate
+from mimeo.config.mimeo_config import MimeoConfigFactory, MimeoTemplate
 from mimeo.context import MimeoContextManager
 from mimeo.context.decorators import mimeo_context_switch
 
 
 @pytest.fixture(autouse=True)
 def default_config():
-    return MimeoConfig({
+    return MimeoConfigFactory.parse({
         "_templates_": [
             {
                 "count": 10,

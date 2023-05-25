@@ -1,6 +1,6 @@
 import pytest
 
-from mimeo.config import MimeoConfig
+from mimeo.config import MimeoConfigFactory
 from mimeo.context import MimeoContextManager
 from mimeo.database import MimeoDB
 from mimeo.database.exc import DataNotFoundError
@@ -10,7 +10,7 @@ from tests.utils import assert_throws
 
 @pytest.fixture(autouse=True)
 def default_config():
-    return MimeoConfig({
+    return MimeoConfigFactory.parse({
         "_templates_": [
             {
                 "count": 10,

@@ -1,13 +1,13 @@
 import pytest
 
-from mimeo.config import MimeoConfig
+from mimeo.config import MimeoConfigFactory
 from mimeo.context import MimeoContextManager
 from mimeo.utils.renderers import SpecialFieldsRenderer
 
 
 @pytest.fixture(autouse=True)
 def default_config():
-    return MimeoConfig({
+    return MimeoConfigFactory.parse({
         "_templates_": [
             {
                 "count": 10,

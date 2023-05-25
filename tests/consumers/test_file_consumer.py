@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pytest
 
-from mimeo.config import MimeoConfig
+from mimeo.config import MimeoConfigFactory
 from mimeo.consumers import ConsumerFactory
 from mimeo.context import MimeoContextManager
 from mimeo.generators import GeneratorFactory
@@ -34,7 +34,7 @@ async def test_consume():
             },
         ],
     }
-    mimeo_config = MimeoConfig(config)
+    mimeo_config = MimeoConfigFactory.parse(config)
     consumer = ConsumerFactory.get_consumer(mimeo_config)
     assert consumer.directory == "test_file_consumer-dir"
     assert consumer.output_path_tmplt == "test_file_consumer-dir/test-output-{}.xml"

@@ -2,7 +2,7 @@ from datetime import date, timedelta
 
 import pytest
 
-from mimeo.config import MimeoConfig
+from mimeo.config import MimeoConfigFactory
 from mimeo.context import MimeoContextManager
 from mimeo.context.exc import VarNotFoundError
 from mimeo.utils import MimeoRenderer
@@ -12,7 +12,7 @@ from tests.utils import assert_throws
 
 @pytest.fixture(autouse=True)
 def default_config():
-    return MimeoConfig({
+    return MimeoConfigFactory.parse({
         "vars": {
             "CUSTOM_VAR_1": 2,
             "CUSTOM_VAR_2": "{CUSTOM_VAR_1}",
@@ -232,7 +232,7 @@ def test_util_parametrized_using_variable(default_config):
 
 
 def test_vars_str():
-    config = MimeoConfig({
+    config = MimeoConfigFactory.parse({
         "vars": {
             "CUSTOM_VAR_1": "custom-value-1",
         },
@@ -244,7 +244,7 @@ def test_vars_str():
 
 
 def test_vars_int():
-    config = MimeoConfig({
+    config = MimeoConfigFactory.parse({
         "vars": {
             "CUSTOM_VAR_1": 1,
         },
@@ -256,7 +256,7 @@ def test_vars_int():
 
 
 def test_vars_bool():
-    config = MimeoConfig({
+    config = MimeoConfigFactory.parse({
         "vars": {
             "CUSTOM_VAR_1": True,
         },
@@ -268,7 +268,7 @@ def test_vars_bool():
 
 
 def test_vars_pointing_to_var():
-    config = MimeoConfig({
+    config = MimeoConfigFactory.parse({
         "vars": {
             "CUSTOM_VAR_1": "custom-value-1",
             "CUSTOM_VAR_2": "{CUSTOM_VAR_1}",
@@ -284,7 +284,7 @@ def test_vars_pointing_to_var():
                msg="Provided variable [{var}] is not defined!",
                var="NON_EXISTING_VAR")
 def test_vars_pointing_to_non_existing_var():
-    config = MimeoConfig({
+    config = MimeoConfigFactory.parse({
         "vars": {
             "CUSTOM_VAR_1": "{NON_EXISTING_VAR}",
         },
@@ -295,7 +295,7 @@ def test_vars_pointing_to_non_existing_var():
 
 
 def test_vars_pointing_to_funct():
-    config = MimeoConfig({
+    config = MimeoConfigFactory.parse({
         "vars": {
             "CUSTOM_VAR_1": {
                 "_mimeo_util": {
@@ -318,7 +318,7 @@ def test_vars_pointing_to_funct():
                    "for the pattern parameter and was: [{pattern}].",
                pattern=1)
 def test_vars_pointing_to_invalid_funct():
-    config = MimeoConfig({
+    config = MimeoConfigFactory.parse({
         "vars": {
             "CUSTOM_VAR_1": {
                 "_mimeo_util": {
@@ -336,7 +336,7 @@ def test_vars_pointing_to_invalid_funct():
 
 
 def test_vars_as_partial_values_single_beginning():
-    config = MimeoConfig({
+    config = MimeoConfigFactory.parse({
         "vars": {
             "URI_PREFIX": "/data",
         },
@@ -348,7 +348,7 @@ def test_vars_as_partial_values_single_beginning():
 
 
 def test_vars_as_partial_values_single_middle():
-    config = MimeoConfig({
+    config = MimeoConfigFactory.parse({
         "vars": {
             "FILE_NAME": "/1",
         },
@@ -360,7 +360,7 @@ def test_vars_as_partial_values_single_middle():
 
 
 def test_vars_as_partial_values_single_end():
-    config = MimeoConfig({
+    config = MimeoConfigFactory.parse({
         "vars": {
             "URI_SUFFIX": ".xml",
         },
@@ -372,7 +372,7 @@ def test_vars_as_partial_values_single_end():
 
 
 def test_vars_as_partial_values_repeated():
-    config = MimeoConfig({
+    config = MimeoConfigFactory.parse({
         "vars": {
             "FILE_NAME": "/1",
         },
@@ -384,7 +384,7 @@ def test_vars_as_partial_values_repeated():
 
 
 def test_vars_as_partial_values_multiple():
-    config = MimeoConfig({
+    config = MimeoConfigFactory.parse({
         "vars": {
             "URI_PREFIX": "/data",
             "URI_SUFFIX": ".xml",
@@ -397,7 +397,7 @@ def test_vars_as_partial_values_multiple():
 
 
 def test_vars_as_partial_values_str():
-    config = MimeoConfig({
+    config = MimeoConfigFactory.parse({
         "vars": {
             "URI_PREFIX": "/data",
         },
@@ -409,7 +409,7 @@ def test_vars_as_partial_values_str():
 
 
 def test_vars_as_partial_values_int():
-    config = MimeoConfig({
+    config = MimeoConfigFactory.parse({
         "vars": {
             "NUM": 1,
         },
@@ -421,7 +421,7 @@ def test_vars_as_partial_values_int():
 
 
 def test_vars_as_partial_values_bool():
-    config = MimeoConfig({
+    config = MimeoConfigFactory.parse({
         "vars": {
             "VALIDATED": True,
         },

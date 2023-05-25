@@ -16,5 +16,5 @@ config = {
     }
   ]
 }
-mimeo_config = MimeoConfig(config)
+mimeo_config = MimeoConfigFactory.parse(config)
 Mimeograph(mimeo_config).process()

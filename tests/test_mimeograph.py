@@ -4,7 +4,7 @@ from pathlib import Path
 import pytest
 
 from mimeo import Mimeograph
-from mimeo.config import MimeoConfig
+from mimeo.config import MimeoConfigFactory
 from mimeo.context import MimeoContextManager
 
 
@@ -39,7 +39,7 @@ async def test_produce():
             },
         ],
     }
-    mimeo_config = MimeoConfig(config)
+    mimeo_config = MimeoConfigFactory.parse(config)
     with MimeoContextManager(mimeo_config):
         mimeo = Mimeograph(mimeo_config)
 

@@ -3,7 +3,7 @@ from io import StringIO
 
 import pytest
 
-from mimeo.config import MimeoConfig
+from mimeo.config import MimeoConfigFactory
 from mimeo.consumers import ConsumerFactory
 from mimeo.context import MimeoContextManager
 from mimeo.generators import GeneratorFactory
@@ -31,7 +31,7 @@ async def test_consume():
             },
         ],
     }
-    mimeo_config = MimeoConfig(config)
+    mimeo_config = MimeoConfigFactory.parse(config)
     consumer = ConsumerFactory.get_consumer(mimeo_config)
 
     with MimeoContextManager(mimeo_config):

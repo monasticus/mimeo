@@ -4,6 +4,8 @@ This package provides the Mimeo functionality with the highest level
 class together with the Mimeo Configuration class:
 * MimeoConfig
     A class representing Mimeo Configuration.
+* MimeoConfigFactory
+    A factory class to instantiate a MimeoConfig.
 * Mimeograph
     A class responsible for the Mimeo processing.
 
@@ -45,8 +47,8 @@ To use this package, simply import the desired classes:
 """
 from __future__ import annotations
 
-from .config import MimeoConfig
+from .config import MimeoConfig, MimeoConfigFactory
 from .mimeo import Mimeograph
 
 __version__ = "0.6.0"
-__all__ = ["MimeoConfig", "Mimeograph"]
+__all__ = ["MimeoConfig", "MimeoConfigFactory", "Mimeograph"]
