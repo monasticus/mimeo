@@ -7,7 +7,6 @@ It exports a single class:
 from __future__ import annotations
 
 import asyncio
-import json
 import logging
 from argparse import Namespace
 from os import walk
@@ -16,7 +15,6 @@ from pathlib import Path
 from mimeo import MimeoConfig, Mimeograph
 from mimeo.cli import MimeoArgumentParser, MimeoConfigParser
 from mimeo.cli.exc import PathNotFoundError
-from mimeo.config import MimeoConfigFactory
 
 logger = logging.getLogger(__name__)
 
@@ -96,9 +94,11 @@ class MimeoJob:
             if Path(file_path).is_dir():
                 for dir_path, _, file_names in walk(file_path):
                     for file_name in file_names:
-                        file_paths.append(Path(f"{dir_path}/{file_name}"))
+                        path = Path(f"{dir_path}/{file_name}")
+                        file_paths.append(str(path))
             elif Path(file_path).is_file():
-                file_paths.append(Path(file_path))
+                path = Path(file_path)
+                file_paths.append(str(path))
             else:
                 raise PathNotFoundError(file_path)
         return file_paths
@@ -133,17 +133,5 @@ class MimeoJob:
         EnvironmentNotFoundError
             If the http environment is not defined in the environments file
         """
-        config = cls._get_dict_config(config_path)
-        mimeo_config_parser = MimeoConfigParser(config, args)
+        mimeo_config_parser = MimeoConfigParser(config_path, args)
         return mimeo_config_parser.parse_config()
-
-    @staticmethod
-    def _get_dict_config(
-            config_path: str,
-    ) -> dict:
-        """Load configuration file to a dictionary."""
-        logger.info("Reading Mimeo Configuration: %s", config_path)
-        with Path(config_path).open() as config_file:
-            if str(config_path).endswith(".json"):
-                return json.load(config_file)
-            return MimeoConfigFactory.parse_source(config_file.read())

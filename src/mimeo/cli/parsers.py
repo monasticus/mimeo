@@ -273,19 +273,19 @@ class MimeoConfigParser:
 
     def __init__(
             self,
-            config: dict,
+            config_path: str,
             args: Namespace,
     ):
         """Initialize MimeoConfigParser class.
 
         Parameters
         ----------
-        config: dict
-            A source config dictionary
+        config_path: str
+            A source config path
         args: Namespace
             Arguments parsed by MimeoArgumentParser
         """
-        self._raw_config = config
+        self._raw_config = MimeoConfigFactory.parse_source_from_file(config_path)
         self._args = args
 
     def parse_config(

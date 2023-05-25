@@ -42,10 +42,14 @@ class MimeoConfigFactory:
     -------
     parse(source: dict | str) -> MimeoConfig
         Instantiate MimeoConfig from a source configuration.
+    from_file(config_path: str) -> MimeoConfig
+        Instantiate MimeoConfig from a config file.
     from_dict(config: dict) -> MimeoConfig
         Instantiate MimeoConfig from a dict.
+    parse_source_from_file(config_path: str) -> dict
+        Parse a Mimeo Configuration file to a source dict.
     parse_source(source: str) -> dict
-        Parse a string Mimeo Configuration to source dict.
+        Parse a string Mimeo Configuration to a source dict.
     """
 
     @classmethod
@@ -89,11 +93,7 @@ class MimeoConfigFactory:
         MimeoConfig
             A MimeoConfig instance
         """
-        with Path(config_path).open() as config_file:
-            if config_path.endswith(".json"):
-                config = json.load(config_file)
-            elif config_path.endswith(".xml"):
-                config = cls.parse_source(config_file.read())
+        config = cls.parse_source_from_file(config_path)
         return cls.from_dict(config)
 
     @staticmethod
@@ -115,11 +115,36 @@ class MimeoConfigFactory:
         return MimeoConfig(config)
 
     @classmethod
+    def parse_source_from_file(
+            cls,
+            config_path: str,
+    ) -> MimeoConfig:
+        """Parse a Mimeo Configuration file to a source dict.
+
+        Parameters
+        ----------
+        config_path : str
+            A source config file path
+
+        Returns
+        -------
+        dict
+            A parsed source Mimeo Configuration ready to be used in MimeoConfig
+            initialization.
+        """
+        with Path(config_path).open() as config_file:
+            if config_path.endswith(".json"):
+                config = json.load(config_file)
+            elif config_path.endswith(".xml"):
+                config = cls.parse_source(config_file.read())
+        return config
+
+    @classmethod
     def parse_source(
             cls,
             source: str,
     ) -> dict:
-        """Parse a source Mimeo Configuration to dict.
+        """Parse a string Mimeo Configuration to a source dict.
 
         Parameters
         ----------
