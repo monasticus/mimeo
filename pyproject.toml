@@ -146,6 +146,9 @@ max-complexity = 10
 "src/mimeo/utils/mimeo_utils.py" = [
     "ARG002" # ignore unexpected keyword arguments
 ]
+"tests/cli/test_mimeo_cli.py" = [
+    "PLR0913" # allow for many function arguments in setup with fixtures
+]
 "tests/utils/test_mimeo_util.py" = [
     "N802" # the test scenario requires uppercased function name
 ]

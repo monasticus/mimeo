@@ -132,15 +132,17 @@ class MimeoJob:
         EnvironmentNotFoundError
             If the http environment is not defined in the environments file
         """
-        config = cls._get_raw_config(config_path)
+        config = cls._get_dict_config(config_path)
         mimeo_config_parser = MimeoConfigParser(config, args)
         return mimeo_config_parser.parse_config()
 
     @staticmethod
-    def _get_raw_config(
+    def _get_dict_config(
             config_path: str,
     ) -> dict:
         """Load configuration file to a dictionary."""
         logger.info("Reading Mimeo Configuration: %s", config_path)
         with Path(config_path).open() as config_file:
-            return json.load(config_file)
+            if str(config_path).endswith(".json"):
+                return json.load(config_file)
+            return MimeoConfig.parse_source(config_file.read())

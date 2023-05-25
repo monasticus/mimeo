@@ -20,32 +20,6 @@
           "#text": "atomic-value"
         }
       }
-    },
-    {
-      "count": 30,
-      "model": {
-        "SomeEntityWithChildrenNodesInArray": {
-          "@xmlns": "http://mimeo.arch.com/default-namespace",
-          "@xmlns:pn": "http://mimeo.arch.com/prefixed-namespace",
-          "#text": [
-            {
-              "pn:ChildNode" : {
-                "pn:GrandChildNode": 1
-              }
-            },
-            {
-              "pn:ChildNode" : {
-                "pn:GrandChildNode": "value-2"
-              }
-            },
-            {
-              "pn:ChildNode" : {
-                "pn:GrandChildNode": true
-              }
-            }
-          ]
-        }
-      }
     }
   ]
 }

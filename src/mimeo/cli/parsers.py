@@ -279,9 +279,9 @@ class MimeoConfigParser:
 
         Parameters
         ----------
-        config:
+        config: dict
             A source config dictionary
-        args
+        args: Namespace
             Arguments parsed by MimeoArgumentParser
         """
         self._raw_config = config

@@ -17,7 +17,7 @@ from tests.utils import assert_throws
 
 
 @pytest.fixture(autouse=True)
-def minimum_config():
+def minimum_json_config():
     return {
         "_templates_": [
             {
@@ -35,7 +35,7 @@ def minimum_config():
 
 
 @pytest.fixture(autouse=True)
-def default_config():
+def default_json_config():
     return {
         "output": {
             "direction": "file",
@@ -61,7 +61,36 @@ def default_config():
 
 
 @pytest.fixture(autouse=True)
-def http_config():
+def default_xml_config():
+    return ('<?xml version="1.0" encoding="utf-8"?>\n'
+            "<mimeo-configuration>\n"
+            "    <output>\n"
+            "        <direction>file</direction>\n"
+            "        <format>xml</format>\n"
+            "        <indent>4</indent>\n"
+            "        <xml_declaration>true</xml_declaration>\n"
+            "        <directory_path>test_mimeo_cli-dir/output</directory_path>\n"
+            "        <file_name>output-file</file_name>\n"
+            "    </output>\n"
+            "    <_templates_>\n"
+            "        <_template_>\n"
+            "            <count>30</count>\n"
+            "            <model>\n"
+            "\n"
+            "                <SomeEntity>\n"
+            "                    <ChildNode1>1</ChildNode1>\n"
+            "                    <ChildNode2>value-2</ChildNode2>\n"
+            "                    <ChildNode3>true</ChildNode3>\n"
+            "                </SomeEntity>\n"
+            "\n"
+            "            </model>\n"
+            "        </_template_>\n"
+            "    </_templates_>\n"
+            "</mimeo-configuration>")
+
+
+@pytest.fixture(autouse=True)
+def http_json_config():
     return {
         "output": {
             "direction": "http",
@@ -116,20 +145,23 @@ def http_custom_envs():
 
 @pytest.fixture(autouse=True)
 def _setup_and_teardown(
-        minimum_config,
-        default_config,
-        http_config,
+        minimum_json_config,
+        default_json_config,
+        default_xml_config,
+        http_json_config,
         http_default_envs,
         http_custom_envs,
 ):
     # Setup
     Path("test_mimeo_cli-dir").mkdir(parents=True, exist_ok=True)
     with Path("test_mimeo_cli-dir/minimum-config.json").open("w") as file:
-        json.dump(minimum_config, file)
+        json.dump(minimum_json_config, file)
     with Path("test_mimeo_cli-dir/default-config.json").open("w") as file:
-        json.dump(default_config, file)
+        json.dump(default_json_config, file)
+    with Path("test_mimeo_cli-dir/default-config.xml").open("w") as file:
+        file.write(default_xml_config)
     with Path("test_mimeo_cli-dir/http-config.json").open("w") as file:
-        json.dump(http_config, file)
+        json.dump(http_json_config, file)
     with Path("mimeo.envs.json").open("w") as file:
         json.dump(http_default_envs, file)
     with Path("custom-mimeo-envs-file.json").open("w") as file:
@@ -149,8 +181,29 @@ def _setup_and_teardown(
         Path("mimeo-output").rmdir()
 
 
-def test_file_path():
+def test_file_path_json():
     sys.argv = ["mimeo", "test_mimeo_cli-dir/default-config.json"]
+
+    assert not Path("test_mimeo_cli-dir/output").exists()
+
+    mimeo_cli.main()
+
+    assert Path("test_mimeo_cli-dir/output").exists()
+    for i in range(1, 11):
+        file_path = f"test_mimeo_cli-dir/output/output-file-{i}.xml"
+        assert Path(file_path).exists()
+
+        with Path(file_path).open() as file_content:
+            assert file_content.readline() == '<?xml version="1.0" encoding="utf-8"?>\n'
+            assert file_content.readline() == "<SomeEntity>\n"
+            assert file_content.readline() == "    <ChildNode1>1</ChildNode1>\n"
+            assert file_content.readline() == "    <ChildNode2>value-2</ChildNode2>\n"
+            assert file_content.readline() == "    <ChildNode3>true</ChildNode3>\n"
+            assert file_content.readline() == "</SomeEntity>\n"
+
+
+def test_file_path_xml():
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/default-config.xml"]
 
     assert not Path("test_mimeo_cli-dir/output").exists()
 
