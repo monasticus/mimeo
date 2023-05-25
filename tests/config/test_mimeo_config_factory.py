@@ -260,18 +260,32 @@ def test_parse_source_templates_with_no_template_child_in_templates():
 
 def test_parse_source_model():
     model_xml = """
-    <model>
-        <context>My Context</context>
-        <SomeEntity>
-            <ChildNode>false</ChildNode>
-        </SomeEntity>
-    </model>
+    <mimeo_configuration>
+        <_templates_>
+            <_template_>
+                <count>5</count>
+                <model>
+                    <context>My Context</context>
+                    <SomeEntity>
+                        <ChildNode>false</ChildNode>
+                    </SomeEntity>
+                </model>
+            </_template_>
+        </_templates_>
+    </mimeo_configuration>
     """
     expected_source = {
-        "context": "My Context",
-        "SomeEntity": {
-            "ChildNode": False,
-        },
+        "_templates_": [
+            {
+                "count": 5,
+                "model": {
+                    "context": "My Context",
+                    "SomeEntity": {
+                        "ChildNode": False,
+                    },
+                },
+            },
+        ],
     }
 
     assert MimeoConfigFactory.parse_source(model_xml) == expected_source
