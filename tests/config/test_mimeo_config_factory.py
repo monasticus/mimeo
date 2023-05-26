@@ -630,7 +630,7 @@ def test_from_json_file():
     with Path(file_path).open("w") as file:
         json.dump(config, file)
 
-    mimeo_config = MimeoConfigFactory.from_file(file_path)
+    mimeo_config = MimeoConfigFactory.parse(file_path)
     assert isinstance(mimeo_config, MimeoConfig)
     assert str(mimeo_config) == str(config)
 
@@ -684,7 +684,7 @@ def test_from_xml_file():
     with Path(file_path).open("w") as file:
         file.write(config)
 
-    mimeo_config = MimeoConfigFactory.from_file(file_path)
+    mimeo_config = MimeoConfigFactory.parse(file_path)
     assert isinstance(mimeo_config, MimeoConfig)
     assert str(mimeo_config) == str(expected_config)
 
@@ -705,7 +705,7 @@ def test_mimeo_config_from_dict():
         ],
     }
 
-    mimeo_config = MimeoConfigFactory.from_dict(config)
+    mimeo_config = MimeoConfigFactory.parse(config)
     assert isinstance(mimeo_config, MimeoConfig)
     assert str(mimeo_config) == str(config)
 

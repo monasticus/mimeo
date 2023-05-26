@@ -43,11 +43,7 @@ class MimeoConfigFactory:
     parse(source: dict | str) -> MimeoConfig
         Instantiate MimeoConfig from a source configuration.
     parse_source(source: str) -> dict
-        Parse a Mimeo Configuration to source dict.
-    from_file(config_path: str) -> MimeoConfig
-        Instantiate MimeoConfig from a config file.
-    from_dict(config: dict) -> MimeoConfig
-        Instantiate MimeoConfig from a dict.
+        Parse a Mimeo Configuration to a source dict.
     """
 
     @classmethod
@@ -72,14 +68,14 @@ class MimeoConfigFactory:
         if isinstance(source, str):
             source = cls.parse_source(source)
 
-        return cls.from_dict(source)
+        return MimeoConfig(source)
 
     @classmethod
     def parse_source(
             cls,
             source: str,
     ) -> dict:
-        """Parse a Mimeo Configuration to source dict.
+        """Parse a Mimeo Configuration to a source dict.
 
         It uses internal methods to parse Mimeo Configuration depending on source value.
 
@@ -99,44 +95,6 @@ class MimeoConfigFactory:
         else:
             source = cls._parse_source_from_str(source)
         return source
-
-    @classmethod
-    def from_file(
-            cls,
-            config_path: str,
-    ) -> MimeoConfig:
-        """Instantiate MimeoConfig from a config file.
-
-        Parameters
-        ----------
-        config_path : str
-            A source config file path
-
-        Returns
-        -------
-        MimeoConfig
-            A MimeoConfig instance
-        """
-        config = cls.parse_source(config_path)
-        return cls.from_dict(config)
-
-    @staticmethod
-    def from_dict(
-            config: dict,
-    ) -> MimeoConfig:
-        """Instantiate MimeoConfig from a dict.
-
-        Parameters
-        ----------
-        config : dict
-            A source dictionary
-
-        Returns
-        -------
-        MimeoConfig
-            A MimeoConfig instance
-        """
-        return MimeoConfig(config)
 
     @staticmethod
     def _is_file_path(

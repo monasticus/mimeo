@@ -82,8 +82,12 @@ mimeo SomeEntity-config.xml
 from mimeo import MimeoConfigFactory, Mimeograph
 
 config = {
-    # Your configuration
+    # Your configuration in a dict
 }
+config = """
+    Your configuration in a stringified XML node
+"""
+config = ""  # A file path to your configuration (JSON / XML)
 mimeo_config = MimeoConfigFactory.parse(config)
 Mimeograph(mimeo_config).process()
 ```
@@ -165,8 +169,8 @@ Mimeo exposes several functions for data generation that will make it more usefu
 
 When using Mimeo command line tool you can overwrite Mimeo Configuration properties:
 
-| Short option | Long option         | Description                                                                  |
-|:------------:|:--------------------|:-----------------------------------------------------------------------------|
+| Short option | Long option         | Description                                                          |
+|:------------:|:--------------------|:---------------------------------------------------------------------|
 |     `-o`     | `--output`          | overwrite the `output/direction` property                            |
 |     `-x`     | `--xml-declaration` | overwrite the `output/xml_declaration` property                      |
 |     `-i`     | `--indent`          | overwrite the `output/indent` property                               |
@@ -180,7 +184,7 @@ When using Mimeo command line tool you can overwrite Mimeo Configuration propert
 |              | `--http-method`     | overwrite the `output/method` property                               |
 |              | `--http-protocol`   | overwrite the `output/protocol` property                             |
 |     `-e`     | `--http-env`        | overwrite the output http properties using a mimeo env configuration |
-|              | `--http-envs-file`  | use a custom environments file (by default: mimeo.envs.json)                 |
+|              | `--http-envs-file`  | use a custom environments file (by default: mimeo.envs.json)         |
 
 #### Logging arguments
 
