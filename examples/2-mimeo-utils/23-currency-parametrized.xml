@@ -1,0 +1,71 @@
+<mimeo_configuration>
+    <_templates_>
+        <_template_>
+            <count>30</count>
+            <model>
+
+                <SomeEntity>
+                    <UniqueCurrencyCode>
+                        <_mimeo_util>
+                            <_name>currency</_name>
+                            <unique>true</unique>
+                        </_mimeo_util>
+                    </UniqueCurrencyCode>
+                    <CurrencyCodeForCountryISO2>
+                        <_mimeo_util>
+                            <_name>currency</_name>
+                            <country>GB</country>
+                        </_mimeo_util>
+                    </CurrencyCodeForCountryISO2>
+                    <CurrencyCodeForCountryISO3>
+                        <_mimeo_util>
+                            <_name>currency</_name>
+                            <country>GBR</country>
+                        </_mimeo_util>
+                    </CurrencyCodeForCountryISO3>
+                    <CurrencyCodeForCountryName>
+                        <_mimeo_util>
+                            <_name>currency</_name>
+                            <country>United Kingdom</country>
+                        </_mimeo_util>
+                    </CurrencyCodeForCountryName>
+                    <CurrencyName>
+                        <_mimeo_util>
+                            <_name>currency</_name>
+                            <value>name</value>
+                        </_mimeo_util>
+                    </CurrencyName>
+                    <UniqueCurrencyName>
+                        <_mimeo_util>
+                            <_name>currency</_name>
+                            <value>name</value>
+                            <unique>true</unique>
+                        </_mimeo_util>
+                    </UniqueCurrencyName>
+                    <CurrencyNameForCountryISO2>
+                        <_mimeo_util>
+                            <_name>currency</_name>
+                            <value>name</value>
+                            <country>GB</country>
+                        </_mimeo_util>
+                    </CurrencyNameForCountryISO2>
+                    <CurrencyNameForCountryISO3>
+                        <_mimeo_util>
+                            <_name>currency</_name>
+                            <value>name</value>
+                            <country>GBR</country>
+                        </_mimeo_util>
+                    </CurrencyNameForCountryISO3>
+                    <CurrencyNameForCountryName>
+                        <_mimeo_util>
+                            <_name>currency</_name>
+                            <value>name</value>
+                            <country>United Kingdom</country>
+                        </_mimeo_util>
+                    </CurrencyNameForCountryName>
+                </SomeEntity>
+
+            </model>
+        </_template_>
+    </_templates_>
+</mimeo_configuration>

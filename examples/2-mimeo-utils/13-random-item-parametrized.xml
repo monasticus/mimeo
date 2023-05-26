@@ -1,0 +1,21 @@
+<mimeo_configuration>
+    <_templates_>
+        <_template_>
+            <count>30</count>
+            <model>
+
+                <SomeEntity>
+                    <ID>
+                        <_mimeo_util>
+                            <_name>random_item</_name>
+                            <items>value</items>
+                            <items>1</items>
+                            <items>true</items>
+                        </_mimeo_util>
+                    </ID>
+                </SomeEntity>
+
+            </model>
+        </_template_>
+    </_templates_>
+</mimeo_configuration>

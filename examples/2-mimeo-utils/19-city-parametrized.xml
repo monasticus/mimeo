@@ -1,0 +1,44 @@
+<mimeo_configuration>
+    <_templates_>
+        <_template_>
+            <count>30</count>
+            <model>
+
+                <SomeEntity>
+                    <CityWithDuplicates>
+                        <_mimeo_util>
+                            <_name>city</_name>
+                            <unique>false</unique>
+                        </_mimeo_util>
+                    </CityWithDuplicates>
+                    <CityOfCountryName>
+                        <_mimeo_util>
+                            <_name>city</_name>
+                            <country>United Kingdom</country>
+                        </_mimeo_util>
+                    </CityOfCountryName>
+                    <CityOfCountryISO2>
+                        <_mimeo_util>
+                            <_name>city</_name>
+                            <country>GB</country>
+                        </_mimeo_util>
+                    </CityOfCountryISO2>
+                    <CityOfCountryISO3>
+                        <_mimeo_util>
+                            <_name>city</_name>
+                            <country>GBR</country>
+                        </_mimeo_util>
+                    </CityOfCountryISO3>
+                    <CityOfCountryWithDuplicates>
+                        <_mimeo_util>
+                            <_name>city</_name>
+                            <country>United Kingdom</country>
+                            <unique>false</unique>
+                        </_mimeo_util>
+                    </CityOfCountryWithDuplicates>
+                </SomeEntity>
+
+            </model>
+        </_template_>
+    </_templates_>
+</mimeo_configuration>

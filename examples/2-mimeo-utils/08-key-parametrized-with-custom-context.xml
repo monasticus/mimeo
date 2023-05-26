@@ -1,0 +1,51 @@
+<mimeo_configuration>
+    <_templates_>
+        <_template_>
+            <count>30</count>
+            <model>
+                <context>SomeEntity_1</context>
+
+                <SomeEntity>
+                    <ID>{key}</ID>
+                </SomeEntity>
+
+            </model>
+        </_template_>
+        <_template_>
+            <count>30</count>
+            <model>
+                <context>SomeEntity_2</context>
+
+                <SomeEntity>
+                    <ID>{key}</ID>
+                    <LinkedEntity>
+                        <_mimeo_util>
+                            <_name>key</_name>
+                            <context>SomeEntity_1</context>
+                            <iteration>3</iteration>
+                        </_mimeo_util>
+                    </LinkedEntity>
+                </SomeEntity>
+
+            </model>
+        </_template_>
+        <_template_>
+            <count>30</count>
+            <model>
+                <context>SomeEntity_3</context>
+
+                <SomeEntity>
+                    <ID>{key}</ID>
+                    <LinkedEntity>
+                        <_mimeo_util>
+                            <_name>key</_name>
+                            <context>SomeEntity_1</context>
+                            <iteration>{curr_iter}</iteration>
+                        </_mimeo_util>
+                    </LinkedEntity>
+                </SomeEntity>
+
+            </model>
+        </_template_>
+    </_templates_>
+</mimeo_configuration>

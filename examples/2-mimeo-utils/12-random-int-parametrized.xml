@@ -1,0 +1,32 @@
+<mimeo_configuration>
+    <_templates_>
+        <_template_>
+            <count>30</count>
+            <model>
+
+                <SomeEntity>
+                    <IDBetween0And100Inclusive>
+                        <_mimeo_util>
+                            <_name>random_int</_name>
+                            <start>0</start>
+                        </_mimeo_util>
+                    </IDBetween0And100Inclusive>
+                    <IDBetween1And25Inclusive>
+                        <_mimeo_util>
+                            <_name>random_int</_name>
+                            <limit>25</limit>
+                        </_mimeo_util>
+                    </IDBetween1And25Inclusive>
+                    <IDBetween0And25Inclusive>
+                        <_mimeo_util>
+                            <_name>random_int</_name>
+                            <start>0</start>
+                            <limit>25</limit>
+                        </_mimeo_util>
+                    </IDBetween0And25Inclusive>
+                </SomeEntity>
+
+            </model>
+        </_template_>
+    </_templates_>
+</mimeo_configuration>

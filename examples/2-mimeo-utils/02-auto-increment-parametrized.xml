@@ -1,0 +1,19 @@
+<mimeo_configuration>
+    <_templates_>
+        <_template_>
+            <count>30</count>
+            <model>
+
+                <SomeEntity>
+                    <ID>
+                        <_mimeo_util>
+                            <_name>auto_increment</_name>
+                            <pattern>MY_ID_{:010d}</pattern>
+                        </_mimeo_util>
+                    </ID>
+                </SomeEntity>
+
+            </model>
+        </_template_>
+    </_templates_>
+</mimeo_configuration>

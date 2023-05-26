@@ -1,0 +1,50 @@
+<mimeo_configuration>
+    <_templates_>
+        <_template_>
+            <count>30</count>
+            <model>
+
+                <SomeEntity>
+                    <FirstNameWithDuplicates>
+                        <_mimeo_util>
+                            <_name>first_name</_name>
+                            <unique>false</unique>
+                        </_mimeo_util>
+                    </FirstNameWithDuplicates>
+                    <MaleFirstName1>
+                        <_mimeo_util>
+                            <_name>first_name</_name>
+                            <sex>M</sex>
+                        </_mimeo_util>
+                    </MaleFirstName1>
+                    <MaleFirstName2>
+                        <_mimeo_util>
+                            <_name>first_name</_name>
+                            <sex>Male</sex>
+                        </_mimeo_util>
+                    </MaleFirstName2>
+                    <FemaleFirstName1>
+                        <_mimeo_util>
+                            <_name>first_name</_name>
+                            <sex>F</sex>
+                        </_mimeo_util>
+                    </FemaleFirstName1>
+                    <FemaleFirstName2>
+                        <_mimeo_util>
+                            <_name>first_name</_name>
+                            <sex>Female</sex>
+                        </_mimeo_util>
+                    </FemaleFirstName2>
+                    <MaleFirstNameWithDuplicates>
+                        <_mimeo_util>
+                            <_name>first_name</_name>
+                            <sex>M</sex>
+                            <unique>false</unique>
+                        </_mimeo_util>
+                    </MaleFirstNameWithDuplicates>
+                </SomeEntity>
+
+            </model>
+        </_template_>
+    </_templates_>
+</mimeo_configuration>
