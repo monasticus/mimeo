@@ -270,8 +270,10 @@ class MimeoConfigFactory:
         """Parse a dict value.
 
         This method parses all dict values. Additionally, it applies a specific logic
-        for Mimeo Templates. As XML Mimeo Configuration needs a template node in
-        templates, it assigns them to the "_templates_" key (moves one level up).
+        for Mimeo Templates and random_item Mimeo Util. As XML Mimeo Configuration needs
+        a template node in templates, it assigns them to the "_templates_" key (moves
+        one level up). Similar modification is made for items of the random_item Mimeo
+        Util.
         Since XML tag cannot use curly brackets, there's also a modification made for
         special fields. In XML Mimeo Configuration we use <:SpecialField:> and in dict
         it needs to be changed to "{:SpecialField:}".
@@ -303,6 +305,57 @@ class MimeoConfigFactory:
             'SomeField5': 'value',
         }
 
+        MimeoDTO._parse_dict_source_value({
+            ':SomeField1:': 'true',
+            'SomeField2': '{:SomeField1:}'
+        })
+        -> {
+            '{:SomeField1:}': 'true',
+            'SomeField2': '{:SomeField1:}'
+        }
+        """
+        keys_mapping = {}
+        for key, value in source_node.items():
+            if key == cc.TEMPLATES_KEY:
+                cls._flatten_list(
+                    source_node,
+                    cc.TEMPLATES_KEY,
+                    cc.TEMPLATES_XML_TEMPLATE_TAG)
+            elif (key == cc.MODEL_MIMEO_UTIL_KEY and
+                  value is not None and
+                  value.get(cc.MODEL_MIMEO_UTIL_NAME_KEY) == "random_item"):
+                cls._flatten_list(
+                    source_node[key],
+                    "items",
+                    "item")
+            else:
+                source_node[key] = cls._parse_source_values(value)
+
+            keys_mapping[key] = cls._get_key_mapping(key)
+
+        cls._map_keys(keys_mapping, source_node)
+        return source_node
+
+    @classmethod
+    def _flatten_list(
+            cls,
+            source_node: str | dict | list,
+            key: str,
+            child_key: str,
+    ):
+        """Move child node value one level up to a list.
+
+        Parameters
+        ----------
+        source_node : str | dict | list
+            An XML Mimeo Configuration's node
+        key : str
+            A parent key to being reassigned
+        child_key : str
+            A child key to take value from
+
+        Examples
+        --------
         MimeoDTO._parse_dict_source_value({
             '_templates_': None,
         })
@@ -348,37 +401,36 @@ class MimeoConfigFactory:
             ],
         }
 
-        Examples
-        --------
         MimeoDTO._parse_dict_source_value({
-            ':SomeField1:': 'true',
-            'SomeField2': '{:SomeField1:}'
+            '_name': 'random_item',
+            'items': {
+                'item': [
+                    'value',
+                    1,
+                    True
+                ]
+            }
         })
         -> {
-            '{:SomeField1:}': 'true',
-            'SomeField2': '{:SomeField1:}'
+            '_name': 'random_item',
+            'items': [
+                'value',
+                1,
+                True
+            ]
         }
         """
-        keys_mapping = {}
-        for key, value in source_node.items():
-            if key == cc.TEMPLATES_KEY:
-                if value is None:
-                    source_node[key] = []
-                else:
-                    templates = source_node[key].get(cc.TEMPLATES_XML_TEMPLATE_TAG)
-                    if isinstance(templates, dict):
-                        source_node[key] = [cls._parse_source_values(templates)]
-                    elif isinstance(templates, list):
-                        source_node[key] = cls._parse_source_values(templates)
-                    else:
-                        source_node[key] = cls._parse_source_values(value)
+        value = source_node[key]
+        if value is None:
+            source_node[key] = []
+        else:
+            templates = source_node[key].get(child_key)
+            if isinstance(templates, (str, dict)):
+                source_node[key] = [cls._parse_source_values(templates)]
+            elif isinstance(templates, list):
+                source_node[key] = cls._parse_source_values(templates)
             else:
                 source_node[key] = cls._parse_source_values(value)
-
-            keys_mapping[key] = cls._get_key_mapping(key)
-
-        cls._map_keys(keys_mapping, source_node)
-        return source_node
 
     @classmethod
     def _get_key_mapping(
