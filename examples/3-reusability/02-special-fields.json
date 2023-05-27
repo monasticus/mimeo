@@ -4,7 +4,7 @@
       "count": 30,
       "model": {
         "SomeEntity": {
-          "{:ChildNode1:}": "custom-value",
+          ":ChildNode1:": "custom-value",
           "ChildNode2": "{:ChildNode1:}",
           "ChildNode3": "{:ChildNode1:}-with-suffix"
         }

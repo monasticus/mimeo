@@ -310,9 +310,8 @@ Example:
 
 In Mimeo Template you can use so-called _special fields_.
 Every field in a template can be stored in memory (_provided_) and used later as a value of other fields (_injected_).
-To provide and inject a special field use curly brackets and colons: [`{:SomeField:}`].
-You provide a field when you use this format in a field name (JSON property name),
-and inject by applying it in a field value.  
+To provide a special field, wrap its name with colons: [`:SomeField:`]. To inject, use additionally curly braces to
+let interpreter know it should be rendered [`{:SomeField:}`].
 They can be injected as partial values, similarly to Mimeo Vars.
 
 Example
@@ -323,7 +322,7 @@ Example
       "count": 5,
       "model": {
         "SomeEntity": {
-          "{:ChildNode1:}": "custom-value",
+          ":ChildNode1:": "custom-value",
           "ChildNode2": "{:ChildNode1:}",
           "ChildNode3": "{:ChildNode1:}-with-suffix"
         }
