@@ -4,7 +4,8 @@ from pathlib import Path
 
 from mimeo import MimeoConfig
 from mimeo.config import MimeoConfigFactory
-from mimeo.config.exc import MimeoConfigurationNotFoundError
+from mimeo.config.exc import (MimeoConfigurationNotFoundError,
+                              UnsupportedMimeoConfigSourceError)
 from tests.utils import assert_throws
 
 
@@ -1050,6 +1051,14 @@ def test_parse_source_from_xml_file():
     assert source == expected_config
 
     shutil.rmtree(dir_path)
+
+
+@assert_throws(err_type=UnsupportedMimeoConfigSourceError,
+               msg="Mimeo Configuration source [{source}] is unsupported. "
+                   "Use a file path, stringified configuration or a dictionary.",
+               source="[]")
+def test_parse_neither_dict_nor_str():
+    MimeoConfigFactory.parse([])
 
 
 def test_from_json_file():

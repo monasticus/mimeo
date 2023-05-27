@@ -29,6 +29,7 @@ from mimeo.config.exc import (InvalidIndentError, InvalidMimeoConfigError,
                               InvalidMimeoTemplateError, InvalidVarsError,
                               MimeoConfigurationNotFoundError,
                               MissingRequiredPropertyError,
+                              UnsupportedMimeoConfigSourceError,
                               UnsupportedPropertyValueError)
 from mimeo.logging import setup_logging
 
@@ -65,9 +66,16 @@ class MimeoConfigFactory:
         -------
         MimeoConfig
             A parsed MimeoConfig instance
+
+        Raises
+        ------
+        UnsupportedMimeoConfigSourceError
+            If the source is neither a dict nor str value
         """
         if isinstance(source, str):
             source = cls.parse_source(source)
+        if not isinstance(source, dict):
+            raise UnsupportedMimeoConfigSourceError(source)
 
         return MimeoConfig(source)
 

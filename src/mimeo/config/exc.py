@@ -29,6 +29,7 @@ It contains all custom exceptions related to Mimeo Configuration:
 from __future__ import annotations
 
 from enum import Enum
+from typing import Any
 
 
 class UnsupportedPropertyValueError(Exception):
@@ -368,6 +369,29 @@ class InvalidMimeoConfigError(Exception):
 
         msg = f"Provided error code is not a {cls.__name__}.Code enum!"
         raise ValueError(msg)
+
+
+class UnsupportedMimeoConfigSourceError(Exception):
+    """A custom Exception class for unsupported Mimeo Configuration source.
+
+    Raised when an XML Mimeo Configuration's source is neither a dict nor str.
+    """
+
+    def __init__(
+            self,
+            source: Any,
+    ):
+        """Initialize UnsupportedMimeoConfigSourceError exception with details.
+
+        Extends Exception constructor with a custom message.
+
+        Parameters
+        ----------
+        source : Any
+            An actual root name
+        """
+        super().__init__(f"Mimeo Configuration source [{source}] is unsupported. "
+                         "Use a file path, stringified configuration or a dictionary.")
 
 
 class MimeoConfigurationNotFoundError(Exception):
