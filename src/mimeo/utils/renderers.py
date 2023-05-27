@@ -355,7 +355,7 @@ class MimeoRenderer:
         ----------
         wrapped_field_name : str
             A field name wrapped with curly braces and colons,
-            e.g. {:Field:}
+            e.g. :Field:
 
         Returns
         -------
@@ -365,7 +365,7 @@ class MimeoRenderer:
         Raises
         ------
         NotASpecialFieldError
-            If the `wrapped_field_name` is not of form {:FIELD_NAME:}
+            If the `wrapped_field_name` is not of form :FIELD_NAME:
         """
         if not cls.is_special_field(wrapped_field_name):
             raise NotASpecialFieldError(wrapped_field_name)
