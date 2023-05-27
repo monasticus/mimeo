@@ -3040,7 +3040,7 @@ def test_generate_using_special_fields():
                 "count": 5,
                 "model": {
                     "SomeEntity": {
-                        "{:ChildNode1:}": "value-1",
+                        ":ChildNode1:": "value-1",
                         "ChildNode2": "{:ChildNode1:}",
                     },
                 },
@@ -3107,8 +3107,8 @@ def test_generate_using_special_fields_as_partial_values():
                 "count": 5,
                 "model": {
                     "SomeEntity": {
-                        "{:ChildNode1:}": "value-1",
-                        "{:ChildNode2:}": "value-2",
+                        ":ChildNode1:": "value-1",
+                        ":ChildNode2:": "value-2",
                         "ChildNode3": "{:ChildNode1:}-2",
                         "ChildNode4": "3-{:ChildNode1:}-3",
                         "ChildNode5": "4-{:ChildNode1:}",
@@ -3215,7 +3215,7 @@ def test_generate_using_special_fields_using_namespace():
                 "model": {
                     "ns:SomeEntity": {
                         "@xmlns:ns": "http://mimeo.arch.com/prefixed-namespace",
-                        "{:ns:ChildNode1:}": "value-1",
+                        ":ns:ChildNode1:": "value-1",
                         "ns:ChildNode2": "{:ns:ChildNode1:}",
                     },
                 },
@@ -3284,8 +3284,8 @@ def test_generate_using_special_fields_recursive():
                 "count": 5,
                 "model": {
                     "SomeEntity": {
-                        "{:ChildNode1:}": "value-1",
-                        "{:ChildNode2:}": "{:ChildNode1:}",
+                        ":ChildNode1:": "value-1",
+                        ":ChildNode2:": "{:ChildNode1:}",
                         "ChildNode3": "{:ChildNode2:}",
                     },
                 },
@@ -3359,7 +3359,7 @@ def test_generate_using_special_fields_in_template_context():
                 "count": 5,
                 "model": {
                     "SomeEntity": {
-                        "{:ChildNode1:}": "{curr_iter}",
+                        ":ChildNode1:": "{curr_iter}",
                         "ChildNode2": "{:ChildNode1:}",
                     },
                 },

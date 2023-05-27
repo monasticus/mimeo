@@ -370,14 +370,14 @@ class MimeoRenderer:
         if not cls.is_special_field(wrapped_field_name):
             raise NotASpecialFieldError(wrapped_field_name)
 
-        return wrapped_field_name[2:][:-2]
+        return wrapped_field_name[1:][:-1]
 
     @classmethod
     def is_special_field(
             cls,
             special_field: str,
     ) -> bool:
-        """Verify if the field is special (of form {:FIELD_NAME:}).
+        """Verify if the field is special (of form :FIELD_NAME:).
 
         Parameters
         ----------
@@ -387,10 +387,10 @@ class MimeoRenderer:
         Returns
         -------
         bool
-            True if the field is of form {:FIELD_NAME:}. Otherwise,
+            True if the field is of form :FIELD_NAME:. Otherwise,
             False.
         """
-        return bool(re.match(r"^{:([a-zA-Z]+:)?[-_a-zA-Z0-9]+:}$", special_field))
+        return bool(re.match(r"^:([a-zA-Z]+:)?[-_a-zA-Z0-9]+:$", special_field))
 
     @classmethod
     def is_raw_mimeo_util(

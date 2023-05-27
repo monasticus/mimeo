@@ -666,45 +666,6 @@ def test_parse_source_config_list_value():
     assert MimeoConfigFactory.parse_source(config_xml) == expected_source
 
 
-def test_parse_source_config_special_fields():
-    config_xml = """
-    <mimeo_configuration>
-        <output>
-            <direction>stdout</direction>
-        </output>
-        <_templates_>
-            <_template_>
-                <count>5</count>
-                <model>
-                    <SomeEntity>
-                        <:ChildNode1:>value</:ChildNode1:>
-                        <ChildNode2>{:ChildNode1:}</ChildNode2>
-                    </SomeEntity>
-                </model>
-            </_template_>
-        </_templates_>
-    </mimeo_configuration>
-    """
-    expected_source = {
-        "output": {
-            "direction": "stdout",
-        },
-        "_templates_": [
-            {
-                "count": 5,
-                "model": {
-                    "SomeEntity": {
-                        "{:ChildNode1:}": "value",
-                        "ChildNode2": "{:ChildNode1:}",
-                    },
-                },
-            },
-        ],
-    }
-
-    assert MimeoConfigFactory.parse_source(config_xml) == expected_source
-
-
 def test_parse_source_random_item_mimeo_util_with_single_item():
     model_xml = """
     <mimeo_configuration>

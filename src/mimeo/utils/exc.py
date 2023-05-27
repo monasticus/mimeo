@@ -205,5 +205,5 @@ class NotASpecialFieldError(Exception):
         field_name : str
             A field name
         """
-        msg = f"Provided field [{field_name}] is not a special one (use {'{:NAME:}'})!"
+        msg = f"Provided field [{field_name}] is not a special one (use {':NAME:'})!"
         super().__init__(msg)
