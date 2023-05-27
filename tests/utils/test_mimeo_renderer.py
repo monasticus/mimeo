@@ -33,40 +33,34 @@ def default_config():
 
 
 def test_is_special_field_true():
-    assert MimeoRenderer.is_special_field("{:SomeChild:}")
-    assert MimeoRenderer.is_special_field("{:Some_Child:}")
-    assert MimeoRenderer.is_special_field("{:Some-Child:}")
-    assert MimeoRenderer.is_special_field("{:SomeChild1:}")
-    assert MimeoRenderer.is_special_field("{:ns:SomeChild1:}")
+    assert MimeoRenderer.is_special_field(":SomeChild:")
+    assert MimeoRenderer.is_special_field(":Some_Child:")
+    assert MimeoRenderer.is_special_field(":Some-Child:")
+    assert MimeoRenderer.is_special_field(":SomeChild1:")
+    assert MimeoRenderer.is_special_field(":ns:SomeChild1:")
 
 
 def test_is_special_field_false():
-    assert not MimeoRenderer.is_special_field(":SomeField:}")
-    assert not MimeoRenderer.is_special_field("{:SomeField:")
-    assert not MimeoRenderer.is_special_field("{SomeField:}")
-    assert not MimeoRenderer.is_special_field("{:SomeField}")
-    assert not MimeoRenderer.is_special_field("SomeField:}")
-    assert not MimeoRenderer.is_special_field("{:SomeField")
-    assert not MimeoRenderer.is_special_field("{SomeField}")
-    assert not MimeoRenderer.is_special_field(":SomeField:")
+    assert not MimeoRenderer.is_special_field("SomeField:")
+    assert not MimeoRenderer.is_special_field(":SomeField")
     assert not MimeoRenderer.is_special_field("SomeField")
-    assert not MimeoRenderer.is_special_field("{::}")
-    assert not MimeoRenderer.is_special_field("{:Some Field:}")
-    assert not MimeoRenderer.is_special_field("{:_:SomeField:}")
+    assert not MimeoRenderer.is_special_field(":Some Field:")
+    assert not MimeoRenderer.is_special_field(":_:SomeField:")
+    assert not MimeoRenderer.is_special_field("::")
 
 
 def test_get_special_field_name():
-    assert MimeoRenderer.get_special_field_name("{:SomeField:}") == "SomeField"
+    assert MimeoRenderer.get_special_field_name(":SomeField:") == "SomeField"
 
 
 def test_get_special_field_name_using_namespace():
-    assert MimeoRenderer.get_special_field_name("{:ns:SomeField:}") == "ns:SomeField"
+    assert MimeoRenderer.get_special_field_name(":ns:SomeField:") == "ns:SomeField"
 
 
 @assert_throws(err_type=NotASpecialFieldError,
-               msg="Provided field [{:SomeField}] is not a special one (use {:NAME:})!")
+               msg="Provided field [:SomeField] is not a special one (use :NAME:)!")
 def test_get_special_field_name_when_invalid():
-    MimeoRenderer.get_special_field_name("{:SomeField}")
+    MimeoRenderer.get_special_field_name(":SomeField")
 
 
 def test_is_raw_mimeo_util_true():
