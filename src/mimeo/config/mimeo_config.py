@@ -423,6 +423,8 @@ class MimeoConfigFactory:
         value = source_node[key]
         if value is None:
             source_node[key] = []
+        elif isinstance(value, list):
+            source_node[key] = cls._parse_source_values(value)
         else:
             templates = source_node[key].get(child_key)
             if isinstance(templates, (str, dict)):

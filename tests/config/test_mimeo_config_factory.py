@@ -240,6 +240,57 @@ def test_parse_source_templates_with_atomic_template():
     assert MimeoConfigFactory.parse_source(config_xml) == expected_source
 
 
+def test_parse_source_templates_with_direct_templates_list():
+    config_xml = """
+    <mimeo_configuration>
+        <output>
+            <direction>stdout</direction>
+        </output>
+        <_templates_>
+            <count>30</count>
+            <model>
+                <SomeEntity1>
+                    <ChildNode>value-1</ChildNode>
+                </SomeEntity1>
+            </model>
+        </_templates_>
+        <_templates_>
+            <count>5</count>
+            <model>
+                <SomeEntity2>
+                    <ChildNode>value-2</ChildNode>
+                </SomeEntity2>
+            </model>
+        </_templates_>
+    </mimeo_configuration>
+    """
+    expected_source = {
+        "output": {
+            "direction": "stdout",
+        },
+        "_templates_": [
+            {
+                "count": 30,
+                "model": {
+                    "SomeEntity1": {
+                        "ChildNode": "value-1",
+                    },
+                },
+            },
+            {
+                "count": 5,
+                "model": {
+                    "SomeEntity2": {
+                        "ChildNode": "value-2",
+                    },
+                },
+            },
+        ],
+    }
+
+    assert MimeoConfigFactory.parse_source(config_xml) == expected_source
+
+
 def test_parse_source_templates_with_no_template_child_in_templates():
     config_xml = """
     <mimeo_configuration>
@@ -786,6 +837,50 @@ def test_parse_source_random_item_mimeo_util_with_complex_item():
                                         "SomeItem": 1,
                                     },
                                 ],
+                            },
+                        },
+                    },
+                },
+            },
+        ],
+    }
+    assert MimeoConfigFactory.parse_source(model_xml) == expected_source
+
+
+def test_parse_source_random_item_mimeo_util_with_direct_items_list():
+    model_xml = """
+    <mimeo_configuration>
+        <_templates_>
+            <_template_>
+                <count>5</count>
+                <model>
+                    <context>My Context</context>
+                    <SomeEntity>
+                        <ChildNode>
+                            <_mimeo_util>
+                                <_name>random_item</_name>
+                                <items>value</items>
+                                <items>1</items>
+                                <items>true</items>
+                            </_mimeo_util>
+                        </ChildNode>
+                    </SomeEntity>
+                </model>
+            </_template_>
+        </_templates_>
+    </mimeo_configuration>
+    """
+    expected_source = {
+        "_templates_": [
+            {
+                "count": 5,
+                "model": {
+                    "context": "My Context",
+                    "SomeEntity": {
+                        "ChildNode": {
+                            "_mimeo_util": {
+                                "_name": "random_item",
+                                "items": ["value", 1, True],
                             },
                         },
                     },

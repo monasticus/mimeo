@@ -8,9 +8,11 @@
                     <ID>
                         <_mimeo_util>
                             <_name>random_item</_name>
-                            <items>value</items>
-                            <items>1</items>
-                            <items>true</items>
+                            <items>
+                                <item>value</item>
+                                <item>1</item>
+                                <item>true</item>
+                            </items>
                         </_mimeo_util>
                     </ID>
                 </SomeEntity>
