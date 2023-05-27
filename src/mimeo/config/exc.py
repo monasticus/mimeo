@@ -21,12 +21,17 @@ It contains all custom exceptions related to Mimeo Configuration:
         A custom Exception class for invalid mimeo configuration.
     * InvalidMimeoConfigError.Code
         An Enumeration class for InvalidMimeoConfigError error codes.
+    * UnsupportedMimeoConfigSourceError
+        A custom Exception class for unsupported Mimeo Configuration source.
+    * MimeoConfigurationNotFoundError
+        A custom Exception class for no mimeo_configuration node in source xml.
 """
 
 
 from __future__ import annotations
 
 from enum import Enum
+from typing import Any
 
 
 class UnsupportedPropertyValueError(Exception):
@@ -366,3 +371,49 @@ class InvalidMimeoConfigError(Exception):
 
         msg = f"Provided error code is not a {cls.__name__}.Code enum!"
         raise ValueError(msg)
+
+
+class UnsupportedMimeoConfigSourceError(Exception):
+    """A custom Exception class for unsupported Mimeo Configuration source.
+
+    Raised when an XML Mimeo Configuration's source is neither a dict nor str.
+    """
+
+    def __init__(
+            self,
+            source: Any,
+    ):
+        """Initialize UnsupportedMimeoConfigSourceError exception with details.
+
+        Extends Exception constructor with a custom message.
+
+        Parameters
+        ----------
+        source : Any
+            An actual root name
+        """
+        super().__init__(f"Mimeo Configuration source [{source}] is unsupported. "
+                         "Use a file path, stringified configuration or a dictionary.")
+
+
+class MimeoConfigurationNotFoundError(Exception):
+    """A custom Exception class for no mimeo_configuration node in source xml.
+
+    Raised when an XML Mimeo Configuration's root node is not <mimeo_configuration/>.
+    """
+
+    def __init__(
+            self,
+            root_name: str,
+    ):
+        """Initialize MimeoConfigurationNotFoundError exception with details.
+
+        Extends Exception constructor with a custom message.
+
+        Parameters
+        ----------
+        root_name : str
+            An actual root name
+        """
+        super().__init__(f"<mimeo_configuration/> not found! {root_name} is not "
+                         f"a proper Mimeo Configuration root node.")

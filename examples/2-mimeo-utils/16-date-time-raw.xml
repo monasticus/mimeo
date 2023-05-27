@@ -1,0 +1,14 @@
+<mimeo_configuration>
+    <_templates_>
+        <_template_>
+            <count>30</count>
+            <model>
+
+                <SomeEntity>
+                    <Now>{date_time}</Now>
+                </SomeEntity>
+
+            </model>
+        </_template_>
+    </_templates_>
+</mimeo_configuration>

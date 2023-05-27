@@ -1,5 +1,7 @@
 ---
 mimeo-config:
+  key: mimeo_configuration
+
   output:
     key: output
 
@@ -61,6 +63,9 @@ mimeo-config:
 
   templates:
     key: _templates_
+
+    xml-template-tag:
+      key: _template_
 
     count:
       key: count

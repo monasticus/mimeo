@@ -1,0 +1,35 @@
+<mimeo_configuration>
+    <_templates_>
+        <_template_>
+            <count>30</count>
+            <model>
+                <context>ROOT</context>
+
+                <SomeEntity>
+                    <ID>{curr_iter}</ID>
+                    <Children>
+                        <_templates_>
+                            <_template_>
+                                <count>5</count>
+                                <model>
+
+                                    <SomeChild>
+                                        <ID>{curr_iter}</ID>
+                                        <Parent>
+                                            <_mimeo_util>
+                                                <_name>curr_iter</_name>
+                                                <context>ROOT</context>
+                                            </_mimeo_util>
+                                        </Parent>
+                                    </SomeChild>
+
+                                </model>
+                            </_template_>
+                        </_templates_>
+                    </Children>
+                </SomeEntity>
+
+            </model>
+        </_template_>
+    </_templates_>
+</mimeo_configuration>

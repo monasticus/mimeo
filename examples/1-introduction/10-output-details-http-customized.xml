@@ -1,0 +1,27 @@
+<mimeo_configuration>
+    <output>
+        <direction>http</direction>
+        <format>xml</format>
+        <method>PUT</method>
+        <protocol>https</protocol>
+        <host>localhost</host>
+        <port>8080</port>
+        <endpoint>/document</endpoint>
+        <username>admin</username>
+        <password>admin</password>
+    </output>
+    <_templates_>
+        <_template_>
+            <count>30</count>
+            <model>
+
+                <SomeEntity>
+                    <ChildNode1>1</ChildNode1>
+                    <ChildNode2>value-2</ChildNode2>
+                    <ChildNode3>true</ChildNode3>
+                </SomeEntity>
+
+            </model>
+        </_template_>
+    </_templates_>
+</mimeo_configuration>

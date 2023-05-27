@@ -1,0 +1,26 @@
+<mimeo_configuration>
+    <_templates_>
+        <_template_>
+            <count>30</count>
+            <model>
+
+                <SomeEntityWithChildrenNodes
+                    xmlns="http://mimeo.arch.com/default-namespace"
+                    xmlns:pn="http://mimeo.arch.com/prefixed-namespace">
+                    <pn:ChildNode1>1</pn:ChildNode1>
+                    <pn:ChildNode2>value-2</pn:ChildNode2>
+                    <pn:ChildNode3>true</pn:ChildNode3>
+                </SomeEntityWithChildrenNodes>
+
+            </model>
+        </_template_>
+        <_template_>
+            <count>30</count>
+            <model>
+
+                <SomeEntityWithAtomicValue xmlns="http://mimeo.arch.com/default-namespace">atomic-value</SomeEntityWithAtomicValue>
+
+            </model>
+        </_template_>
+    </_templates_>
+</mimeo_configuration>

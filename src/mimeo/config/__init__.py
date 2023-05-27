@@ -9,17 +9,19 @@ It contains the following modules:
     The Mimeo Configuration Exceptions module
 
 The Mimeo Configuration package exports a class representing
-root Mimeo Configuration component:
+root Mimeo Configuration component and a factory:
 * MimeoConfig
     A MimeoDTO class representing Mimeo Configuration
+* MimeoConfigFactory
+    A factory class to instantiate a MimeoConfig
 
 To use this package, simply import it:
-    from mimeo.config import MimeoConfig
+    from mimeo.config import MimeoConfigFactory, MimeoConfig
     from mimeo.config import constants as cc
     from mimeo.config.exc import UnsupportedPropertyValueError
 """
 from __future__ import annotations
 
-from .mimeo_config import MimeoConfig
+from .mimeo_config import MimeoConfig, MimeoConfigFactory
 
-__all__ = ["MimeoConfig"]
+__all__ = ["MimeoConfig", "MimeoConfigFactory"]

@@ -1,4 +1,4 @@
-from mimeo.config import MimeoConfig
+from mimeo.config import MimeoConfigFactory
 from mimeo.config.exc import UnsupportedPropertyValueError
 from mimeo.generators import GeneratorFactory, XMLGenerator
 from tests.utils import assert_throws
@@ -20,7 +20,7 @@ def test_generator_factory_for_xml():
             },
         ],
     }
-    mimeo_config = MimeoConfig(config)
+    mimeo_config = MimeoConfigFactory.parse(config)
     generator = GeneratorFactory.get_generator(mimeo_config)
     assert isinstance(generator, XMLGenerator)
 
@@ -45,7 +45,7 @@ def test_generator_factory_for_unsupported_format():
             },
         ],
     }
-    mimeo_config = MimeoConfig(config)
+    mimeo_config = MimeoConfigFactory.parse(config)
     mimeo_config.output.format = "unsupported_format"
 
     GeneratorFactory.get_generator(mimeo_config)

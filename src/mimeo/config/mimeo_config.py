@@ -1,7 +1,9 @@
 """The Mimeo Configuration module.
 
-It contains classes representing Mimeo Configuration components
-at all levels. All of them are Data Transfer Objects:
+It contains classes representing Mimeo Configuration components at all levels.
+All of them are Data Transfer Objects:
+    * MimeoConfigFactory
+        A factory class to instantiate a MimeoConfig.
     * MimeoDTO
         A superclass for all Mimeo configuration DTOs
     * MimeoConfig
@@ -15,18 +17,475 @@ at all levels. All of them are Data Transfer Objects:
 """
 from __future__ import annotations
 
+import json
 import re
+from pathlib import Path
+
+import xmltodict
 
 from mimeo.config import constants as cc
 from mimeo.config.exc import (InvalidIndentError, InvalidMimeoConfigError,
                               InvalidMimeoModelError,
                               InvalidMimeoTemplateError, InvalidVarsError,
+                              MimeoConfigurationNotFoundError,
                               MissingRequiredPropertyError,
+                              UnsupportedMimeoConfigSourceError,
                               UnsupportedPropertyValueError)
 from mimeo.logging import setup_logging
 
 # setup logging when mimeo is used as a python library
 setup_logging()
+
+
+class MimeoConfigFactory:
+    """A factory class to instantiate a MimeoConfig.
+
+    Methods
+    -------
+    parse(source: dict | str) -> MimeoConfig
+        Instantiate MimeoConfig from a source configuration.
+    parse_source(source: str) -> dict
+        Parse a Mimeo Configuration to a source dict.
+    """
+
+    @classmethod
+    def parse(
+            cls,
+            source: dict | str,
+    ) -> MimeoConfig:
+        """Instantiate MimeoConfig from a source configuration.
+
+        It uses internal methods to instantiate Mimeo Config depending on source type.
+
+        Parameters
+        ----------
+        source : dict | str
+            A source configuration
+
+        Returns
+        -------
+        MimeoConfig
+            A parsed MimeoConfig instance
+
+        Raises
+        ------
+        UnsupportedMimeoConfigSourceError
+            If the source is neither a dict nor str value
+        """
+        if isinstance(source, str):
+            source = cls.parse_source(source)
+        if not isinstance(source, dict):
+            raise UnsupportedMimeoConfigSourceError(source)
+
+        return MimeoConfig(source)
+
+    @classmethod
+    def parse_source(
+            cls,
+            source: str,
+    ) -> dict:
+        """Parse a Mimeo Configuration to a source dict.
+
+        It uses internal methods to parse Mimeo Configuration depending on source value.
+
+        Parameters
+        ----------
+        source : str
+            A source configuration
+
+        Returns
+        -------
+        dict
+            A parsed source Mimeo Configuration ready to be used in MimeoConfig
+            initialization.
+        """
+        if cls._is_file_path(source):
+            source = cls._parse_source_from_file(source)
+        else:
+            source = cls._parse_source_from_str(source)
+        return source
+
+    @staticmethod
+    def _is_file_path(
+            source: str,
+    ) -> bool:
+        """Verify if the Mimeo Configuration source is a file path.
+
+        Parameters
+        ----------
+        source : str
+            A Mimeo Configuration source
+
+        Returns
+        -------
+        bool
+            True if the source is a file path. Otherwise, False.
+        """
+        return bool(re.match(r"([a-zA-Z0-9\s_/\\.\-\(\):])+(.json|.xml)$", source))
+
+    @classmethod
+    def _parse_source_from_file(
+            cls,
+            config_path: str,
+    ) -> dict:
+        """Parse a Mimeo Configuration file to a source dict.
+
+        Parameters
+        ----------
+        config_path : str
+            A source config file path
+
+        Returns
+        -------
+        dict
+            A parsed source Mimeo Configuration ready to be used in MimeoConfig
+            initialization.
+        """
+        with Path(config_path).open() as config_file:
+            if config_path.endswith(".json"):
+                config = json.load(config_file)
+            elif config_path.endswith(".xml"):
+                config = cls._parse_source_from_str(config_file.read())
+        return config
+
+    @classmethod
+    def _parse_source_from_str(
+            cls,
+            source: str,
+    ) -> dict:
+        """Parse a string Mimeo Configuration to a source dict.
+
+        Parameters
+        ----------
+        source : str
+            A source string to parse
+
+        Returns
+        -------
+        dict
+            A parsed source Mimeo Configuration ready to be used in MimeoConfig
+            initialization.
+        """
+        parsed_source = xmltodict.parse(source)
+        if cc.CONFIG_XML_ROOT_NAME not in parsed_source:
+            source_key = list(parsed_source.keys())[0]
+            raise MimeoConfigurationNotFoundError(source_key)
+        parsed_source = parsed_source[cc.CONFIG_XML_ROOT_NAME]
+        return cls._parse_source_values(parsed_source)
+
+    @classmethod
+    def _parse_source_values(
+            cls,
+            source_node: None | str | bool | int | float | dict | list,
+    ) -> None | str | bool | int | float | dict | list:
+        """Parse source values.
+
+        This method recursively parses result of parsing XML to dict.
+
+        Parameters
+        ----------
+        source_node : None | str | bool | int | float | dict | list
+            An XML Mimeo Configuration's node parsed to dict
+
+        Returns
+        -------
+        None | str | bool | int | float | dict | list
+            An XML Mimeo Configuration's node with parsed nested values.
+        """
+        if isinstance(source_node, str):
+            return cls._parse_str_source_value(source_node)
+        if isinstance(source_node, list):
+            return cls._parse_list_source_value(source_node)
+        if isinstance(source_node, dict):
+            return cls._parse_dict_source_value(source_node)
+        return None
+
+    @classmethod
+    def _parse_str_source_value(
+            cls,
+            source_node: str,
+    ) -> bool | float | int | str:
+        """Parse a string value.
+
+        This method returns boolean values for 'true' and 'false' strings and casts
+        to float or int numeric ones. Otherwise, returns a source value.
+
+        Parameters
+        ----------
+        source_node : str
+            An XML Mimeo Configuration's node
+
+        Returns
+        -------
+        bool | float | int | str
+            A parsed string value
+
+        Examples
+        --------
+        MimeoDTO._parse_str_source_value('true')
+        -> True
+
+        MimeoDTO._parse_str_source_value('false')
+        -> False
+
+        MimeoDTO._parse_str_source_value('1.5')
+        -> 1.5
+
+        MimeoDTO._parse_str_source_value('1')
+        -> 1
+
+        MimeoDTO._parse_str_source_value('value')
+        -> 'value'
+        """
+        if source_node == "true":
+            return True
+        if source_node == "false":
+            return False
+        if source_node.replace("-", "").isnumeric():
+            return int(source_node)
+        if re.sub(r"[-\.]", "", source_node).isnumeric():
+            return float(source_node)
+        return source_node
+
+    @classmethod
+    def _parse_list_source_value(
+            cls,
+            source_node: list,
+    ) -> list:
+        """Parse a list value.
+
+        This method parses all list items.
+
+        Parameters
+        ----------
+        source_node : list
+            An XML Mimeo Configuration's node
+
+        Returns
+        -------
+        list
+            A list with parsed items
+
+        Examples
+        --------
+        MimeoDTO._parse_list_source_value(['true', 'false', '1.5', '1', 'value'])
+        -> [True, False, 1.5, 1, 'value']
+        """
+        return [cls._parse_source_values(value) for value in source_node]
+
+    @classmethod
+    def _parse_dict_source_value(
+            cls,
+            source_node: dict,
+    ) -> dict:
+        """Parse a dict value.
+
+        This method parses all dict values. Additionally, it applies a specific logic
+        for Mimeo Templates and random_item Mimeo Util. As XML Mimeo Configuration needs
+        a template node in templates, it assigns them to the "_templates_" key (moves
+        one level up). Similar modification is made for items of the random_item Mimeo
+        Util.
+        Since XML tag cannot use curly brackets, there's also a modification made for
+        special fields. In XML Mimeo Configuration we use <:SpecialField:> and in dict
+        it needs to be changed to "{:SpecialField:}".
+
+        Parameters
+        ----------
+        source_node : dict
+            An XML Mimeo Configuration's node
+
+        Returns
+        -------
+        dict
+            A dict with parsed values
+
+        Examples
+        --------
+        MimeoDTO._parse_dict_source_value({
+            'SomeField1': 'true',
+            'SomeField2': 'false',
+            'SomeField3': '1.5',
+            'SomeField4': '1',
+            'SomeField5': 'value',
+        })
+        -> {
+            'SomeField1': True,
+            'SomeField2': False,
+            'SomeField3': 1.5,
+            'SomeField4': 1,
+            'SomeField5': 'value',
+        }
+
+        MimeoDTO._parse_dict_source_value({
+            ':SomeField1:': 'true',
+            'SomeField2': '{:SomeField1:}'
+        })
+        -> {
+            '{:SomeField1:}': 'true',
+            'SomeField2': '{:SomeField1:}'
+        }
+        """
+        keys_mapping = {}
+        for key, value in source_node.items():
+            if key == cc.TEMPLATES_KEY:
+                cls._flatten_list(
+                    source_node,
+                    cc.TEMPLATES_KEY,
+                    cc.TEMPLATES_XML_TEMPLATE_TAG)
+            elif (key == cc.MODEL_MIMEO_UTIL_KEY and
+                  value is not None and
+                  value.get(cc.MODEL_MIMEO_UTIL_NAME_KEY) == "random_item"):
+                cls._flatten_list(
+                    source_node[key],
+                    "items",
+                    "item")
+            else:
+                source_node[key] = cls._parse_source_values(value)
+
+            keys_mapping[key] = cls._get_key_mapping(key)
+
+        cls._map_keys(keys_mapping, source_node)
+        return source_node
+
+    @classmethod
+    def _flatten_list(
+            cls,
+            source_node: str | dict | list,
+            key: str,
+            child_key: str,
+    ):
+        """Move child node value one level up to a list.
+
+        Parameters
+        ----------
+        source_node : str | dict | list
+            An XML Mimeo Configuration's node
+        key : str
+            A parent key to being reassigned
+        child_key : str
+            A child key to take value from
+
+        Examples
+        --------
+        MimeoDTO._parse_dict_source_value({
+            '_templates_': None,
+        })
+        -> {
+            '_templates_': [],
+        }
+
+        MimeoDTO._parse_dict_source_value({
+            '_templates_': {
+                '_template_' : {
+                    'SomeField': 'true',
+                },
+            }
+        })
+        -> {
+            '_templates_': [
+                {
+                    'SomeField': 'true',
+                },
+            ],
+        }
+
+        MimeoDTO._parse_dict_source_value({
+            '_templates_': {
+                '_template_' : [
+                    {
+                        'SomeField': 'true',
+                    },
+                    {
+                        'SomeField': 'false',
+                    },
+                ],
+            },
+        })
+        -> {
+            '_templates_': [
+               {
+                   'SomeField': 'true',
+               },
+               {
+                   'SomeField': 'false',
+               },
+            ],
+        }
+
+        MimeoDTO._parse_dict_source_value({
+            '_name': 'random_item',
+            'items': {
+                'item': [
+                    'value',
+                    1,
+                    True
+                ]
+            }
+        })
+        -> {
+            '_name': 'random_item',
+            'items': [
+                'value',
+                1,
+                True
+            ]
+        }
+        """
+        value = source_node[key]
+        if value is None:
+            source_node[key] = []
+        elif isinstance(value, list):
+            source_node[key] = cls._parse_source_values(value)
+        else:
+            templates = source_node[key].get(child_key)
+            if isinstance(templates, (str, dict)):
+                source_node[key] = [cls._parse_source_values(templates)]
+            elif isinstance(templates, list):
+                source_node[key] = cls._parse_source_values(templates)
+            else:
+                source_node[key] = cls._parse_source_values(value)
+
+    @classmethod
+    def _get_key_mapping(
+            cls,
+            key: str,
+    ):
+        """Return a key mapping.
+
+        Wraps source tag with curly braces if it is a special field.
+
+        Parameters
+        ----------
+        key : str
+            A source key
+
+        Returns
+        -------
+        str
+            A key mapping
+        """
+        return "{" + key + "}" if key.startswith(":") and key.endswith(":") else key
+
+    @classmethod
+    def _map_keys(
+            cls,
+            keys_mapping: dict,
+            source_node: dict,
+    ):
+        """Apply mapping for dict keys.
+
+        When an XML Mimeo Configuration has some special fields they need to be renamed
+        while parsing to dict - wrapped with curly braces. As fields' order needs to be
+        preserved we need to iterate through all dict items and reassign values.
+
+        Parameters
+        ----------
+        keys_mapping
+        source_node
+        """
+        if any(key != value for key, value in keys_mapping.items()):
+            for key, value in keys_mapping.items():
+                source_node[value] = source_node.pop(key)
 
 
 class MimeoDTO:
@@ -36,7 +495,7 @@ class MimeoDTO:
 
     Methods
     -------
-    __str__
+    __str__() -> str
         Return the stringified source dictionary of a DTO.
     """
 
@@ -54,7 +513,7 @@ class MimeoDTO:
 
     def __str__(
             self,
-    ):
+    ) -> str:
         """Return the stringified source dictionary of a DTO."""
         return str(self._source)
 

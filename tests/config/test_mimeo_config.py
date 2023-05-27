@@ -1,6 +1,5 @@
-
+from mimeo.config import MimeoConfigFactory
 from mimeo.config.exc import InvalidMimeoConfigError, InvalidVarsError
-from mimeo.config.mimeo_config import MimeoConfig
 from tests.utils import assert_throws
 
 
@@ -24,7 +23,7 @@ def test_str():
         ],
     }
 
-    mimeo_config = MimeoConfig(config)
+    mimeo_config = MimeoConfigFactory.parse(config)
     assert str(mimeo_config) == str(config)
 
 
@@ -54,7 +53,7 @@ def test_parsing_config():
         ],
     }
 
-    mimeo_config = MimeoConfig(config)
+    mimeo_config = MimeoConfigFactory.parse(config)
     assert mimeo_config.output.direction == "stdout"
     assert mimeo_config.vars == {
         "CUSTOM_KEY1": "custom value",
@@ -81,7 +80,7 @@ def test_parsing_config_default():
         ],
     }
 
-    mimeo_config = MimeoConfig(config)
+    mimeo_config = MimeoConfigFactory.parse(config)
     assert mimeo_config.output.direction == "file"
     assert mimeo_config.output.directory_path == "mimeo-output"
     assert mimeo_config.output.file_name == "mimeo-output-{}.xml"
@@ -96,7 +95,7 @@ def test_parsing_config_without_templates():
             "direction": "stdout",
         },
     }
-    MimeoConfig(config)
+    MimeoConfigFactory.parse(config)
 
 
 @assert_throws(err_type=InvalidMimeoConfigError,
@@ -114,7 +113,7 @@ def test_parsing_config_with_templates_object():
             },
         },
     }
-    MimeoConfig(config)
+    MimeoConfigFactory.parse(config)
 
 
 @assert_throws(err_type=InvalidVarsError,
@@ -138,7 +137,7 @@ def test_parsing_config_with_invalid_vars_forbidden_character():
             },
         ],
     }
-    MimeoConfig(config)
+    MimeoConfigFactory.parse(config)
 
 
 @assert_throws(err_type=InvalidVarsError,
@@ -162,7 +161,7 @@ def test_parsing_config_with_invalid_vars_starting_with_digit():
             },
         ],
     }
-    MimeoConfig(config)
+    MimeoConfigFactory.parse(config)
 
 
 @assert_throws(err_type=InvalidVarsError,
@@ -185,7 +184,7 @@ def test_parsing_config_with_invalid_vars_using_non_atomic_value_and_non_mimeo_u
             },
         ],
     }
-    MimeoConfig(config)
+    MimeoConfigFactory.parse(config)
 
 
 @assert_throws(err_type=InvalidVarsError,
@@ -210,4 +209,4 @@ def test_parsing_config_invalid_vars_not_being_object():
             },
         ],
     }
-    MimeoConfig(config)
+    MimeoConfigFactory.parse(config)

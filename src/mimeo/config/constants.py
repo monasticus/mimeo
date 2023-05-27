@@ -1,4 +1,6 @@
 """The Mimeo Configuration Constants module."""
+from __future__ import annotations
+
 import yaml
 
 from mimeo import tools
@@ -6,6 +8,8 @@ from mimeo import tools
 with tools.get_resource("constants.yaml") as config_file:
     constants = yaml.safe_load(config_file.read())
     _cc = constants["mimeo-config"]
+
+CONFIG_XML_ROOT_NAME = _cc["key"]
 
 ########################################################################################
 #                                    OUTPUT DETAILS                                    #
@@ -76,6 +80,7 @@ VARS_KEY = _vars_constants["key"]
 ########################################################################################
 _templates_constants = _cc["templates"]
 TEMPLATES_KEY = _templates_constants["key"]
+TEMPLATES_XML_TEMPLATE_TAG = _templates_constants["xml-template-tag"]["key"]
 TEMPLATES_COUNT_KEY = _templates_constants["count"]["key"]
 TEMPLATES_MODEL_KEY = _templates_constants["model"]["key"]
 
@@ -89,6 +94,7 @@ MODEL_MIMEO_UTIL_KEY = _model_constants["mimeo-util"]["key"]
 MODEL_MIMEO_UTIL_NAME_KEY = _model_constants["mimeo-util"]["name"]["key"]
 
 __all__ = [
+    "CONFIG_XML_ROOT_NAME",
     "OUTPUT_KEY",
     "OUTPUT_FORMAT_KEY",
     "OUTPUT_DIRECTION_KEY",
@@ -118,6 +124,7 @@ __all__ = [
     "OUTPUT_PROTOCOL_HTTPS",
     "VARS_KEY",
     "TEMPLATES_KEY",
+    "TEMPLATES_XML_TEMPLATE_TAG",
     "TEMPLATES_COUNT_KEY",
     "TEMPLATES_MODEL_KEY",
     "MODEL_CONTEXT_KEY",

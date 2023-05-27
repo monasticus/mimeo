@@ -1,4 +1,4 @@
-from mimeo.config import MimeoConfig
+from mimeo.config import MimeoConfigFactory
 from mimeo.config.exc import UnsupportedPropertyValueError
 from mimeo.consumers import (ConsumerFactory, FileConsumer, HttpConsumer,
                              RawConsumer)
@@ -19,7 +19,7 @@ def test_get_consumer_for_file_direction():
             },
         ],
     }
-    mimeo_config = MimeoConfig(config)
+    mimeo_config = MimeoConfigFactory.parse(config)
     generator = ConsumerFactory.get_consumer(mimeo_config)
     assert isinstance(generator, FileConsumer)
 
@@ -38,7 +38,7 @@ def test_get_consumer_for_stdout_direction():
             },
         ],
     }
-    mimeo_config = MimeoConfig(config)
+    mimeo_config = MimeoConfigFactory.parse(config)
     generator = ConsumerFactory.get_consumer(mimeo_config)
     assert isinstance(generator, RawConsumer)
 
@@ -62,7 +62,7 @@ def test_get_consumer_for_http_direction():
             },
         ],
     }
-    mimeo_config = MimeoConfig(config)
+    mimeo_config = MimeoConfigFactory.parse(config)
     generator = ConsumerFactory.get_consumer(mimeo_config)
     assert isinstance(generator, HttpConsumer)
 
@@ -85,7 +85,7 @@ def test_get_consumer_for_unsupported_format():
             },
         ],
     }
-    mimeo_config = MimeoConfig(config)
+    mimeo_config = MimeoConfigFactory.parse(config)
     mimeo_config.output.direction = "unsupported_direction"
 
     ConsumerFactory.get_consumer(mimeo_config)

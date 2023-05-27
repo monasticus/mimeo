@@ -9,6 +9,8 @@ and number of records updated in src/mimeo/database/currencies.py.
 All source files are removed.
 """
 
+from __future__ import annotations
+
 import pandas
 import utils
 

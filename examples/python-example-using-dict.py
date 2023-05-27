@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-from mimeo import MimeoConfig, Mimeograph
+from mimeo import MimeoConfigFactory, Mimeograph
 
 config = {
   "_templates_": [
@@ -16,5 +16,5 @@ config = {
     }
   ]
 }
-mimeo_config = MimeoConfig(config)
+mimeo_config = MimeoConfigFactory.parse(config)
 Mimeograph(mimeo_config).process()

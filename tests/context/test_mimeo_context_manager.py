@@ -1,6 +1,6 @@
 import pytest
 
-from mimeo.config import MimeoConfig
+from mimeo.config import MimeoConfigFactory
 from mimeo.context import MimeoContextManager
 from mimeo.context.exc import VarNotFoundError
 from mimeo.meta.exc import InstanceNotAliveError
@@ -9,7 +9,7 @@ from tests.utils import assert_throws
 
 @pytest.fixture(autouse=True)
 def default_config():
-    return MimeoConfig({
+    return MimeoConfigFactory.parse({
         "vars": {
             "CUSTOM_VAR_1": 1,
             "CUSTOM_VAR_2": "custom-value",

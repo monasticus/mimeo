@@ -1,0 +1,25 @@
+<mimeo_configuration>
+    <_templates_>
+        <_template_>
+            <count>30</count>
+            <model>
+
+                <SomeEntity>
+                    <Yesterday>
+                        <_mimeo_util>
+                            <_name>date</_name>
+                            <days_delta>-1</days_delta>
+                        </_mimeo_util>
+                    </Yesterday>
+                    <Tomorrow>
+                        <_mimeo_util>
+                            <_name>date</_name>
+                            <days_delta>1</days_delta>
+                        </_mimeo_util>
+                    </Tomorrow>
+                </SomeEntity>
+
+            </model>
+        </_template_>
+    </_templates_>
+</mimeo_configuration>

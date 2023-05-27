@@ -1,0 +1,16 @@
+<mimeo_configuration>
+    <_templates_>
+        <_template_>
+            <count>30</count>
+            <model>
+
+                <SomeEntity>
+                    <:ChildNode1:>custom-value</:ChildNode1:>
+                    <ChildNode2>{:ChildNode1:}</ChildNode2>
+                    <ChildNode3>{:ChildNode1:}-with-suffix</ChildNode3>
+                </SomeEntity>
+
+            </model>
+        </_template_>
+    </_templates_>
+</mimeo_configuration>

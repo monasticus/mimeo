@@ -17,6 +17,7 @@ from pathlib import Path
 from mimeo import MimeoConfig
 from mimeo.cli.exc import (EnvironmentNotFoundError,
                            EnvironmentsFileNotFoundError)
+from mimeo.config import MimeoConfigFactory
 from mimeo.config import constants as cc
 
 logger = logging.getLogger(__name__)
@@ -272,19 +273,19 @@ class MimeoConfigParser:
 
     def __init__(
             self,
-            config: dict,
+            config_path: str,
             args: Namespace,
     ):
         """Initialize MimeoConfigParser class.
 
         Parameters
         ----------
-        config:
-            A source config dictionary
-        args
+        config_path: str
+            A source config path
+        args: Namespace
             Arguments parsed by MimeoArgumentParser
         """
-        self._raw_config = config
+        self._raw_config = MimeoConfigFactory.parse_source(config_path)
         self._args = args
 
     def parse_config(
@@ -315,7 +316,7 @@ class MimeoConfigParser:
         config = dict(self._raw_config)
         config = self._parse_with_http_environment(config)
         config = self._parse_with_specific_args(config)
-        mimeo_config = MimeoConfig(config)
+        mimeo_config = MimeoConfigFactory.parse(config)
         logger.fine("Parsed Mimeo Configuration: [%s]", mimeo_config)
         return mimeo_config
 

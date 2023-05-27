@@ -1,0 +1,20 @@
+<mimeo_configuration>
+    <output>
+        <xml_declaration>true</xml_declaration>
+        <indent>4</indent>
+    </output>
+    <_templates_>
+        <_template_>
+            <count>30</count>
+            <model>
+
+                <SomeEntity>
+                    <ChildNode1>1</ChildNode1>
+                    <ChildNode2>value-2</ChildNode2>
+                    <ChildNode3>true</ChildNode3>
+                </SomeEntity>
+
+            </model>
+        </_template_>
+    </_templates_>
+</mimeo_configuration>

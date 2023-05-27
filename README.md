@@ -24,8 +24,8 @@ pip install mimeograph
 ### Mimeo Configuration
 
 Prepare Mimeo Configuration first
-- for a command line tool: in a JSON file
-- for a `Mimeograph` python class: in a `dict`
+- for a command line tool: in a JSON or XML file
+- for a `Mimeograph` python class: in a `dict` or stringified XML
 
 ```json
 {
@@ -45,6 +45,26 @@ Prepare Mimeo Configuration first
   ]
 }
 ```
+```xml
+<mimeo_configuration>
+    <_templates_>
+        <_template_>
+            <count>30</count>
+            <model>
+
+                <SomeEntity
+                    xmlns="http://mimeo.arch.com/default-namespace"
+                    xmlns:pn="http://mimeo.arch.com/prefixed-namespace">
+                    <ChildNode1>1</ChildNode1>
+                    <pn:ChildNode2>value-2</pn:ChildNode2>
+                    <ChildNode3>true</ChildNode3>
+                </SomeEntity>
+
+            </model>
+        </_template_>
+    </_templates_>
+</mimeo_configuration>
+```
 _You can find more configuration examples in the `examples` folder._
 
 ### Mimeograph
@@ -53,17 +73,22 @@ _You can find more configuration examples in the `examples` folder._
 
 ```sh
 mimeo SomeEntity-config.json
+mimeo SomeEntity-config.xml
 ```
 
 #### Python library
 
 ```python
-from mimeo import MimeoConfig, Mimeograph
+from mimeo import MimeoConfigFactory, Mimeograph
 
 config = {
-    # Your configuration
+    # Your configuration in a dict
 }
-mimeo_config = MimeoConfig(config)
+config = """
+    Your configuration in a stringified XML node
+"""
+config = ""  # A file path to your configuration (JSON / XML)
+mimeo_config = MimeoConfigFactory.parse(config)
 Mimeograph(mimeo_config).process()
 ```
 ***
@@ -73,7 +98,7 @@ The Mimeo Configuration above will produce 2 files:
 <!-- mimeo-output/mimeo-output-1.xml-->
 <SomeEntity xmlns="http://mimeo.arch.com/default-namespace" xmlns:pn="http://mimeo.arch.com/prefixed-namespace">
     <ChildNode1>1</ChildNode1>
-    <ChildNode2>value-2</ChildNode2>
+    <pn:ChildNode2>value-2</pn:ChildNode2>
     <ChildNode3>true</ChildNode3>
 </SomeEntity>
 ```
@@ -81,7 +106,7 @@ The Mimeo Configuration above will produce 2 files:
 <!-- mimeo-output/mimeo-output-2.xml-->
 <SomeEntity xmlns="http://mimeo.arch.com/default-namespace" xmlns:pn="http://mimeo.arch.com/prefixed-namespace">
     <ChildNode1>1</ChildNode1>
-    <ChildNode2>value-2</ChildNode2>
+    <pn:ChildNode2>value-2</pn:ChildNode2>
     <ChildNode3>true</ChildNode3>
 </SomeEntity>
 ```
@@ -103,6 +128,20 @@ Mimeo exposes several functions for data generation that will make it more usefu
     }
   }
 }
+```
+```xml
+<_template_>
+    <count>2</count>
+    <model>
+        
+        <SomeEntity>
+            <id>{auto_increment}</id>
+            <randomstring>{random_str}</randomstring>
+            <randomint>{random_int}</randomint>
+        </SomeEntity>
+        
+    </model>
+</_template_>
 ```
 
 **XML Data**
@@ -130,8 +169,8 @@ Mimeo exposes several functions for data generation that will make it more usefu
 
 When using Mimeo command line tool you can overwrite Mimeo Configuration properties:
 
-| Short option | Long option         | Description                                                                  |
-|:------------:|:--------------------|:-----------------------------------------------------------------------------|
+| Short option | Long option         | Description                                                          |
+|:------------:|:--------------------|:---------------------------------------------------------------------|
 |     `-o`     | `--output`          | overwrite the `output/direction` property                            |
 |     `-x`     | `--xml-declaration` | overwrite the `output/xml_declaration` property                      |
 |     `-i`     | `--indent`          | overwrite the `output/indent` property                               |
@@ -145,7 +184,7 @@ When using Mimeo command line tool you can overwrite Mimeo Configuration propert
 |              | `--http-method`     | overwrite the `output/method` property                               |
 |              | `--http-protocol`   | overwrite the `output/protocol` property                             |
 |     `-e`     | `--http-env`        | overwrite the output http properties using a mimeo env configuration |
-|              | `--http-envs-file`  | use a custom environments file (by default: mimeo.envs.json)                 |
+|              | `--http-envs-file`  | use a custom environments file (by default: mimeo.envs.json)         |
 
 #### Logging arguments
 

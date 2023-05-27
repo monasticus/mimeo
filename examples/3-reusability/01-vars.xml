@@ -1,0 +1,33 @@
+<mimeo_configuration>
+    <vars>
+        <CUSTOM_VAR_1>custom-value-1</CUSTOM_VAR_1>
+        <CUSTOM_VAR_2>1</CUSTOM_VAR_2>
+        <CUSTOM_VAR_3>true</CUSTOM_VAR_3>
+        <CUSTOM_VAR_4>{CUSTOM_VAR_2}</CUSTOM_VAR_4>
+        <CUSTOM_VAR_5>{auto_increment}</CUSTOM_VAR_5>
+        <CUSTOM_VAR_6>
+            <_mimeo_util>
+                <_name>random_int</_name>
+                <limit>99</limit>
+            </_mimeo_util>
+        </CUSTOM_VAR_6>
+    </vars>
+    <_templates_>
+        <_template_>
+            <count>30</count>
+            <model>
+
+                <SomeEntity>
+                    <ChildNode1>{CUSTOM_VAR_1}</ChildNode1>
+                    <ChildNode2>{CUSTOM_VAR_2}</ChildNode2>
+                    <ChildNode3>{CUSTOM_VAR_3}</ChildNode3>
+                    <ChildNode4>{CUSTOM_VAR_4}</ChildNode4>
+                    <ChildNode5>{CUSTOM_VAR_5}</ChildNode5>
+                    <ChildNode6>{CUSTOM_VAR_6}</ChildNode6>
+                    <ChildNode7>{CUSTOM_VAR_1}-with-suffix</ChildNode7>
+                </SomeEntity>
+
+            </model>
+        </_template_>
+    </_templates_>
+</mimeo_configuration>

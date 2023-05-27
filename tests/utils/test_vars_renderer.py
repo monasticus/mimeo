@@ -1,10 +1,10 @@
-from mimeo.config import MimeoConfig
+from mimeo.config import MimeoConfigFactory
 from mimeo.context import MimeoContextManager
 from mimeo.utils.renderers import VarsRenderer
 
 
 def test_vars_str():
-    config = MimeoConfig({
+    config = MimeoConfigFactory.parse({
         "vars": {
             "CUSTOM_VAR_1": "custom-value-1",
         },
@@ -16,7 +16,7 @@ def test_vars_str():
 
 
 def test_vars_int():
-    config = MimeoConfig({
+    config = MimeoConfigFactory.parse({
         "vars": {
             "CUSTOM_VAR_1": 1,
         },
@@ -28,7 +28,7 @@ def test_vars_int():
 
 
 def test_vars_bool():
-    config = MimeoConfig({
+    config = MimeoConfigFactory.parse({
         "vars": {
             "CUSTOM_VAR_1": True,
         },

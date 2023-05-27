@@ -2,7 +2,7 @@ import asyncio
 
 from aioresponses import aioresponses
 
-from mimeo.config import MimeoConfig
+from mimeo.config import MimeoConfigFactory
 from mimeo.consumers import ConsumerFactory
 from mimeo.context import MimeoContextManager
 from mimeo.generators import GeneratorFactory
@@ -31,7 +31,7 @@ def test_consume_post():
             },
         ],
     }
-    mimeo_config = MimeoConfig(config)
+    mimeo_config = MimeoConfigFactory.parse(config)
     consumer = ConsumerFactory.get_consumer(mimeo_config)
     assert consumer.method == "POST"
     assert consumer.url == "http://localhost:8080/documents"
@@ -85,7 +85,7 @@ def test_consume_put():
             },
         ],
     }
-    mimeo_config = MimeoConfig(config)
+    mimeo_config = MimeoConfigFactory.parse(config)
     consumer = ConsumerFactory.get_consumer(mimeo_config)
     assert consumer.method == "PUT"
     assert consumer.url == "http://localhost:8080/documents"
@@ -136,7 +136,7 @@ def test_consume_without_port():
             },
         ],
     }
-    mimeo_config = MimeoConfig(config)
+    mimeo_config = MimeoConfigFactory.parse(config)
     consumer = ConsumerFactory.get_consumer(mimeo_config)
     assert consumer.method == "POST"
     assert consumer.url == "http://localhost/documents"

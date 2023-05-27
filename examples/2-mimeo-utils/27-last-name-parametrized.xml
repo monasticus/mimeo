@@ -1,0 +1,19 @@
+<mimeo_configuration>
+    <_templates_>
+        <_template_>
+            <count>30</count>
+            <model>
+
+                <SomeEntity>
+                    <LastNameWithDuplicates>
+                        <_mimeo_util>
+                            <_name>last_name</_name>
+                            <unique>false</unique>
+                        </_mimeo_util>
+                    </LastNameWithDuplicates>
+                </SomeEntity>
+
+            </model>
+        </_template_>
+    </_templates_>
+</mimeo_configuration>
