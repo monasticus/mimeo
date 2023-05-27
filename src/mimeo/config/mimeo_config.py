@@ -230,9 +230,9 @@ class MimeoConfigFactory:
             return True
         if source_node == "false":
             return False
-        if source_node.isnumeric():
+        if source_node.replace("-", "").isnumeric():
             return int(source_node)
-        if source_node.replace(".", "").isnumeric():
+        if re.sub(r"[-\.]", "", source_node).isnumeric():
             return float(source_node)
         return source_node
 

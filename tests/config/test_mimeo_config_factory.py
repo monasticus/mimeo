@@ -365,6 +365,43 @@ def test_parse_source_config_int_value():
     assert MimeoConfigFactory.parse_source(config_xml) == expected_source
 
 
+def test_parse_source_config_negative_int_value():
+    config_xml = """
+    <mimeo_configuration>
+        <output>
+            <direction>stdout</direction>
+        </output>
+        <_templates_>
+            <_template_>
+                <count>5</count>
+                <model>
+                    <SomeEntity>
+                        <ChildNode>-1</ChildNode>
+                    </SomeEntity>
+                </model>
+            </_template_>
+        </_templates_>
+    </mimeo_configuration>
+    """
+    expected_source = {
+        "output": {
+            "direction": "stdout",
+        },
+        "_templates_": [
+            {
+                "count": 5,
+                "model": {
+                    "SomeEntity": {
+                        "ChildNode": -1,
+                    },
+                },
+            },
+        ],
+    }
+
+    assert MimeoConfigFactory.parse_source(config_xml) == expected_source
+
+
 def test_parse_source_config_float_value():
     config_xml = """
     <mimeo_configuration>
@@ -393,6 +430,43 @@ def test_parse_source_config_float_value():
                 "model": {
                     "SomeEntity": {
                         "ChildNode": 1.5,
+                    },
+                },
+            },
+        ],
+    }
+
+    assert MimeoConfigFactory.parse_source(config_xml) == expected_source
+
+
+def test_parse_source_config_negative_float_value():
+    config_xml = """
+    <mimeo_configuration>
+        <output>
+            <direction>stdout</direction>
+        </output>
+        <_templates_>
+            <_template_>
+                <count>5</count>
+                <model>
+                    <SomeEntity>
+                        <ChildNode>-1.5</ChildNode>
+                    </SomeEntity>
+                </model>
+            </_template_>
+        </_templates_>
+    </mimeo_configuration>
+    """
+    expected_source = {
+        "output": {
+            "direction": "stdout",
+        },
+        "_templates_": [
+            {
+                "count": 5,
+                "model": {
+                    "SomeEntity": {
+                        "ChildNode": -1.5,
                     },
                 },
             },
