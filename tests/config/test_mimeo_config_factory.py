@@ -4,6 +4,45 @@ from pathlib import Path
 
 from mimeo import MimeoConfig
 from mimeo.config import MimeoConfigFactory
+from mimeo.config.exc import MimeoConfigurationNotFoundError
+from tests.utils import assert_throws
+
+
+@assert_throws(err_type=MimeoConfigurationNotFoundError,
+               msg="<mimeo_configuration/> not found! {root_name} is not "
+                   "a proper Mimeo Configuration root node.",
+               root_name="configuration")
+def test_parse_source_with_wrong_root_node():
+    output_xml = """
+    <configuration>
+        <output>
+            <direction>stdout</direction>
+            <format>xml</format>
+            <xml_declaration>true</xml_declaration>
+            <indent>4</indent>
+            <directory_path>out</directory_path>
+            <file_name>out-file</file_name>
+            <method>PUT</method>
+            <protocol>https</protocol>
+            <host>localhost</host>
+            <port>8080</port>
+            <endpoint>/document</endpoint>
+            <username>admin</username>
+            <password>admin</password>
+        </output>
+        <_templates_>
+            <_template_>
+                <count>5</count>
+                <model>
+                    <SomeEntity>
+                        <ChildNode>value</ChildNode>
+                    </SomeEntity>
+                </model>
+            </_template_>
+        </_templates_>
+    </configuration>
+    """
+    MimeoConfigFactory.parse_source(output_xml)
 
 
 def test_parse_source_output():

@@ -1,5 +1,7 @@
 ---
 mimeo-config:
+  key: mimeo_configuration
+
   output:
     key: output
 

@@ -9,6 +9,8 @@ with tools.get_resource("constants.yaml") as config_file:
     constants = yaml.safe_load(config_file.read())
     _cc = constants["mimeo-config"]
 
+CONFIG_XML_ROOT_NAME = _cc["key"]
+
 ########################################################################################
 #                                    OUTPUT DETAILS                                    #
 ########################################################################################
@@ -92,6 +94,7 @@ MODEL_MIMEO_UTIL_KEY = _model_constants["mimeo-util"]["key"]
 MODEL_MIMEO_UTIL_NAME_KEY = _model_constants["mimeo-util"]["name"]["key"]
 
 __all__ = [
+    "CONFIG_XML_ROOT_NAME",
     "OUTPUT_KEY",
     "OUTPUT_FORMAT_KEY",
     "OUTPUT_DIRECTION_KEY",

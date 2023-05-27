@@ -27,6 +27,7 @@ from mimeo.config import constants as cc
 from mimeo.config.exc import (InvalidIndentError, InvalidMimeoConfigError,
                               InvalidMimeoModelError,
                               InvalidMimeoTemplateError, InvalidVarsError,
+                              MimeoConfigurationNotFoundError,
                               MissingRequiredPropertyError,
                               UnsupportedPropertyValueError)
 from mimeo.logging import setup_logging
@@ -158,8 +159,10 @@ class MimeoConfigFactory:
             initialization.
         """
         parsed_source = xmltodict.parse(source)
-        source_key = list(parsed_source.keys())[0]
-        parsed_source = parsed_source[source_key]
+        if cc.CONFIG_XML_ROOT_NAME not in parsed_source:
+            source_key = list(parsed_source.keys())[0]
+            raise MimeoConfigurationNotFoundError(source_key)
+        parsed_source = parsed_source[cc.CONFIG_XML_ROOT_NAME]
         return cls._parse_source_values(parsed_source)
 
     @classmethod
