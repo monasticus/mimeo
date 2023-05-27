@@ -21,6 +21,8 @@ It contains all custom exceptions related to Mimeo Configuration:
         A custom Exception class for invalid mimeo configuration.
     * InvalidMimeoConfigError.Code
         An Enumeration class for InvalidMimeoConfigError error codes.
+    * UnsupportedMimeoConfigSourceError
+        A custom Exception class for unsupported Mimeo Configuration source.
     * MimeoConfigurationNotFoundError
         A custom Exception class for no mimeo_configuration node in source xml.
 """
