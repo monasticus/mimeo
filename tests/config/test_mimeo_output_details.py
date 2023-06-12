@@ -211,7 +211,7 @@ def test_parsing_output_with_invalid_indent():
 @assert_throws(err_type=UnsupportedPropertyValueError,
                msg="Provided format [{format}] is not supported! "
                    "Supported values: [{values}].",
-               format="unsupported_format", values="xml")
+               format="unsupported_format", values="xml, json")
 def test_parsing_output_with_unsupported_format():
     output = {
         "format": "unsupported_format",

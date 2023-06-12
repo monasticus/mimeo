@@ -55,6 +55,8 @@ mimeo-config:
               key: xml_declaration
             indent:
               key: indent
+        json:
+          key: json
 
 
   vars:
