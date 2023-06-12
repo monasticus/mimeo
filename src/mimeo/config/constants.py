@@ -21,14 +21,17 @@ OUTPUT_DIRECTION_KEY = _output_constants["direction"]["key"]
 
 ########################################################################################
 # --------------------------------- format specific ---------------------------------- #
-_format_details = _output_constants["format"]["values"]
-SUPPORTED_OUTPUT_FORMATS = tuple(format_["key"] for format_ in _format_details.values())
-OUTPUT_FORMAT_XML = _format_details["xml"]["key"]
+_format_details = _output_constants["format"]["details"]
+OUTPUT_INDENT_KEY = _format_details["indent"]["key"]
+
+_format_values = _output_constants["format"]["values"]
+SUPPORTED_OUTPUT_FORMATS = tuple(format_["key"] for format_ in _format_values.values())
+OUTPUT_FORMAT_XML = _format_values["xml"]["key"]
+OUTPUT_FORMAT_JSON = _format_values["json"]["key"]
 
 # -------------------------------- xml format specific ------------------------------- #
-_xml_format_details = _format_details["xml"]["details"]
+_xml_format_details = _format_values["xml"]["details"]
 OUTPUT_XML_DECLARATION_KEY = _xml_format_details["xml-declaration"]["key"]
-OUTPUT_INDENT_KEY = _xml_format_details["indent"]["key"]
 
 ########################################################################################
 # -------------------------------- direction specific -------------------------------- #
@@ -100,6 +103,7 @@ __all__ = [
     "OUTPUT_DIRECTION_KEY",
     "SUPPORTED_OUTPUT_FORMATS",
     "OUTPUT_FORMAT_XML",
+    "OUTPUT_FORMAT_JSON",
     "OUTPUT_XML_DECLARATION_KEY",
     "OUTPUT_INDENT_KEY",
     "SUPPORTED_OUTPUT_DIRECTIONS",
