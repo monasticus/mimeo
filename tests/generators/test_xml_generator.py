@@ -15,7 +15,7 @@ def test_generate_single_template_model_without_attributes():
             {
                 "count": 5,
                 "model": {
-                    "SomeEntity": {},
+                    "SomeEntity": None,
                 },
             },
         ],
@@ -1181,7 +1181,8 @@ def test_generate_single_template_list_child_element_in_array():
 
     @assert_throws(err_type=UnsupportedStructureError,
                    msg="An array can include only atomic types (including Mimeo Utils) "
-                       "or only JSON objects! Unsupported structure found in {e}: {s}",
+                       "or only JSON objects (when output format is XML)! Unsupported "
+                       "structure found in {e}: {s}",
                    e="ChildNode", s="[['atomic']]")
     def _test(
             config: MimeoConfig,
@@ -1203,13 +1204,13 @@ def test_generate_multiple_templates():
             {
                 "count": 2,
                 "model": {
-                    "SomeEntity": {},
+                    "SomeEntity": None,
                 },
             },
             {
                 "count": 3,
                 "model": {
-                    "SomeEntity2": {},
+                    "SomeEntity2": None,
                 },
             },
         ],
@@ -1274,18 +1275,20 @@ def test_generate_nested_templates():
                 "model": {
                     "SomeEntity": {
                         "SingleNode": "value",
-                        "MultipleNodes": {
-                            "_templates_": [
-                                {
-                                    "count": 4,
-                                    "model": {
-                                        "Node": {
-                                            "ChildNode": True,
+                        "MultipleNodes": [
+                            {
+                                "_templates_": [
+                                    {
+                                        "count": 4,
+                                        "model": {
+                                            "Node": {
+                                                "ChildNode": True,
+                                            },
                                         },
                                     },
-                                },
-                            ],
-                        },
+                                ],
+                            },
+                        ],
                     },
                 },
             },

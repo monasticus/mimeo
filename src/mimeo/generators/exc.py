@@ -12,7 +12,7 @@ from __future__ import annotations
 class UnsupportedStructureError(Exception):
     """A custom Exception class for an unsupported structure.
 
-    Raised while attempting to generate data from a Mimeo Model having a list
+    Raised while attempting to generate XML data from a Mimeo Model having a list
     of non-only atomic / non-only dict items.
     """
 
@@ -33,5 +33,5 @@ class UnsupportedStructureError(Exception):
             An unsupported structure
         """
         super().__init__("An array can include only atomic types (including Mimeo "
-                         "Utils) or only JSON objects! Unsupported structure found in "
-                         f"{field_name}: {structure}")
+                         "Utils) or only JSON objects (when output format is XML)! "
+                         f"Unsupported structure found in {field_name}: {structure}")
