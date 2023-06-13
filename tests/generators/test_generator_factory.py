@@ -1,6 +1,6 @@
 from mimeo.config import MimeoConfigFactory
 from mimeo.config.exc import UnsupportedPropertyValueError
-from mimeo.generators import GeneratorFactory, XMLGenerator, JSONGenerator
+from mimeo.generators import GeneratorFactory, JSONGenerator, XMLGenerator
 from tests.utils import assert_throws
 
 

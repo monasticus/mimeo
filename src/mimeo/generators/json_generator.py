@@ -10,14 +10,14 @@ import json
 import logging
 import xml.etree.ElementTree as ElemTree
 from typing import Iterator
-from xml.dom import minidom
 
 from mimeo.config import constants as cc
 from mimeo.config.mimeo_config import MimeoConfig, MimeoTemplate
 from mimeo.context import MimeoContext
-from mimeo.context.decorators import mimeo_context_switch, mimeo_clear_iterations, mimeo_next_iteration, mimeo_context
+from mimeo.context.decorators import (mimeo_clear_iterations, mimeo_context,
+                                      mimeo_context_switch,
+                                      mimeo_next_iteration)
 from mimeo.generators import Generator
-from mimeo.generators.exc import UnsupportedStructureError
 from mimeo.utils import MimeoRenderer
 
 logger = logging.getLogger(__name__)
@@ -103,7 +103,10 @@ class JSONGenerator(Generator):
         str
             Stringified data unit
         """
-        return json.dumps(data_unit, indent=self.__indent)
+        if self.__indent is not None and self.__indent != 0:
+            return json.dumps(data_unit, indent=self.__indent)
+
+        return json.dumps(data_unit)
 
     @classmethod
     @mimeo_context_switch
@@ -501,10 +504,15 @@ class JSONGenerator(Generator):
             </SomeField>
         </Root>
         """
-        templates = (MimeoTemplate(template) for template in element_meta["value"][cc.TEMPLATES_KEY])
-        # child = cls._create_xml_element(parent, element_meta)
-        for _ in cls.generate(templates, parent):
-            pass
+        templates = (MimeoTemplate(template)
+                     for template in element_meta["value"][cc.TEMPLATES_KEY])
+        target = parent
+        if isinstance(parent, dict):
+            parent[element_meta["tag"]] = []
+            target = parent[element_meta["tag"]]
+
+        for child in cls.generate(templates):
+            target.append(child)
         return parent
 
     @classmethod
@@ -632,4 +640,3 @@ class JSONGenerator(Generator):
             elif isinstance(element_meta["value"], list):
                 parent.append([])
             return parent[-1]
-

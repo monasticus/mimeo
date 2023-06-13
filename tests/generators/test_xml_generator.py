@@ -1265,9 +1265,9 @@ def test_generate_multiple_templates():
 
 
 def test_generate_nested_templates():
-    config_from_dict = MimeoConfigFactory.parse({
+    config_from_dict_templates_in_array = MimeoConfigFactory.parse({
         "output": {
-            "format": "xml",
+            "format": "json",
         },
         "_templates_": [
             {
@@ -1289,6 +1289,33 @@ def test_generate_nested_templates():
                                 ],
                             },
                         ],
+                    },
+                },
+            },
+        ],
+    })
+    config_from_dict_templates_in_object = MimeoConfigFactory.parse({
+        "output": {
+            "format": "json",
+        },
+        "_templates_": [
+            {
+                "count": 5,
+                "model": {
+                    "SomeEntity": {
+                        "SingleNode": "value",
+                        "MultipleNodes": {
+                            "_templates_": [
+                                {
+                                    "count": 4,
+                                    "model": {
+                                        "Node": {
+                                            "ChildNode": True,
+                                        },
+                                    },
+                                },
+                            ],
+                        },
                     },
                 },
             },
@@ -1345,6 +1372,115 @@ def test_generate_nested_templates():
                 assert multiples_nodes_node.tag == "MultipleNodes"
                 assert multiples_nodes_node.attrib == {}
                 assert len(list(multiples_nodes_node)) == 4  # number of children
+
+                nodes = multiples_nodes_node.findall("Node")
+                for node in nodes:
+                    assert node.tag == "Node"
+                    assert node.attrib == {}
+                    assert len(list(node)) == 1  # number of children
+
+                    child_node = node.find("ChildNode")
+                    assert child_node.tag == "ChildNode"
+                    assert child_node.attrib == {}
+                    assert child_node.text == "true"
+                    assert len(list(child_node)) == 0  # number of children
+
+                count += 1
+
+            assert count == 5
+
+    _test(config_from_dict_templates_in_array)
+    _test(config_from_dict_templates_in_object)
+    _test(config_from_xml)
+
+
+def test_generate_nested_templates_mixed_with_other_elements():
+    config_from_dict = MimeoConfigFactory.parse({
+        "output": {
+            "format": "json",
+        },
+        "_templates_": [
+            {
+                "count": 5,
+                "model": {
+                    "SomeEntity": {
+                        "SingleNode": "value",
+                        "MultipleNodes": {
+                            "NodesCount": 4,
+                            "_templates_": [
+                                {
+                                    "count": 4,
+                                    "model": {
+                                        "Node": {
+                                            "ChildNode": True,
+                                        },
+                                    },
+                                },
+                            ],
+                        },
+                    },
+                },
+            },
+        ],
+    })
+    config_from_xml = MimeoConfigFactory.parse("""
+        <mimeo_configuration>
+            <output>
+                <format>xml</format>
+            </output>
+            <_templates_>
+                <_template_>
+                    <count>5</count>
+                    <model>
+                        <SomeEntity>
+                            <SingleNode>value</SingleNode>
+                            <MultipleNodes>
+                                <NodesCount>4</NodesCount>
+                                <_templates_>
+                                    <_template_>
+                                        <count>4</count>
+                                        <model>
+                                            <Node>
+                                                <ChildNode>true</ChildNode>
+                                            </Node>
+                                        </model>
+                                    </_template_>
+                                </_templates_>
+                            </MultipleNodes>
+                        </SomeEntity>
+                    </model>
+                </_template_>
+            </_templates_>
+        </mimeo_configuration>
+    """)
+
+    def _test(
+            config: MimeoConfig,
+    ):
+        with MimeoContextManager(config):
+            generator = XMLGenerator(config)
+            count = 0
+            for data in generator.generate(config.templates):
+                assert data.tag == "SomeEntity"
+                assert data.attrib == {}
+                assert len(list(data)) == 2  # number of children
+
+                single_node = data.find("SingleNode")
+                assert single_node.tag == "SingleNode"
+                assert single_node.attrib == {}
+                assert single_node.text == "value"
+                assert len(list(single_node)) == 0  # number of children
+
+                multiples_nodes_node = data.find("MultipleNodes")
+                assert multiples_nodes_node.tag == "MultipleNodes"
+                assert multiples_nodes_node.attrib == {}
+                assert len(list(multiples_nodes_node)) == 5  # number of children
+
+                nodes_count_node = multiples_nodes_node.find("NodesCount")
+                assert nodes_count_node.tag == "NodesCount"
+                assert nodes_count_node.attrib == {}
+                assert nodes_count_node.text == "4"
+                assert len(list(nodes_count_node)) == 0  # number of children
 
                 nodes = multiples_nodes_node.findall("Node")
                 for node in nodes:

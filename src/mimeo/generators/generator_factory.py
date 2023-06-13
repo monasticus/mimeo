@@ -9,7 +9,7 @@ from __future__ import annotations
 from mimeo.config import constants as cc
 from mimeo.config.exc import UnsupportedPropertyValueError
 from mimeo.config.mimeo_config import MimeoConfig
-from mimeo.generators import Generator, XMLGenerator, JSONGenerator
+from mimeo.generators import Generator, JSONGenerator, XMLGenerator
 
 
 class GeneratorFactory:
