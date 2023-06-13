@@ -9,7 +9,7 @@ from __future__ import annotations
 from mimeo.config import constants as cc
 from mimeo.config.exc import UnsupportedPropertyValueError
 from mimeo.config.mimeo_config import MimeoConfig
-from mimeo.generators import Generator, XMLGenerator
+from mimeo.generators import Generator, XMLGenerator, JSONGenerator
 
 
 class GeneratorFactory:
@@ -30,6 +30,7 @@ class GeneratorFactory:
     """
 
     XML = cc.OUTPUT_FORMAT_XML
+    JSON = cc.OUTPUT_FORMAT_JSON
 
     @staticmethod
     def get_generator(
@@ -55,6 +56,8 @@ class GeneratorFactory:
         output_format = mimeo_config.output.format
         if output_format == GeneratorFactory.XML:
             return XMLGenerator(mimeo_config)
+        if output_format == GeneratorFactory.JSON:
+            return JSONGenerator(mimeo_config)
         raise UnsupportedPropertyValueError(
             cc.OUTPUT_FORMAT_KEY,
             output_format,

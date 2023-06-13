@@ -1,6 +1,6 @@
 from mimeo.config import MimeoConfigFactory
 from mimeo.config.exc import UnsupportedPropertyValueError
-from mimeo.generators import GeneratorFactory, XMLGenerator
+from mimeo.generators import GeneratorFactory, XMLGenerator, JSONGenerator
 from tests.utils import assert_throws
 
 
@@ -23,6 +23,27 @@ def test_generator_factory_for_xml():
     mimeo_config = MimeoConfigFactory.parse(config)
     generator = GeneratorFactory.get_generator(mimeo_config)
     assert isinstance(generator, XMLGenerator)
+
+
+def test_generator_factory_for_json():
+    config = {
+        "output": {
+            "format": "json",
+        },
+        "_templates_": [
+            {
+                "count": 5,
+                "model": {
+                    "SomeEntity": {
+                        "ChildNode": "value",
+                    },
+                },
+            },
+        ],
+    }
+    mimeo_config = MimeoConfigFactory.parse(config)
+    generator = GeneratorFactory.get_generator(mimeo_config)
+    assert isinstance(generator, JSONGenerator)
 
 
 @assert_throws(err_type=UnsupportedPropertyValueError,
