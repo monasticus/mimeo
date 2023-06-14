@@ -14,9 +14,7 @@ from xml.dom import minidom
 from mimeo.config import constants as cc
 from mimeo.config.mimeo_config import MimeoConfig, MimeoTemplate
 from mimeo.context import MimeoContext
-from mimeo.context.decorators import (mimeo_clear_iterations, mimeo_context,
-                                      mimeo_context_switch,
-                                      mimeo_next_iteration)
+from mimeo.context.decorators import (mimeo_context)
 from mimeo.generators import Generator
 from mimeo.generators.exc import UnsupportedStructureError
 from mimeo.utils import MimeoRenderer
@@ -122,83 +120,11 @@ class XMLGenerator(Generator):
         return node_str.decode("ascii")
 
     @classmethod
-    @mimeo_context_switch
-    @mimeo_clear_iterations
-    def _process_single_template(
-            cls,
-            template: MimeoTemplate,
-            parent: ElemTree.Element = None,
-    ) -> list[ElemTree.Element]:
-        """Process a single Mimeo Template.
-
-        This function is used recursively when a Mimeo Configuration
-        contains nested templates.
-        It repeats same processing operation so many times as it is
-        configured in the `count` property of a Mimeo Configuration.
-        Before the template execution it switches context managed by
-        MimeoContextManager and also clears iterations as nested
-        templates would collect iterations from previous parent's
-        iterations.
-
-        Parameters
-        ----------
-        template : MimeoTemplate
-            A single Mimeo Template to process
-        parent : ElemTree.Element, default None
-            A parent node for processing nested templates
-
-        Returns
-        -------
-        list[ElemTree.Element]
-            A list of generated data units
-        """
-        logger.debug("Reading template [%s]", template)
-        return [cls._process_single_data_unit(template, parent)
-                for _ in iter(range(template.count))]
-
-    @classmethod
-    @mimeo_next_iteration
-    def _process_single_data_unit(
-            cls,
-            template: MimeoTemplate,
-            parent: ElemTree.Element = None,
-    ) -> ElemTree.Element:
-        """Process a single data unit from the template.
-
-        This function is used recursively when a Mimeo Configuration
-        contains nested templates.
-        It processes a single data unit. The reason why it is separated
-        from the _process_node() function is the @mimeo_next_iteration
-        decorator. The _process_node() function is recursively called
-        by itself, and it produces data for a single iteration.
-        The purpose of this function is to increment iteration before
-        processing node.
-
-        Parameters
-        ----------
-        template : MimeoTemplate
-            A single Mimeo Template to process
-        parent : ElemTree.Element, default None
-            A parent node for processing nested templates
-
-        Returns
-        -------
-        ElemTree.Element
-            A single data unit generated within a single template
-            iteration. If the `parent` is not None it will not return
-            any value.
-        """
-        element_meta = cls._element_meta(
-            template.model.root_name,
-            template.model.root_data)
-        return cls._process_node(parent, element_meta)
-
-    @classmethod
     @mimeo_context
     def _process_node(
             cls,
             parent: ElemTree.Element | None,
-            element_meta: dict,
+            entry_meta: dict,
             context: MimeoContext = None,
     ) -> ElemTree.Element:
         """Process a single template's node.
@@ -212,7 +138,7 @@ class XMLGenerator(Generator):
         ----------
         parent : ElemTree.Element | None
             A parent node
-        element_meta : dict
+        entry_meta : dict
             Element's metadata
         context : MimeoContext, default None
             The current Mimeo Context (injected by MimeoContextManager)
@@ -231,18 +157,18 @@ class XMLGenerator(Generator):
         SpecialFieldNotFoundError
             If a special field does not exist.
         """
-        logger.fine("Rendering element - parent [%s], element_meta [%s]",
-                    parent if parent is None else parent.tag, element_meta)
-        element_meta = cls._pre_process_node(element_meta)
+        logger.fine("Rendering element - parent [%s], entry_meta [%s]",
+                    parent if parent is None else parent.tag, entry_meta)
+        entry_meta = cls._pre_process_node(entry_meta)
 
-        if cls._is_complex(element_meta):
-            return cls._process_complex_value(parent, element_meta)
-        return cls._process_atomic_value(parent, element_meta, context)
+        if cls._is_complex(entry_meta):
+            return cls._process_complex_value(parent, entry_meta)
+        return cls._process_atomic_value(parent, entry_meta, context)
 
     @classmethod
     def _pre_process_node(
             cls,
-            element_meta: dict,
+            entry_meta: dict,
     ) -> dict:
         """Pre-process element's metadata.
 
@@ -262,7 +188,7 @@ class XMLGenerator(Generator):
 
         Parameters
         ----------
-        element_meta : dict
+        entry_meta : dict
             Initial element's metadata
 
         Returns
@@ -270,8 +196,8 @@ class XMLGenerator(Generator):
         dict
             Complete element's metadata
         """
-        tag = element_meta["tag"]
-        value = element_meta["value"]
+        tag = entry_meta["name"]
+        value = entry_meta["value"]
         attrs = {}
         is_mimeo_util = MimeoRenderer.is_parametrized_mimeo_util(value)
         is_special_field = MimeoRenderer.is_special_field(tag)
@@ -284,38 +210,18 @@ class XMLGenerator(Generator):
                     attrs[prop[1:]] = value_copy.pop(prop)
             value = value.get(cc.MODEL_TEXT_VALUE_KEY, value_copy)
 
-        return cls._element_meta(
+        return cls._entry_meta(
             tag,
             value,
             attrs,
             is_mimeo_util,
             is_special_field)
 
-    @staticmethod
-    def _is_complex(
-            element_meta: dict,
-    ) -> bool:
-        """Verify if an element is complex.
-
-        Parameters
-        ----------
-        element_meta : dict
-            Element's metadata
-
-        Returns
-        -------
-        bool
-            True if element's value is a list or a dict not being a parametrized
-            Mimeo Util. Otherwise, False.
-        """
-        return (isinstance(element_meta["value"], (list, dict)) and
-                not element_meta["mimeo_util"])
-
     @classmethod
     def _process_complex_value(
             cls,
             parent: ElemTree.Element | None,
-            element_meta: dict,
+            entry_meta: dict,
     ) -> ElemTree.Element | None:
         """Process a node with a complex value.
 
@@ -327,7 +233,7 @@ class XMLGenerator(Generator):
         ----------
         parent : ElemTree.Element | None
             A parent node
-        element_meta : dict
+        entry_meta : dict
             Element's metadata
 
         Returns
@@ -344,20 +250,20 @@ class XMLGenerator(Generator):
         SpecialFieldNotFoundError
             If a special field does not exist.
         """
-        if isinstance(element_meta["value"], dict):
+        if isinstance(entry_meta["value"], dict):
             func = cls._process_dict_value
-        elif (isinstance(element_meta["value"], list) and
-              element_meta["tag"] != cc.TEMPLATES_KEY):
+        elif (isinstance(entry_meta["value"], list) and
+              entry_meta["name"] != cc.TEMPLATES_KEY):
             func = cls._process_list_value
         else:
             func = cls._process_templates_value
-        return func(parent, element_meta)
+        return func(parent, entry_meta)
 
     @classmethod
     def _process_dict_value(
             cls,
             parent: ElemTree.Element | None,
-            element_meta: dict,
+            entry_meta: dict,
     ) -> ElemTree.Element:
         """Process a node with a dictionary value.
 
@@ -367,7 +273,7 @@ class XMLGenerator(Generator):
         ----------
         parent : ElemTree.Element | None
             A parent node
-        element_meta : dict
+        entry_meta : dict
             Element's metadata
 
         Returns
@@ -387,27 +293,27 @@ class XMLGenerator(Generator):
         Examples
         --------
         parent = ElemTree.Element("Root")
-        element_meta = cls._element_meta(
+        entry_meta = cls._entry_meta(
             tag="SomeField",
             value={"SomeChild1": 1, "SomeChild2": 2},
         )
-        cls._process_dict_value(parent, element_meta)
+        cls._process_dict_value(parent, entry_meta)
         ->
         <SomeField>
             <SomeChild1>1</SomeChild1>
             <SomeChild2>2</SomeChild2>
         </SomeField>
         """
-        element = cls._create_xml_element(parent, element_meta)
-        for child_tag, child_value in element_meta["value"].items():
-            cls._process_node(element, cls._element_meta(child_tag, child_value))
+        element = cls._create_node(parent, entry_meta)
+        for child_tag, child_value in entry_meta["value"].items():
+            cls._process_node(element, cls._entry_meta(child_tag, child_value))
         return element
 
     @classmethod
     def _process_list_value(
             cls,
             parent: ElemTree.Element,
-            element_meta: dict,
+            entry_meta: dict,
     ) -> ElemTree.Element:
         """Process a node with a list value.
 
@@ -418,7 +324,7 @@ class XMLGenerator(Generator):
         ----------
         parent : ElemTree.Element | None
             A parent node
-        element_meta : dict
+        entry_meta : dict
             Element's metadata
 
         Returns
@@ -438,7 +344,7 @@ class XMLGenerator(Generator):
         Examples
         --------
         parent = ElemTree.Element("Root")
-        element_meta = cls._element_meta(
+        entry_meta = cls._entry_meta(
             tag="SomeField",
             value=[
                 'value-1',
@@ -446,7 +352,7 @@ class XMLGenerator(Generator):
                 {'_mimeo_util': {'_name': 'auto_increment', 'pattern': '{}'}}
             ],
         )
-        cls._process_list_value_with_atomic_children(parent, element_meta)
+        cls._process_list_value_with_atomic_children(parent, entry_meta)
         ->
         <Root>
             <SomeField>value-1</SomeField>
@@ -457,20 +363,20 @@ class XMLGenerator(Generator):
             <SomeField>1</SomeField>
         </Root>
         """
-        for child in element_meta["value"]:
+        for child in entry_meta["value"]:
             if isinstance(child, list):
                 raise UnsupportedStructureError(
-                    element_meta["tag"],
-                    element_meta["value"])
-            element_meta = cls._element_meta(element_meta["tag"], child)
-            cls._process_node(parent, element_meta)
+                    entry_meta["name"],
+                    entry_meta["value"])
+            entry_meta = cls._entry_meta(entry_meta["name"], child)
+            cls._process_node(parent, entry_meta)
         return parent
 
     @classmethod
     def _process_templates_value(
             cls,
             parent: ElemTree.Element,
-            element_meta: dict,
+            entry_meta: dict,
     ) -> ElemTree.Element:
         """Process a node with a dictionary value storing templates.
 
@@ -480,7 +386,7 @@ class XMLGenerator(Generator):
         ----------
         parent : ElemTree.Element | None
             A parent node
-        element_meta : dict
+        entry_meta : dict
             Element's metadata
 
         Returns
@@ -500,7 +406,7 @@ class XMLGenerator(Generator):
         Examples
         --------
         parent = ElemTree.Element("Root")
-        element_meta = cls._element_meta(
+        entry_meta = cls._entry_meta(
             tag="SomeField",
             value={"_templates_": [
                 {
@@ -515,7 +421,7 @@ class XMLGenerator(Generator):
                 }
             ]},
         )
-        cls._process_templates_value(parent, element_meta)
+        cls._process_templates_value(parent, entry_meta)
         ->
         <Root>
             <SomeField>
@@ -525,7 +431,7 @@ class XMLGenerator(Generator):
             </SomeField>
         </Root>
         """
-        templates = (MimeoTemplate(template) for template in element_meta["value"])
+        templates = (MimeoTemplate(template) for template in entry_meta["value"])
         for _ in cls.generate(templates, parent):
             pass
         return parent
@@ -534,7 +440,7 @@ class XMLGenerator(Generator):
     def _process_atomic_value(
             cls,
             parent: ElemTree.Element,
-            element_meta: dict,
+            entry_meta: dict,
             context: MimeoContext,
     ) -> ElemTree.Element:
         """Process a node with an atomic value.
@@ -546,7 +452,7 @@ class XMLGenerator(Generator):
         ----------
         parent : ElemTree.Element | None
             A parent node
-        element_meta : dict
+        entry_meta : dict
             Element's metadata
         context : MimeoContext, default None
             The current Mimeo Context (injected by MimeoContextManager)
@@ -569,71 +475,35 @@ class XMLGenerator(Generator):
         --------
         context = MimeoContextManager().get_current_context()
         parent = ElemTree.Element("Root")
-        element_meta = cls._element_meta(
+        entry_meta = cls._entry_meta(
             tag="SomeField",
             value="value-1",
         )
-        cls._process_atomic_value(parent, element_meta, context)
+        cls._process_atomic_value(parent, entry_meta, context)
         ->
         <SomeField>value-1</SomeField>
         """
-        element = cls._create_xml_element(parent, element_meta)
-        value = MimeoRenderer.render(element_meta["value"])
-        if element_meta["special"]:
-            context.curr_iteration().add_special_field(element_meta["tag"], value)
+        element = cls._create_node(parent, entry_meta)
+        value = MimeoRenderer.render(entry_meta["value"])
+        if entry_meta["special"]:
+            context.curr_iteration().add_special_field(entry_meta["name"], value)
         val_str = str(value) if value is not None else ""
         element.text = val_str.lower() if isinstance(value, bool) else val_str
         logger.fine("Rendered value [%s]", element.text)
         return element
 
     @staticmethod
-    def _element_meta(
-            tag: str,
-            value: dict | list | str | int | float | bool,
-            attrs: dict | None = None,
-            is_mimeo_util: bool | None = None,
-            is_special_field: bool | None = None,
-    ) -> dict:
-        """Build element's metadata.
-
-        Parameters
-        ----------
-        tag : str
-            An element's tag
-        value : dict | list | str | int | float | bool
-            An element's value
-        attrs : dict | None, default None
-            An element's attributes
-        is_mimeo_util : bool | None, default None
-            A is-mimeo-util flag
-        is_special_field : bool | None, default None
-            A is-special-field flag
-
-        Returns
-        -------
-        dict
-            Element's metadata
-        """
-        return {
-            "tag": tag,
-            "value": value,
-            "attrs": attrs,
-            "mimeo_util": is_mimeo_util,
-            "special": is_special_field,
-        }
-
-    @staticmethod
-    def _create_xml_element(
+    def _create_node(
             parent: ElemTree.Element,
-            element_meta: dict,
+            entry_meta: dict,
     ) -> ElemTree.Element | ElemTree.SubElement:
-        """Create an XML element based on the `parent` existence.
+        """Create an XML node based on the `parent` existence.
 
         Parameters
         ----------
         parent : ElemTree.Element
             A parent node
-        element_meta : dict
+        entry_meta : dict
             Element's metadata
 
         Returns
@@ -644,10 +514,10 @@ class XMLGenerator(Generator):
         """
         if parent is None:
             return ElemTree.Element(
-                element_meta["tag"],
-                attrib=element_meta["attrs"])
+                entry_meta["name"],
+                attrib=entry_meta["attrs"])
         return ElemTree.SubElement(
             parent,
-            element_meta["tag"],
-            attrib=element_meta["attrs"],
+            entry_meta["name"],
+            attrib=entry_meta["attrs"],
         )

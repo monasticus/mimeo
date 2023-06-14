@@ -6,10 +6,17 @@ It exports only one class:
 """
 from __future__ import annotations
 
+import logging
+import xml.etree.ElementTree as ElemTree
 from abc import ABCMeta, abstractmethod
 from typing import Any, Iterator
 
 from mimeo.config.mimeo_config import MimeoTemplate
+from mimeo.context.decorators import (mimeo_clear_iterations,
+                                      mimeo_context_switch,
+                                      mimeo_next_iteration)
+
+logger = logging.getLogger(__name__)
 
 
 class Generator(metaclass=ABCMeta):
@@ -99,3 +106,131 @@ class Generator(metaclass=ABCMeta):
             Stringified data unit
         """
         raise NotImplementedError
+
+    @classmethod
+    @mimeo_context_switch
+    @mimeo_clear_iterations
+    def _process_single_template(
+            cls,
+            template: MimeoTemplate,
+            parent: ElemTree.Element | dict | list = None,
+    ) -> list[ElemTree.Element | dict]:
+        """Process a single Mimeo Template.
+
+        This function is used recursively when a Mimeo Configuration
+        contains nested templates.
+        It repeats same processing operation so many times as it is
+        configured in the `count` property of a Mimeo Configuration.
+        Before the template execution it switches context managed by
+        MimeoContextManager and also clears iterations as nested
+        templates would collect iterations from previous parent's
+        iterations.
+
+        Parameters
+        ----------
+        template : MimeoTemplate
+            A single Mimeo Template to process
+        parent : ElemTree.Element, default None
+            A parent node for processing nested templates
+
+        Returns
+        -------
+        list[ElemTree.Element]
+            A list of generated data units
+        """
+        logger.debug("Reading template [%s]", template)
+        return [cls._process_single_data_unit(template, parent)
+                for _ in iter(range(template.count))]
+
+    @classmethod
+    @mimeo_next_iteration
+    def _process_single_data_unit(
+            cls,
+            template: MimeoTemplate,
+            parent: ElemTree.Element | dict | list = None,
+    ) -> ElemTree.Element | dict:
+        """Process a single data unit from the template.
+
+        This function is used recursively when a Mimeo Configuration
+        contains nested templates.
+        It processes a single data unit. The reason why it is separated
+        from the _process_node() function is the @mimeo_next_iteration
+        decorator. The _process_node() function is recursively called
+        by itself, and it produces data for a single iteration.
+        The purpose of this function is to increment iteration before
+        processing node.
+
+        Parameters
+        ----------
+        template : MimeoTemplate
+            A single Mimeo Template to process
+        parent : ElemTree.Element, default None
+            A parent node for processing nested templates
+
+        Returns
+        -------
+        ElemTree.Element
+            A single data unit generated within a single template
+            iteration. If the `parent` is not None it will not return
+            any value.
+        """
+        entry_meta = cls._entry_meta(
+            template.model.root_name,
+            template.model.root_data)
+        return cls._process_node(parent, entry_meta)
+
+    @staticmethod
+    def _is_complex(
+            entry_meta: dict,
+    ) -> bool:
+        """Verify if an element is complex.
+
+        Parameters
+        ----------
+        entry_meta : dict
+            Element's metadata
+
+        Returns
+        -------
+        bool
+            True if element's value is a list or a dict not being a parametrized
+            Mimeo Util. Otherwise, False.
+        """
+        return (isinstance(entry_meta["value"], (list, dict)) and
+                not entry_meta["mimeo_util"])
+
+    @staticmethod
+    def _entry_meta(
+            name: str,
+            value: dict | list | str | int | float | bool,
+            attrs: dict | None = None,
+            is_mimeo_util: bool | None = None,
+            is_special_field: bool | None = None,
+    ) -> dict:
+        """Build node's metadata.
+
+        Parameters
+        ----------
+        name : str
+            A entry's name
+        value : dict | list | str | int | float | bool
+            An entry's value
+        attrs : dict | None, default None
+            An entry's attributes
+        is_mimeo_util : bool | None, default None
+            A is-mimeo-util flag
+        is_special_field : bool | None, default None
+            A is-special-field flag
+
+        Returns
+        -------
+        dict
+            Entry's metadata
+        """
+        return {
+            "name": name,
+            "value": value,
+            "attrs": attrs,
+            "mimeo_util": is_mimeo_util,
+            "special": is_special_field,
+        }
