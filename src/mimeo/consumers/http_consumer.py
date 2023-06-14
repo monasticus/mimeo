@@ -54,6 +54,7 @@ class HttpConsumer(Consumer):
         self.method = output.method
         self.url = HttpConsumer.__build_url(output)
         self.__auth = aiohttp.BasicAuth(output.username, output.password, "utf-8")
+        self.__content_type = f"application/{output.format}"
 
     async def consume(
             self,
@@ -76,7 +77,7 @@ class HttpConsumer(Consumer):
                 self.url,
                 auth=self.__auth,
                 data=data_unit,
-                headers={"Content-Type": "application/xml"})
+                headers={"Content-Type": self.__content_type})
             logger.info("[%s] Status: %s", req_id, resp.status)
 
         async with ClientSession() as s:

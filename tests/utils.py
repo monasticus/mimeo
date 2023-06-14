@@ -61,11 +61,12 @@ def assert_request_sent(
         url: str,
         body: str = None,
         auth: Tuple[str, str] = None,
+        content_type: str = None,
 ):
     requests = mock.requests.get((method, URL(url)))
     assert requests is not None
 
-    found = next(filter(lambda r: _matches_request(r, body, auth), requests))
+    found = next(filter(lambda r: _matches_request(r, body, auth, content_type), requests))
     assert found is not None
 
 
@@ -83,9 +84,12 @@ def _matches_request(
         request: RequestCall,
         body: str = None,
         auth: Tuple[str, str] = None,
+        content_type: str = None,
 ) -> bool:
     actual_body = request.kwargs.get("data")
     actual_auth = request.kwargs.get("auth")
+    actual_content_type = request.kwargs.get("headers").get("Content-Type")
     matches_body = body is None or actual_body == body
     matches_auth = auth is None or actual_auth == BasicAuth(auth[0], auth[1], "utf-8")
-    return matches_body and matches_auth
+    matches_content_type = content_type is None or actual_content_type == content_type
+    return matches_body and matches_auth and matches_content_type
