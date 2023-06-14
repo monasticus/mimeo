@@ -628,15 +628,10 @@ class JSONGenerator(Generator):
             If the `parent` is None, returns ElemTree.Element.
             Otherwise, returns ElemTree.SubElement
         """
-        if isinstance(parent, dict):
-            if isinstance(element_meta["value"], dict):
-                parent[element_meta["tag"]] = {}
-            elif isinstance(element_meta["value"], list):
-                parent[element_meta["tag"]] = []
-            return parent[element_meta["tag"]]
+        new_node = {} if isinstance(element_meta["value"], dict) else []
         if isinstance(parent, list):
-            if isinstance(element_meta["value"], dict):
-                parent.append({})
-            elif isinstance(element_meta["value"], list):
-                parent.append([])
+            parent.append(new_node)
             return parent[-1]
+
+        parent[element_meta["tag"]] = new_node
+        return parent[element_meta["tag"]]

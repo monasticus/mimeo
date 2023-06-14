@@ -2775,17 +2775,19 @@ def test_generate_using_key_util_in_separated_contexts():
                 "count": 5,
                 "model": {
                     "SomeEntity": {
-                        "ChildNode1": "{key}",
-                        "_templates_": [
-                            {
-                                "count": 1,
-                                "model": {
-                                    "NewContextNode": {
-                                        "GrandChild": "{key}",
+                        "ChildNode": "{key}",
+                        "OtherChildren": {
+                            "_templates_": [
+                                {
+                                    "count": 1,
+                                    "model": {
+                                        "NewContextNode": {
+                                            "GrandChild": "{key}",
+                                        },
                                     },
                                 },
-                            },
-                        ],
+                            ],
+                        },
                     },
                 },
             },
@@ -2801,17 +2803,19 @@ def test_generate_using_key_util_in_separated_contexts():
                     <count>5</count>
                     <model>
                         <SomeEntity>
-                            <ChildNode1>{key}</ChildNode1>
-                            <_templates_>
-                                <_template_>
-                                    <count>1</count>
-                                    <model>
-                                        <NewContextNode>
-                                            <GrandChild>{key}</GrandChild>
-                                        </NewContextNode>
-                                    </model>
-                                </_template_>
-                            </_templates_>
+                            <ChildNode>{key}</ChildNode>
+                            <OtherChildren>
+                                <_templates_>
+                                    <_template_>
+                                        <count>1</count>
+                                        <model>
+                                            <NewContextNode>
+                                                <GrandChild>{key}</GrandChild>
+                                            </NewContextNode>
+                                        </model>
+                                    </_template_>
+                                </_templates_>
+                            </OtherChildren>
                         </SomeEntity>
                     </model>
                 </_template_>
@@ -2830,13 +2834,18 @@ def test_generate_using_key_util_in_separated_contexts():
                 assert data.attrib == {}
                 assert len(list(data)) == 2  # number of children
 
-                child = data.find("ChildNode1")
+                child = data.find("ChildNode")
                 key1 = child.text
-                assert child.tag == "ChildNode1"
+                assert child.tag == "ChildNode"
                 assert child.attrib == {}
                 assert len(list(child)) == 0  # number of children
 
-                new_context_node = data.find("NewContextNode")
+                other_children_node = data.find("OtherChildren")
+                assert other_children_node.tag == "OtherChildren"
+                assert other_children_node.attrib == {}
+                assert len(list(other_children_node)) == 1  # number of children
+
+                new_context_node = other_children_node.find("NewContextNode")
                 assert new_context_node.tag == "NewContextNode"
                 assert new_context_node.attrib == {}
                 assert len(list(new_context_node)) == 1  # number of children
@@ -2867,22 +2876,24 @@ def test_generate_using_key_util_in_separated_contexts_indicating_one():
                 "count": 5,
                 "model": {
                     "SomeEntity": {
-                        "ChildNode1": "{key}",
-                        "_templates_": [
-                            {
-                                "count": 1,
-                                "model": {
-                                    "NewContextNode": {
-                                        "GrandChild": {
-                                            "_mimeo_util": {
-                                                "_name": "key",
-                                                "context": "SomeEntity",
+                        "ChildNode": "{key}",
+                        "OtherChildren": {
+                            "_templates_": [
+                                {
+                                    "count": 1,
+                                    "model": {
+                                        "NewContextNode": {
+                                            "GrandChild": {
+                                                "_mimeo_util": {
+                                                    "_name": "key",
+                                                    "context": "SomeEntity",
+                                                },
                                             },
                                         },
                                     },
                                 },
-                            },
-                        ],
+                            ],
+                        },
                     },
                 },
             },
@@ -2898,22 +2909,24 @@ def test_generate_using_key_util_in_separated_contexts_indicating_one():
                     <count>5</count>
                     <model>
                         <SomeEntity>
-                            <ChildNode1>{key}</ChildNode1>
-                            <_templates_>
-                                <_template_>
-                                    <count>1</count>
-                                    <model>
-                                        <NewContextNode>
-                                            <GrandChild>
-                                                <_mimeo_util>
-                                                    <_name>key</_name>
-                                                    <context>SomeEntity</context>
-                                                </_mimeo_util>
-                                            </GrandChild>
-                                        </NewContextNode>
-                                    </model>
-                                </_template_>
-                            </_templates_>
+                            <ChildNode>{key}</ChildNode>
+                            <OtherChildren>
+                                <_templates_>
+                                    <_template_>
+                                        <count>1</count>
+                                        <model>
+                                            <NewContextNode>
+                                                <GrandChild>
+                                                    <_mimeo_util>
+                                                        <_name>key</_name>
+                                                        <context>SomeEntity</context>
+                                                    </_mimeo_util>
+                                                </GrandChild>
+                                            </NewContextNode>
+                                        </model>
+                                    </_template_>
+                                </_templates_>
+                            </OtherChildren>
                         </SomeEntity>
                     </model>
                 </_template_>
@@ -2932,13 +2945,18 @@ def test_generate_using_key_util_in_separated_contexts_indicating_one():
                 assert data.attrib == {}
                 assert len(list(data)) == 2  # number of children
 
-                child = data.find("ChildNode1")
+                child = data.find("ChildNode")
                 key1 = child.text
-                assert child.tag == "ChildNode1"
+                assert child.tag == "ChildNode"
                 assert child.attrib == {}
                 assert len(list(child)) == 0  # number of children
 
-                new_context_node = data.find("NewContextNode")
+                other_children_node = data.find("OtherChildren")
+                assert other_children_node.tag == "OtherChildren"
+                assert other_children_node.attrib == {}
+                assert len(list(other_children_node)) == 1  # number of children
+
+                new_context_node = other_children_node.find("NewContextNode")
                 assert new_context_node.tag == "NewContextNode"
                 assert new_context_node.attrib == {}
                 assert len(list(new_context_node)) == 1  # number of children
