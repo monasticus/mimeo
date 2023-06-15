@@ -1,7 +1,6 @@
 {
   "output": {
-    "xml_declaration": true,
-    "indent": 4
+    "format": "xml"
   },
   "_templates_": [
     {

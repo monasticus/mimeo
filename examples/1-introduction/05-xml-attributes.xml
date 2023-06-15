@@ -1,4 +1,7 @@
 <mimeo_configuration>
+    <output>
+        <format>xml</format>
+    </output>
     <_templates_>
         <_template_>
             <count>30</count>
