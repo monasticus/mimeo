@@ -95,13 +95,13 @@ async def test_produce_json():
             assert Path(file_path).exists()
 
             with Path(file_path).open() as file:
-                assert file.readline() == '{\n'
+                assert file.readline() == "{\n"
                 assert file.readline() == '    "SomeEntity": {\n'
                 assert file.readline() == '        "ChildNode1": 1,\n'
                 assert file.readline() == '        "ChildNode2": "value-2",\n'
                 assert file.readline() == '        "ChildNode3": true\n'
-                assert file.readline() == '    }\n'
-                assert file.readline() == '}'
+                assert file.readline() == "    }\n"
+                assert file.readline() == "}"
 
 
 

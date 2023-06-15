@@ -706,6 +706,118 @@ def test_xml_custom_long_indent_zero():
                                                "</SomeEntity>")
 
 
+def test_json_custom_short_format():
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/default-config.json",
+                "-F", "json"]
+
+    assert not Path("test_mimeo_cli-dir/output").exists()
+
+    mimeo_cli.main()
+
+    assert Path("test_mimeo_cli-dir/output").exists()
+    for i in range(1, 11):
+        file_path = f"test_mimeo_cli-dir/output/output-file-{i}.json"
+        assert Path(file_path).exists()
+
+        with Path(file_path).open() as file_content:
+            assert file_content.readline() == "{\n"
+            assert file_content.readline() == '    "SomeEntity": {\n'
+            assert file_content.readline() == '        "ChildNode1": 1,\n'
+            assert file_content.readline() == '        "ChildNode2": "value-2",\n'
+            assert file_content.readline() == '        "ChildNode3": true\n'
+            assert file_content.readline() == "    }\n"
+            assert file_content.readline() == "}"
+
+
+def test_xml_custom_short_format():
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/default-config.xml",
+                "-F", "json"]
+
+    assert not Path("test_mimeo_cli-dir/output").exists()
+
+    mimeo_cli.main()
+
+    assert Path("test_mimeo_cli-dir/output").exists()
+    for i in range(1, 11):
+        file_path = f"test_mimeo_cli-dir/output/output-file-{i}.json"
+        assert Path(file_path).exists()
+
+        with Path(file_path).open() as file_content:
+            assert file_content.readline() == "{\n"
+            assert file_content.readline() == '    "SomeEntity": {\n'
+            assert file_content.readline() == '        "ChildNode1": 1,\n'
+            assert file_content.readline() == '        "ChildNode2": "value-2",\n'
+            assert file_content.readline() == '        "ChildNode3": true\n'
+            assert file_content.readline() == "    }\n"
+            assert file_content.readline() == "}"
+
+
+def test_json_custom_long_format():
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/default-config.json",
+                "--format", "json"]
+
+    assert not Path("test_mimeo_cli-dir/output").exists()
+
+    mimeo_cli.main()
+
+    assert Path("test_mimeo_cli-dir/output").exists()
+    for i in range(1, 11):
+        file_path = f"test_mimeo_cli-dir/output/output-file-{i}.json"
+        assert Path(file_path).exists()
+
+        with Path(file_path).open() as file_content:
+            assert file_content.readline() == "{\n"
+            assert file_content.readline() == '    "SomeEntity": {\n'
+            assert file_content.readline() == '        "ChildNode1": 1,\n'
+            assert file_content.readline() == '        "ChildNode2": "value-2",\n'
+            assert file_content.readline() == '        "ChildNode3": true\n'
+            assert file_content.readline() == "    }\n"
+            assert file_content.readline() == "}"
+
+
+def test_xml_custom_long_format():
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/default-config.xml",
+                "--format", "json"]
+
+    assert not Path("test_mimeo_cli-dir/output").exists()
+
+    mimeo_cli.main()
+
+    assert Path("test_mimeo_cli-dir/output").exists()
+    for i in range(1, 11):
+        file_path = f"test_mimeo_cli-dir/output/output-file-{i}.json"
+        assert Path(file_path).exists()
+
+        with Path(file_path).open() as file_content:
+            assert file_content.readline() == "{\n"
+            assert file_content.readline() == '    "SomeEntity": {\n'
+            assert file_content.readline() == '        "ChildNode1": 1,\n'
+            assert file_content.readline() == '        "ChildNode2": "value-2",\n'
+            assert file_content.readline() == '        "ChildNode3": true\n'
+            assert file_content.readline() == "    }\n"
+            assert file_content.readline() == "}"
+
+
+def test_json_custom_format_does_not_throw_error_when_output_is_none():
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/minimum-config.json",
+                "-F", "json"]
+
+    try:
+        mimeo_cli.main()
+    except KeyError:
+        raise AssertionError from KeyError
+
+
+def test_xml_custom_format_does_not_throw_error_when_output_is_none():
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/minimum-config.xml",
+                "-F", "json"]
+
+    try:
+        mimeo_cli.main()
+    except KeyError:
+        raise AssertionError from KeyError
+
+
 def test_json_custom_short_direction():
     sys.argv = ["mimeo", "test_mimeo_cli-dir/default-config.json",
                 "-o", "stdout"]

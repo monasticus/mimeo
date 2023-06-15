@@ -49,6 +49,8 @@ class MimeoArgumentParser(ArgumentParser):
           -v, --version         show program's version number and exit
 
         Mimeo Configuration arguments:
+          -F {xml,json}, --format {xml,json}
+                                overwrite the output/format property
           -o {file,stdout,http}, --output {file,stdout,http}
                                 overwrite the output/direction property
           -x {true,false}, --xml-declaration {true,false}
@@ -113,6 +115,12 @@ class MimeoArgumentParser(ArgumentParser):
     ):
         """Add arguments overwriting Mimeo Configuration."""
         mimeo_config_args = self.add_argument_group("Mimeo Configuration arguments")
+        mimeo_config_args.add_argument(
+            "-F",
+            "--format",
+            type=str,
+            choices=["xml", "json"],
+            help="overwrite the output/format property")
         mimeo_config_args.add_argument(
             "-o",
             "--output",
@@ -232,6 +240,9 @@ class MimeoConfigParser:
     _ENTRY_PATH_KEY = "entry_path"
     _GET_VALUE_KEY = "get_value"
     _ARGS_MAPPING = {
+        "format": {
+            "entry_path": [cc.OUTPUT_KEY, cc.OUTPUT_FORMAT_KEY],
+        },
         "output": {
             "entry_path": [cc.OUTPUT_KEY, cc.OUTPUT_DIRECTION_KEY],
         },
