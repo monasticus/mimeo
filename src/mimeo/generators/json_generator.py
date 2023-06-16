@@ -8,13 +8,12 @@ from __future__ import annotations
 
 import json
 import logging
-import xml.etree.ElementTree as ElemTree
 from typing import Iterator
 
 from mimeo.config import constants as cc
 from mimeo.config.mimeo_config import MimeoConfig, MimeoTemplate
 from mimeo.context import MimeoContext
-from mimeo.context.decorators import (mimeo_context)
+from mimeo.context.decorators import mimeo_context
 from mimeo.generators import Generator
 from mimeo.utils import MimeoRenderer
 
@@ -51,13 +50,13 @@ class JSONGenerator(Generator):
         mimeo_config : MimeoConfig
             A Mimeo Configuration
         """
-        self.__indent = mimeo_config.output.indent
+        self._indent = mimeo_config.output.indent
 
     @classmethod
     def generate(
             cls,
             templates: list | Iterator[MimeoTemplate],
-            parent: dict = None,
+            parent: dict | list | None = None,
     ) -> Iterator[dict]:
         """Generate JSON data based on the Mimeo Configuration.
 
@@ -70,8 +69,8 @@ class JSONGenerator(Generator):
         ----------
         templates : list | Iterator[MimeoTemplate]
             A collection of Mimeo Templates to process
-        parent : dict, default None
-            A parent JSON node for the currently processed template.
+        parent : dict | list | None, default None
+            A parent node for the currently processed template.
             It is passed only when a Mimeo Config contain nested
             templates.
 
@@ -100,8 +99,8 @@ class JSONGenerator(Generator):
         str
             Stringified data unit
         """
-        if self.__indent is not None and self.__indent != 0:
-            return json.dumps(data_unit, indent=self.__indent)
+        if self._indent is not None and self._indent != 0:
+            return json.dumps(data_unit, indent=self._indent)
 
         return json.dumps(data_unit)
 
@@ -109,59 +108,50 @@ class JSONGenerator(Generator):
     @mimeo_context
     def _process_node(
             cls,
-            parent: ElemTree.Element | None,
-            entry_meta: dict,
+            parent: dict | list | None,
+            node_meta: dict,
             context: MimeoContext = None,
-    ) -> ElemTree.Element:
+    ) -> dict | list:
         """Process a single template's node.
 
-        This is a recursive function that traverses Mimeo Template and generates JSON
-        nodes based on element's metadata. First, element is pre-processed, in meaning
-        of metadata being adjusted. Then, element is processed accordingly to its value
-        type.
+        Extends Generator's implementation by setting a parent node when it is None.
+        It is required for JSON format to initialize an object.
 
         Parameters
         ----------
-        parent : ElemTree.Element | None
+        parent : dict | list | None
             A parent node
-        entry_meta : dict
-            Element's metadata
+        node_meta : dict
+            Node's metadata
         context : MimeoContext, default None
             The current Mimeo Context (injected by MimeoContextManager)
 
         Returns
         -------
-        ElemTree.Element
+        dict | list
             A single data unit generated within a single template iteration.
 
         Raises
         ------
-        UnsupportedStructureError
-            If a list value elements are not atomic-only or dict-only.
         InvalidSpecialFieldValueError
             If a special field value is dict or list
         SpecialFieldNotFoundError
             If a special field does not exist.
         """
         parent = parent if parent is not None else {}
-        return super()._process_node(parent, entry_meta, context)
+        return super()._process_node(parent, node_meta, context)
 
     @classmethod
     def _pre_process_node(
             cls,
-            entry_meta: dict,
+            node_meta: dict,
     ) -> dict:
-        """Pre-process element's metadata.
+        """Pre-process node's metadata.
 
-        This function adjusts existing element's metadata and completes it with custom
+        This function adjusts existing node's metadata and completes it with custom
         properties:
-        * the tag property is changed only for special fields
+        * the name property is changed only for special fields
           - field name is extracted
-        * the value property is being modified for dicts including attributes
-          - properties starting with '@' are being removed from the dict
-        * the attrs property
-          - is being populated by all properties starting with '@'
-          - takes the default value (an empty dict) when there's no such properties
         * the mimeo_util property is being initialized
           - True if element's value is a parametrized mimeo_util. Otherwise, False.
         * the special property is being initialized
@@ -169,23 +159,23 @@ class JSONGenerator(Generator):
 
         Parameters
         ----------
-        entry_meta : dict
-            Initial element's metadata
+        node_meta : dict
+            Initial node's metadata
 
         Returns
         -------
         dict
-            Complete element's metadata
+            Complete node's metadata
         """
-        tag = entry_meta["name"]
-        value = entry_meta["value"]
+        name = node_meta["name"]
+        value = node_meta["value"]
         is_mimeo_util = MimeoRenderer.is_parametrized_mimeo_util(value)
-        is_special_field = MimeoRenderer.is_special_field(tag)
+        is_special_field = MimeoRenderer.is_special_field(name)
         if is_special_field:
-            tag = MimeoRenderer.get_special_field_name(tag)
+            name = MimeoRenderer.get_special_field_name(name)
 
-        return cls._entry_meta(
-            tag,
+        return cls._node_meta(
+            name,
             value,
             None,
             is_mimeo_util,
@@ -194,72 +184,68 @@ class JSONGenerator(Generator):
     @classmethod
     def _process_complex_value(
             cls,
-            parent: ElemTree.Element | None,
-            entry_meta: dict,
-    ) -> ElemTree.Element | None:
+            parent: dict | list,
+            node_meta: dict,
+    ) -> dict | list:
         """Process a node with a complex value.
 
         The node is processed accordingly to its value type.
-        When the type is list and tag is _templates_, node is processed
-        in a special way.
+        When the type is dict, and it includes the _templates_ property, node
+        is processed in a special way.
 
         Parameters
         ----------
-        parent : ElemTree.Element | None
+        parent : dict | list
             A parent node
-        entry_meta : dict
-            Element's metadata
+        node_meta : dict
+            Node's metadata
 
         Returns
         -------
-        ElemTree.Element
+        dict | list
             A processed node
 
         Raises
         ------
-        UnsupportedStructureError
-            If a list value elements are not atomic-only or dict-only.
         InvalidSpecialFieldValueError
             If a special field value is dict or list
         SpecialFieldNotFoundError
             If a special field does not exist.
         """
-        if (isinstance(entry_meta["value"], dict) and
-                cc.TEMPLATES_KEY not in entry_meta["value"]):
+        if (isinstance(node_meta["value"], dict) and
+                cc.TEMPLATES_KEY not in node_meta["value"]):
             func = cls._process_dict_value
-        elif (isinstance(entry_meta["value"], list) and
-              entry_meta["name"] != cc.TEMPLATES_KEY):
+        elif (isinstance(node_meta["value"], list) and
+              node_meta["name"] != cc.TEMPLATES_KEY):
             func = cls._process_list_value
         else:
             func = cls._process_templates_value
-        return func(parent, entry_meta)
+        return func(parent, node_meta)
 
     @classmethod
     def _process_dict_value(
             cls,
-            parent: ElemTree.Element | None,
-            entry_meta: dict,
-    ) -> ElemTree.Element:
+            parent: dict | list,
+            node_meta: dict,
+    ) -> dict | list:
         """Process a node with a dictionary value.
 
         It iterates through the dictionary items and processes each of them.
 
         Parameters
         ----------
-        parent : ElemTree.Element | None
+        parent : dict | list
             A parent node
-        entry_meta : dict
-            Element's metadata
+        node_meta : dict
+            Node's metadata
 
         Returns
         -------
-        ElemTree.Element
+        dict | list
             A processed node
 
         Raises
         ------
-        UnsupportedStructureError
-            If a list value elements are not atomic-only or dict-only.
         InvalidSpecialFieldValueError
             If a special field value is dict or list
         SpecialFieldNotFoundError
@@ -268,28 +254,28 @@ class JSONGenerator(Generator):
         Examples
         --------
         parent = ElemTree.Element("Root")
-        entry_meta = cls._entry_meta(
+        node_meta = cls._node_meta(
             tag="SomeField",
             value={"SomeChild1": 1, "SomeChild2": 2},
         )
-        cls._process_dict_value(parent, entry_meta)
+        cls._process_dict_value(parent, node_meta)
         ->
         <SomeField>
             <SomeChild1>1</SomeChild1>
             <SomeChild2>2</SomeChild2>
         </SomeField>
         """
-        element = cls._create_node(parent, entry_meta)
-        for child_tag, child_value in entry_meta["value"].items():
-            cls._process_node(element, cls._entry_meta(child_tag, child_value))
+        element = cls._create_node(parent, node_meta)
+        for child_tag, child_value in node_meta["value"].items():
+            cls._process_node(element, cls._node_meta(child_tag, child_value))
         return parent
 
     @classmethod
     def _process_list_value(
             cls,
-            parent: ElemTree.Element,
-            entry_meta: dict,
-    ) -> ElemTree.Element:
+            parent: dict | list,
+            node_meta: dict,
+    ) -> dict | list:
         """Process a node with a list value.
 
         It iterates through the list items and processes each of them: generates
@@ -297,20 +283,18 @@ class JSONGenerator(Generator):
 
         Parameters
         ----------
-        parent : ElemTree.Element | None
+        parent : dict | list
             A parent node
-        entry_meta : dict
-            Element's metadata
+        node_meta : dict
+            Node's metadata
 
         Returns
         -------
-        ElemTree.Element
+        dict | list
             A processed node
 
         Raises
         ------
-        UnsupportedStructureError
-            If any of the list value element is a list.
         InvalidSpecialFieldValueError
             If the special field value is dict or list
         SpecialFieldNotFoundError
@@ -319,7 +303,7 @@ class JSONGenerator(Generator):
         Examples
         --------
         parent = ElemTree.Element("Root")
-        entry_meta = cls._entry_meta(
+        node_meta = cls._node_meta(
             tag="SomeField",
             value=[
                 'value-1',
@@ -327,7 +311,7 @@ class JSONGenerator(Generator):
                 {'_mimeo_util': {'_name': 'auto_increment', 'pattern': '{}'}}
             ],
         )
-        cls._process_list_value_with_atomic_children(parent, entry_meta)
+        cls._process_list_value_with_atomic_children(parent, node_meta)
         ->
         <Root>
             <SomeField>value-1</SomeField>
@@ -338,38 +322,36 @@ class JSONGenerator(Generator):
             <SomeField>1</SomeField>
         </Root>
         """
-        element = cls._create_node(parent, entry_meta)
-        for child in entry_meta["value"]:
-            entry_meta = cls._entry_meta(entry_meta["name"], child)
-            cls._process_node(element, entry_meta)
+        element = cls._create_node(parent, node_meta)
+        for child in node_meta["value"]:
+            node_meta = cls._node_meta(node_meta["name"], child)
+            cls._process_node(element, node_meta)
         return parent
 
     @classmethod
     def _process_templates_value(
             cls,
-            parent: ElemTree.Element,
-            entry_meta: dict,
-    ) -> ElemTree.Element:
+            parent: dict | list,
+            node_meta: dict,
+    ) -> dict | list:
         """Process a node with a dictionary value storing templates.
 
         It iterates through the templates and generates data based on them.
 
         Parameters
         ----------
-        parent : ElemTree.Element | None
+        parent : dict | None
             A parent node
-        entry_meta : dict
-            Element's metadata
+        node_meta : dict
+            Node's metadata
 
         Returns
         -------
-        ElemTree.Element
+        dict | list
             A processed node
 
         Raises
         ------
-        UnsupportedStructureError
-            If a list value elements are not atomic-only or dict-only.
         InvalidSpecialFieldValueError
             If a special field value is dict or list
         SpecialFieldNotFoundError
@@ -378,7 +360,7 @@ class JSONGenerator(Generator):
         Examples
         --------
         parent = ElemTree.Element("Root")
-        entry_meta = cls._entry_meta(
+        node_meta = cls._node_meta(
             tag="SomeField",
             value={"_templates_": [
                 {
@@ -393,7 +375,7 @@ class JSONGenerator(Generator):
                 }
             ]},
         )
-        cls._process_templates_value(parent, entry_meta)
+        cls._process_templates_value(parent, node_meta)
         ->
         <Root>
             <SomeField>
@@ -404,11 +386,11 @@ class JSONGenerator(Generator):
         </Root>
         """
         templates = (MimeoTemplate(template)
-                     for template in entry_meta["value"][cc.TEMPLATES_KEY])
+                     for template in node_meta["value"][cc.TEMPLATES_KEY])
         target = parent
         if isinstance(parent, dict):
-            parent[entry_meta["name"]] = []
-            target = parent[entry_meta["name"]]
+            parent[node_meta["name"]] = []
+            target = parent[node_meta["name"]]
 
         for child in cls.generate(templates):
             target.append(child)
@@ -417,10 +399,10 @@ class JSONGenerator(Generator):
     @classmethod
     def _process_atomic_value(
             cls,
-            parent: ElemTree.Element,
-            entry_meta: dict,
+            parent: dict | list,
+            node_meta: dict,
             context: MimeoContext,
-    ) -> ElemTree.Element:
+    ) -> dict | list:
         """Process a node with an atomic value.
 
         A parametrized Mimeo Util is considered as an atomic value as representing one.
@@ -428,22 +410,20 @@ class JSONGenerator(Generator):
 
         Parameters
         ----------
-        parent : ElemTree.Element | None
+        parent : dict | list
             A parent node
-        entry_meta : dict
-            Element's metadata
+        node_meta : dict
+            Node's metadata
         context : MimeoContext, default None
             The current Mimeo Context (injected by MimeoContextManager)
 
         Returns
         -------
-        ElemTree.Element
+        dict | list
             A processed node
 
         Raises
         ------
-        UnsupportedStructureError
-            If a list value elements are not atomic-only or dict-only.
         InvalidSpecialFieldValueError
             If a special field value is dict or list
         SpecialFieldNotFoundError
@@ -453,19 +433,19 @@ class JSONGenerator(Generator):
         --------
         context = MimeoContextManager().get_current_context()
         parent = ElemTree.Element("Root")
-        entry_meta = cls._entry_meta(
+        node_meta = cls._node_meta(
             tag="SomeField",
             value="value-1",
         )
-        cls._process_atomic_value(parent, entry_meta, context)
+        cls._process_atomic_value(parent, node_meta, context)
         ->
         <SomeField>value-1</SomeField>
         """
-        value = MimeoRenderer.render(entry_meta["value"])
-        if entry_meta["special"]:
-            context.curr_iteration().add_special_field(entry_meta["name"], value)
+        value = MimeoRenderer.render(node_meta["value"])
+        if node_meta["special"]:
+            context.curr_iteration().add_special_field(node_meta["name"], value)
         if isinstance(parent, dict):
-            parent[entry_meta["name"]] = value
+            parent[node_meta["name"]] = value
         elif isinstance(parent, list):
             parent.append(value)
         logger.fine("Rendered value [%s]", value)
@@ -473,28 +453,27 @@ class JSONGenerator(Generator):
 
     @staticmethod
     def _create_node(
-            parent: ElemTree.Element,
-            entry_meta: dict,
-    ) -> ElemTree.Element | ElemTree.SubElement:
+            parent: dict | list,
+            node_meta: dict,
+    ) -> dict | list:
         """Create an JSON element based on the `parent` and entry value types.
 
         Parameters
         ----------
-        parent : ElemTree.Element
+        parent : dict | list
             A parent node
-        entry_meta : dict
-            Element's metadata
+        node_meta : dict
+            Node's metadata
 
         Returns
         -------
-        ElemTree.Element | ElemTree.SubElement
-            If the `parent` is None, returns ElemTree.Element.
-            Otherwise, returns ElemTree.SubElement
+        dict | list
+            If the new node's value is dict, returns dict. Otherwise, a list.
         """
-        new_node = {} if isinstance(entry_meta["value"], dict) else []
+        new_node = {} if isinstance(node_meta["value"], dict) else []
         if isinstance(parent, list):
             parent.append(new_node)
             return parent[-1]
 
-        parent[entry_meta["name"]] = new_node
-        return parent[entry_meta["name"]]
+        parent[node_meta["name"]] = new_node
+        return parent[node_meta["name"]]

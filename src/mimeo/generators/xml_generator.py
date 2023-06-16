@@ -51,8 +51,8 @@ class XMLGenerator(Generator):
         mimeo_config : MimeoConfig
             A Mimeo Configuration
         """
-        self.__indent = mimeo_config.output.indent
-        self.__xml_declaration = mimeo_config.output.xml_declaration
+        self._indent = mimeo_config.output.indent
+        self._xml_declaration = mimeo_config.output.xml_declaration
 
     @classmethod
     def generate(
@@ -101,19 +101,19 @@ class XMLGenerator(Generator):
         str
             Stringified data unit
         """
-        if self.__indent is None or self.__indent == 0:
+        if self._indent is None or self._indent == 0:
             node_str = ElemTree.tostring(
                 data_unit,
                 encoding="utf-8",
                 method="xml",
-                xml_declaration=self.__xml_declaration)
+                xml_declaration=self._xml_declaration)
         else:
             xml_string = ElemTree.tostring(data_unit)
             xml_minidom = minidom.parseString(xml_string)
-            if self.__xml_declaration is False:
+            if self._xml_declaration is False:
                 xml_minidom = xml_minidom.childNodes[0]
             node_str = xml_minidom.toprettyxml(
-                indent=" " * self.__indent,
+                indent=" " * self._indent,
                 encoding="utf-8")
         return node_str.decode("ascii")
 
