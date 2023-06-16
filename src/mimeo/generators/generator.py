@@ -13,9 +13,9 @@ from typing import Any, Iterator
 
 from mimeo.config.mimeo_config import MimeoTemplate
 from mimeo.context import MimeoContext
-from mimeo.context.decorators import (mimeo_clear_iterations,
+from mimeo.context.decorators import (mimeo_clear_iterations, mimeo_context,
                                       mimeo_context_switch,
-                                      mimeo_next_iteration, mimeo_context)
+                                      mimeo_next_iteration)
 
 logger = logging.getLogger(__name__)
 
@@ -108,12 +108,89 @@ class Generator(metaclass=ABCMeta):
         raise NotImplementedError
 
     @classmethod
+    @abstractmethod
+    def _pre_process_node(
+            cls,
+            node_meta: dict,
+    ) -> dict:
+        """Pre-process node's metadata.
+
+        This function adjusts existing node's metadata and completes it with custom
+        properties.
+
+        Parameters
+        ----------
+        node_meta : dict
+            Initial node's metadata
+
+        Returns
+        -------
+        dict
+            Complete node's metadata
+        """
+        raise NotImplementedError
+
+    @classmethod
+    @abstractmethod
+    def _process_complex_value(
+            cls,
+            parent: ElemTree.Element | dict | list | None,
+            node_meta: dict,
+    ) -> ElemTree.Element | dict | list | None:
+        """Process a node with a complex value.
+
+        The node is processed accordingly to its value type.
+
+        Parameters
+        ----------
+        parent : ElemTree.Element | dict | list | None
+            A parent node
+        node_meta : dict
+            Node's metadata
+
+        Returns
+        -------
+        ElemTree.Element | dict | list | None
+            A processed node
+        """
+        raise NotImplementedError
+
+    @classmethod
+    @abstractmethod
+    def _process_atomic_value(
+            cls,
+            parent: ElemTree.Element | dict | list | None,
+            node_meta: dict,
+            context: MimeoContext,
+    ) -> ElemTree.Element | dict | list | None:
+        """Process a node with an atomic value.
+
+        A parametrized Mimeo Util is considered as an atomic value as representing one.
+        It renders a value for the node.
+
+        Parameters
+        ----------
+        parent : ElemTree.Element | dict | list | None
+            A parent node
+        node_meta : dict
+            Node's metadata
+        context : MimeoContext, default None
+            The current Mimeo Context (injected by MimeoContextManager)
+
+        Returns
+        -------
+        ElemTree.Element | dict | list | None
+            A processed node
+        """
+        raise NotImplementedError
+
+    @classmethod
     @mimeo_context_switch
     @mimeo_clear_iterations
     def _process_single_template(
             cls,
             template: MimeoTemplate,
-            parent: ElemTree.Element | dict = None,
+            parent: ElemTree.Element | dict | list | None = None,
     ) -> list[ElemTree.Element | dict]:
         """Process a single Mimeo Template.
 
@@ -130,7 +207,7 @@ class Generator(metaclass=ABCMeta):
         ----------
         template : MimeoTemplate
             A single Mimeo Template to process
-        parent : ElemTree.Element | dict, default None
+        parent : ElemTree.Element | dict | list | None, default None
             A parent node for processing nested templates
 
         Returns
@@ -147,7 +224,7 @@ class Generator(metaclass=ABCMeta):
     def _process_single_data_unit(
             cls,
             template: MimeoTemplate,
-            parent: ElemTree.Element | dict | list = None,
+            parent: ElemTree.Element | dict | list | None = None,
     ) -> ElemTree.Element | dict:
         """Process a single data unit from the template.
 
@@ -164,33 +241,32 @@ class Generator(metaclass=ABCMeta):
         ----------
         template : MimeoTemplate
             A single Mimeo Template to process
-        parent : ElemTree.Element, default None
+        parent : ElemTree.Element | dict | list | None, default None
             A parent node for processing nested templates
 
         Returns
         -------
-        ElemTree.Element
+        ElemTree.Element | dict
             A single data unit generated within a single template
-            iteration. If the `parent` is not None it will not return
-            any value.
+            iteration.
         """
-        entry_meta = cls._entry_meta(
+        node_meta = cls._node_meta(
             template.model.root_name,
             template.model.root_data)
-        return cls._process_node(parent, entry_meta)
+        return cls._process_node(parent, node_meta)
 
     @classmethod
     @mimeo_context
     def _process_node(
             cls,
             parent: ElemTree.Element | dict | list | None,
-            entry_meta: dict,
+            node_meta: dict,
             context: MimeoContext = None,
-    ) -> ElemTree.Element:
+    ) -> ElemTree.Element | dict:
         """Process a single template's node.
 
-        This is a recursive function that traverses Mimeo Template and generates JSON
-        nodes based on element's metadata. First, element is pre-processed, in meaning
+        This is a recursive function that traverses Mimeo Template and generates nodes
+        based on node's metadata. First, element is pre-processed, in meaning
         of metadata being adjusted. Then, element is processed accordingly to its value
         type.
 
@@ -198,55 +274,46 @@ class Generator(metaclass=ABCMeta):
         ----------
         parent : ElemTree.Element | dict | list | None
             A parent node
-        entry_meta : dict
-            Element's metadata
+        node_meta : dict
+            Node's metadata
         context : MimeoContext, default None
             The current Mimeo Context (injected by MimeoContextManager)
 
         Returns
         -------
-        ElemTree.Element
+        ElemTree.Element | dict
             A single data unit generated within a single template iteration.
-
-        Raises
-        ------
-        UnsupportedStructureError
-            If a list value elements are not atomic-only or dict-only.
-        InvalidSpecialFieldValueError
-            If a special field value is dict or list
-        SpecialFieldNotFoundError
-            If a special field does not exist.
         """
-        logger.fine("Rendering element - parent [%s], entry_meta [%s]",
-                    parent, entry_meta)
-        entry_meta = cls._pre_process_node(entry_meta)
+        logger.fine("Rendering element - parent [%s], node_meta [%s]",
+                    parent, node_meta)
+        node_meta = cls._pre_process_node(node_meta)
 
-        if cls._is_complex(entry_meta):
-            return cls._process_complex_value(parent, entry_meta)
-        return cls._process_atomic_value(parent, entry_meta, context)
+        if cls._is_complex(node_meta):
+            return cls._process_complex_value(parent, node_meta)
+        return cls._process_atomic_value(parent, node_meta, context)
 
     @staticmethod
     def _is_complex(
-            entry_meta: dict,
+            node_meta: dict,
     ) -> bool:
-        """Verify if an element is complex.
+        """Verify if a node is complex.
 
         Parameters
         ----------
-        entry_meta : dict
-            Element's metadata
+        node_meta : dict
+            Node's metadata
 
         Returns
         -------
         bool
-            True if element's value is a list or a dict not being a parametrized
+            True if node's value is a list or a dict not being a parametrized
             Mimeo Util. Otherwise, False.
         """
-        return (isinstance(entry_meta["value"], (list, dict)) and
-                not entry_meta["mimeo_util"])
+        return (isinstance(node_meta["value"], (list, dict)) and
+                not node_meta["mimeo_util"])
 
     @staticmethod
-    def _entry_meta(
+    def _node_meta(
             name: str,
             value: dict | list | str | int | float | bool,
             attrs: dict | None = None,
@@ -258,11 +325,11 @@ class Generator(metaclass=ABCMeta):
         Parameters
         ----------
         name : str
-            A entry's name
+            A node's name (tag / property)
         value : dict | list | str | int | float | bool
-            An entry's value
+            An node's value
         attrs : dict | None, default None
-            An entry's attributes
+            An node's attributes
         is_mimeo_util : bool | None, default None
             A is-mimeo-util flag
         is_special_field : bool | None, default None
