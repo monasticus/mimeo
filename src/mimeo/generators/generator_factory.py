@@ -22,6 +22,8 @@ class GeneratorFactory:
     ----------
     XML
         The 'xml' output format
+    JSON
+        The 'json' output format
 
     Methods
     -------
