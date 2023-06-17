@@ -126,7 +126,7 @@ class XMLGenerator(Generator):
 
         This function adjusts existing node's metadata and completes it with custom
         properties:
-        * the tag property is changed only for special fields
+        * the name property is changed only for special fields
           - field name is extracted
         * the value property is being modified for dicts including attributes
           - properties starting with '@' are being removed from the dict
@@ -148,13 +148,13 @@ class XMLGenerator(Generator):
         dict
             Complete node's metadata
         """
-        tag = node_meta["name"]
+        name = node_meta["name"]
         value = node_meta["value"]
         attrs = {}
         is_mimeo_util = MimeoRenderer.is_parametrized_mimeo_util(value)
-        is_special_field = MimeoRenderer.is_special_field(tag)
+        is_special_field = MimeoRenderer.is_special_field(name)
         if is_special_field:
-            tag = MimeoRenderer.get_special_field_name(tag)
+            name = MimeoRenderer.get_special_field_name(name)
         if isinstance(value, dict):
             value_copy = dict(value)
             for prop in value:
@@ -163,7 +163,7 @@ class XMLGenerator(Generator):
             value = value.get(cc.MODEL_TEXT_VALUE_KEY, value_copy)
 
         return cls._node_meta(
-            tag,
+            name,
             value,
             attrs,
             is_mimeo_util,
@@ -178,7 +178,7 @@ class XMLGenerator(Generator):
         """Process a node with a complex value.
 
         The node is processed accordingly to its value type.
-        When the type is list and tag is _templates_, node is processed
+        When the type is list and name is _templates_, node is processed
         in a special way.
 
         Parameters
@@ -246,7 +246,7 @@ class XMLGenerator(Generator):
         --------
         parent = ElemTree.Element("Root")
         node_meta = cls._node_meta(
-            tag="SomeField",
+            name="SomeField",
             value={"SomeChild1": 1, "SomeChild2": 2},
         )
         cls._process_dict_value(parent, node_meta)
@@ -297,7 +297,7 @@ class XMLGenerator(Generator):
         --------
         parent = ElemTree.Element("Root")
         node_meta = cls._node_meta(
-            tag="SomeField",
+            name="SomeField",
             value=[
                 'value-1',
                 {'SomeChild1': True, 'SomeChild2': False},
@@ -359,7 +359,7 @@ class XMLGenerator(Generator):
         --------
         parent = ElemTree.Element("Root")
         node_meta = cls._node_meta(
-            tag="SomeField",
+            name="SomeField",
             value={"_templates_": [
                 {
                   "count": 10,
@@ -428,7 +428,7 @@ class XMLGenerator(Generator):
         context = MimeoContextManager().get_current_context()
         parent = ElemTree.Element("Root")
         node_meta = cls._node_meta(
-            tag="SomeField",
+            name="SomeField",
             value="value-1",
         )
         cls._process_atomic_value(parent, node_meta, context)

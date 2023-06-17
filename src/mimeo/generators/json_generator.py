@@ -175,11 +175,10 @@ class JSONGenerator(Generator):
             name = MimeoRenderer.get_special_field_name(name)
 
         return cls._node_meta(
-            name,
-            value,
-            None,
-            is_mimeo_util,
-            is_special_field)
+            name=name,
+            value=value,
+            is_mimeo_util=is_mimeo_util,
+            is_special_field=is_special_field)
 
     @classmethod
     def _process_complex_value(
@@ -255,7 +254,7 @@ class JSONGenerator(Generator):
         --------
         parent = ElemTree.Element("Root")
         node_meta = cls._node_meta(
-            tag="SomeField",
+            name="SomeField",
             value={"SomeChild1": 1, "SomeChild2": 2},
         )
         cls._process_dict_value(parent, node_meta)
@@ -304,7 +303,7 @@ class JSONGenerator(Generator):
         --------
         parent = ElemTree.Element("Root")
         node_meta = cls._node_meta(
-            tag="SomeField",
+            name="SomeField",
             value=[
                 'value-1',
                 {'SomeChild1': True, 'SomeChild2': False},
@@ -361,7 +360,7 @@ class JSONGenerator(Generator):
         --------
         parent = ElemTree.Element("Root")
         node_meta = cls._node_meta(
-            tag="SomeField",
+            name="SomeField",
             value={"_templates_": [
                 {
                   "count": 10,
@@ -434,7 +433,7 @@ class JSONGenerator(Generator):
         context = MimeoContextManager().get_current_context()
         parent = ElemTree.Element("Root")
         node_meta = cls._node_meta(
-            tag="SomeField",
+            name="SomeField",
             value="value-1",
         )
         cls._process_atomic_value(parent, node_meta, context)
