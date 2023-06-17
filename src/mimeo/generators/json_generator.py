@@ -170,7 +170,7 @@ class JSONGenerator(Generator):
         name = node_meta["name"]
         value = node_meta["value"]
         is_mimeo_util = MimeoRenderer.is_parametrized_mimeo_util(value)
-        is_special_field = MimeoRenderer.is_special_field(name)
+        is_special_field = name is not None and MimeoRenderer.is_special_field(name)
         if is_special_field:
             name = MimeoRenderer.get_special_field_name(name)
 
@@ -252,17 +252,33 @@ class JSONGenerator(Generator):
 
         Examples
         --------
-        parent = ElemTree.Element("Root")
+        parent = {}
         node_meta = cls._node_meta(
             name="SomeField",
             value={"SomeChild1": 1, "SomeChild2": 2},
         )
         cls._process_dict_value(parent, node_meta)
         ->
-        <SomeField>
-            <SomeChild1>1</SomeChild1>
-            <SomeChild2>2</SomeChild2>
-        </SomeField>
+        {
+          "SomeField": {
+            "SomeChild1": 1,
+            "SomeChild2": 2,
+          },
+        }
+
+        parent = []
+        node_meta = cls._node_meta(
+            name=None,
+            value={"SomeChild1": 1, "SomeChild2": 2},
+        )
+        cls._process_dict_value(parent, node_meta)
+        ->
+        [
+          {
+            "SomeChild1": 1,
+            "SomeChild2": 2,
+          },
+        ]
         """
         element = cls._create_node(parent, node_meta)
         for child_tag, child_value in node_meta["value"].items():
@@ -301,7 +317,7 @@ class JSONGenerator(Generator):
 
         Examples
         --------
-        parent = ElemTree.Element("Root")
+        parent = {}
         node_meta = cls._node_meta(
             name="SomeField",
             value=[
@@ -312,18 +328,42 @@ class JSONGenerator(Generator):
         )
         cls._process_list_value_with_atomic_children(parent, node_meta)
         ->
-        <Root>
-            <SomeField>value-1</SomeField>
-            <SomeField>
-                <SomeChild1>true</SomeChild1>
-                <SomeChild2>false</SomeChild2>
-            </SomeField>
-            <SomeField>1</SomeField>
-        </Root>
+        {
+          "SomeField": [
+            "value-1",
+            {
+                "SomeChild1": True,
+                "SomeChild2": False,
+            },
+            1,
+          ],
+        }
+
+        parent = []
+        node_meta = cls._node_meta(
+            name=None,
+            value=[
+                'value-1',
+                {'SomeChild1': True, 'SomeChild2': False},
+                {'_mimeo_util': {'_name': 'auto_increment', 'pattern': '{}'}}
+            ],
+        )
+        cls._process_list_value_with_atomic_children(parent, node_meta)
+        ->
+        [
+          [
+            "value-1",
+            {
+                "SomeChild1": True,
+                "SomeChild2": False,
+            },
+            1,
+          ],
+        ]
         """
         element = cls._create_node(parent, node_meta)
         for child in node_meta["value"]:
-            node_meta = cls._node_meta(node_meta["name"], child)
+            node_meta = cls._node_meta(None, child)
             cls._process_node(element, node_meta)
         return parent
 
@@ -336,6 +376,8 @@ class JSONGenerator(Generator):
         """Process a node with a dictionary value storing templates.
 
         It iterates through the templates and generates data based on them.
+        If parent is a dict, the property name will take a value of an array.
+        All properties at the same level as _templates_ will be ignored.
 
         Parameters
         ----------
@@ -358,7 +400,43 @@ class JSONGenerator(Generator):
 
         Examples
         --------
-        parent = ElemTree.Element("Root")
+        parent = []
+        node_meta = cls._node_meta(
+            name=None,
+            value={"_templates_": [
+                {
+                  "count": 10,
+                  "model": {
+                    "SomeChild": {
+                      "Node1": 1,
+                      "Node2": "value-2",
+                      "Node3": true
+                    }
+                  }
+                }
+            ]},
+        )
+        cls._process_templates_value(parent, node_meta)
+        ->
+        [
+          {
+            "SomeChild": {
+              "Node1": 1,
+              "Node2": "value-2",
+              "Node3": true,
+            },
+          },
+          {
+            "SomeChild": {
+              "Node1": 1,
+              "Node2": "value-2",
+              "Node3": true,
+            },
+          },
+          ... x10
+        ]
+
+        parent = {}
         node_meta = cls._node_meta(
             name="SomeField",
             value={"_templates_": [
@@ -376,13 +454,25 @@ class JSONGenerator(Generator):
         )
         cls._process_templates_value(parent, node_meta)
         ->
-        <Root>
-            <SomeField>
-                <SomeChild><Node1>1</Node1><Node2>value-2</Node2><Node3>true</Node3></SomeChild>
-                <SomeChild><Node1>1</Node1><Node2>value-2</Node2><Node3>true</Node3></SomeChild>
-                ... x10
-            </SomeField>
-        </Root>
+        {
+          "SomeField": [
+            {
+              "SomeChild": {
+                "Node1": 1,
+                "Node2": "value-2",
+                "Node3": true,
+              },
+            },
+            {
+              "SomeChild": {
+                "Node1": 1,
+                "Node2": "value-2",
+                "Node3": true,
+              },
+            },
+            ... x10
+          ],
+        }
         """
         templates = (MimeoTemplate(template)
                      for template in node_meta["value"][cc.TEMPLATES_KEY])
@@ -431,14 +521,28 @@ class JSONGenerator(Generator):
         Examples
         --------
         context = MimeoContextManager().get_current_context()
-        parent = ElemTree.Element("Root")
+        parent = {}
         node_meta = cls._node_meta(
             name="SomeField",
             value="value-1",
         )
         cls._process_atomic_value(parent, node_meta, context)
         ->
-        <SomeField>value-1</SomeField>
+        {
+          "SomeField": "value-1"
+        }
+
+        context = MimeoContextManager().get_current_context()
+        parent = []
+        node_meta = cls._node_meta(
+            name=None,
+            value="value-1",
+        )
+        cls._process_atomic_value(parent, node_meta, context)
+        ->
+        [
+          "value-1"
+        ]
         """
         value = MimeoRenderer.render(node_meta["value"])
         if node_meta["special"]:
@@ -468,6 +572,48 @@ class JSONGenerator(Generator):
         -------
         dict | list
             If the new node's value is dict, returns dict. Otherwise, a list.
+
+        Examples
+        --------
+        parent = {}
+        node_meta = cls._node_meta(
+            name="SomeEntity",
+            value={"SomeField": "value-1"},
+        )
+        node = cls._create_node(parent, node_meta)
+        ->
+        parent: {"SomeEntity": {}}
+        node: {}
+
+        parent = []
+        node_meta = cls._node_meta(
+            name=None,
+            value={"SomeField": "value-1"},
+        )
+        node = cls._create_node(parent, node_meta)
+        ->
+        parent: [{}]
+        node: {}
+
+        parent = []
+        node_meta = cls._node_meta(
+            name=None,
+            value=["value-1"],
+        )
+        node = cls._create_node(parent, node_meta)
+        ->
+        parent: [[]]
+        node: []
+
+        parent = {}
+        node_meta = cls._node_meta(
+            name="SomeEntity",
+            value=["value-1"],
+        )
+        node = cls._create_node(parent, node_meta)
+        ->
+        parent: {"SomeEntity": []}
+        node: []
         """
         new_node = {} if isinstance(node_meta["value"], dict) else []
         if isinstance(parent, list):

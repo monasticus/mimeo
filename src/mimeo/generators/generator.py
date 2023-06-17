@@ -314,7 +314,7 @@ class Generator(metaclass=ABCMeta):
 
     @staticmethod
     def _node_meta(
-            name: str,
+            name: str | None,
             value: dict | list | str | int | float | bool,
             attrs: dict | None = None,
             is_mimeo_util: bool | None = None,
@@ -324,7 +324,7 @@ class Generator(metaclass=ABCMeta):
 
         Parameters
         ----------
-        name : str
+        name : str | None
             A node's name (tag / property)
         value : dict | list | str | int | float | bool
             An node's value
