@@ -296,20 +296,24 @@ def test_directory_path(aioresponses):
             {
                 "method": "POST",
                 "url": "http://localhost:8080/document",
-                "body": "<SomeEntity>"
-                        "<ChildNode1>1</ChildNode1>"
-                        "<ChildNode2>value-2</ChildNode2>"
-                        "<ChildNode3>true</ChildNode3>"
-                        "</SomeEntity>",
+                "details": {
+                    "body": "<SomeEntity>"
+                            "<ChildNode1>1</ChildNode1>"
+                            "<ChildNode2>value-2</ChildNode2>"
+                            "<ChildNode3>true</ChildNode3>"
+                            "</SomeEntity>",
+                },
             },
             {
                 "method": "POST",
                 "url": "http://localhost:8080/document",
-                "body": "<SomeEntity>"
-                        "<ChildNode1>1</ChildNode1>"
-                        "<ChildNode2>value-2</ChildNode2>"
-                        "<ChildNode3>true</ChildNode3>"
-                        "</SomeEntity>",
+                "details": {
+                    "body": "<SomeEntity>"
+                            "<ChildNode1>1</ChildNode1>"
+                            "<ChildNode2>value-2</ChildNode2>"
+                            "<ChildNode3>true</ChildNode3>"
+                            "</SomeEntity>",
+                },
             },
         ],
     )
@@ -1120,11 +1124,13 @@ def test_json_custom_short_http_host(aioresponses):
     utils.assert_requests_count(aioresponses, 1)
     utils.assert_request_sent(
         aioresponses, "POST", "http://198.168.1.1:8080/document",
-        body="<SomeEntity>"
-             "<ChildNode1>1</ChildNode1>"
-             "<ChildNode2>value-2</ChildNode2>"
-             "<ChildNode3>true</ChildNode3>"
-             "</SomeEntity>",
+        details={
+            "body": "<SomeEntity>"
+                    "<ChildNode1>1</ChildNode1>"
+                    "<ChildNode2>value-2</ChildNode2>"
+                    "<ChildNode3>true</ChildNode3>"
+                    "</SomeEntity>",
+        },
     )
 
 
@@ -1138,11 +1144,13 @@ def test_xml_custom_short_http_host(aioresponses):
     utils.assert_requests_count(aioresponses, 1)
     utils.assert_request_sent(
         aioresponses, "POST", "http://198.168.1.1:8080/document",
-        body="<SomeEntity>"
-             "<ChildNode1>1</ChildNode1>"
-             "<ChildNode2>value-2</ChildNode2>"
-             "<ChildNode3>true</ChildNode3>"
-             "</SomeEntity>",
+        details={
+            "body": "<SomeEntity>"
+                    "<ChildNode1>1</ChildNode1>"
+                    "<ChildNode2>value-2</ChildNode2>"
+                    "<ChildNode3>true</ChildNode3>"
+                    "</SomeEntity>",
+        },
     )
 
 
@@ -1156,11 +1164,13 @@ def test_json_custom_long_http_host(aioresponses):
     utils.assert_requests_count(aioresponses, 1)
     utils.assert_request_sent(
         aioresponses, "POST", "http://198.168.1.1:8080/document",
-        body="<SomeEntity>"
-             "<ChildNode1>1</ChildNode1>"
-             "<ChildNode2>value-2</ChildNode2>"
-             "<ChildNode3>true</ChildNode3>"
-             "</SomeEntity>",
+        details={
+            "body": "<SomeEntity>"
+                    "<ChildNode1>1</ChildNode1>"
+                    "<ChildNode2>value-2</ChildNode2>"
+                    "<ChildNode3>true</ChildNode3>"
+                    "</SomeEntity>",
+        },
     )
 
 
@@ -1174,11 +1184,13 @@ def test_xml_custom_long_http_host(aioresponses):
     utils.assert_requests_count(aioresponses, 1)
     utils.assert_request_sent(
         aioresponses, "POST", "http://198.168.1.1:8080/document",
-        body="<SomeEntity>"
-             "<ChildNode1>1</ChildNode1>"
-             "<ChildNode2>value-2</ChildNode2>"
-             "<ChildNode3>true</ChildNode3>"
-             "</SomeEntity>",
+        details={
+            "body": "<SomeEntity>"
+                    "<ChildNode1>1</ChildNode1>"
+                    "<ChildNode2>value-2</ChildNode2>"
+                    "<ChildNode3>true</ChildNode3>"
+                    "</SomeEntity>",
+        },
     )
 
 
@@ -1218,11 +1230,13 @@ def test_json_custom_short_http_port(aioresponses):
     utils.assert_requests_count(aioresponses, 1)
     utils.assert_request_sent(
         aioresponses, "POST", "http://localhost:8081/document",
-        body="<SomeEntity>"
-             "<ChildNode1>1</ChildNode1>"
-             "<ChildNode2>value-2</ChildNode2>"
-             "<ChildNode3>true</ChildNode3>"
-             "</SomeEntity>",
+        details={
+            "body": "<SomeEntity>"
+                    "<ChildNode1>1</ChildNode1>"
+                    "<ChildNode2>value-2</ChildNode2>"
+                    "<ChildNode3>true</ChildNode3>"
+                    "</SomeEntity>",
+        },
     )
 
 
@@ -1236,11 +1250,13 @@ def test_xml_custom_short_http_port(aioresponses):
     utils.assert_requests_count(aioresponses, 1)
     utils.assert_request_sent(
         aioresponses, "POST", "http://localhost:8081/document",
-        body="<SomeEntity>"
-             "<ChildNode1>1</ChildNode1>"
-             "<ChildNode2>value-2</ChildNode2>"
-             "<ChildNode3>true</ChildNode3>"
-             "</SomeEntity>",
+        details={
+            "body": "<SomeEntity>"
+                    "<ChildNode1>1</ChildNode1>"
+                    "<ChildNode2>value-2</ChildNode2>"
+                    "<ChildNode3>true</ChildNode3>"
+                    "</SomeEntity>",
+        },
     )
 
 
@@ -1254,11 +1270,13 @@ def test_json_custom_long_http_port(aioresponses):
     utils.assert_requests_count(aioresponses, 1)
     utils.assert_request_sent(
         aioresponses, "POST", "http://localhost:8081/document",
-        body="<SomeEntity>"
-             "<ChildNode1>1</ChildNode1>"
-             "<ChildNode2>value-2</ChildNode2>"
-             "<ChildNode3>true</ChildNode3>"
-             "</SomeEntity>",
+        details={
+            "body": "<SomeEntity>"
+                    "<ChildNode1>1</ChildNode1>"
+                    "<ChildNode2>value-2</ChildNode2>"
+                    "<ChildNode3>true</ChildNode3>"
+                    "</SomeEntity>",
+        },
     )
 
 
@@ -1272,11 +1290,13 @@ def test_xml_custom_long_http_port(aioresponses):
     utils.assert_requests_count(aioresponses, 1)
     utils.assert_request_sent(
         aioresponses, "POST", "http://localhost:8081/document",
-        body="<SomeEntity>"
-             "<ChildNode1>1</ChildNode1>"
-             "<ChildNode2>value-2</ChildNode2>"
-             "<ChildNode3>true</ChildNode3>"
-             "</SomeEntity>",
+        details={
+            "body": "<SomeEntity>"
+                    "<ChildNode1>1</ChildNode1>"
+                    "<ChildNode2>value-2</ChildNode2>"
+                    "<ChildNode3>true</ChildNode3>"
+                    "</SomeEntity>",
+        },
     )
 
 
@@ -1303,11 +1323,13 @@ def test_json_custom_short_http_endpoint(aioresponses):
     utils.assert_requests_count(aioresponses, 1)
     utils.assert_request_sent(
         aioresponses, "POST", "http://localhost:8080/v2/document",
-        body="<SomeEntity>"
-             "<ChildNode1>1</ChildNode1>"
-             "<ChildNode2>value-2</ChildNode2>"
-             "<ChildNode3>true</ChildNode3>"
-             "</SomeEntity>",
+        details={
+            "body": "<SomeEntity>"
+                    "<ChildNode1>1</ChildNode1>"
+                    "<ChildNode2>value-2</ChildNode2>"
+                    "<ChildNode3>true</ChildNode3>"
+                    "</SomeEntity>",
+        },
     )
 
 
@@ -1321,11 +1343,13 @@ def test_xml_custom_short_http_endpoint(aioresponses):
     utils.assert_requests_count(aioresponses, 1)
     utils.assert_request_sent(
         aioresponses, "POST", "http://localhost:8080/v2/document",
-        body="<SomeEntity>"
-             "<ChildNode1>1</ChildNode1>"
-             "<ChildNode2>value-2</ChildNode2>"
-             "<ChildNode3>true</ChildNode3>"
-             "</SomeEntity>",
+        details={
+            "body": "<SomeEntity>"
+                    "<ChildNode1>1</ChildNode1>"
+                    "<ChildNode2>value-2</ChildNode2>"
+                    "<ChildNode3>true</ChildNode3>"
+                    "</SomeEntity>",
+        },
     )
 
 
@@ -1339,11 +1363,13 @@ def test_json_custom_long_http_endpoint(aioresponses):
     utils.assert_requests_count(aioresponses, 1)
     utils.assert_request_sent(
         aioresponses, "POST", "http://localhost:8080/v2/document",
-        body="<SomeEntity>"
-             "<ChildNode1>1</ChildNode1>"
-             "<ChildNode2>value-2</ChildNode2>"
-             "<ChildNode3>true</ChildNode3>"
-             "</SomeEntity>",
+        details={
+            "body": "<SomeEntity>"
+                    "<ChildNode1>1</ChildNode1>"
+                    "<ChildNode2>value-2</ChildNode2>"
+                    "<ChildNode3>true</ChildNode3>"
+                    "</SomeEntity>",
+        },
     )
 
 
@@ -1357,11 +1383,13 @@ def test_xml_custom_long_http_endpoint(aioresponses):
     utils.assert_requests_count(aioresponses, 1)
     utils.assert_request_sent(
         aioresponses, "POST", "http://localhost:8080/v2/document",
-        body="<SomeEntity>"
-             "<ChildNode1>1</ChildNode1>"
-             "<ChildNode2>value-2</ChildNode2>"
-             "<ChildNode3>true</ChildNode3>"
-             "</SomeEntity>",
+        details={
+            "body": "<SomeEntity>"
+                    "<ChildNode1>1</ChildNode1>"
+                    "<ChildNode2>value-2</ChildNode2>"
+                    "<ChildNode3>true</ChildNode3>"
+                    "</SomeEntity>",
+        },
     )
 
 
@@ -1401,12 +1429,14 @@ def test_json_custom_short_http_username(aioresponses):
     utils.assert_requests_count(aioresponses, 1)
     utils.assert_request_sent(
         aioresponses, "POST", "http://localhost:8080/document",
-        body="<SomeEntity>"
-             "<ChildNode1>1</ChildNode1>"
-             "<ChildNode2>value-2</ChildNode2>"
-             "<ChildNode3>true</ChildNode3>"
-             "</SomeEntity>",
-        auth=("custom-user", "admin"),
+        details={
+            "body": "<SomeEntity>"
+                    "<ChildNode1>1</ChildNode1>"
+                    "<ChildNode2>value-2</ChildNode2>"
+                    "<ChildNode3>true</ChildNode3>"
+                    "</SomeEntity>",
+            "auth": ("custom-user", "admin"),
+        },
     )
 
 
@@ -1420,12 +1450,14 @@ def test_xml_custom_short_http_username(aioresponses):
     utils.assert_requests_count(aioresponses, 1)
     utils.assert_request_sent(
         aioresponses, "POST", "http://localhost:8080/document",
-        body="<SomeEntity>"
-             "<ChildNode1>1</ChildNode1>"
-             "<ChildNode2>value-2</ChildNode2>"
-             "<ChildNode3>true</ChildNode3>"
-             "</SomeEntity>",
-        auth=("custom-user", "admin"),
+        details={
+            "body": "<SomeEntity>"
+                    "<ChildNode1>1</ChildNode1>"
+                    "<ChildNode2>value-2</ChildNode2>"
+                    "<ChildNode3>true</ChildNode3>"
+                    "</SomeEntity>",
+            "auth": ("custom-user", "admin"),
+        },
     )
 
 
@@ -1439,12 +1471,14 @@ def test_json_custom_long_http_username(aioresponses):
     utils.assert_requests_count(aioresponses, 1)
     utils.assert_request_sent(
         aioresponses, "POST", "http://localhost:8080/document",
-        body="<SomeEntity>"
-             "<ChildNode1>1</ChildNode1>"
-             "<ChildNode2>value-2</ChildNode2>"
-             "<ChildNode3>true</ChildNode3>"
-             "</SomeEntity>",
-        auth=("custom-user", "admin"),
+        details={
+            "body": "<SomeEntity>"
+                    "<ChildNode1>1</ChildNode1>"
+                    "<ChildNode2>value-2</ChildNode2>"
+                    "<ChildNode3>true</ChildNode3>"
+                    "</SomeEntity>",
+            "auth": ("custom-user", "admin"),
+        },
     )
 
 
@@ -1458,12 +1492,14 @@ def test_xml_custom_long_http_username(aioresponses):
     utils.assert_requests_count(aioresponses, 1)
     utils.assert_request_sent(
         aioresponses, "POST", "http://localhost:8080/document",
-        body="<SomeEntity>"
-             "<ChildNode1>1</ChildNode1>"
-             "<ChildNode2>value-2</ChildNode2>"
-             "<ChildNode3>true</ChildNode3>"
-             "</SomeEntity>",
-        auth=("custom-user", "admin"),
+        details={
+            "body": "<SomeEntity>"
+                    "<ChildNode1>1</ChildNode1>"
+                    "<ChildNode2>value-2</ChildNode2>"
+                    "<ChildNode3>true</ChildNode3>"
+                    "</SomeEntity>",
+            "auth": ("custom-user", "admin"),
+        },
     )
 
 
@@ -1503,12 +1539,14 @@ def test_json_custom_short_http_password(aioresponses):
     utils.assert_requests_count(aioresponses, 1)
     utils.assert_request_sent(
         aioresponses, "POST", "http://localhost:8080/document",
-        body="<SomeEntity>"
-             "<ChildNode1>1</ChildNode1>"
-             "<ChildNode2>value-2</ChildNode2>"
-             "<ChildNode3>true</ChildNode3>"
-             "</SomeEntity>",
-        auth=("admin", "custom-password"),
+        details={
+            "body": "<SomeEntity>"
+                    "<ChildNode1>1</ChildNode1>"
+                    "<ChildNode2>value-2</ChildNode2>"
+                    "<ChildNode3>true</ChildNode3>"
+                    "</SomeEntity>",
+            "auth": ("admin", "custom-password"),
+        },
     )
 
 
@@ -1522,12 +1560,14 @@ def test_xml_custom_short_http_password(aioresponses):
     utils.assert_requests_count(aioresponses, 1)
     utils.assert_request_sent(
         aioresponses, "POST", "http://localhost:8080/document",
-        body="<SomeEntity>"
-             "<ChildNode1>1</ChildNode1>"
-             "<ChildNode2>value-2</ChildNode2>"
-             "<ChildNode3>true</ChildNode3>"
-             "</SomeEntity>",
-        auth=("admin", "custom-password"),
+        details={
+            "body": "<SomeEntity>"
+                    "<ChildNode1>1</ChildNode1>"
+                    "<ChildNode2>value-2</ChildNode2>"
+                    "<ChildNode3>true</ChildNode3>"
+                    "</SomeEntity>",
+            "auth": ("admin", "custom-password"),
+        },
     )
 
 
@@ -1541,12 +1581,14 @@ def test_json_custom_long_http_password(aioresponses):
     utils.assert_requests_count(aioresponses, 1)
     utils.assert_request_sent(
         aioresponses, "POST", "http://localhost:8080/document",
-        body="<SomeEntity>"
-             "<ChildNode1>1</ChildNode1>"
-             "<ChildNode2>value-2</ChildNode2>"
-             "<ChildNode3>true</ChildNode3>"
-             "</SomeEntity>",
-        auth=("admin", "custom-password"),
+        details={
+            "body": "<SomeEntity>"
+                    "<ChildNode1>1</ChildNode1>"
+                    "<ChildNode2>value-2</ChildNode2>"
+                    "<ChildNode3>true</ChildNode3>"
+                    "</SomeEntity>",
+            "auth": ("admin", "custom-password"),
+        },
     )
 
 
@@ -1560,12 +1602,14 @@ def test_xml_custom_long_http_password(aioresponses):
     utils.assert_requests_count(aioresponses, 1)
     utils.assert_request_sent(
         aioresponses, "POST", "http://localhost:8080/document",
-        body="<SomeEntity>"
-             "<ChildNode1>1</ChildNode1>"
-             "<ChildNode2>value-2</ChildNode2>"
-             "<ChildNode3>true</ChildNode3>"
-             "</SomeEntity>",
-        auth=("admin", "custom-password"),
+        details={
+            "body": "<SomeEntity>"
+                    "<ChildNode1>1</ChildNode1>"
+                    "<ChildNode2>value-2</ChildNode2>"
+                    "<ChildNode3>true</ChildNode3>"
+                    "</SomeEntity>",
+            "auth": ("admin", "custom-password"),
+        },
     )
 
 
@@ -1605,12 +1649,14 @@ def test_json_custom_long_http_method(aioresponses):
     utils.assert_requests_count(aioresponses, 1)
     utils.assert_request_sent(
         aioresponses, "PUT", "http://localhost:8080/document",
-        body="<SomeEntity>"
-             "<ChildNode1>1</ChildNode1>"
-             "<ChildNode2>value-2</ChildNode2>"
-             "<ChildNode3>true</ChildNode3>"
-             "</SomeEntity>",
-        auth=("admin", "admin"),
+        details={
+            "body": "<SomeEntity>"
+                    "<ChildNode1>1</ChildNode1>"
+                    "<ChildNode2>value-2</ChildNode2>"
+                    "<ChildNode3>true</ChildNode3>"
+                    "</SomeEntity>",
+            "auth": ("admin", "admin"),
+        },
     )
 
 
@@ -1624,12 +1670,14 @@ def test_xml_custom_long_http_method(aioresponses):
     utils.assert_requests_count(aioresponses, 1)
     utils.assert_request_sent(
         aioresponses, "PUT", "http://localhost:8080/document",
-        body="<SomeEntity>"
-             "<ChildNode1>1</ChildNode1>"
-             "<ChildNode2>value-2</ChildNode2>"
-             "<ChildNode3>true</ChildNode3>"
-             "</SomeEntity>",
-        auth=("admin", "admin"),
+        details={
+            "body": "<SomeEntity>"
+                    "<ChildNode1>1</ChildNode1>"
+                    "<ChildNode2>value-2</ChildNode2>"
+                    "<ChildNode3>true</ChildNode3>"
+                    "</SomeEntity>",
+            "auth": ("admin", "admin"),
+        },
     )
 
 
@@ -1669,12 +1717,14 @@ def test_json_custom_long_http_protocol(aioresponses):
     utils.assert_requests_count(aioresponses, 1)
     utils.assert_request_sent(
         aioresponses, "POST", "https://localhost:8080/document",
-        body="<SomeEntity>"
-             "<ChildNode1>1</ChildNode1>"
-             "<ChildNode2>value-2</ChildNode2>"
-             "<ChildNode3>true</ChildNode3>"
-             "</SomeEntity>",
-        auth=("admin", "admin"),
+        details={
+            "body": "<SomeEntity>"
+                    "<ChildNode1>1</ChildNode1>"
+                    "<ChildNode2>value-2</ChildNode2>"
+                    "<ChildNode3>true</ChildNode3>"
+                    "</SomeEntity>",
+            "auth": ("admin", "admin"),
+        },
     )
 
 
@@ -1688,12 +1738,14 @@ def test_xml_custom_long_http_protocol(aioresponses):
     utils.assert_requests_count(aioresponses, 1)
     utils.assert_request_sent(
         aioresponses, "POST", "https://localhost:8080/document",
-        body="<SomeEntity>"
-             "<ChildNode1>1</ChildNode1>"
-             "<ChildNode2>value-2</ChildNode2>"
-             "<ChildNode3>true</ChildNode3>"
-             "</SomeEntity>",
-        auth=("admin", "admin"),
+        details={
+            "body": "<SomeEntity>"
+                    "<ChildNode1>1</ChildNode1>"
+                    "<ChildNode2>value-2</ChildNode2>"
+                    "<ChildNode3>true</ChildNode3>"
+                    "</SomeEntity>",
+            "auth": ("admin", "admin"),
+        },
     )
 
 
@@ -1733,12 +1785,14 @@ def test_json_custom_short_env(aioresponses):
     utils.assert_requests_count(aioresponses, 1)
     utils.assert_request_sent(
         aioresponses, "POST", "https://11.111.11.111:8000/document",
-        body="<SomeEntity>"
-             "<ChildNode1>1</ChildNode1>"
-             "<ChildNode2>value-2</ChildNode2>"
-             "<ChildNode3>true</ChildNode3>"
-             "</SomeEntity>",
-        auth=("custom-username", "custom-password"),
+        details={
+            "body": "<SomeEntity>"
+                    "<ChildNode1>1</ChildNode1>"
+                    "<ChildNode2>value-2</ChildNode2>"
+                    "<ChildNode3>true</ChildNode3>"
+                    "</SomeEntity>",
+            "auth": ("custom-username", "custom-password"),
+        },
     )
 
 
@@ -1752,12 +1806,14 @@ def test_xml_custom_short_env(aioresponses):
     utils.assert_requests_count(aioresponses, 1)
     utils.assert_request_sent(
         aioresponses, "POST", "https://11.111.11.111:8000/document",
-        body="<SomeEntity>"
-             "<ChildNode1>1</ChildNode1>"
-             "<ChildNode2>value-2</ChildNode2>"
-             "<ChildNode3>true</ChildNode3>"
-             "</SomeEntity>",
-        auth=("custom-username", "custom-password"),
+        details={
+            "body": "<SomeEntity>"
+                    "<ChildNode1>1</ChildNode1>"
+                    "<ChildNode2>value-2</ChildNode2>"
+                    "<ChildNode3>true</ChildNode3>"
+                    "</SomeEntity>",
+            "auth": ("custom-username", "custom-password"),
+        },
     )
 
 
@@ -1771,12 +1827,14 @@ def test_json_custom_long_env(aioresponses):
     utils.assert_requests_count(aioresponses, 1)
     utils.assert_request_sent(
         aioresponses, "POST", "https://11.111.11.111:8000/document",
-        body="<SomeEntity>"
-             "<ChildNode1>1</ChildNode1>"
-             "<ChildNode2>value-2</ChildNode2>"
-             "<ChildNode3>true</ChildNode3>"
-             "</SomeEntity>",
-        auth=("custom-username", "custom-password"),
+        details={
+            "body": "<SomeEntity>"
+                    "<ChildNode1>1</ChildNode1>"
+                    "<ChildNode2>value-2</ChildNode2>"
+                    "<ChildNode3>true</ChildNode3>"
+                    "</SomeEntity>",
+            "auth": ("custom-username", "custom-password"),
+        },
     )
 
 
@@ -1790,12 +1848,14 @@ def test_xml_custom_long_env(aioresponses):
     utils.assert_requests_count(aioresponses, 1)
     utils.assert_request_sent(
         aioresponses, "POST", "https://11.111.11.111:8000/document",
-        body="<SomeEntity>"
-             "<ChildNode1>1</ChildNode1>"
-             "<ChildNode2>value-2</ChildNode2>"
-             "<ChildNode3>true</ChildNode3>"
-             "</SomeEntity>",
-        auth=("custom-username", "custom-password"),
+        details={
+            "body": "<SomeEntity>"
+                    "<ChildNode1>1</ChildNode1>"
+                    "<ChildNode2>value-2</ChildNode2>"
+                    "<ChildNode3>true</ChildNode3>"
+                    "</SomeEntity>",
+            "auth": ("custom-username", "custom-password"),
+        },
     )
 
 
@@ -1810,12 +1870,14 @@ def test_json_custom_env_file(aioresponses):
     utils.assert_requests_count(aioresponses, 1)
     utils.assert_request_sent(
         aioresponses, "POST", "https://11.111.11.111:8000/document",
-        body="<SomeEntity>"
-             "<ChildNode1>1</ChildNode1>"
-             "<ChildNode2>value-2</ChildNode2>"
-             "<ChildNode3>true</ChildNode3>"
-             "</SomeEntity>",
-        auth=("custom-username", "custom-password"),
+        details={
+            "body": "<SomeEntity>"
+                    "<ChildNode1>1</ChildNode1>"
+                    "<ChildNode2>value-2</ChildNode2>"
+                    "<ChildNode3>true</ChildNode3>"
+                    "</SomeEntity>",
+            "auth": ("custom-username", "custom-password"),
+        },
     )
 
 
@@ -1830,12 +1892,14 @@ def test_xml_custom_env_file(aioresponses):
     utils.assert_requests_count(aioresponses, 1)
     utils.assert_request_sent(
         aioresponses, "POST", "https://11.111.11.111:8000/document",
-        body="<SomeEntity>"
-             "<ChildNode1>1</ChildNode1>"
-             "<ChildNode2>value-2</ChildNode2>"
-             "<ChildNode3>true</ChildNode3>"
-             "</SomeEntity>",
-        auth=("custom-username", "custom-password"),
+        details={
+            "body": "<SomeEntity>"
+                    "<ChildNode1>1</ChildNode1>"
+                    "<ChildNode2>value-2</ChildNode2>"
+                    "<ChildNode3>true</ChildNode3>"
+                    "</SomeEntity>",
+            "auth": ("custom-username", "custom-password"),
+        },
     )
 
 

@@ -59,14 +59,12 @@ def assert_request_sent(
         mock: aioresponses,
         method: str,
         url: str,
-        body: str = None,
-        auth: Tuple[str, str] = None,
-        content_type: str = None,
+        details: dict,
 ):
     requests = mock.requests.get((method, URL(url)))
     assert requests is not None
 
-    found = next(filter(lambda r: _matches_request(r, body, auth, content_type), requests))
+    found = next(filter(lambda r: _matches_request(r, **details), requests))
     assert found is not None
 
 

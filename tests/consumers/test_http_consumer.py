@@ -48,16 +48,20 @@ def test_consume_xml():
                     {
                         "method": consumer.method,
                         "url": consumer.url,
-                        "body": "<SomeEntity><Id>1</Id></SomeEntity>",
-                        "auth": ("admin", "admin"),
-                        "content_type": "application/xml",
+                        "details": {
+                            "body": "<SomeEntity><Id>1</Id></SomeEntity>",
+                            "auth": ("admin", "admin"),
+                            "content_type": "application/xml",
+                        },
                     },
                     {
                         "method": consumer.method,
                         "url": consumer.url,
-                        "body": "<SomeEntity><Id>2</Id></SomeEntity>",
-                        "auth": ("admin", "admin"),
-                        "content_type": "application/xml",
+                        "details": {
+                            "body": "<SomeEntity><Id>2</Id></SomeEntity>",
+                            "auth": ("admin", "admin"),
+                            "content_type": "application/xml",
+                        },
                     },
                 ],
             )
@@ -102,16 +106,20 @@ def test_consume_json():
                     {
                         "method": consumer.method,
                         "url": consumer.url,
-                        "body": '{"SomeEntity": {"Id": 1}}',
-                        "auth": ("admin", "admin"),
-                        "content_type": "application/json",
+                        "details": {
+                            "body": '{"SomeEntity": {"Id": 1}}',
+                            "auth": ("admin", "admin"),
+                            "content_type": "application/json",
+                        },
                     },
                     {
                         "method": consumer.method,
                         "url": consumer.url,
-                        "body": '{"SomeEntity": {"Id": 2}}',
-                        "auth": ("admin", "admin"),
-                        "content_type": "application/json",
+                        "details": {
+                            "body": '{"SomeEntity": {"Id": 2}}',
+                            "auth": ("admin", "admin"),
+                            "content_type": "application/json",
+                        },
                     },
                 ],
             )
@@ -156,14 +164,20 @@ def test_consume_post():
                     {
                         "method": consumer.method,
                         "url": consumer.url,
-                        "body": "<SomeEntity><Id>1</Id></SomeEntity>",
-                        "auth": ("admin", "admin"),
+                        "details": {
+                            "body": "<SomeEntity><Id>1</Id></SomeEntity>",
+                            "auth": ("admin", "admin"),
+                            "content_type": "application/xml",
+                        },
                     },
                     {
                         "method": consumer.method,
                         "url": consumer.url,
-                        "body": "<SomeEntity><Id>2</Id></SomeEntity>",
-                        "auth": ("admin", "admin"),
+                        "details": {
+                            "body": "<SomeEntity><Id>2</Id></SomeEntity>",
+                            "auth": ("admin", "admin"),
+                            "content_type": "application/xml",
+                        },
                     },
                 ],
             )
@@ -210,14 +224,20 @@ def test_consume_put():
                     {
                         "method": consumer.method,
                         "url": consumer.url,
-                        "body": "<SomeEntity><Id>1</Id></SomeEntity>",
-                        "auth": ("admin", "admin"),
+                        "details": {
+                            "body": "<SomeEntity><Id>1</Id></SomeEntity>",
+                            "auth": ("admin", "admin"),
+                            "content_type": "application/xml",
+                        },
                     },
                     {
                         "method": consumer.method,
                         "url": consumer.url,
-                        "body": "<SomeEntity><Id>2</Id></SomeEntity>",
-                        "auth": ("admin", "admin"),
+                        "details": {
+                            "body": "<SomeEntity><Id>2</Id></SomeEntity>",
+                            "auth": ("admin", "admin"),
+                            "content_type": "application/xml",
+                        },
                     },
                 ],
             )
@@ -261,14 +281,20 @@ def test_consume_without_port():
                     {
                         "method": consumer.method,
                         "url": consumer.url,
-                        "body": "<SomeEntity><Id>1</Id></SomeEntity>",
-                        "auth": ("admin", "admin"),
+                        "details": {
+                            "body": "<SomeEntity><Id>1</Id></SomeEntity>",
+                            "auth": ("admin", "admin"),
+                            "content_type": "application/xml",
+                        },
                     },
                     {
                         "method": consumer.method,
                         "url": consumer.url,
-                        "body": "<SomeEntity><Id>2</Id></SomeEntity>",
-                        "auth": ("admin", "admin"),
+                        "details": {
+                            "body": "<SomeEntity><Id>2</Id></SomeEntity>",
+                            "auth": ("admin", "admin"),
+                            "content_type": "application/xml",
+                        },
                     },
                 ],
             )
