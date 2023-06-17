@@ -214,8 +214,7 @@ class JSONGenerator(Generator):
         if (isinstance(node_meta["value"], dict) and
                 cc.TEMPLATES_KEY not in node_meta["value"]):
             func = cls._process_dict_value
-        elif (isinstance(node_meta["value"], list) and
-              node_meta["name"] != cc.TEMPLATES_KEY):
+        elif isinstance(node_meta["value"], list):
             func = cls._process_list_value
         else:
             func = cls._process_templates_value
