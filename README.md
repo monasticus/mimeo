@@ -27,6 +27,14 @@ Prepare Mimeo Configuration first
 - for a command line tool: in a JSON or XML file
 - for a `Mimeograph` python class: in a `dict` or stringified XML
 
+<table>
+    <tr>
+        <th>JSON</th>
+        <th>XML</th>
+    </tr>
+    <tr>
+        <td>
+
 ```json
 {
   "_templates_": [
@@ -45,6 +53,9 @@ Prepare Mimeo Configuration first
   ]
 }
 ```
+</td>
+    <td>
+
 ```xml
 <mimeo_configuration>
     <_templates_>
@@ -65,6 +76,11 @@ Prepare Mimeo Configuration first
     </_templates_>
 </mimeo_configuration>
 ```
+</td>
+  </tr>
+</table>
+
+
 _You can find more configuration examples in the `examples` folder._
 
 ### Mimeograph
