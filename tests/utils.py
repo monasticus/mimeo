@@ -1,6 +1,8 @@
+from __future__ import annotations
+
 import functools
 import sys
-from typing import Callable, List, Tuple, Type
+from typing import Callable
 
 import pytest
 from aiohttp import BasicAuth
@@ -19,7 +21,7 @@ __all__ = [
 
 def get_class_impl_error_msg(
         cls: str,
-        methods_list: List[str],
+        methods_list: list[str],
 ) -> str:
     methods = ", ".join(methods_list)
     plural = sys.version_info < (3, 9) or len(methods_list) > 1
@@ -28,7 +30,7 @@ def get_class_impl_error_msg(
 
 
 def assert_throws(
-        err_type: Type[Exception],
+        err_type: type[Exception],
         msg: str,
         **params,
 ) -> Callable:
@@ -81,7 +83,7 @@ def assert_requests_count(
 def _matches_request(
         request: RequestCall,
         body: str = None,
-        auth: Tuple[str, str] = None,
+        auth: tuple[str, str] = None,
         content_type: str = None,
 ) -> bool:
     actual_body = request.kwargs.get("data")

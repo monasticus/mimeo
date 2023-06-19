@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 import xml.etree.ElementTree as ElemTree
-from typing import Any, Iterator, Union
+from typing import Any, Iterator
 
 import tests.utils as test_utils
 from mimeo.config.mimeo_config import MimeoTemplate
@@ -11,7 +13,7 @@ from tests.utils import assert_throws
 class ValidGenerator(Generator):
     def generate(
             self,
-            templates: Union[list, Iterator[MimeoTemplate]],
+            templates: list | Iterator[MimeoTemplate],
             parent: Any = None,
     ) -> Iterator[ElemTree.Element]:
         pass
@@ -50,7 +52,7 @@ class ValidGenerator(Generator):
 class InvalidGenerator1(Generator):
     def generate(
             self,
-            templates: Union[list, Iterator[MimeoTemplate]],
+            templates: list | Iterator[MimeoTemplate],
             parent: Any = None,
     ) -> Iterator[ElemTree.Element]:
         pass

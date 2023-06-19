@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import tests.utils as test_utils
 from mimeo.consumers import Consumer
 from tests.utils import assert_throws
