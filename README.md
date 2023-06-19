@@ -6,7 +6,7 @@
 [![Build](https://img.shields.io/github/actions/workflow/status/TomaszAniolowski/mimeo/test.yml?color=brightgreen&label=Test%20Mimeo&style=plastic)](https://github.com/TomaszAniolowski/mimeo/actions/workflows/test.yml?query=branch%3Amain)
 [![Code Coverage](https://img.shields.io/badge/Code%20Coverage-100%25-brightgreen?style=plastic)](https://github.com/TomaszAniolowski/mimeo/actions/workflows/coverage_badge.yml?query=branch%3Amain)
 
-[Mimeo](https://github.com/TomaszAniolowski/mimeo) is a command line tool and python library generating custom data based on a template.
+[Mimeo](https://github.com/TomaszAniolowski/mimeo) is a command line tool and python library generating NoSQL data based on a template.
 It can be used by developers, testers or even business analysts in their daily work.
 
 
@@ -27,6 +27,14 @@ Prepare Mimeo Configuration first
 - for a command line tool: in a JSON or XML file
 - for a `Mimeograph` python class: in a `dict` or stringified XML
 
+<table>
+    <tr>
+        <th>JSON</th>
+        <th>XML</th>
+    </tr>
+    <tr>
+        <td>
+
 ```json
 {
   "_templates_": [
@@ -45,6 +53,9 @@ Prepare Mimeo Configuration first
   ]
 }
 ```
+</td>
+    <td>
+
 ```xml
 <mimeo_configuration>
     <_templates_>
@@ -65,6 +76,11 @@ Prepare Mimeo Configuration first
     </_templates_>
 </mimeo_configuration>
 ```
+</td>
+  </tr>
+</table>
+
+
 _You can find more configuration examples in the `examples` folder._
 
 ### Mimeograph
@@ -110,6 +126,32 @@ The Mimeo Configuration above will produce 2 files:
     <ChildNode3>true</ChildNode3>
 </SomeEntity>
 ```
+
+When we would configure output format as `json` then it would produce:
+
+```json
+{
+  "SomeEntity": {
+    "@xmlns": "http://mimeo.arch.com/default-namespace",
+    "@xmlns:pn": "http://mimeo.arch.com/prefixed-namespace",
+    "ChildNode1": 1,
+    "pn:ChildNode2": "value-2",
+    "ChildNode3": true
+  }
+}
+```
+```json
+{
+  "SomeEntity": {
+    "@xmlns": "http://mimeo.arch.com/default-namespace",
+    "@xmlns:pn": "http://mimeo.arch.com/prefixed-namespace",
+    "ChildNode1": 1,
+    "pn:ChildNode2": "value-2",
+    "ChildNode3": true
+  }
+}
+```
+
 ***
 
 ### Mimeo Utils
@@ -160,6 +202,26 @@ Mimeo exposes several functions for data generation that will make it more usefu
 </SomeEntity>
 ```
 
+**JSON Data**
+```json
+{
+  "SomeEntity": {
+    "id": "00001",
+    "randomstring": "mCApsYZprayYkmKnYWxe",
+    "randomint": 8
+  }
+}
+```
+```json
+{
+  "SomeEntity": {
+    "id": "00002",
+    "randomstring": "ceaPUqARUkFukZIPeuqO",
+    "randomint": 99
+  }
+}
+```
+
 
 ## Documentation
 
@@ -171,6 +233,7 @@ When using Mimeo command line tool you can overwrite Mimeo Configuration propert
 
 | Short option | Long option         | Description                                                          |
 |:------------:|:--------------------|:---------------------------------------------------------------------|
+|     `-F`     | `--format`          | overwrite the `output/format` property                               |
 |     `-o`     | `--output`          | overwrite the `output/direction` property                            |
 |     `-x`     | `--xml-declaration` | overwrite the `output/xml_declaration` property                      |
 |     `-i`     | `--indent`          | overwrite the `output/indent` property                               |
@@ -198,11 +261,11 @@ When using Mimeo command line tool you can overwrite Mimeo Configuration propert
 
 Mimeo configuration is defined in a JSON file using internal settings and data templates.
 
-| Key                              |  Level   |      Required      |     Supported values     |    Default     | Description                                                                                                                                             |
-|:---------------------------------|:--------:|:------------------:|:------------------------:|:--------------:|---------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Key                      |  Level   |      Required      |     Supported values     |    Default     | Description                                                                                                                                             |
+|:-------------------------|:--------:|:------------------:|:------------------------:|:--------------:|---------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `output`                 |  Config  |        :x:         |          object          |      ---       | Defines output details on how it will be consumed                                                                                                       |
 | `output/direction`       |  Config  |        :x:         | `file`, `stdout`, `http` |     `file`     | Defines how output will be consumed                                                                                                                     |
-| `output/format`          |  Config  |        :x:         |          `xml`           |     `xml`      | Defines output data format                                                                                                                              |
+| `output/format`          |  Config  |        :x:         |      `xml`, `json`       |     `xml`      | Defines output data format                                                                                                                              |
 | `output/indent`          |  Config  |        :x:         |         integer          |     `null`     | Defines indent applied in output data                                                                                                                   |
 | `output/xml_declaration` |  Config  |        :x:         |         boolean          |    `false`     | Indicates whether an xml declaration should be added to output data                                                                                     |
 | `output/directory_path`  |  Config  |        :x:         |          string          | `mimeo-output` | For `file` direction - defines an output directory                                                                                                      |
@@ -214,11 +277,11 @@ Mimeo configuration is defined in a JSON file using internal settings and data t
 | `output/endpoint`        |  Config  | :heavy_check_mark: |          string          |      ---       | For `http` direction - defines a url endpoint                                                                                                           |
 | `output/username`        |  Config  | :heavy_check_mark: |          string          |      ---       | For `http` direction - defines a username                                                                                                               |
 | `output/password`        |  Config  | :heavy_check_mark: |          string          |      ---       | For `http` direction - defines a password                                                                                                               |
-| `vars`                           |  Config  |        :x:         |          object          |      ---       | Defines variables to be used in a Mimeo Template (read more in next section)                                                                            |
-| `_templates_`                    |  Config  | :heavy_check_mark: |          array           |      ---       | Stores templates for data generation                                                                                                                    |
-| `count`                          | Template | :heavy_check_mark: |         integer          |      ---       | Indicates number of copies                                                                                                                              |
-| `model`                          | Template | :heavy_check_mark: |          object          |      ---       | Defines data template to be copied                                                                                                                      |
-| `context`                        |  Model   |        :x:         |          object          |      ---       | Defines a context name that is internally used e.g. using `curr_iter()` and `get_key()` mimeo utils (by default model name is used as the context name) |
+| `vars`                   |  Config  |        :x:         |          object          |      ---       | Defines variables to be used in a Mimeo Template (read more in next section)                                                                            |
+| `_templates_`            |  Config  | :heavy_check_mark: |          array           |      ---       | Stores templates for data generation                                                                                                                    |
+| `count`                  | Template | :heavy_check_mark: |         integer          |      ---       | Indicates number of copies                                                                                                                              |
+| `model`                  | Template | :heavy_check_mark: |          object          |      ---       | Defines data template to be copied                                                                                                                      |
+| `context`                |  Model   |        :x:         |          object          |      ---       | Defines a context name that is internally used e.g. using `curr_iter()` and `get_key()` mimeo utils (by default model name is used as the context name) |
 
 #### Mimeo Environment
 

@@ -1,0 +1,45 @@
+{
+  "output": {
+    "format": "json"
+  },
+  "_templates_": [
+    {
+      "count": 30,
+      "model": {
+        "SomeEntity": {
+          "ChildNode1": 1,
+          "SomeChildrenInArray": {
+            "_templates_": [
+              {
+                "count": 5,
+                "model": {
+                  "SomeChildInArray": {
+                    "SomeGrandChildInArray1": "value-1",
+                    "SomeGrandChildInArray2": true
+                  }
+                }
+              }
+            ]
+          },
+          "SomeMixedChildrenInArray": [
+            "value",
+            {
+              "_templates_": [
+                {
+                  "count": 5,
+                  "model": {
+                    "SomeChildInArray": {
+                      "SomeGrandChildInArray1": "value-1",
+                      "SomeGrandChildInArray2": true
+                    }
+                  }
+                }
+              ]
+            },
+            1
+          ]
+        }
+      }
+    }
+  ]
+}

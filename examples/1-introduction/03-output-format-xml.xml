@@ -1,7 +1,6 @@
 <mimeo_configuration>
     <output>
-        <xml_declaration>true</xml_declaration>
-        <indent>4</indent>
+        <format>xml</format>
     </output>
     <_templates_>
         <_template_>

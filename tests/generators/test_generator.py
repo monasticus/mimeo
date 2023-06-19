@@ -1,36 +1,143 @@
+from __future__ import annotations
+
 import xml.etree.ElementTree as ElemTree
-from typing import Any, Iterator, Union
+from typing import Any, Iterator
 
 import tests.utils as test_utils
 from mimeo.config.mimeo_config import MimeoTemplate
+from mimeo.context import MimeoContext
 from mimeo.generators import Generator
 from tests.utils import assert_throws
 
 
 class ValidGenerator(Generator):
-    def generate(self,
-                 templates: Union[list, Iterator[MimeoTemplate]],
-                 parent: Any = None) -> Iterator[ElemTree.Element]:
+    def generate(
+            self,
+            templates: list | Iterator[MimeoTemplate],
+            parent: Any = None,
+    ) -> Iterator[ElemTree.Element]:
         pass
 
-    def stringify(self, data: ElemTree.Element) -> str:
+    def stringify(
+            self,
+            data: ElemTree.Element,
+    ) -> str:
+        pass
+
+    @classmethod
+    def _pre_process_node(
+            cls,
+            node_meta: dict,
+    ) -> dict:
+        pass
+
+    @classmethod
+    def _process_complex_value(
+            cls,
+            parent: ElemTree.Element | dict | list | None,
+            node_meta: dict,
+    ) -> ElemTree.Element | dict | list | None:
+        pass
+
+    @classmethod
+    def _process_atomic_value(
+            cls,
+            parent: ElemTree.Element | dict | list | None,
+            node_meta: dict,
+            context: MimeoContext,
+    ) -> ElemTree.Element | dict | list | None:
         pass
 
 
 class InvalidGenerator1(Generator):
-    def generate(self,
-                 templates: Union[list, Iterator[MimeoTemplate]],
-                 parent: Any = None) -> Iterator[ElemTree.Element]:
+    def generate(
+            self,
+            templates: list | Iterator[MimeoTemplate],
+            parent: Any = None,
+    ) -> Iterator[ElemTree.Element]:
+        pass
+
+    @classmethod
+    def _pre_process_node(
+            cls,
+            node_meta: dict,
+    ) -> dict:
+        pass
+
+    @classmethod
+    def _process_complex_value(
+            cls,
+            parent: ElemTree.Element | dict | list | None,
+            node_meta: dict,
+    ) -> ElemTree.Element | dict | list | None:
+        pass
+
+    @classmethod
+    def _process_atomic_value(
+            cls,
+            parent: ElemTree.Element | dict | list | None,
+            node_meta: dict,
+            context: MimeoContext,
+    ) -> ElemTree.Element | dict | list | None:
         pass
 
 
 class InvalidGenerator2(Generator):
-    def stringify(self, data: ElemTree.Element) -> str:
+    def stringify(
+            self,
+            data: ElemTree.Element,
+    ) -> str:
+        pass
+
+    @classmethod
+    def _pre_process_node(
+            cls,
+            node_meta: dict,
+    ) -> dict:
+        pass
+
+    @classmethod
+    def _process_complex_value(
+            cls,
+            parent: ElemTree.Element | dict | list | None,
+            node_meta: dict,
+    ) -> ElemTree.Element | dict | list | None:
+        pass
+
+    @classmethod
+    def _process_atomic_value(
+            cls,
+            parent: ElemTree.Element | dict | list | None,
+            node_meta: dict,
+            context: MimeoContext,
+    ) -> ElemTree.Element | dict | list | None:
         pass
 
 
 class InvalidGenerator3(Generator):
-    pass
+
+    @classmethod
+    def _pre_process_node(
+            cls,
+            node_meta: dict,
+    ) -> dict:
+        pass
+
+    @classmethod
+    def _process_complex_value(
+            cls,
+            parent: ElemTree.Element | dict | list | None,
+            node_meta: dict,
+    ) -> ElemTree.Element | dict | list | None:
+        pass
+
+    @classmethod
+    def _process_atomic_value(
+            cls, parent: ElemTree.Element | dict | list | None,
+            node_meta: dict,
+            context: MimeoContext,
+    ) -> ElemTree.Element | dict | list | None:
+        pass
 
 
 def test_issubclass_true():

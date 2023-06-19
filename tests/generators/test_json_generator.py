@@ -1,7 +1,6 @@
 from mimeo.config import MimeoConfig, MimeoConfigFactory
 from mimeo.context import MimeoContextManager
-from mimeo.generators import XMLGenerator
-from mimeo.generators.exc import UnsupportedStructureError
+from mimeo.generators import JSONGenerator
 from mimeo.utils.exc import InvalidValueError
 from tests.utils import assert_throws
 
@@ -9,7 +8,7 @@ from tests.utils import assert_throws
 def test_generate_single_template_model_without_attributes():
     config_from_dict = MimeoConfigFactory.parse({
         "output": {
-            "format": "xml",
+            "format": "json",
         },
         "_templates_": [
             {
@@ -23,7 +22,7 @@ def test_generate_single_template_model_without_attributes():
     config_from_xml = MimeoConfigFactory.parse("""
         <mimeo_configuration>
             <output>
-                <format>xml</format>
+                <format>json</format>
             </output>
             <_templates_>
                 <_template_>
@@ -40,12 +39,12 @@ def test_generate_single_template_model_without_attributes():
             config: MimeoConfig,
     ):
         with MimeoContextManager(config):
-            generator = XMLGenerator(config)
+            generator = JSONGenerator(config)
             count = 0
             for data in generator.generate(config.templates):
-                assert data.tag == "SomeEntity"
-                assert data.attrib == {}
-                assert len(list(data)) == 0  # number of children
+                assert data == {
+                    "SomeEntity": None,
+                }
 
                 count += 1
 
@@ -58,7 +57,7 @@ def test_generate_single_template_model_without_attributes():
 def test_generate_single_template_model_with_attributes():
     config_from_dict = MimeoConfigFactory.parse({
         "output": {
-            "format": "xml",
+            "format": "json",
         },
         "_templates_": [
             {
@@ -74,7 +73,7 @@ def test_generate_single_template_model_with_attributes():
     config_from_xml = MimeoConfigFactory.parse("""
         <mimeo_configuration>
             <output>
-                <format>xml</format>
+                <format>json</format>
             </output>
             <_templates_>
                 <_template_>
@@ -91,12 +90,14 @@ def test_generate_single_template_model_with_attributes():
             config: MimeoConfig,
     ):
         with MimeoContextManager(config):
-            generator = XMLGenerator(config)
+            generator = JSONGenerator(config)
             count = 0
             for data in generator.generate(config.templates):
-                assert data.tag == "SomeEntity"
-                assert data.attrib == {"xmlns": "http://mimeo.arch.com/default-namespace"}
-                assert len(list(data)) == 0  # number of children
+                assert data == {
+                    "SomeEntity": {
+                        "@xmlns": "http://mimeo.arch.com/default-namespace",
+                    },
+                }
 
                 count += 1
 
@@ -109,7 +110,7 @@ def test_generate_single_template_model_with_attributes():
 def test_generate_single_template_model_with_prefixed_ns():
     config_from_dict = MimeoConfigFactory.parse({
         "output": {
-            "format": "xml",
+            "format": "json",
         },
         "_templates_": [
             {
@@ -125,7 +126,7 @@ def test_generate_single_template_model_with_prefixed_ns():
     config_from_xml = MimeoConfigFactory.parse("""
         <mimeo_configuration>
             <output>
-                <format>xml</format>
+                <format>json</format>
             </output>
             <_templates_>
                 <_template_>
@@ -142,12 +143,14 @@ def test_generate_single_template_model_with_prefixed_ns():
             config: MimeoConfig,
     ):
         with MimeoContextManager(config):
-            generator = XMLGenerator(config)
+            generator = JSONGenerator(config)
             count = 0
             for data in generator.generate(config.templates):
-                assert data.tag == "pn:SomeEntity"
-                assert data.attrib == {"xmlns:pn": "http://mimeo.arch.com/prefixed-namespace"}
-                assert len(list(data)) == 0  # number of children
+                assert data == {
+                    "pn:SomeEntity": {
+                        "@xmlns:pn": "http://mimeo.arch.com/prefixed-namespace",
+                    },
+                }
 
                 count += 1
 
@@ -160,7 +163,7 @@ def test_generate_single_template_model_with_prefixed_ns():
 def test_generate_single_template_model_with_attributes_in_atomic_child():
     config_from_dict = MimeoConfigFactory.parse({
         "output": {
-            "format": "xml",
+            "format": "json",
         },
         "_templates_": [
             {
@@ -179,7 +182,7 @@ def test_generate_single_template_model_with_attributes_in_atomic_child():
     config_from_xml = MimeoConfigFactory.parse("""
         <mimeo_configuration>
             <output>
-                <format>xml</format>
+                <format>json</format>
             </output>
             <_templates_>
                 <_template_>
@@ -198,18 +201,17 @@ def test_generate_single_template_model_with_attributes_in_atomic_child():
             config: MimeoConfig,
     ):
         with MimeoContextManager(config):
-            generator = XMLGenerator(config)
+            generator = JSONGenerator(config)
             count = 0
             for data in generator.generate(config.templates):
-                assert data.tag == "SomeEntity"
-                assert data.attrib == {}
-                assert len(list(data)) == 1  # number of children
-
-                child = data.find("pn:ChildNode")
-                assert child.tag == "pn:ChildNode"
-                assert child.attrib == {"xmlns:pn": "http://mimeo.arch.com/prefixed-namespace"}
-                assert child.text == "string-value"
-                assert len(list(child)) == 0  # number of children
+                assert data == {
+                    "SomeEntity": {
+                        "pn:ChildNode": {
+                            "@xmlns:pn": "http://mimeo.arch.com/prefixed-namespace",
+                            "#text": "string-value",
+                        },
+                    },
+                }
 
                 count += 1
 
@@ -222,7 +224,7 @@ def test_generate_single_template_model_with_attributes_in_atomic_child():
 def test_generate_single_template_model_with_attributes_in_complex_child():
     config_from_dict = MimeoConfigFactory.parse({
         "output": {
-            "format": "xml",
+            "format": "json",
         },
         "_templates_": [
             {
@@ -241,7 +243,7 @@ def test_generate_single_template_model_with_attributes_in_complex_child():
     config_from_xml = MimeoConfigFactory.parse("""
         <mimeo_configuration>
             <output>
-                <format>xml</format>
+                <format>json</format>
             </output>
             <_templates_>
                 <_template_>
@@ -262,23 +264,17 @@ def test_generate_single_template_model_with_attributes_in_complex_child():
             config: MimeoConfig,
     ):
         with MimeoContextManager(config):
-            generator = XMLGenerator(config)
+            generator = JSONGenerator(config)
             count = 0
             for data in generator.generate(config.templates):
-                assert data.tag == "SomeEntity"
-                assert data.attrib == {}
-                assert len(list(data)) == 1  # number of children
-
-                child = data.find("pn:ChildNode")
-                assert child.tag == "pn:ChildNode"
-                assert child.attrib == {"xmlns:pn": "http://mimeo.arch.com/prefixed-namespace"}
-                assert len(list(child)) == 1  # number of children
-
-                grand_child = child.find("pn:GrandChild")
-                assert grand_child.tag == "pn:GrandChild"
-                assert grand_child.attrib == {}
-                assert grand_child.text == "string-value"
-                assert len(list(grand_child)) == 0  # number of children
+                assert data == {
+                    "SomeEntity": {
+                        "pn:ChildNode": {
+                            "@xmlns:pn": "http://mimeo.arch.com/prefixed-namespace",
+                            "pn:GrandChild": "string-value",
+                        },
+                    },
+                }
 
                 count += 1
 
@@ -291,7 +287,7 @@ def test_generate_single_template_model_with_attributes_in_complex_child():
 def test_generate_single_template_model_with_attributes_in_child_mixed():
     config_from_dict = MimeoConfigFactory.parse({
         "output": {
-            "format": "xml",
+            "format": "json",
         },
         "_templates_": [
             {
@@ -301,7 +297,7 @@ def test_generate_single_template_model_with_attributes_in_child_mixed():
                         "ChildNode": {
                             "@xmlns:pn": "http://mimeo.arch.com/prefixed-namespace",
                             "#text": "string-value",
-                            "GrandChild": "string-value",  # will be ignored
+                            "GrandChild": "string-value",  # will NOT be ignored
                         },
                     },
                 },
@@ -313,18 +309,18 @@ def test_generate_single_template_model_with_attributes_in_child_mixed():
             config: MimeoConfig,
     ):
         with MimeoContextManager(config):
-            generator = XMLGenerator(config)
+            generator = JSONGenerator(config)
             count = 0
             for data in generator.generate(config.templates):
-                assert data.tag == "SomeEntity"
-                assert data.attrib == {}
-                assert len(list(data)) == 1  # number of children
-
-                child = data.find("ChildNode")
-                assert child.tag == "ChildNode"
-                assert child.attrib == {"xmlns:pn": "http://mimeo.arch.com/prefixed-namespace"}
-                assert child.text == "string-value"
-                assert len(list(child)) == 0  # number of children
+                assert data == {
+                    "SomeEntity": {
+                        "ChildNode": {
+                            "@xmlns:pn": "http://mimeo.arch.com/prefixed-namespace",
+                            "#text": "string-value",
+                            "GrandChild": "string-value",  # will NOT be ignored
+                        },
+                    },
+                }
 
                 count += 1
 
@@ -334,7 +330,7 @@ def test_generate_single_template_model_with_attributes_in_child_mixed():
 def test_generate_single_template_str_value():
     config_from_dict = MimeoConfigFactory.parse({
         "output": {
-            "format": "xml",
+            "format": "json",
         },
         "_templates_": [
             {
@@ -350,7 +346,7 @@ def test_generate_single_template_str_value():
     config_from_xml = MimeoConfigFactory.parse("""
         <mimeo_configuration>
             <output>
-                <format>xml</format>
+                <format>json</format>
             </output>
             <_templates_>
                 <_template_>
@@ -369,18 +365,14 @@ def test_generate_single_template_str_value():
             config: MimeoConfig,
     ):
         with MimeoContextManager(config):
-            generator = XMLGenerator(config)
+            generator = JSONGenerator(config)
             count = 0
             for data in generator.generate(config.templates):
-                assert data.tag == "SomeEntity"
-                assert data.attrib == {}
-                assert len(list(data)) == 1  # number of children
-
-                child = data.find("ChildNode")
-                assert child.tag == "ChildNode"
-                assert child.attrib == {}
-                assert child.text == "value"
-                assert len(list(child)) == 0  # number of children
+                assert data == {
+                    "SomeEntity": {
+                        "ChildNode": "value",
+                    },
+                }
 
                 count += 1
 
@@ -393,7 +385,7 @@ def test_generate_single_template_str_value():
 def test_generate_single_template_int_value():
     config_from_dict = MimeoConfigFactory.parse({
         "output": {
-            "format": "xml",
+            "format": "json",
         },
         "_templates_": [
             {
@@ -409,7 +401,7 @@ def test_generate_single_template_int_value():
     config_from_xml = MimeoConfigFactory.parse("""
         <mimeo_configuration>
             <output>
-                <format>xml</format>
+                <format>json</format>
             </output>
             <_templates_>
                 <_template_>
@@ -428,18 +420,14 @@ def test_generate_single_template_int_value():
             config: MimeoConfig,
     ):
         with MimeoContextManager(config):
-            generator = XMLGenerator(config)
+            generator = JSONGenerator(config)
             count = 0
             for data in generator.generate(config.templates):
-                assert data.tag == "SomeEntity"
-                assert data.attrib == {}
-                assert len(list(data)) == 1  # number of children
-
-                child = data.find("ChildNode")
-                assert child.tag == "ChildNode"
-                assert child.attrib == {}
-                assert child.text == "1"
-                assert len(list(child)) == 0  # number of children
+                assert data == {
+                    "SomeEntity": {
+                        "ChildNode": 1,
+                    },
+                }
 
                 count += 1
 
@@ -452,7 +440,7 @@ def test_generate_single_template_int_value():
 def test_generate_single_template_bool_value():
     config_from_dict = MimeoConfigFactory.parse({
         "output": {
-            "format": "xml",
+            "format": "json",
         },
         "_templates_": [
             {
@@ -468,7 +456,7 @@ def test_generate_single_template_bool_value():
     config_from_xml = MimeoConfigFactory.parse("""
         <mimeo_configuration>
             <output>
-                <format>xml</format>
+                <format>json</format>
             </output>
             <_templates_>
                 <_template_>
@@ -487,18 +475,14 @@ def test_generate_single_template_bool_value():
             config: MimeoConfig,
     ):
         with MimeoContextManager(config):
-            generator = XMLGenerator(config)
+            generator = JSONGenerator(config)
             count = 0
             for data in generator.generate(config.templates):
-                assert data.tag == "SomeEntity"
-                assert data.attrib == {}
-                assert len(list(data)) == 1  # number of children
-
-                child = data.find("ChildNode")
-                assert child.tag == "ChildNode"
-                assert child.attrib == {}
-                assert child.text == "true"
-                assert len(list(child)) == 0  # number of children
+                assert data == {
+                    "SomeEntity": {
+                        "ChildNode": True,
+                    },
+                }
 
                 count += 1
 
@@ -511,7 +495,7 @@ def test_generate_single_template_bool_value():
 def test_generate_single_template_none_value():
     config_from_dict = MimeoConfigFactory.parse({
         "output": {
-            "format": "xml",
+            "format": "json",
         },
         "_templates_": [
             {
@@ -527,7 +511,7 @@ def test_generate_single_template_none_value():
     config_from_xml = MimeoConfigFactory.parse("""
         <mimeo_configuration>
             <output>
-                <format>xml</format>
+                <format>json</format>
             </output>
             <_templates_>
                 <_template_>
@@ -546,18 +530,14 @@ def test_generate_single_template_none_value():
             config: MimeoConfig,
     ):
         with MimeoContextManager(config):
-            generator = XMLGenerator(config)
+            generator = JSONGenerator(config)
             count = 0
             for data in generator.generate(config.templates):
-                assert data.tag == "SomeEntity"
-                assert data.attrib == {}
-                assert len(list(data)) == 1  # number of children
-
-                child = data.find("ChildNode")
-                assert child.tag == "ChildNode"
-                assert child.attrib == {}
-                assert child.text == ""
-                assert len(list(child)) == 0  # number of children
+                assert data == {
+                    "SomeEntity": {
+                        "ChildNode": None,
+                    },
+                }
 
                 count += 1
 
@@ -570,7 +550,7 @@ def test_generate_single_template_none_value():
 def test_generate_single_template_using_variables():
     config_from_dict = MimeoConfigFactory.parse({
         "output": {
-            "format": "xml",
+            "format": "json",
         },
         "vars": {
             "CUSTOM_VAR_1": "custom-value-1",
@@ -604,7 +584,7 @@ def test_generate_single_template_using_variables():
     config_from_xml = MimeoConfigFactory.parse("""
         <mimeo_configuration>
             <output>
-                <format>xml</format>
+                <format>json</format>
             </output>
             <vars>
                 <CUSTOM_VAR_1>custom-value-1</CUSTOM_VAR_1>
@@ -641,48 +621,19 @@ def test_generate_single_template_using_variables():
             config: MimeoConfig,
     ):
         with MimeoContextManager(config):
-            generator = XMLGenerator(config)
+            generator = JSONGenerator(config)
             count = 0
             for index, data in enumerate(generator.generate(config.templates)):
-                assert data.tag == "SomeEntity"
-                assert data.attrib == {}
-                assert len(list(data)) == 6  # number of children
-
-                child = data.find("ChildNode1")
-                assert child.tag == "ChildNode1"
-                assert child.attrib == {}
-                assert child.text == "custom-value-1"
-                assert len(list(child)) == 0  # number of children
-
-                child = data.find("ChildNode2")
-                assert child.tag == "ChildNode2"
-                assert child.attrib == {}
-                assert child.text == "1"
-                assert len(list(child)) == 0  # number of children
-
-                child = data.find("ChildNode3")
-                assert child.tag == "ChildNode3"
-                assert child.attrib == {}
-                assert child.text == "true"
-                assert len(list(child)) == 0  # number of children
-
-                child = data.find("ChildNode4")
-                assert child.tag == "ChildNode4"
-                assert child.attrib == {}
-                assert child.text == "1"
-                assert len(list(child)) == 0  # number of children
-
-                child = data.find("ChildNode5")
-                assert child.tag == "ChildNode5"
-                assert child.attrib == {}
-                assert child.text == str(index+1)
-                assert len(list(child)) == 0  # number of children
-
-                child = data.find("ChildNode6")
-                assert child.tag == "ChildNode6"
-                assert child.attrib == {}
-                assert child.text == str(index+1)
-                assert len(list(child)) == 0  # number of children
+                assert data == {
+                    "SomeEntity": {
+                        "ChildNode1": "custom-value-1",
+                        "ChildNode2": 1,
+                        "ChildNode3": True,
+                        "ChildNode4": 1,
+                        "ChildNode5": index+1,
+                        "ChildNode6": str(index+1),
+                    },
+                }
 
                 count += 1
 
@@ -695,7 +646,7 @@ def test_generate_single_template_using_variables():
 def test_generate_single_template_child_elements():
     config_from_dict = MimeoConfigFactory.parse({
         "output": {
-            "format": "xml",
+            "format": "json",
         },
         "_templates_": [
             {
@@ -713,7 +664,7 @@ def test_generate_single_template_child_elements():
     config_from_xml = MimeoConfigFactory.parse("""
         <mimeo_configuration>
             <output>
-                <format>xml</format>
+                <format>json</format>
             </output>
             <_templates_>
                 <_template_>
@@ -734,23 +685,16 @@ def test_generate_single_template_child_elements():
             config: MimeoConfig,
     ):
         with MimeoContextManager(config):
-            generator = XMLGenerator(config)
+            generator = JSONGenerator(config)
             count = 0
             for data in generator.generate(config.templates):
-                assert data.tag == "SomeEntity"
-                assert data.attrib == {}
-                assert len(list(data)) == 1  # number of children
-
-                child = data.find("ChildNode")
-                assert child.tag == "ChildNode"
-                assert child.attrib == {}
-                assert len(list(child)) == 1  # number of children
-
-                grand_child = child.find("GrandChildNode")
-                assert grand_child.tag == "GrandChildNode"
-                assert grand_child.attrib == {}
-                assert grand_child.text == "value"
-                assert len(list(grand_child)) == 0  # number of children
+                assert data == {
+                    "SomeEntity": {
+                        "ChildNode": {
+                            "GrandChildNode": "value",
+                        },
+                    },
+                }
 
                 count += 1
 
@@ -763,7 +707,7 @@ def test_generate_single_template_child_elements():
 def test_generate_single_template_only_atomic_child_elements_in_array():
     config_from_dict = MimeoConfigFactory.parse({
         "output": {
-            "format": "xml",
+            "format": "json",
         },
         "_templates_": [
             {
@@ -785,7 +729,7 @@ def test_generate_single_template_only_atomic_child_elements_in_array():
     config_from_xml = MimeoConfigFactory.parse("""
         <mimeo_configuration>
             <output>
-                <format>xml</format>
+                <format>json</format>
             </output>
             <_templates_>
                 <_template_>
@@ -808,35 +752,20 @@ def test_generate_single_template_only_atomic_child_elements_in_array():
             config: MimeoConfig,
     ):
         with MimeoContextManager(config):
-            generator = XMLGenerator(config)
+            generator = JSONGenerator(config)
             count = 0
             for data in generator.generate(config.templates):
-                assert data.tag == "SomeEntity"
-                assert data.attrib == {}
-                assert len(list(data)) == 1  # number of children
-
-                child_nodes_node = data.find("ChildNodes")
-                assert child_nodes_node.tag == "ChildNodes"
-                assert child_nodes_node.attrib == {}
-                assert len(list(child_nodes_node)) == 3  # number of children
-
-                child_nodes = child_nodes_node.findall("ChildNode")
-
-                child_node1 = child_nodes[0]
-                assert child_node1.tag == "ChildNode"
-                assert child_node1.attrib == {}
-                assert child_node1.text == "value-1"
-                assert len(list(child_node1)) == 0  # number of children
-                child_node2 = child_nodes[1]
-                assert child_node2.tag == "ChildNode"
-                assert child_node2.attrib == {}
-                assert child_node2.text == "1"
-                assert len(list(child_node2)) == 0  # number of children
-                child_node3 = child_nodes[2]
-                assert child_node3.tag == "ChildNode"
-                assert child_node3.attrib == {}
-                assert child_node3.text == "true"
-                assert len(list(child_node3)) == 0  # number of children
+                assert data == {
+                    "SomeEntity": {
+                        "ChildNodes": {
+                            "ChildNode": [
+                                "value-1",
+                                1,
+                                True,
+                            ],
+                        },
+                    },
+                }
 
                 count += 1
 
@@ -849,7 +778,7 @@ def test_generate_single_template_only_atomic_child_elements_in_array():
 def test_generate_single_template_only_complex_child_elements_in_array():
     config_from_dict = MimeoConfigFactory.parse({
         "output": {
-            "format": "xml",
+            "format": "json",
         },
         "_templates_": [
             {
@@ -876,7 +805,7 @@ def test_generate_single_template_only_complex_child_elements_in_array():
     config_from_xml = MimeoConfigFactory.parse("""
         <mimeo_configuration>
             <output>
-                <format>xml</format>
+                <format>json</format>
             </output>
             <_templates_>
                 <_template_>
@@ -904,49 +833,25 @@ def test_generate_single_template_only_complex_child_elements_in_array():
             config: MimeoConfig,
     ):
         with MimeoContextManager(config):
-            generator = XMLGenerator(config)
+            generator = JSONGenerator(config)
             count = 0
             for data in generator.generate(config.templates):
-                assert data.tag == "SomeEntity"
-                assert data.attrib == {}
-                assert len(list(data)) == 1  # number of children
-
-                child_nodes_node = data.find("ChildNodes")
-                assert child_nodes_node.tag == "ChildNodes"
-                assert child_nodes_node.attrib == {}
-                assert len(list(child_nodes_node)) == 2  # number of children
-
-                child_nodes = child_nodes_node.findall("ChildNode")
-
-                child_node1 = child_nodes[0]
-                assert child_node1.tag == "ChildNode"
-                assert child_node1.attrib == {}
-                assert len(list(child_node1)) == 2  # number of children
-                some_value_1_1 = child_node1.find("SomeValue1")
-                assert some_value_1_1.tag == "SomeValue1"
-                assert some_value_1_1.attrib == {}
-                assert some_value_1_1.text == "value-1-1"
-                assert len(list(some_value_1_1)) == 0  # number of children
-                some_value_1_2 = child_node1.find("SomeValue2")
-                assert some_value_1_2.tag == "SomeValue2"
-                assert some_value_1_2.attrib == {}
-                assert some_value_1_2.text == "value-1-2"
-                assert len(list(some_value_1_2)) == 0  # number of children
-
-                child_node2 = child_nodes[1]
-                assert child_node2.tag == "ChildNode"
-                assert child_node2.attrib == {}
-                assert len(list(child_node2)) == 2  # number of children
-                some_value_2_1 = child_node2.find("SomeValue1")
-                assert some_value_2_1.tag == "SomeValue1"
-                assert some_value_2_1.attrib == {}
-                assert some_value_2_1.text == "value-2-1"
-                assert len(list(some_value_2_1)) == 0  # number of children
-                some_value_2_2 = child_node2.find("SomeValue2")
-                assert some_value_2_2.tag == "SomeValue2"
-                assert some_value_2_2.attrib == {}
-                assert some_value_2_2.text == "value-2-2"
-                assert len(list(some_value_2_2)) == 0  # number of children
+                assert data == {
+                    "SomeEntity": {
+                        "ChildNodes": {
+                            "ChildNode": [
+                                {
+                                    "SomeValue1": "value-1-1",
+                                    "SomeValue2": "value-1-2",
+                                },
+                                {
+                                    "SomeValue1": "value-2-1",
+                                    "SomeValue2": "value-2-2",
+                                },
+                            ],
+                        },
+                    },
+                }
 
                 count += 1
 
@@ -959,7 +864,7 @@ def test_generate_single_template_only_complex_child_elements_in_array():
 def test_generate_single_template_atomic_child_elements_with_mimeo_util_in_array():
     config_from_dict = MimeoConfigFactory.parse({
         "output": {
-            "format": "xml",
+            "format": "json",
         },
         "_templates_": [
             {
@@ -985,7 +890,7 @@ def test_generate_single_template_atomic_child_elements_with_mimeo_util_in_array
     config_from_xml = MimeoConfigFactory.parse("""
         <mimeo_configuration>
             <output>
-                <format>xml</format>
+                <format>json</format>
             </output>
             <_templates_>
                 <_template_>
@@ -1012,30 +917,19 @@ def test_generate_single_template_atomic_child_elements_with_mimeo_util_in_array
             config: MimeoConfig,
     ):
         with MimeoContextManager(config):
-            generator = XMLGenerator(config)
+            generator = JSONGenerator(config)
             count = 0
             for data in generator.generate(config.templates):
-                assert data.tag == "SomeEntity"
-                assert data.attrib == {}
-                assert len(list(data)) == 1  # number of children
-
-                child_nodes_node = data.find("ChildNodes")
-                assert child_nodes_node.tag == "ChildNodes"
-                assert child_nodes_node.attrib == {}
-                assert len(list(child_nodes_node)) == 2  # number of children
-
-                child_nodes = child_nodes_node.findall("ChildNode")
-
-                child_node1 = child_nodes[0]
-                assert child_node1.tag == "ChildNode"
-                assert child_node1.attrib == {}
-                assert child_node1.text == "value-1"
-                assert len(list(child_node1)) == 0  # number of children
-                child_node2 = child_nodes[1]
-                assert child_node2.tag == "ChildNode"
-                assert child_node2.attrib == {}
-                assert child_node2.text == str(count + 1)
-                assert len(list(child_node2)) == 0  # number of children
+                assert data == {
+                    "SomeEntity": {
+                        "ChildNodes": {
+                            "ChildNode": [
+                                "value-1",
+                                str(count + 1),
+                            ],
+                        },
+                    },
+                }
 
                 count += 1
 
@@ -1048,7 +942,7 @@ def test_generate_single_template_atomic_child_elements_with_mimeo_util_in_array
 def test_generate_single_template_mixed_child_elements_in_array():
     config_from_dict = MimeoConfigFactory.parse({
         "output": {
-            "format": "xml",
+            "format": "json",
         },
         "_templates_": [
             {
@@ -1078,7 +972,7 @@ def test_generate_single_template_mixed_child_elements_in_array():
     config_from_xml = MimeoConfigFactory.parse("""
         <mimeo_configuration>
             <output>
-                <format>xml</format>
+                <format>json</format>
             </output>
             <_templates_>
                 <_template_>
@@ -1109,46 +1003,23 @@ def test_generate_single_template_mixed_child_elements_in_array():
             config: MimeoConfig,
     ):
         with MimeoContextManager(config):
-            generator = XMLGenerator(config)
+            generator = JSONGenerator(config)
             count = 0
             for data in generator.generate(config.templates):
-                assert data.tag == "SomeEntity"
-                assert data.attrib == {}
-                assert len(list(data)) == 1  # number of children
-
-                child_nodes_node = data.find("ChildNodes")
-                assert child_nodes_node.tag == "ChildNodes"
-                assert child_nodes_node.attrib == {}
-                assert len(list(child_nodes_node)) == 3  # number of children
-
-                child_nodes = child_nodes_node.findall("ChildNode")
-
-                child_node1 = child_nodes[0]
-                assert child_node1.tag == "ChildNode"
-                assert child_node1.attrib == {}
-                assert child_node1.text == "value-1"
-                assert len(list(child_node1)) == 0  # number of children
-
-                child_node2 = child_nodes[1]
-                assert child_node2.tag == "ChildNode"
-                assert child_node2.attrib == {}
-                assert len(list(child_node2)) == 2  # number of children
-                some_value_1 = child_node2.find("SomeValue1")
-                assert some_value_1.tag == "SomeValue1"
-                assert some_value_1.attrib == {}
-                assert some_value_1.text == "value-2-1"
-                assert len(list(some_value_1)) == 0  # number of children
-                some_value_2 = child_node2.find("SomeValue2")
-                assert some_value_2.tag == "SomeValue2"
-                assert some_value_2.attrib == {}
-                assert some_value_2.text == "value-2-2"
-                assert len(list(some_value_2)) == 0  # number of children
-
-                child_node3 = child_nodes[2]
-                assert child_node3.tag == "ChildNode"
-                assert child_node3.attrib == {}
-                assert child_node3.text == str(count + 1)
-                assert len(list(child_node3)) == 0  # number of children
+                assert data == {
+                    "SomeEntity": {
+                        "ChildNodes": {
+                            "ChildNode": [
+                                "value-1",
+                                {
+                                    "SomeValue1": "value-2-1",
+                                    "SomeValue2": "value-2-2",
+                                },
+                                str(count + 1),
+                            ],
+                        },
+                    },
+                }
 
                 count += 1
 
@@ -1161,7 +1032,7 @@ def test_generate_single_template_mixed_child_elements_in_array():
 def test_generate_single_template_list_child_element_in_array():
     config_from_dict = MimeoConfigFactory.parse({
         "output": {
-            "format": "xml",
+            "format": "json",
         },
         "_templates_": [
             {
@@ -1179,18 +1050,26 @@ def test_generate_single_template_list_child_element_in_array():
         ],
     })
 
-    @assert_throws(err_type=UnsupportedStructureError,
-                   msg="An array can include only atomic types (including Mimeo Utils) "
-                       "or only JSON objects (when output format is XML)! Unsupported "
-                       "structure found in {e}: {s}",
-                   e="ChildNode", s="[['atomic']]")
     def _test(
             config: MimeoConfig,
     ):
         with MimeoContextManager(config):
-            generator = XMLGenerator(config)
-            for _ in generator.generate(config.templates):
-                pass
+            generator = JSONGenerator(config)
+            count = 0
+            for data in generator.generate(config.templates):
+                assert data == {
+                    "SomeEntity": {
+                        "ChildNode": [
+                            [
+                                "atomic",
+                            ],
+                        ],
+                    },
+                }
+
+                count += 1
+
+            assert count == 5
 
     _test(config_from_dict)
 
@@ -1198,7 +1077,7 @@ def test_generate_single_template_list_child_element_in_array():
 def test_generate_multiple_templates():
     config_from_dict = MimeoConfigFactory.parse({
         "output": {
-            "format": "xml",
+            "format": "json",
         },
         "_templates_": [
             {
@@ -1218,7 +1097,7 @@ def test_generate_multiple_templates():
     config_from_xml = MimeoConfigFactory.parse("""
         <mimeo_configuration>
             <output>
-                <format>xml</format>
+                <format>json</format>
             </output>
             <_templates_>
                 <_template_>
@@ -1241,24 +1120,24 @@ def test_generate_multiple_templates():
             config: MimeoConfig,
     ):
         with MimeoContextManager(config):
-            generator = XMLGenerator(config)
-            roots = list(generator.generate(config.templates))
-            template_1_roots = roots[:2]
-            template_2_roots = roots[2:]
+            generator = JSONGenerator(config)
+            nodes = list(generator.generate(config.templates))
+            template_1_nodes = nodes[:2]
+            template_2_nodes = nodes[2:]
 
-            assert len(roots) == 5
-            assert len(template_1_roots) == 2
-            assert len(template_2_roots) == 3
+            assert len(nodes) == 5
+            assert len(template_1_nodes) == 2
+            assert len(template_2_nodes) == 3
 
-            for data in template_1_roots:
-                assert data.tag == "SomeEntity"
-                assert data.attrib == {}
-                assert len(list(data)) == 0  # number of children
+            for data in template_1_nodes:
+                assert data == {
+                    "SomeEntity": None,
+                }
 
-            for data in template_2_roots:
-                assert data.tag == "SomeEntity2"
-                assert data.attrib == {}
-                assert len(list(data)) == 0  # number of children
+            for data in template_2_nodes:
+                assert data == {
+                    "SomeEntity2": None,
+                }
 
     _test(config_from_dict)
     _test(config_from_xml)
@@ -1324,7 +1203,7 @@ def test_generate_nested_templates():
     config_from_xml = MimeoConfigFactory.parse("""
         <mimeo_configuration>
             <output>
-                <format>xml</format>
+                <format>json</format>
             </output>
             <_templates_>
                 <_template_>
@@ -1355,35 +1234,36 @@ def test_generate_nested_templates():
             config: MimeoConfig,
     ):
         with MimeoContextManager(config):
-            generator = XMLGenerator(config)
+            generator = JSONGenerator(config)
             count = 0
             for data in generator.generate(config.templates):
-                assert data.tag == "SomeEntity"
-                assert data.attrib == {}
-                assert len(list(data)) == 2  # number of children
-
-                single_node = data.find("SingleNode")
-                assert single_node.tag == "SingleNode"
-                assert single_node.attrib == {}
-                assert single_node.text == "value"
-                assert len(list(single_node)) == 0  # number of children
-
-                multiples_nodes_node = data.find("MultipleNodes")
-                assert multiples_nodes_node.tag == "MultipleNodes"
-                assert multiples_nodes_node.attrib == {}
-                assert len(list(multiples_nodes_node)) == 4  # number of children
-
-                nodes = multiples_nodes_node.findall("Node")
-                for node in nodes:
-                    assert node.tag == "Node"
-                    assert node.attrib == {}
-                    assert len(list(node)) == 1  # number of children
-
-                    child_node = node.find("ChildNode")
-                    assert child_node.tag == "ChildNode"
-                    assert child_node.attrib == {}
-                    assert child_node.text == "true"
-                    assert len(list(child_node)) == 0  # number of children
+                assert data == {
+                    "SomeEntity": {
+                        "SingleNode": "value",
+                        "MultipleNodes": [
+                            {
+                                "Node": {
+                                    "ChildNode": True,
+                                },
+                            },
+                            {
+                                "Node": {
+                                    "ChildNode": True,
+                                },
+                            },
+                            {
+                                "Node": {
+                                    "ChildNode": True,
+                                },
+                            },
+                            {
+                                "Node": {
+                                    "ChildNode": True,
+                                },
+                            },
+                        ],
+                    },
+                }
 
                 count += 1
 
@@ -1406,7 +1286,7 @@ def test_generate_nested_templates_mixed_with_other_elements():
                     "SomeEntity": {
                         "SingleNode": "value",
                         "MultipleNodes": {
-                            "NodesCount": 4,
+                            "NodesCount": 4,  # Will be ignored
                             "_templates_": [
                                 {
                                     "count": 4,
@@ -1435,7 +1315,7 @@ def test_generate_nested_templates_mixed_with_other_elements():
                         <SomeEntity>
                             <SingleNode>value</SingleNode>
                             <MultipleNodes>
-                                <NodesCount>4</NodesCount>
+                                <NodesCount>4</NodesCount> <!-- will be ignored -->
                                 <_templates_>
                                     <_template_>
                                         <count>4</count>
@@ -1458,41 +1338,36 @@ def test_generate_nested_templates_mixed_with_other_elements():
             config: MimeoConfig,
     ):
         with MimeoContextManager(config):
-            generator = XMLGenerator(config)
+            generator = JSONGenerator(config)
             count = 0
             for data in generator.generate(config.templates):
-                assert data.tag == "SomeEntity"
-                assert data.attrib == {}
-                assert len(list(data)) == 2  # number of children
-
-                single_node = data.find("SingleNode")
-                assert single_node.tag == "SingleNode"
-                assert single_node.attrib == {}
-                assert single_node.text == "value"
-                assert len(list(single_node)) == 0  # number of children
-
-                multiples_nodes_node = data.find("MultipleNodes")
-                assert multiples_nodes_node.tag == "MultipleNodes"
-                assert multiples_nodes_node.attrib == {}
-                assert len(list(multiples_nodes_node)) == 5  # number of children
-
-                nodes_count_node = multiples_nodes_node.find("NodesCount")
-                assert nodes_count_node.tag == "NodesCount"
-                assert nodes_count_node.attrib == {}
-                assert nodes_count_node.text == "4"
-                assert len(list(nodes_count_node)) == 0  # number of children
-
-                nodes = multiples_nodes_node.findall("Node")
-                for node in nodes:
-                    assert node.tag == "Node"
-                    assert node.attrib == {}
-                    assert len(list(node)) == 1  # number of children
-
-                    child_node = node.find("ChildNode")
-                    assert child_node.tag == "ChildNode"
-                    assert child_node.attrib == {}
-                    assert child_node.text == "true"
-                    assert len(list(child_node)) == 0  # number of children
+                assert data == {
+                    "SomeEntity": {
+                        "SingleNode": "value",
+                        "MultipleNodes": [
+                            {
+                                "Node": {
+                                    "ChildNode": True,
+                                },
+                            },
+                            {
+                                "Node": {
+                                    "ChildNode": True,
+                                },
+                            },
+                            {
+                                "Node": {
+                                    "ChildNode": True,
+                                },
+                            },
+                            {
+                                "Node": {
+                                    "ChildNode": True,
+                                },
+                            },
+                        ],
+                    },
+                }
 
                 count += 1
 
@@ -1502,12 +1377,11 @@ def test_generate_nested_templates_mixed_with_other_elements():
     _test(config_from_xml)
 
 
-def test_stringify_with_indent_and_xml_declaration():
+def test_stringify_with_indent():
     config_from_dict = MimeoConfigFactory.parse({
         "output": {
-            "format": "xml",
-            "xml_declaration": True,
-            "indent": 4,
+            "format": "json",
+            "indent": 2,
         },
         "_templates_": [
             {
@@ -1525,69 +1399,9 @@ def test_stringify_with_indent_and_xml_declaration():
     config_from_xml = MimeoConfigFactory.parse("""
         <mimeo_configuration>
             <output>
-                <format>xml</format>
-                <xml_declaration>true</xml_declaration>
-                <indent>4</indent>
-            </output>
-            <_templates_>
-                <_template_>
-                    <count>5</count>
-                    <model>
-                        <SomeEntity
-                            xmlns="http://mimeo.arch.com/default-namespace"
-                            xmlns:pn="http://mimeo.arch.com/prefixed-namespace">
-                            <pn:ChildNode>value</pn:ChildNode>
-                        </SomeEntity>
-                    </model>
-                </_template_>
-            </_templates_>
-        </mimeo_configuration>
-    """)
-
-    def _test(
-            config: MimeoConfig,
-    ):
-        with MimeoContextManager(config):
-            generator = XMLGenerator(config)
-            for data in generator.generate(config.templates):
-                data_str = generator.stringify(data)
-                assert data_str == ('<?xml version="1.0" encoding="utf-8"?>\n'
-                                    '<SomeEntity'
-                                    ' xmlns="http://mimeo.arch.com/default-namespace"'
-                                    ' xmlns:pn="http://mimeo.arch.com/prefixed-namespace">\n'
-                                    '    <pn:ChildNode>value</pn:ChildNode>\n'
-                                    '</SomeEntity>\n')
-
-    _test(config_from_dict)
-    _test(config_from_xml)
-
-
-def test_stringify_with_indent_and_without_xml_declaration():
-    config_from_dict = MimeoConfigFactory.parse({
-        "output": {
-            "format": "xml",
-            "xml_declaration": False,
-            "indent": 4,
-        },
-        "_templates_": [
-            {
-                "count": 1,
-                "model": {
-                    "SomeEntity": {
-                        "@xmlns": "http://mimeo.arch.com/default-namespace",
-                        "@xmlns:pn": "http://mimeo.arch.com/prefixed-namespace",
-                        "pn:ChildNode": "value",
-                    },
-                },
-            },
-        ],
-    })
-    config_from_xml = MimeoConfigFactory.parse("""
-        <mimeo_configuration>
-            <output>
-                <format>xml</format>
+                <format>json</format>
                 <xml_declaration>false</xml_declaration>
-                <indent>4</indent>
+                <indent>2</indent>
             </output>
             <_templates_>
                 <_template_>
@@ -1608,24 +1422,25 @@ def test_stringify_with_indent_and_without_xml_declaration():
             config: MimeoConfig,
     ):
         with MimeoContextManager(config):
-            generator = XMLGenerator(config)
+            generator = JSONGenerator(config)
             for data in generator.generate(config.templates):
                 data_str = generator.stringify(data)
-                assert data_str == ('<SomeEntity'
-                                    ' xmlns="http://mimeo.arch.com/default-namespace"'
-                                    ' xmlns:pn="http://mimeo.arch.com/prefixed-namespace">\n'
-                                    '    <pn:ChildNode>value</pn:ChildNode>\n'
-                                    '</SomeEntity>\n')
+                assert data_str == ('{\n'
+                                    '  "SomeEntity": {\n'
+                                    '    "@xmlns": "http://mimeo.arch.com/default-namespace",\n'
+                                    '    "@xmlns:pn": "http://mimeo.arch.com/prefixed-namespace",\n'
+                                    '    "pn:ChildNode": "value"\n'
+                                    '  }\n'
+                                    '}')
 
     _test(config_from_dict)
     _test(config_from_xml)
 
 
-def test_stringify_without_indent_and_with_xml_declaration():
+def test_stringify_without_indent():
     config_from_dict = MimeoConfigFactory.parse({
         "output": {
-            "format": "xml",
-            "xml_declaration": True,
+            "format": "json",
         },
         "_templates_": [
             {
@@ -1643,8 +1458,7 @@ def test_stringify_without_indent_and_with_xml_declaration():
     config_from_xml = MimeoConfigFactory.parse("""
         <mimeo_configuration>
             <output>
-                <format>xml</format>
-                <xml_declaration>true</xml_declaration>
+                <format>json</format>
             </output>
             <_templates_>
                 <_template_>
@@ -1665,72 +1479,16 @@ def test_stringify_without_indent_and_with_xml_declaration():
             config: MimeoConfig,
     ):
         with MimeoContextManager(config):
-            generator = XMLGenerator(config)
+            generator = JSONGenerator(config)
             for data in generator.generate(config.templates):
                 data_str = generator.stringify(data)
                 # Notice no new line at the end of string chunks
-                assert data_str == ("<?xml version='1.0' encoding='utf-8'?>\n"
-                                    '<SomeEntity'
-                                    ' xmlns="http://mimeo.arch.com/default-namespace"'
-                                    ' xmlns:pn="http://mimeo.arch.com/prefixed-namespace">'
-                                    '<pn:ChildNode>value</pn:ChildNode>'
-                                    '</SomeEntity>')
-
-    _test(config_from_dict)
-    _test(config_from_xml)
-
-
-def test_stringify_without_indent_and_xml_declaration():
-    config_from_dict = MimeoConfigFactory.parse({
-        "output": {
-            "format": "xml",
-        },
-        "_templates_": [
-            {
-                "count": 1,
-                "model": {
-                    "SomeEntity": {
-                        "@xmlns": "http://mimeo.arch.com/default-namespace",
-                        "@xmlns:pn": "http://mimeo.arch.com/prefixed-namespace",
-                        "pn:ChildNode": "value",
-                    },
-                },
-            },
-        ],
-    })
-    config_from_xml = MimeoConfigFactory.parse("""
-        <mimeo_configuration>
-            <output>
-                <format>xml</format>
-            </output>
-            <_templates_>
-                <_template_>
-                    <count>1</count>
-                    <model>
-                        <SomeEntity
-                            xmlns="http://mimeo.arch.com/default-namespace"
-                            xmlns:pn="http://mimeo.arch.com/prefixed-namespace">
-                            <pn:ChildNode>value</pn:ChildNode>
-                        </SomeEntity>
-                    </model>
-                </_template_>
-            </_templates_>
-        </mimeo_configuration>
-    """)
-
-    def _test(
-            config: MimeoConfig,
-    ):
-        with MimeoContextManager(config):
-            generator = XMLGenerator(config)
-            for data in generator.generate(config.templates):
-                data_str = generator.stringify(data)
-                # Notice no new line at the end of string chunks
-                assert data_str == ('<SomeEntity'
-                                    ' xmlns="http://mimeo.arch.com/default-namespace"'
-                                    ' xmlns:pn="http://mimeo.arch.com/prefixed-namespace">'
-                                    '<pn:ChildNode>value</pn:ChildNode>'
-                                    '</SomeEntity>')
+                assert data_str == (
+                    '{"SomeEntity": {'
+                    '"@xmlns": "http://mimeo.arch.com/default-namespace", '
+                    '"@xmlns:pn": "http://mimeo.arch.com/prefixed-namespace", '
+                    '"pn:ChildNode": "value"'
+                    '}}')
 
     _test(config_from_dict)
     _test(config_from_xml)
@@ -1739,7 +1497,7 @@ def test_stringify_without_indent_and_xml_declaration():
 def test_generate_using_mimeo_util_raw():
     config_from_dict = MimeoConfigFactory.parse({
         "output": {
-            "format": "xml",
+            "format": "json",
         },
         "_templates_": [
             {
@@ -1755,7 +1513,7 @@ def test_generate_using_mimeo_util_raw():
     config_from_xml = MimeoConfigFactory.parse("""
         <mimeo_configuration>
             <output>
-                <format>xml</format>
+                <format>json</format>
             </output>
             <_templates_>
                 <_template_>
@@ -1774,18 +1532,14 @@ def test_generate_using_mimeo_util_raw():
             config: MimeoConfig,
     ):
         with MimeoContextManager(config):
-            generator = XMLGenerator(config)
+            generator = JSONGenerator(config)
             count = 0
             for index, data in enumerate(generator.generate(config.templates)):
-                assert data.tag == "SomeEntity"
-                assert data.attrib == {}
-                assert len(list(data)) == 1  # number of children
-
-                child = data.find("ChildNode")
-                assert child.tag == "ChildNode"
-                assert child.attrib == {}
-                assert child.text == f"{index + 1:05d}"
-                assert len(list(child)) == 0  # number of children
+                assert data == {
+                    "SomeEntity": {
+                        "ChildNode": f"{index + 1:05d}",
+                    },
+                }
 
                 count += 1
 
@@ -1798,7 +1552,7 @@ def test_generate_using_mimeo_util_raw():
 def test_generate_using_mimeo_util_parametrized():
     config_from_dict = MimeoConfigFactory.parse({
         "output": {
-            "format": "xml",
+            "format": "json",
         },
         "_templates_": [
             {
@@ -1819,7 +1573,7 @@ def test_generate_using_mimeo_util_parametrized():
     config_from_xml = MimeoConfigFactory.parse("""
         <mimeo_configuration>
             <output>
-                <format>xml</format>
+                <format>json</format>
             </output>
             <_templates_>
                 <_template_>
@@ -1843,18 +1597,14 @@ def test_generate_using_mimeo_util_parametrized():
             config: MimeoConfig,
     ):
         with MimeoContextManager(config):
-            generator = XMLGenerator(config)
+            generator = JSONGenerator(config)
             count = 0
             for index, data in enumerate(generator.generate(config.templates)):
-                assert data.tag == "SomeEntity"
-                assert data.attrib == {}
-                assert len(list(data)) == 1  # number of children
-
-                child = data.find("ChildNode")
-                assert child.tag == "ChildNode"
-                assert child.attrib == {}
-                assert child.text == str(index + 1)
-                assert len(list(child)) == 0  # number of children
+                assert data == {
+                    "SomeEntity": {
+                        "ChildNode": str(index + 1),
+                    },
+                }
 
                 count += 1
 
@@ -1867,7 +1617,7 @@ def test_generate_using_mimeo_util_parametrized():
 def test_generate_using_mimeo_util_parametrized_invalid():
     config_from_dict = MimeoConfigFactory.parse({
         "output": {
-            "format": "xml",
+            "format": "json",
         },
         "_templates_": [
             {
@@ -1888,7 +1638,7 @@ def test_generate_using_mimeo_util_parametrized_invalid():
     config_from_xml = MimeoConfigFactory.parse("""
         <mimeo_configuration>
             <output>
-                <format>xml</format>
+                <format>json</format>
             </output>
             <_templates_>
                 <_template_>
@@ -1916,7 +1666,7 @@ def test_generate_using_mimeo_util_parametrized_invalid():
             config: MimeoConfig,
     ):
         with MimeoContextManager(config):
-            generator = XMLGenerator(config)
+            generator = JSONGenerator(config)
             for _ in generator.generate(config.templates):
                 pass
 
@@ -1927,7 +1677,7 @@ def test_generate_using_mimeo_util_parametrized_invalid():
 def test_generate_using_auto_increment():
     config_from_dict = MimeoConfigFactory.parse({
         "output": {
-            "format": "xml",
+            "format": "json",
         },
         "_templates_": [
             {
@@ -1943,7 +1693,7 @@ def test_generate_using_auto_increment():
     config_from_xml = MimeoConfigFactory.parse("""
         <mimeo_configuration>
             <output>
-                <format>xml</format>
+                <format>json</format>
             </output>
             <_templates_>
                 <_template_>
@@ -1962,18 +1712,14 @@ def test_generate_using_auto_increment():
             config: MimeoConfig,
     ):
         with MimeoContextManager(config):
-            generator = XMLGenerator(config)
+            generator = JSONGenerator(config)
             count = 0
             for index, data in enumerate(generator.generate(config.templates)):
-                assert data.tag == "SomeEntity"
-                assert data.attrib == {}
-                assert len(list(data)) == 1  # number of children
-
-                child = data.find("ChildNode")
-                assert child.tag == "ChildNode"
-                assert child.attrib == {}
-                assert child.text == f"{index + 1:05d}"
-                assert len(list(child)) == 0  # number of children
+                assert data == {
+                    "SomeEntity": {
+                        "ChildNode": f"{index + 1:05d}",
+                    },
+                }
 
                 count += 1
 
@@ -1986,7 +1732,7 @@ def test_generate_using_auto_increment():
 def test_generate_using_auto_increment_in_two_templates():
     config_from_dict = MimeoConfigFactory.parse({
         "output": {
-            "format": "xml",
+            "format": "json",
         },
         "_templates_": [
             {
@@ -2010,7 +1756,7 @@ def test_generate_using_auto_increment_in_two_templates():
     config_from_xml = MimeoConfigFactory.parse("""
         <mimeo_configuration>
             <output>
-                <format>xml</format>
+                <format>json</format>
             </output>
             <_templates_>
                 <_template_>
@@ -2037,18 +1783,14 @@ def test_generate_using_auto_increment_in_two_templates():
             config: MimeoConfig,
     ):
         with MimeoContextManager(config):
-            generator = XMLGenerator(config)
+            generator = JSONGenerator(config)
             count = 0
             for index, data in enumerate(generator.generate(config.templates)):
-                assert data.tag == "SomeEntity"
-                assert data.attrib == {}
-                assert len(list(data)) == 1  # number of children
-
-                child = data.find("ChildNode")
-                assert child.tag == "ChildNode"
-                assert child.attrib == {}
-                assert child.text == f"{index + 1:05d}"
-                assert len(list(child)) == 0  # number of children
+                assert data == {
+                    "SomeEntity": {
+                        "ChildNode": f"{index + 1:05d}",
+                    },
+                }
 
                 count += 1
 
@@ -2061,7 +1803,7 @@ def test_generate_using_auto_increment_in_two_templates():
 def test_generate_using_auto_increment_in_two_templates_with_customized_context_name():
     config_from_dict = MimeoConfigFactory.parse({
         "output": {
-            "format": "xml",
+            "format": "json",
         },
         "_templates_": [
             {
@@ -2086,7 +1828,7 @@ def test_generate_using_auto_increment_in_two_templates_with_customized_context_
     config_from_xml = MimeoConfigFactory.parse("""
         <mimeo_configuration>
             <output>
-                <format>xml</format>
+                <format>json</format>
             </output>
             <_templates_>
                 <_template_>
@@ -2114,20 +1856,16 @@ def test_generate_using_auto_increment_in_two_templates_with_customized_context_
             config: MimeoConfig,
     ):
         with MimeoContextManager(config):
-            generator = XMLGenerator(config)
+            generator = JSONGenerator(config)
             count = 0
             for index, data in enumerate(generator.generate(config.templates)):
                 # from 6th item it is the second template
                 expected_increment = index + 1 if index < 5 else index - 5 + 1
-                assert data.tag == "SomeEntity"
-                assert data.attrib == {}
-                assert len(list(data)) == 1  # number of children
-
-                child = data.find("ChildNode")
-                assert child.tag == "ChildNode"
-                assert child.attrib == {}
-                assert child.text == f"{expected_increment:05d}"
-                assert len(list(child)) == 0  # number of children
+                assert data == {
+                    "SomeEntity": {
+                        "ChildNode": f"{expected_increment:05d}",
+                    },
+                }
 
                 count += 1
 
@@ -2140,7 +1878,7 @@ def test_generate_using_auto_increment_in_two_templates_with_customized_context_
 def test_generate_using_curr_iter_util():
     config_from_dict = MimeoConfigFactory.parse({
         "output": {
-            "format": "xml",
+            "format": "json",
         },
         "_templates_": [
             {
@@ -2156,7 +1894,7 @@ def test_generate_using_curr_iter_util():
     config_from_xml = MimeoConfigFactory.parse("""
         <mimeo_configuration>
             <output>
-                <format>xml</format>
+                <format>json</format>
             </output>
             <_templates_>
                 <_template_>
@@ -2175,19 +1913,15 @@ def test_generate_using_curr_iter_util():
             config: MimeoConfig,
     ):
         with MimeoContextManager(config):
-            generator = XMLGenerator(config)
+            generator = JSONGenerator(config)
             count = 0
             for index, data in enumerate(generator.generate(config.templates)):
                 curr_iter = index + 1
-                assert data.tag == "SomeEntity"
-                assert data.attrib == {}
-                assert len(list(data)) == 1  # number of children
-
-                child = data.find("ChildNode")
-                assert child.tag == "ChildNode"
-                assert child.attrib == {}
-                assert child.text == str(curr_iter)
-                assert len(list(child)) == 0  # number of children
+                assert data == {
+                    "SomeEntity": {
+                        "ChildNode": curr_iter,
+                    },
+                }
 
                 count += 1
 
@@ -2200,7 +1934,7 @@ def test_generate_using_curr_iter_util():
 def test_generate_using_curr_iter_util_in_two_templates():
     config_from_dict = MimeoConfigFactory.parse({
         "output": {
-            "format": "xml",
+            "format": "json",
         },
         "_templates_": [
             {
@@ -2224,7 +1958,7 @@ def test_generate_using_curr_iter_util_in_two_templates():
     config_from_xml = MimeoConfigFactory.parse("""
         <mimeo_configuration>
             <output>
-                <format>xml</format>
+                <format>json</format>
             </output>
             <_templates_>
                 <_template_>
@@ -2251,20 +1985,16 @@ def test_generate_using_curr_iter_util_in_two_templates():
             config: MimeoConfig,
     ):
         with MimeoContextManager(config):
-            generator = XMLGenerator(config)
+            generator = JSONGenerator(config)
             count = 0
             for index, data in enumerate(generator.generate(config.templates)):
                 # from 6th item it is the second template
                 curr_iter = index + 1 if index < 5 else index - 5 + 1
-                assert data.tag == "SomeEntity"
-                assert data.attrib == {}
-                assert len(list(data)) == 1  # number of children
-
-                child = data.find("ChildNode")
-                assert child.tag == "ChildNode"
-                assert child.attrib == {}
-                assert child.text == str(curr_iter)
-                assert len(list(child)) == 0  # number of children
+                assert data == {
+                    "SomeEntity": {
+                        "ChildNode": curr_iter,
+                    },
+                }
 
                 count += 1
 
@@ -2277,7 +2007,7 @@ def test_generate_using_curr_iter_util_in_two_templates():
 def test_generates_using_curr_iter_util_in_nested_templates():
     config_from_dict = MimeoConfigFactory.parse({
         "output": {
-            "format": "xml",
+            "format": "json",
         },
         "_templates_": [
             {
@@ -2305,7 +2035,7 @@ def test_generates_using_curr_iter_util_in_nested_templates():
     config_from_xml = MimeoConfigFactory.parse("""
         <mimeo_configuration>
             <output>
-                <format>xml</format>
+                <format>json</format>
             </output>
             <_templates_>
                 <_template_>
@@ -2336,37 +2066,37 @@ def test_generates_using_curr_iter_util_in_nested_templates():
             config: MimeoConfig,
     ):
         with MimeoContextManager(config):
-            generator = XMLGenerator(config)
+            generator = JSONGenerator(config)
             count = 0
             for index, data in enumerate(generator.generate(config.templates)):
                 curr_iter = index + 1
-                assert data.tag == "SomeEntity"
-                assert data.attrib == {}
-                assert len(list(data)) == 2  # number of children
-
-                single_node = data.find("SingleNode")
-                assert single_node.tag == "SingleNode"
-                assert single_node.attrib == {}
-                assert single_node.text == str(curr_iter)
-                assert len(list(single_node)) == 0  # number of children
-
-                multiples_nodes_node = data.find("MultipleNodes")
-                assert multiples_nodes_node.tag == "MultipleNodes"
-                assert multiples_nodes_node.attrib == {}
-                assert len(list(multiples_nodes_node)) == 4  # number of children
-
-                nodes = multiples_nodes_node.findall("Node")
-                for nested_index, node in enumerate(nodes):
-                    nested_curr_iter = nested_index + 1
-                    assert node.tag == "Node"
-                    assert node.attrib == {}
-                    assert len(list(node)) == 1  # number of children
-
-                    child_node = node.find("ChildNode")
-                    assert child_node.tag == "ChildNode"
-                    assert child_node.attrib == {}
-                    assert child_node.text == str(nested_curr_iter)
-                    assert len(list(child_node)) == 0  # number of children
+                assert data == {
+                    "SomeEntity": {
+                        "SingleNode": curr_iter,
+                        "MultipleNodes": [
+                            {
+                                "Node": {
+                                    "ChildNode": 1,
+                                },
+                            },
+                            {
+                                "Node": {
+                                    "ChildNode": 2,
+                                },
+                            },
+                            {
+                                "Node": {
+                                    "ChildNode": 3,
+                                },
+                            },
+                            {
+                                "Node": {
+                                    "ChildNode": 4,
+                                },
+                            },
+                        ],
+                    },
+                }
 
                 count += 1
 
@@ -2379,7 +2109,7 @@ def test_generates_using_curr_iter_util_in_nested_templates():
 def test_generates_using_curr_iter_util_in_nested_templates_indicating_one():
     config_from_dict = MimeoConfigFactory.parse({
         "output": {
-            "format": "xml",
+            "format": "json",
         },
         "_templates_": [
             {
@@ -2412,7 +2142,7 @@ def test_generates_using_curr_iter_util_in_nested_templates_indicating_one():
     config_from_xml = MimeoConfigFactory.parse("""
         <mimeo_configuration>
             <output>
-                <format>xml</format>
+                <format>json</format>
             </output>
             <_templates_>
                 <_template_>
@@ -2448,36 +2178,37 @@ def test_generates_using_curr_iter_util_in_nested_templates_indicating_one():
             config: MimeoConfig,
     ):
         with MimeoContextManager(config):
-            generator = XMLGenerator(config)
+            generator = JSONGenerator(config)
             count = 0
             for index, data in enumerate(generator.generate(config.templates)):
                 curr_iter = index + 1
-                assert data.tag == "SomeEntity"
-                assert data.attrib == {}
-                assert len(list(data)) == 2  # number of children
-
-                single_node = data.find("SingleNode")
-                assert single_node.tag == "SingleNode"
-                assert single_node.attrib == {}
-                assert single_node.text == str(curr_iter)
-                assert len(list(single_node)) == 0  # number of children
-
-                multiples_nodes_node = data.find("MultipleNodes")
-                assert multiples_nodes_node.tag == "MultipleNodes"
-                assert multiples_nodes_node.attrib == {}
-                assert len(list(multiples_nodes_node)) == 4  # number of children
-
-                nodes = multiples_nodes_node.findall("Node")
-                for _, node in enumerate(nodes):
-                    assert node.tag == "Node"
-                    assert node.attrib == {}
-                    assert len(list(node)) == 1  # number of children
-
-                    child_node = node.find("ChildNode")
-                    assert child_node.tag == "ChildNode"
-                    assert child_node.attrib == {}
-                    assert child_node.text == str(curr_iter)
-                    assert len(list(child_node)) == 0  # number of children
+                assert data == {
+                    "SomeEntity": {
+                        "SingleNode": curr_iter,
+                        "MultipleNodes": [
+                            {
+                                "Node": {
+                                    "ChildNode": curr_iter,
+                                },
+                            },
+                            {
+                                "Node": {
+                                    "ChildNode": curr_iter,
+                                },
+                            },
+                            {
+                                "Node": {
+                                    "ChildNode": curr_iter,
+                                },
+                            },
+                            {
+                                "Node": {
+                                    "ChildNode": curr_iter,
+                                },
+                            },
+                        ],
+                    },
+                }
 
                 count += 1
 
@@ -2490,7 +2221,7 @@ def test_generates_using_curr_iter_util_in_nested_templates_indicating_one():
 def test_generates_using_curr_iter_util_in_nested_templates_indicating_customized_one():
     config_from_dict = MimeoConfigFactory.parse({
         "output": {
-            "format": "xml",
+            "format": "json",
         },
         "_templates_": [
             {
@@ -2524,7 +2255,7 @@ def test_generates_using_curr_iter_util_in_nested_templates_indicating_customize
     config_from_xml = MimeoConfigFactory.parse("""
         <mimeo_configuration>
             <output>
-                <format>xml</format>
+                <format>json</format>
             </output>
             <_templates_>
                 <_template_>
@@ -2561,36 +2292,37 @@ def test_generates_using_curr_iter_util_in_nested_templates_indicating_customize
             config: MimeoConfig,
     ):
         with MimeoContextManager(config):
-            generator = XMLGenerator(config)
+            generator = JSONGenerator(config)
             count = 0
             for index, data in enumerate(generator.generate(config.templates)):
                 curr_iter = index + 1
-                assert data.tag == "SomeEntity"
-                assert data.attrib == {}
-                assert len(list(data)) == 2  # number of children
-
-                single_node = data.find("SingleNode")
-                assert single_node.tag == "SingleNode"
-                assert single_node.attrib == {}
-                assert single_node.text == str(curr_iter)
-                assert len(list(single_node)) == 0  # number of children
-
-                multiples_nodes_node = data.find("MultipleNodes")
-                assert multiples_nodes_node.tag == "MultipleNodes"
-                assert multiples_nodes_node.attrib == {}
-                assert len(list(multiples_nodes_node)) == 4  # number of children
-
-                nodes = multiples_nodes_node.findall("Node")
-                for _, node in enumerate(nodes):
-                    assert node.tag == "Node"
-                    assert node.attrib == {}
-                    assert len(list(node)) == 1  # number of children
-
-                    child_node = node.find("ChildNode")
-                    assert child_node.tag == "ChildNode"
-                    assert child_node.attrib == {}
-                    assert child_node.text == str(curr_iter)
-                    assert len(list(child_node)) == 0  # number of children
+                assert data == {
+                    "SomeEntity": {
+                        "SingleNode": curr_iter,
+                        "MultipleNodes": [
+                            {
+                                "Node": {
+                                    "ChildNode": curr_iter,
+                                },
+                            },
+                            {
+                                "Node": {
+                                    "ChildNode": curr_iter,
+                                },
+                            },
+                            {
+                                "Node": {
+                                    "ChildNode": curr_iter,
+                                },
+                            },
+                            {
+                                "Node": {
+                                    "ChildNode": curr_iter,
+                                },
+                            },
+                        ],
+                    },
+                }
 
                 count += 1
 
@@ -2603,7 +2335,7 @@ def test_generates_using_curr_iter_util_in_nested_templates_indicating_customize
 def test_generate_using_curr_iter_and_auto_increment_utils():
     config_from_dict = MimeoConfigFactory.parse({
         "output": {
-            "format": "xml",
+            "format": "json",
         },
         "_templates_": [
             {
@@ -2622,7 +2354,7 @@ def test_generate_using_curr_iter_and_auto_increment_utils():
     config_from_xml = MimeoConfigFactory.parse("""
         <mimeo_configuration>
             <output>
-                <format>xml</format>
+                <format>json</format>
             </output>
             <_templates_>
                 <_template_>
@@ -2644,37 +2376,18 @@ def test_generate_using_curr_iter_and_auto_increment_utils():
             config: MimeoConfig,
     ):
         with MimeoContextManager(config):
-            generator = XMLGenerator(config)
+            generator = JSONGenerator(config)
             count = 0
             for index, data in enumerate(generator.generate(config.templates)):
                 curr_iter = index + 1
-                assert data.tag == "SomeEntity"
-                assert data.attrib == {}
-                assert len(list(data)) == 4  # number of children
-
-                child = data.find("ChildNode1")
-                assert child.tag == "ChildNode1"
-                assert child.attrib == {}
-                assert child.text == str(curr_iter)  # 1, 2, 3, 4, 5
-                assert len(list(child)) == 0  # number of children
-
-                child = data.find("ChildNode2")
-                assert child.tag == "ChildNode2"
-                assert child.attrib == {}
-                assert child.text == str(curr_iter)  # 1, 2, 3, 4, 5
-                assert len(list(child)) == 0  # number of children
-
-                child = data.find("ChildNode3")
-                assert child.tag == "ChildNode3"
-                assert child.attrib == {}
-                assert child.text == "{:05d}".format(curr_iter * 2 - 1)  # 1, 3, 5, 7, 9
-                assert len(list(child)) == 0  # number of children
-
-                child = data.find("ChildNode4")
-                assert child.tag == "ChildNode4"
-                assert child.attrib == {}
-                assert child.text == "{:05d}".format(curr_iter * 2)  # 2, 4, 6, 8, 10
-                assert len(list(child)) == 0  # number of children
+                assert data == {
+                    "SomeEntity": {
+                        "ChildNode1": curr_iter,
+                        "ChildNode2": curr_iter,
+                        "ChildNode3": f"{curr_iter * 2 - 1:05d}",  # 1, 3, 5, 7, 9
+                        "ChildNode4": f"{curr_iter * 2:05d}",  # 2, 4, 6, 8, 10
+                    },
+                }
 
                 count += 1
 
@@ -2687,7 +2400,7 @@ def test_generate_using_curr_iter_and_auto_increment_utils():
 def test_generate_using_key_util():
     config_from_dict = MimeoConfigFactory.parse({
         "output": {
-            "format": "xml",
+            "format": "json",
         },
         "_templates_": [
             {
@@ -2705,7 +2418,7 @@ def test_generate_using_key_util():
     config_from_xml = MimeoConfigFactory.parse("""
         <mimeo_configuration>
             <output>
-                <format>xml</format>
+                <format>json</format>
             </output>
             <_templates_>
                 <_template_>
@@ -2726,31 +2439,23 @@ def test_generate_using_key_util():
             config: MimeoConfig,
     ):
         with MimeoContextManager(config):
-            generator = XMLGenerator(config)
+            generator = JSONGenerator(config)
             count = 0
             keys = []
             for _index, data in enumerate(generator.generate(config.templates)):
-                assert data.tag == "SomeEntity"
-                assert data.attrib == {}
-                assert len(list(data)) == 3  # number of children
+                assert len(data) == 1
+                assert "SomeEntity" in data
+                assert len(data["SomeEntity"]) == 3
+                assert "ChildNode1" in data["SomeEntity"]
+                assert "ChildNode2" in data["SomeEntity"]
+                assert "ChildNode3" in data["SomeEntity"]
+                assert isinstance(data["SomeEntity"]["ChildNode1"], str)
+                assert isinstance(data["SomeEntity"]["ChildNode2"], str)
+                assert isinstance(data["SomeEntity"]["ChildNode3"], str)
 
-                child = data.find("ChildNode1")
-                key1 = child.text
-                assert child.tag == "ChildNode1"
-                assert child.attrib == {}
-                assert len(list(child)) == 0  # number of children
-
-                child = data.find("ChildNode2")
-                key2 = child.text
-                assert child.tag == "ChildNode2"
-                assert child.attrib == {}
-                assert len(list(child)) == 0  # number of children
-
-                child = data.find("ChildNode3")
-                key3 = child.text
-                assert child.tag == "ChildNode3"
-                assert child.attrib == {}
-                assert len(list(child)) == 0  # number of children
+                key1 = data["SomeEntity"]["ChildNode1"]
+                key2 = data["SomeEntity"]["ChildNode2"]
+                key3 = data["SomeEntity"]["ChildNode3"]
 
                 assert key1 == key2
                 assert key2 == key3
@@ -2768,7 +2473,7 @@ def test_generate_using_key_util():
 def test_generate_using_key_util_in_separated_contexts():
     config_from_dict = MimeoConfigFactory.parse({
         "output": {
-            "format": "xml",
+            "format": "json",
         },
         "_templates_": [
             {
@@ -2796,7 +2501,7 @@ def test_generate_using_key_util_in_separated_contexts():
     config_from_xml = MimeoConfigFactory.parse("""
         <mimeo_configuration>
             <output>
-                <format>xml</format>
+                <format>json</format>
             </output>
             <_templates_>
                 <_template_>
@@ -2827,34 +2532,27 @@ def test_generate_using_key_util_in_separated_contexts():
             config: MimeoConfig,
     ):
         with MimeoContextManager(config):
-            generator = XMLGenerator(config)
+            generator = JSONGenerator(config)
             count = 0
             for _index, data in enumerate(generator.generate(config.templates)):
-                assert data.tag == "SomeEntity"
-                assert data.attrib == {}
-                assert len(list(data)) == 2  # number of children
+                assert len(data) == 1
+                assert "SomeEntity" in data
+                assert len(data["SomeEntity"]) == 2
+                assert "ChildNode" in data["SomeEntity"]
+                assert "OtherChildren" in data["SomeEntity"]
 
-                child = data.find("ChildNode")
-                key1 = child.text
-                assert child.tag == "ChildNode"
-                assert child.attrib == {}
-                assert len(list(child)) == 0  # number of children
+                assert isinstance(data["SomeEntity"]["ChildNode"], str)
+                assert isinstance(data["SomeEntity"]["OtherChildren"], list)
+                assert len(data["SomeEntity"]["OtherChildren"]) == 1
+                other_child = data["SomeEntity"]["OtherChildren"][0]
+                assert len(other_child) == 1
+                assert "NewContextNode" in other_child
+                assert len(other_child["NewContextNode"]) == 1
+                assert "GrandChild" in other_child["NewContextNode"]
+                assert isinstance(other_child["NewContextNode"]["GrandChild"], str)
 
-                other_children_node = data.find("OtherChildren")
-                assert other_children_node.tag == "OtherChildren"
-                assert other_children_node.attrib == {}
-                assert len(list(other_children_node)) == 1  # number of children
-
-                new_context_node = other_children_node.find("NewContextNode")
-                assert new_context_node.tag == "NewContextNode"
-                assert new_context_node.attrib == {}
-                assert len(list(new_context_node)) == 1  # number of children
-
-                grand_child = new_context_node.find("GrandChild")
-                key2 = grand_child.text
-                assert grand_child.tag == "GrandChild"
-                assert grand_child.attrib == {}
-                assert len(list(grand_child)) == 0  # number of children
+                key1 = data["SomeEntity"]["ChildNode"]
+                key2 = other_child["NewContextNode"]["GrandChild"]
 
                 assert key1 != key2
 
@@ -2869,7 +2567,7 @@ def test_generate_using_key_util_in_separated_contexts():
 def test_generate_using_key_util_in_separated_contexts_indicating_one():
     config_from_dict = MimeoConfigFactory.parse({
         "output": {
-            "format": "xml",
+            "format": "json",
         },
         "_templates_": [
             {
@@ -2902,7 +2600,7 @@ def test_generate_using_key_util_in_separated_contexts_indicating_one():
     config_from_xml = MimeoConfigFactory.parse("""
         <mimeo_configuration>
             <output>
-                <format>xml</format>
+                <format>json</format>
             </output>
             <_templates_>
                 <_template_>
@@ -2938,34 +2636,27 @@ def test_generate_using_key_util_in_separated_contexts_indicating_one():
             config: MimeoConfig,
     ):
         with MimeoContextManager(config):
-            generator = XMLGenerator(config)
+            generator = JSONGenerator(config)
             count = 0
             for _index, data in enumerate(generator.generate(config.templates)):
-                assert data.tag == "SomeEntity"
-                assert data.attrib == {}
-                assert len(list(data)) == 2  # number of children
+                assert len(data) == 1
+                assert "SomeEntity" in data
+                assert len(data["SomeEntity"]) == 2
+                assert "ChildNode" in data["SomeEntity"]
+                assert "OtherChildren" in data["SomeEntity"]
 
-                child = data.find("ChildNode")
-                key1 = child.text
-                assert child.tag == "ChildNode"
-                assert child.attrib == {}
-                assert len(list(child)) == 0  # number of children
+                assert isinstance(data["SomeEntity"]["ChildNode"], str)
+                assert isinstance(data["SomeEntity"]["OtherChildren"], list)
+                assert len(data["SomeEntity"]["OtherChildren"]) == 1
+                other_child = data["SomeEntity"]["OtherChildren"][0]
+                assert len(other_child) == 1
+                assert "NewContextNode" in other_child
+                assert len(other_child["NewContextNode"]) == 1
+                assert "GrandChild" in other_child["NewContextNode"]
+                assert isinstance(other_child["NewContextNode"]["GrandChild"], str)
 
-                other_children_node = data.find("OtherChildren")
-                assert other_children_node.tag == "OtherChildren"
-                assert other_children_node.attrib == {}
-                assert len(list(other_children_node)) == 1  # number of children
-
-                new_context_node = other_children_node.find("NewContextNode")
-                assert new_context_node.tag == "NewContextNode"
-                assert new_context_node.attrib == {}
-                assert len(list(new_context_node)) == 1  # number of children
-
-                grand_child = new_context_node.find("GrandChild")
-                key2 = grand_child.text
-                assert grand_child.tag == "GrandChild"
-                assert grand_child.attrib == {}
-                assert len(list(grand_child)) == 0  # number of children
+                key1 = data["SomeEntity"]["ChildNode"]
+                key2 = other_child["NewContextNode"]["GrandChild"]
 
                 assert key1 == key2
 
@@ -2980,7 +2671,7 @@ def test_generate_using_key_util_in_separated_contexts_indicating_one():
 def test_generate_using_key_util_in_two_templates_with_customized_iteration():
     config_from_dict = MimeoConfigFactory.parse({
         "output": {
-            "format": "xml",
+            "format": "json",
         },
         "_templates_": [
             {
@@ -3010,7 +2701,7 @@ def test_generate_using_key_util_in_two_templates_with_customized_iteration():
     config_from_xml = MimeoConfigFactory.parse("""
         <mimeo_configuration>
             <output>
-                <format>xml</format>
+                <format>json</format>
             </output>
             <_templates_>
                 <_template_>
@@ -3043,7 +2734,7 @@ def test_generate_using_key_util_in_two_templates_with_customized_iteration():
             config: MimeoConfig,
     ):
         with MimeoContextManager(config):
-            generator = XMLGenerator(config)
+            generator = JSONGenerator(config)
             data = list(generator.generate(config.templates))
             some_entity_data = data[:5]
             some_other_entity_data = data[5:]
@@ -3055,26 +2746,24 @@ def test_generate_using_key_util_in_two_templates_with_customized_iteration():
             some_entity_keys = []
             some_other_entity_keys = []
             for data in some_entity_data:
-                assert data.tag == "CustomIteration1"
-                assert data.attrib == {}
-                assert len(list(data)) == 1  # number of children
+                assert len(data) == 1
+                assert "CustomIteration1" in data
+                assert len(data["CustomIteration1"]) == 1
+                assert "ChildNode1" in data["CustomIteration1"]
+                assert isinstance(data["CustomIteration1"]["ChildNode1"], str)
 
-                child = data.find("ChildNode1")
-                assert child.tag == "ChildNode1"
-                assert child.attrib == {}
-                assert len(list(child)) == 0  # number of children
-                some_entity_keys.append(child.text)
+                key = data["CustomIteration1"]["ChildNode1"]
+                some_entity_keys.append(key)
 
             for data in some_other_entity_data:
-                assert data.tag == "CustomIteration2"
-                assert data.attrib == {}
-                assert len(list(data)) == 1  # number of children
+                assert len(data) == 1
+                assert "CustomIteration2" in data
+                assert len(data["CustomIteration2"]) == 1
+                assert "ChildNode1" in data["CustomIteration2"]
+                assert isinstance(data["CustomIteration2"]["ChildNode1"], str)
 
-                child = data.find("ChildNode1")
-                assert child.tag == "ChildNode1"
-                assert child.attrib == {}
-                assert len(list(child)) == 0  # number of children
-                some_other_entity_keys.append(child.text)
+                key = data["CustomIteration2"]["ChildNode1"]
+                some_other_entity_keys.append(key)
 
             for i in range(5):
                 assert some_entity_keys[i] == some_other_entity_keys[i]
@@ -3086,7 +2775,7 @@ def test_generate_using_key_util_in_two_templates_with_customized_iteration():
 def test_generate_using_get_key_util_in_two_templates_with_customized_context_name():
     config_from_dict = MimeoConfigFactory.parse({
         "output": {
-            "format": "xml",
+            "format": "json",
         },
         "_templates_": [
             {
@@ -3117,7 +2806,7 @@ def test_generate_using_get_key_util_in_two_templates_with_customized_context_na
     config_from_xml = MimeoConfigFactory.parse("""
         <mimeo_configuration>
             <output>
-                <format>xml</format>
+                <format>json</format>
             </output>
             <_templates_>
                 <_template_>
@@ -3151,7 +2840,7 @@ def test_generate_using_get_key_util_in_two_templates_with_customized_context_na
             config: MimeoConfig,
     ):
         with MimeoContextManager(config):
-            generator = XMLGenerator(config)
+            generator = JSONGenerator(config)
             data = list(generator.generate(config.templates))
             some_entity_data = data[:5]
             some_other_entity_data = data[5:]
@@ -3162,26 +2851,21 @@ def test_generate_using_get_key_util_in_two_templates_with_customized_context_na
 
             first_set_keys = []
             for data in some_entity_data:
-                assert data.tag == "SomeEntity"
-                assert data.attrib == {}
-                assert len(list(data)) == 1  # number of children
+                assert len(data) == 1
+                assert "SomeEntity" in data
+                assert len(data["SomeEntity"]) == 1
+                assert "ChildNode1" in data["SomeEntity"]
+                assert isinstance(data["SomeEntity"]["ChildNode1"], str)
 
-                child = data.find("ChildNode1")
-                assert child.tag == "ChildNode1"
-                assert child.attrib == {}
-                assert len(list(child)) == 0  # number of children
-                first_set_keys.append(child.text)
+                key = data["SomeEntity"]["ChildNode1"]
+                first_set_keys.append(key)
 
             for data in some_other_entity_data:
-                assert data.tag == "SomeEntity"
-                assert data.attrib == {}
-                assert len(list(data)) == 1  # number of children
-
-                child = data.find("ChildNode1")
-                assert child.tag == "ChildNode1"
-                assert child.attrib == {}
-                assert child.text == first_set_keys[-1]  # the last child from first set
-                assert len(list(child)) == 0  # number of children
+                assert data == {
+                    "SomeEntity": {
+                        "ChildNode1": first_set_keys[-1],
+                    },
+                }
 
     _test(config_from_dict)
     _test(config_from_xml)
@@ -3190,7 +2874,7 @@ def test_generate_using_get_key_util_in_two_templates_with_customized_context_na
 def test_generate_using_special_fields():
     config_from_dict = MimeoConfigFactory.parse({
         "output": {
-            "format": "xml",
+            "format": "json",
         },
         "_templates_": [
             {
@@ -3207,7 +2891,7 @@ def test_generate_using_special_fields():
     config_from_xml = MimeoConfigFactory.parse("""
         <mimeo_configuration>
             <output>
-                <format>xml</format>
+                <format>json</format>
             </output>
             <_templates_>
                 <_template_>
@@ -3227,24 +2911,15 @@ def test_generate_using_special_fields():
             config: MimeoConfig,
     ):
         with MimeoContextManager(config):
-            generator = XMLGenerator(config)
+            generator = JSONGenerator(config)
             count = 0
             for _index, data in enumerate(generator.generate(config.templates)):
-                assert data.tag == "SomeEntity"
-                assert data.attrib == {}
-                assert len(list(data)) == 2  # number of children
-
-                child = data.find("ChildNode1")
-                assert child.tag == "ChildNode1"
-                assert child.attrib == {}
-                assert child.text == "value-1"
-                assert len(list(child)) == 0  # number of children
-
-                child = data.find("ChildNode2")
-                assert child.tag == "ChildNode2"
-                assert child.attrib == {}
-                assert child.text == "value-1"
-                assert len(list(child)) == 0  # number of children
+                assert data == {
+                    "SomeEntity": {
+                        "ChildNode1": "value-1",
+                        "ChildNode2": "value-1",
+                    },
+                }
 
                 count += 1
 
@@ -3257,7 +2932,7 @@ def test_generate_using_special_fields():
 def test_generate_using_special_fields_as_partial_values():
     config_from_dict = MimeoConfigFactory.parse({
         "output": {
-            "format": "xml",
+            "format": "json",
         },
         "_templates_": [
             {
@@ -3279,7 +2954,7 @@ def test_generate_using_special_fields_as_partial_values():
     config_from_xml = MimeoConfigFactory.parse("""
         <mimeo_configuration>
             <output>
-                <format>xml</format>
+                <format>json</format>
             </output>
             <_templates_>
                 <_template_>
@@ -3304,54 +2979,20 @@ def test_generate_using_special_fields_as_partial_values():
             config: MimeoConfig,
     ):
         with MimeoContextManager(config):
-            generator = XMLGenerator(config)
+            generator = JSONGenerator(config)
             count = 0
             for _index, data in enumerate(generator.generate(config.templates)):
-                assert data.tag == "SomeEntity"
-                assert data.attrib == {}
-                assert len(list(data)) == 7  # number of children
-
-                child = data.find("ChildNode1")
-                assert child.tag == "ChildNode1"
-                assert child.attrib == {}
-                assert child.text == "value-1"
-                assert len(list(child)) == 0  # number of children
-
-                child = data.find("ChildNode2")
-                assert child.tag == "ChildNode2"
-                assert child.attrib == {}
-                assert child.text == "value-2"
-                assert len(list(child)) == 0  # number of children
-
-                child = data.find("ChildNode3")
-                assert child.tag == "ChildNode3"
-                assert child.attrib == {}
-                assert child.text == "value-1-2"
-                assert len(list(child)) == 0  # number of children
-
-                child = data.find("ChildNode4")
-                assert child.tag == "ChildNode4"
-                assert child.attrib == {}
-                assert child.text == "3-value-1-3"
-                assert len(list(child)) == 0  # number of children
-
-                child = data.find("ChildNode5")
-                assert child.tag == "ChildNode5"
-                assert child.attrib == {}
-                assert child.text == "4-value-1"
-                assert len(list(child)) == 0  # number of children
-
-                child = data.find("ChildNode6")
-                assert child.tag == "ChildNode6"
-                assert child.attrib == {}
-                assert child.text == "value-1-value-1"
-                assert len(list(child)) == 0  # number of children
-
-                child = data.find("ChildNode7")
-                assert child.tag == "ChildNode7"
-                assert child.attrib == {}
-                assert child.text == "value-1-value-2"
-                assert len(list(child)) == 0  # number of children
+                assert data == {
+                    "SomeEntity": {
+                        "ChildNode1": "value-1",
+                        "ChildNode2": "value-2",
+                        "ChildNode3": "value-1-2",
+                        "ChildNode4": "3-value-1-3",
+                        "ChildNode5": "4-value-1",
+                        "ChildNode6": "value-1-value-1",
+                        "ChildNode7": "value-1-value-2",
+                    },
+                }
 
                 count += 1
 
@@ -3364,7 +3005,7 @@ def test_generate_using_special_fields_as_partial_values():
 def test_generate_using_special_fields_using_namespace():
     config_from_dict = MimeoConfigFactory.parse({
         "output": {
-            "format": "xml",
+            "format": "json",
         },
         "_templates_": [
             {
@@ -3382,7 +3023,7 @@ def test_generate_using_special_fields_using_namespace():
     config_from_xml = MimeoConfigFactory.parse("""
         <mimeo_configuration>
             <output>
-                <format>xml</format>
+                <format>json</format>
             </output>
             <_templates_>
                 <_template_>
@@ -3402,26 +3043,16 @@ def test_generate_using_special_fields_using_namespace():
             config: MimeoConfig,
     ):
         with MimeoContextManager(config):
-            generator = XMLGenerator(config)
+            generator = JSONGenerator(config)
             count = 0
             for _index, data in enumerate(generator.generate(config.templates)):
-                assert data.tag == "ns:SomeEntity"
-                assert data.attrib == {
-                    "xmlns:ns": "http://mimeo.arch.com/prefixed-namespace",
+                assert data == {
+                    "ns:SomeEntity": {
+                        "@xmlns:ns": "http://mimeo.arch.com/prefixed-namespace",
+                        "ns:ChildNode1": "value-1",
+                        "ns:ChildNode2": "value-1",
+                    },
                 }
-                assert len(list(data)) == 2  # number of children
-
-                child = data.find("ns:ChildNode1")
-                assert child.tag == "ns:ChildNode1"
-                assert child.attrib == {}
-                assert child.text == "value-1"
-                assert len(list(child)) == 0  # number of children
-
-                child = data.find("ns:ChildNode2")
-                assert child.tag == "ns:ChildNode2"
-                assert child.attrib == {}
-                assert child.text == "value-1"
-                assert len(list(child)) == 0  # number of children
 
                 count += 1
 
@@ -3434,7 +3065,7 @@ def test_generate_using_special_fields_using_namespace():
 def test_generate_using_special_fields_recursive():
     config_from_dict = MimeoConfigFactory.parse({
         "output": {
-            "format": "xml",
+            "format": "json",
         },
         "_templates_": [
             {
@@ -3452,7 +3083,7 @@ def test_generate_using_special_fields_recursive():
     config_from_xml = MimeoConfigFactory.parse("""
         <mimeo_configuration>
             <output>
-                <format>xml</format>
+                <format>json</format>
             </output>
             <_templates_>
                 <_template_>
@@ -3473,30 +3104,16 @@ def test_generate_using_special_fields_recursive():
             config: MimeoConfig,
     ):
         with MimeoContextManager(config):
-            generator = XMLGenerator(config)
+            generator = JSONGenerator(config)
             count = 0
             for _index, data in enumerate(generator.generate(config.templates)):
-                assert data.tag == "SomeEntity"
-                assert data.attrib == {}
-                assert len(list(data)) == 3  # number of children
-
-                child = data.find("ChildNode1")
-                assert child.tag == "ChildNode1"
-                assert child.attrib == {}
-                assert child.text == "value-1"
-                assert len(list(child)) == 0  # number of children
-
-                child = data.find("ChildNode2")
-                assert child.tag == "ChildNode2"
-                assert child.attrib == {}
-                assert child.text == "value-1"
-                assert len(list(child)) == 0  # number of children
-
-                child = data.find("ChildNode3")
-                assert child.tag == "ChildNode3"
-                assert child.attrib == {}
-                assert child.text == "value-1"
-                assert len(list(child)) == 0  # number of children
+                assert data == {
+                    "SomeEntity": {
+                        "ChildNode1": "value-1",
+                        "ChildNode2": "value-1",
+                        "ChildNode3": "value-1",
+                    },
+                }
 
                 count += 1
 
@@ -3509,7 +3126,7 @@ def test_generate_using_special_fields_recursive():
 def test_generate_using_special_fields_in_template_context():
     config_from_dict = MimeoConfigFactory.parse({
         "output": {
-            "format": "xml",
+            "format": "json",
         },
         "_templates_": [
             {
@@ -3526,7 +3143,7 @@ def test_generate_using_special_fields_in_template_context():
     config_from_xml = MimeoConfigFactory.parse("""
         <mimeo_configuration>
             <output>
-                <format>xml</format>
+                <format>json</format>
             </output>
             <_templates_>
                 <_template_>
@@ -3546,25 +3163,16 @@ def test_generate_using_special_fields_in_template_context():
             config: MimeoConfig,
     ):
         with MimeoContextManager(config):
-            generator = XMLGenerator(config)
+            generator = JSONGenerator(config)
             count = 0
             for index, data in enumerate(generator.generate(config.templates)):
                 curr_iter = index + 1
-                assert data.tag == "SomeEntity"
-                assert data.attrib == {}
-                assert len(list(data)) == 2  # number of children
-
-                child = data.find("ChildNode1")
-                assert child.tag == "ChildNode1"
-                assert child.attrib == {}
-                assert child.text == str(curr_iter)
-                assert len(list(child)) == 0  # number of children
-
-                child = data.find("ChildNode2")
-                assert child.tag == "ChildNode2"
-                assert child.attrib == {}
-                assert child.text == str(curr_iter)
-                assert len(list(child)) == 0  # number of children
+                assert data == {
+                    "SomeEntity": {
+                        "ChildNode1": curr_iter,
+                        "ChildNode2": curr_iter,
+                    },
+                }
 
                 count += 1
 

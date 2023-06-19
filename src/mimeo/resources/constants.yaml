@@ -47,14 +47,17 @@ mimeo-config:
 
     format:
       key: format
+      details:
+        indent:
+          key: indent
       values:
         xml:
           key: xml
           details:
             xml-declaration:
               key: xml_declaration
-            indent:
-              key: indent
+        json:
+          key: json
 
 
   vars:

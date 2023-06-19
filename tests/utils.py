@@ -1,6 +1,8 @@
+from __future__ import annotations
+
 import functools
 import sys
-from typing import Callable, List, Tuple, Type
+from typing import Callable
 
 import pytest
 from aiohttp import BasicAuth
@@ -19,7 +21,7 @@ __all__ = [
 
 def get_class_impl_error_msg(
         cls: str,
-        methods_list: List[str],
+        methods_list: list[str],
 ) -> str:
     methods = ", ".join(methods_list)
     plural = sys.version_info < (3, 9) or len(methods_list) > 1
@@ -28,7 +30,7 @@ def get_class_impl_error_msg(
 
 
 def assert_throws(
-        err_type: Type[Exception],
+        err_type: type[Exception],
         msg: str,
         **params,
 ) -> Callable:
@@ -59,13 +61,12 @@ def assert_request_sent(
         mock: aioresponses,
         method: str,
         url: str,
-        body: str = None,
-        auth: Tuple[str, str] = None,
+        details: dict,
 ):
     requests = mock.requests.get((method, URL(url)))
     assert requests is not None
 
-    found = next(filter(lambda r: _matches_request(r, body, auth), requests))
+    found = next(filter(lambda r: _matches_request(r, **details), requests))
     assert found is not None
 
 
@@ -82,10 +83,13 @@ def assert_requests_count(
 def _matches_request(
         request: RequestCall,
         body: str = None,
-        auth: Tuple[str, str] = None,
+        auth: tuple[str, str] = None,
+        content_type: str = None,
 ) -> bool:
     actual_body = request.kwargs.get("data")
     actual_auth = request.kwargs.get("auth")
+    actual_content_type = request.kwargs.get("headers").get("Content-Type")
     matches_body = body is None or actual_body == body
     matches_auth = auth is None or actual_auth == BasicAuth(auth[0], auth[1], "utf-8")
-    return matches_body and matches_auth
+    matches_content_type = content_type is None or actual_content_type == content_type
+    return matches_body and matches_auth and matches_content_type

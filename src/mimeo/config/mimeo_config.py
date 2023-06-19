@@ -593,7 +593,7 @@ class MimeoOutput(MimeoDTO):
         The configured output direction
     format : str, default 'xml'
         A Mimeo Configuration output format setting
-    xml_declaration : bool, default False
+    xml_declaration : bool, default None
         A Mimeo Configuration xml declaration setting
     indent : int, default 0
         A Mimeo Configuration indent setting
@@ -634,7 +634,7 @@ class MimeoOutput(MimeoDTO):
         self.direction = self._get_direction(output)
         self._validate_output(self.direction, output)
         self.format = self._get_format(output)
-        self.xml_declaration = output.get(cc.OUTPUT_XML_DECLARATION_KEY, False)
+        self.xml_declaration = self._get_xml_declaration(output, self.format)
         self.indent = self._get_indent(output)
         self.directory_path = self._get_directory_path(self.direction, output)
         self.file_name = self._get_file_name(self.direction, output, self.format)
@@ -705,6 +705,31 @@ class MimeoOutput(MimeoDTO):
         return output_format
 
     @staticmethod
+    def _get_xml_declaration(
+            config: dict,
+            output_format: str,
+    ) -> str | None:
+        """Extract an XML declaration setting from the source dictionary.
+
+        Parameters
+        ----------
+        config : dict
+            A source config dictionary
+        output_format : str
+            The configured output format
+
+        Returns
+        -------
+        str | None
+            The configured XML declaration setting when the output format is 'xml'.
+            Otherwise, None. If the 'xml_declaration' setting is missing returns
+            False by default.
+        """
+        if output_format == cc.OUTPUT_FORMAT_XML:
+            return config.get(cc.OUTPUT_XML_DECLARATION_KEY, False)
+        return None
+
+    @staticmethod
     def _get_indent(
             config: dict,
     ) -> int:
@@ -773,6 +798,8 @@ class MimeoOutput(MimeoDTO):
             The configured output direction
         output : dict
             A source config output details dictionary
+        output_format : str
+            The configured output format
 
         Returns
         -------

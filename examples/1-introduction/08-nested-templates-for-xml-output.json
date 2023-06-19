@@ -1,4 +1,7 @@
 {
+  "output": {
+    "format": "xml"
+  },
   "_templates_": [
     {
       "count": 30,

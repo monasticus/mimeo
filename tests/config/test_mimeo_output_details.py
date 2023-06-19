@@ -26,7 +26,7 @@ def test_str():
     assert str(mimeo_output) == str(output)
 
 
-def test_parsing_output_with_default_direction_independent_settings():
+def test_parsing_output_xml_with_default_direction_independent_settings():
     output = {}
 
     mimeo_output = MimeoOutput(output)
@@ -35,7 +35,7 @@ def test_parsing_output_with_default_direction_independent_settings():
     assert mimeo_output.indent == 0
 
 
-def test_parsing_output_with_customized_direction_independent_settings():
+def test_parsing_output_xml_with_customized_direction_independent_settings():
     output = {
         "format": "xml",
         "xml_declaration": True,
@@ -45,6 +45,30 @@ def test_parsing_output_with_customized_direction_independent_settings():
     mimeo_output = MimeoOutput(output)
     assert mimeo_output.format == "xml"
     assert mimeo_output.xml_declaration is True
+    assert mimeo_output.indent == 4
+
+
+def test_parsing_output_json_with_default_direction_independent_settings():
+    output = {
+        "format": "json",
+    }
+
+    mimeo_output = MimeoOutput(output)
+    assert mimeo_output.format == "json"
+    assert mimeo_output.xml_declaration is None
+    assert mimeo_output.indent == 0
+
+
+def test_parsing_output_json_with_customized_direction_independent_settings():
+    output = {
+        "format": "json",
+        "xml_declaration": True,
+        "indent": 4,
+    }
+
+    mimeo_output = MimeoOutput(output)
+    assert mimeo_output.format == "json"
+    assert mimeo_output.xml_declaration is None
     assert mimeo_output.indent == 4
 
 
@@ -211,7 +235,7 @@ def test_parsing_output_with_invalid_indent():
 @assert_throws(err_type=UnsupportedPropertyValueError,
                msg="Provided format [{format}] is not supported! "
                    "Supported values: [{values}].",
-               format="unsupported_format", values="xml")
+               format="unsupported_format", values="xml, json")
 def test_parsing_output_with_unsupported_format():
     output = {
         "format": "unsupported_format",

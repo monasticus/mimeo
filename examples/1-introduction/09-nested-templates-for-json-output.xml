@@ -1,0 +1,49 @@
+<mimeo_configuration>
+    <output>
+        <format>json</format>
+    </output>
+    <_templates_>
+        <_template_>
+            <count>30</count>
+            <model>
+
+                <SomeEntity>
+                    <ChildNode1>1</ChildNode1>
+                    <SomeChildrenInArray>
+                        <_templates_>
+                            <_template_>
+                                <count>5</count>
+                                <model>
+
+                                    <SomeChildInArray>
+                                        <SomeGrandChildInArray1>value-1</SomeGrandChildInArray1>
+                                        <SomeGrandChildInArray2>true</SomeGrandChildInArray2>
+                                    </SomeChildInArray>
+
+                                </model>
+                            </_template_>
+                        </_templates_>
+                    </SomeChildrenInArray>
+                    <SomeMixedChildrenInArray>value</SomeMixedChildrenInArray>
+                    <SomeMixedChildrenInArray>
+                        <_templates_>
+                            <_template_>
+                                <count>5</count>
+                                <model>
+
+                                    <SomeChildInArray>
+                                        <SomeGrandChildInArray1>value-1</SomeGrandChildInArray1>
+                                        <SomeGrandChildInArray2>true</SomeGrandChildInArray2>
+                                    </SomeChildInArray>
+
+                                </model>
+                            </_template_>
+                        </_templates_>
+                    </SomeMixedChildrenInArray>
+                    <SomeMixedChildrenInArray>1</SomeMixedChildrenInArray>
+                </SomeEntity>
+
+            </model>
+        </_template_>
+    </_templates_>
+</mimeo_configuration>
