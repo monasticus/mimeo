@@ -29,22 +29,22 @@ class Mimeograph:
         Process the Mimeo Configuration (generate data and consume).
     """
 
-    def __init__(
-            self,
+    @staticmethod
+    async def process(
             mimeo_config: MimeoConfig,
     ):
-        self._mimeo_config = mimeo_config
-        self._generator = GeneratorFactory.get_generator(self._mimeo_config)
-        self._consumer = ConsumerFactory.get_consumer(self._mimeo_config)
+        """Process the Mimeo Configuration (generate data and consume).
 
-    async def process(
-            self,
-    ):
-        """Process the Mimeo Configuration (generate data and consume)."""
+        Parameters
+        ----------
+        mimeo_config: MimeoConfig
+            A Mimeo Configuration to process
+        """
+        generator = GeneratorFactory.get_generator(mimeo_config)
+        consumer = ConsumerFactory.get_consumer(mimeo_config)
         logger.info("Starting data generation")
-        with MimeoContextManager(self._mimeo_config):
-            data = self._generator.generate(self._mimeo_config.templates)
-            data_str = (self._generator.stringify(data_unit)
-                        for data_unit in data)
-            await self._consumer.consume(data_str)
+        with MimeoContextManager(mimeo_config):
+            data = generator.generate(mimeo_config.templates)
+            data_str = (generator.stringify(data_unit) for data_unit in data)
+            await consumer.consume(data_str)
         logger.info("Data has been processed")
