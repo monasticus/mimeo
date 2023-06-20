@@ -24,16 +24,16 @@ pip install mimeograph
 ### Mimeo Configuration
 
 Prepare Mimeo Configuration first
-- for a command line tool: in a JSON or XML file
-- for a `Mimeograph` python class: in a `dict` or stringified XML
 
 <table>
     <tr>
+        <th></th>
         <th>JSON</th>
         <th>XML</th>
     </tr>
     <tr>
-        <td>
+        <td><b>CLI</b></td>
+        <td valign="top">SomeEntity-config.json
 
 ```json
 {
@@ -54,7 +54,7 @@ Prepare Mimeo Configuration first
 }
 ```
 </td>
-    <td>
+    <td valign="top">SomeEntity-config.xml
 
 ```xml
 <mimeo_configuration>
@@ -78,36 +78,87 @@ Prepare Mimeo Configuration first
 ```
 </td>
   </tr>
+    <tr>
+        <td rowspan="2"><b>Python</b></td>
+        <td valign="top">
+
+```python
+from mimeo import MimeoConfigFactory
+
+config = {
+  "_templates_": [
+    {
+      "count": 30,
+      "model": {
+        "SomeEntity": {
+          "@xmlns": "http://mimeo.arch.com/default-namespace",
+          "@xmlns:pn": "http://mimeo.arch.com/prefixed-namespace",
+          "ChildNode1": 1,
+          "ChildNode2": "value-2",
+          "ChildNode3": True
+        }
+      }
+    }
+  ]
+}
+mimeo_config = MimeoConfigFactory.parse(config)
+```
+</td>
+    <td valign="top">
+
+```python
+from mimeo import MimeoConfigFactory
+
+config = (
+    '<mimeo_configuration>'
+    '    <_templates_>'
+    '        <_template_>'
+    '            <count>30</count>'
+    '            <model>'
+    ''
+    '                <SomeEntity'
+    '                    xmlns="http://mimeo.arch.com/default-namespace"'
+    '                    xmlns:pn="http://mimeo.arch.com/prefixed-namespace">'
+    '                    <ChildNode1>1</ChildNode1>'
+    '                    <pn:ChildNode2>value-2</pn:ChildNode2>'
+    '                    <ChildNode3>true</ChildNode3>'
+    '                </SomeEntity>'
+    ''
+    '            </model>'
+    '        </_template_>'
+    '    </_templates_>'
+    '</mimeo_configuration>')
+mimeo_config = MimeoConfigFactory.parse(config)
+```
+</td>
+  </tr>
+    <tr>
+        <td valign="top">
+
+```python
+from mimeo import MimeoConfigFactory
+
+config = "SomeEntity-config.json"
+mimeo_config = MimeoConfigFactory.parse(config)
+```
+</td>
+    <td valign="top">
+
+```python
+from mimeo import MimeoConfigFactory
+
+config = "SomeEntity-config.xml"
+mimeo_config = MimeoConfigFactory.parse(config)
+```
+</td>
+  </tr>
 </table>
 
 
 _You can find more configuration examples in the `examples` folder._
 
-### Mimeograph
+### Data generation
 
-#### Command line tool
-
-```sh
-mimeo SomeEntity-config.json
-mimeo SomeEntity-config.xml
-```
-
-#### Python library
-
-```python
-from mimeo import MimeoConfigFactory, Mimeograph
-
-config = {
-    # Your configuration in a dict
-}
-config = """
-    Your configuration in a stringified XML node
-"""
-config = ""  # A file path to your configuration (JSON / XML)
-mimeo_config = MimeoConfigFactory.parse(config)
-Mimeograph(mimeo_config).process()
-```
-***
 The Mimeo Configuration above will produce 2 files:
 
 ```xml
@@ -152,7 +203,43 @@ When we would configure output format as `json` then it would produce:
 }
 ```
 
-***
+#### CLI
+
+```sh
+mimeo SomeEntity-config.json
+mimeo SomeEntity-config.xml
+```
+
+#### Python
+
+##### `Mimeograph.process()`
+
+This function generates data and consumes it.
+
+```python
+from mimeo import MimeoConfigFactory, Mimeograph
+
+config = "SomeEntity-config.xml"
+mimeo_config = MimeoConfigFactory.parse(config)
+Mimeograph.process(mimeo_config)
+```
+
+##### `Mimeograph.generate()`
+
+If you want to generate data and get it in a python representation,
+you can use `Mimeograph.generate()` method. It will return dictionaries
+(`json`) or `xml.etree.ElementTree.Element` instances (`xml`). 
+
+```python
+from mimeo import MimeoConfigFactory, Mimeograph
+
+config = "SomeEntity-config.xml"
+mimeo_config = MimeoConfigFactory.parse(config)
+data = Mimeograph.generate(mimeo_config)
+```
+
+To consume data in a separated step you can make any modifications you want
+and use `Mimeograph.consume()` method then.
 
 ### Mimeo Utils
 
