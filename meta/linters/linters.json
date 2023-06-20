@@ -46,6 +46,10 @@
     "name": "flake8-annotations"
   },
   {
+    "prefix": "ASYNC",
+    "name": "flake8-async"
+  },
+  {
     "prefix": "S",
     "name": "flake8-bandit"
   },
@@ -92,6 +96,10 @@
   {
     "prefix": "EXE",
     "name": "flake8-executable"
+  },
+  {
+    "prefix": "FA",
+    "name": "flake8-future-annotations"
   },
   {
     "prefix": "ISC",
@@ -166,6 +174,14 @@
     "name": "flake8-use-pathlib"
   },
   {
+    "prefix": "TD",
+    "name": "flake8-todos"
+  },
+  {
+    "prefix": "FIX",
+    "name": "flake8-fixme"
+  },
+  {
     "prefix": "ERA",
     "name": "eradicate"
   },
@@ -210,6 +226,10 @@
   {
     "prefix": "NPY",
     "name": "NumPy-specific rules"
+  },
+  {
+    "prefix": "AIR",
+    "name": "Airflow"
   },
   {
     "prefix": "RUF",
