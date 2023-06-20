@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import logging
 import xml.etree.ElementTree as ElemTree
-from typing import Iterator
+from typing import Iterator, Iterable
 
 from mimeo.config.mimeo_config import MimeoConfig
 from mimeo.consumers import ConsumerFactory
@@ -33,6 +33,12 @@ class Mimeograph:
     ) -> Iterator[ElemTree.Element | dict | str]
         Generate data from the Mimeo Configuration.
 
+    consume(
+        mimeo_config: MimeoConfig,
+        data: Iterable,
+    )
+        Consume data generated from the Mimeo Configuration.
+
     process(
         mimeo_config: MimeoConfig,
     )
@@ -53,9 +59,8 @@ class Mimeograph:
         mimeo_config: MimeoConfig
             A Mimeo Configuration to process
         """
-        consumer = ConsumerFactory.get_consumer(mimeo_config)
         data = cls.generate(mimeo_config, stringify=True)
-        await consumer.consume(data)
+        await cls.consume(mimeo_config, data)
 
         logger.info("Data has been processed")
 
@@ -84,3 +89,21 @@ class Mimeograph:
         with MimeoContextManager(mimeo_config):
             for data in generator.generate(mimeo_config.templates):
                 yield data if not stringify else generator.stringify(data)
+
+    @classmethod
+    async def consume(
+            cls,
+            mimeo_config: MimeoConfig,
+            data: Iterable,
+    ):
+        """Consume data generated from the Mimeo Configuration.
+
+        Parameters
+        ----------
+        mimeo_config: MimeoConfig
+            A Mimeo Configuration for data generation
+        data: Iterable
+            Data to consume
+        """
+        consumer = ConsumerFactory.get_consumer(mimeo_config)
+        await consumer.consume(data)
