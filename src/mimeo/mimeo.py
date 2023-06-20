@@ -45,8 +45,6 @@ class Mimeograph:
         Process the Mimeo Configuration (generate data and consume).
     """
 
-    _GENERATORS = {}
-
     @classmethod
     async def process(
             cls,
