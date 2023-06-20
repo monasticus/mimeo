@@ -8,6 +8,8 @@ in Mimeo:
 from __future__ import annotations
 
 import logging
+import xml.etree.ElementTree as ElemTree
+from typing import Iterator
 
 from mimeo.config.mimeo_config import MimeoConfig
 from mimeo.consumers import ConsumerFactory
@@ -25,12 +27,23 @@ class Mimeograph:
 
     Methods
     -------
-    process()
+    generate(
+        mimeo_config: MimeoConfig,
+        stringify: bool = False,
+    ) -> Iterator[ElemTree.Element | dict | str]
+        Generate data from the Mimeo Configuration.
+
+    process(
+        mimeo_config: MimeoConfig,
+    )
         Process the Mimeo Configuration (generate data and consume).
     """
 
-    @staticmethod
+    _GENERATORS = {}
+
+    @classmethod
     async def process(
+            cls,
             mimeo_config: MimeoConfig,
     ):
         """Process the Mimeo Configuration (generate data and consume).
@@ -40,11 +53,34 @@ class Mimeograph:
         mimeo_config: MimeoConfig
             A Mimeo Configuration to process
         """
-        generator = GeneratorFactory.get_generator(mimeo_config)
         consumer = ConsumerFactory.get_consumer(mimeo_config)
+        data = cls.generate(mimeo_config, stringify=True)
+        await consumer.consume(data)
+
+        logger.info("Data has been processed")
+
+    @classmethod
+    def generate(
+            cls,
+            mimeo_config: MimeoConfig,
+            stringify: bool = False,
+    ) -> Iterator[ElemTree.Element | dict | str]:
+        """Generate data from the Mimeo Configuration.
+
+        Parameters
+        ----------
+        mimeo_config: MimeoConfig
+            A Mimeo Configuration for data generation
+        stringify: bool
+            Indicate if data should be stringified
+
+        Returns
+        -------
+        Iterator[ElemTree.Element | dict | str]
+            Iterator for generated data
+        """
+        generator = GeneratorFactory.get_generator(mimeo_config)
         logger.info("Starting data generation")
         with MimeoContextManager(mimeo_config):
-            data = generator.generate(mimeo_config.templates)
-            data_str = (generator.stringify(data_unit) for data_unit in data)
-            await consumer.consume(data_str)
-        logger.info("Data has been processed")
+            for data in generator.generate(mimeo_config.templates):
+                yield data if not stringify else generator.stringify(data)
