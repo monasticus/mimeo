@@ -65,7 +65,7 @@ class Generator(metaclass=ABCMeta):
             self,
             templates: list | Iterator[MimeoTemplate],
             parent: Any = None,
-    ) -> Iterator[Any]:
+    ) -> Iterator[ElemTree.Element | dict]:
         """Generate data based on the Mimeo Configuration.
 
         It is an abstract method to implement in subclasses
@@ -81,7 +81,7 @@ class Generator(metaclass=ABCMeta):
 
         Returns
         -------
-        Iterator[Any]
+        Iterator[ElemTree.Element | dict]
             Iterator for generated nodes
         """
         raise NotImplementedError

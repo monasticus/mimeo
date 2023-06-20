@@ -55,7 +55,7 @@ class MimeoJob:
         for config_path in self._get_config_paths(self._args.paths):
             mimeo_config = self._get_mimeo_config(config_path, self._args)
             asyncio.run(
-                Mimeograph(mimeo_config).process(),
+                Mimeograph.process(mimeo_config),
             )
 
     @staticmethod

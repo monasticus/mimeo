@@ -8,6 +8,8 @@ in Mimeo:
 from __future__ import annotations
 
 import logging
+import xml.etree.ElementTree as ElemTree
+from typing import Iterator, Iterable
 
 from mimeo.config.mimeo_config import MimeoConfig
 from mimeo.consumers import ConsumerFactory
@@ -25,26 +27,83 @@ class Mimeograph:
 
     Methods
     -------
-    process()
+    generate(
+        mimeo_config: MimeoConfig,
+        stringify: bool = False,
+    ) -> Iterator[ElemTree.Element | dict | str]
+        Generate data from the Mimeo Configuration.
+
+    consume(
+        mimeo_config: MimeoConfig,
+        data: Iterable,
+    )
+        Consume data generated from the Mimeo Configuration.
+
+    process(
+        mimeo_config: MimeoConfig,
+    )
         Process the Mimeo Configuration (generate data and consume).
     """
 
-    def __init__(
-            self,
+    _GENERATORS = {}
+
+    @classmethod
+    async def process(
+            cls,
             mimeo_config: MimeoConfig,
     ):
-        self._mimeo_config = mimeo_config
-        self._generator = GeneratorFactory.get_generator(self._mimeo_config)
-        self._consumer = ConsumerFactory.get_consumer(self._mimeo_config)
+        """Process the Mimeo Configuration (generate data and consume).
 
-    async def process(
-            self,
-    ):
-        """Process the Mimeo Configuration (generate data and consume)."""
-        logger.info("Starting data generation")
-        with MimeoContextManager(self._mimeo_config):
-            data = self._generator.generate(self._mimeo_config.templates)
-            data_str = (self._generator.stringify(data_unit)
-                        for data_unit in data)
-            await self._consumer.consume(data_str)
+        Parameters
+        ----------
+        mimeo_config: MimeoConfig
+            A Mimeo Configuration to process
+        """
+        data = cls.generate(mimeo_config, stringify=True)
+        await cls.consume(mimeo_config, data)
+
         logger.info("Data has been processed")
+
+    @classmethod
+    def generate(
+            cls,
+            mimeo_config: MimeoConfig,
+            stringify: bool = False,
+    ) -> Iterator[ElemTree.Element | dict | str]:
+        """Generate data from the Mimeo Configuration.
+
+        Parameters
+        ----------
+        mimeo_config: MimeoConfig
+            A Mimeo Configuration for data generation
+        stringify: bool
+            Indicate if data should be stringified
+
+        Returns
+        -------
+        Iterator[ElemTree.Element | dict | str]
+            Iterator for generated data
+        """
+        generator = GeneratorFactory.get_generator(mimeo_config)
+        logger.info("Starting data generation")
+        with MimeoContextManager(mimeo_config):
+            for data in generator.generate(mimeo_config.templates):
+                yield data if not stringify else generator.stringify(data)
+
+    @classmethod
+    async def consume(
+            cls,
+            mimeo_config: MimeoConfig,
+            data: Iterable,
+    ):
+        """Consume data generated from the Mimeo Configuration.
+
+        Parameters
+        ----------
+        mimeo_config: MimeoConfig
+            A Mimeo Configuration for data generation
+        data: Iterable
+            Data to consume
+        """
+        consumer = ConsumerFactory.get_consumer(mimeo_config)
+        await consumer.consume(data)
