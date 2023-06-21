@@ -7,6 +7,7 @@ in Mimeo:
 """
 from __future__ import annotations
 
+import asyncio
 import logging
 import xml.etree.ElementTree as ElemTree
 from typing import Iterator, Iterable
@@ -46,7 +47,7 @@ class Mimeograph:
     """
 
     @classmethod
-    async def process(
+    def process(
             cls,
             mimeo_config: MimeoConfig,
     ):
@@ -58,7 +59,7 @@ class Mimeograph:
             A Mimeo Configuration to process
         """
         data = cls.generate(mimeo_config, stringify=True)
-        await cls.consume(mimeo_config, data)
+        asyncio.run(cls.consume(mimeo_config, data))
 
         logger.info("Data has been processed")
 

@@ -15,8 +15,7 @@ def _teardown():
     shutil.rmtree("test_mimeograph-dir", ignore_errors=True)
 
 
-@pytest.mark.asyncio()
-async def test_process_xml():
+def test_process_xml():
     config = {
         "output": {
             "direction": "file",
@@ -41,7 +40,7 @@ async def test_process_xml():
     }
     mimeo_config = MimeoConfigFactory.parse(config)
     assert not Path("test_mimeograph-dir").exists()
-    await Mimeograph.process(mimeo_config)
+    Mimeograph.process(mimeo_config)
     assert Path("test_mimeograph-dir").exists()
     for i in range(1, 11):
         file_path = f"test_mimeograph-dir/output-{i}.xml"
@@ -56,8 +55,7 @@ async def test_process_xml():
             assert file.readline() == "</SomeEntity>\n"
 
 
-@pytest.mark.asyncio()
-async def test_process_json():
+def test_process_json():
     config = {
         "output": {
             "direction": "file",
@@ -81,7 +79,7 @@ async def test_process_json():
     }
     mimeo_config = MimeoConfigFactory.parse(config)
     assert not Path("test_mimeograph-dir").exists()
-    await Mimeograph.process(mimeo_config)
+    Mimeograph.process(mimeo_config)
     assert Path("test_mimeograph-dir").exists()
     for i in range(1, 11):
         file_path = f"test_mimeograph-dir/output-{i}.json"
