@@ -1062,4 +1062,4 @@ MIT
  - [SimpleMaps.com](https://simplemaps.com/data/world-cities) (Cities & countries data)
  - [@hadley/data-baby-names](https://github.com/hadley/data-baby-names/) (Forenames data)
  - [@fivethirtyeigh/data/most-common-name](https://github.com/fivethirtyeight/data/tree/master/most-common-name) (Surnames data)
-
+ - [@datasets/currency-codes](https://github.com/datasets/currency-codes/) (Currencies data)
