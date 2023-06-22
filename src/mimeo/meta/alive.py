@@ -38,6 +38,7 @@ with SomeClass({'x': 1}) as alive_1:
 from __future__ import annotations
 
 from types import TracebackType
+from typing import ClassVar
 
 from mimeo.meta.exc import InstanceNotAliveError
 
@@ -51,7 +52,7 @@ class OnlyOneAlive(type):
     instantiated and returned.
     """
 
-    _INSTANCES = {}
+    _INSTANCES: ClassVar[dict] = {}
 
     def __call__(
             cls,

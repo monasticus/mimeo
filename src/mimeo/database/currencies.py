@@ -8,7 +8,10 @@ It exports classes related to currencies CSV data:
 """
 from __future__ import annotations
 
+from typing import ClassVar
+
 import pandas
+from pandas import DataFrame
 
 from mimeo import tools
 from mimeo.database.exc import InvalidIndexError
@@ -98,11 +101,11 @@ class CurrenciesDB:
         Get a currency at `index` position.
     """
 
-    NUM_OF_RECORDS = 169
-    _CURRENCIES_DB = "currencies.csv"
-    _CURRENCIES_DF = None
-    _CURRENCIES = None
-    _COUNTRY_CURRENCIES = {}
+    NUM_OF_RECORDS: int = 169
+    _CURRENCIES_DB: str = "currencies.csv"
+    _CURRENCIES_DF: DataFrame = None
+    _CURRENCIES: ClassVar[list] = None
+    _COUNTRY_CURRENCIES: ClassVar[dict] = {}
 
     def get_currency_at(
             self,

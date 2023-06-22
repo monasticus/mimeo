@@ -32,9 +32,9 @@ class ConsumerFactory:
         Initialize a Consumer based on the Mimeo Output Direction.
     """
 
-    FILE_DIRECTION = cc.OUTPUT_DIRECTION_FILE
-    STD_OUT_DIRECTION = cc.OUTPUT_DIRECTION_STD_OUT
-    HTTP_DIRECTION = cc.OUTPUT_DIRECTION_HTTP
+    FILE_DIRECTION: str = cc.OUTPUT_DIRECTION_FILE
+    STD_OUT_DIRECTION: str = cc.OUTPUT_DIRECTION_STD_OUT
+    HTTP_DIRECTION: str = cc.OUTPUT_DIRECTION_HTTP
 
     @staticmethod
     def get_consumer(

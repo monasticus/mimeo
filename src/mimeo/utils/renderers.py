@@ -15,7 +15,7 @@ from __future__ import annotations
 
 import logging
 import re
-from typing import Any
+from typing import Any, ClassVar
 
 from mimeo.config import constants as cc
 from mimeo.context import MimeoContext, MimeoContextManager
@@ -43,7 +43,7 @@ class UtilsRenderer:
         Render a Mimeo Util in a parametrized form.
     """
 
-    MIMEO_UTILS = {
+    MIMEO_UTILS: ClassVar[dict] = {
         RandomStringUtil.KEY: RandomStringUtil,
         RandomIntegerUtil.KEY: RandomIntegerUtil,
         RandomItemUtil.KEY: RandomItemUtil,
@@ -58,7 +58,7 @@ class UtilsRenderer:
         FirstNameUtil.KEY: FirstNameUtil,
         LastNameUtil.KEY: LastNameUtil,
     }
-    _INSTANCES = {}
+    _INSTANCES: ClassVar[dict] = {}
 
     @classmethod
     def render_raw(
@@ -295,7 +295,7 @@ class SpecialFieldsRenderer:
     def render(
             cls,
             field: str,
-            context: MimeoContext = None,
+            context: MimeoContext | None = None,
     ) -> str | int | bool:
         """Render a Mimeo Special Field.
 

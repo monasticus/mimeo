@@ -59,9 +59,9 @@ class MimeoContext:
         Provide next unique last name index.
     """
 
-    _ALL = "_ALL_"
-    _INITIAL_COUNT = "init-count"
-    _INDEXES = "indexes"
+    _ALL: str = "_ALL_"
+    _INITIAL_COUNT: str = "init-count"
+    _INDEXES: str = "indexes"
 
     def __init__(
             self,
@@ -239,7 +239,7 @@ class MimeoContext:
 
     def next_city_index(
             self,
-            country: str = None,
+            country: str | None = None,
     ) -> int:
         """Provide next unique city index.
 
@@ -307,7 +307,7 @@ class MimeoContext:
 
     def next_first_name_index(
             self,
-            sex: str = None,
+            sex: str | None = None,
     ) -> int:
         """Provide next unique first name index.
 

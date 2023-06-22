@@ -110,7 +110,7 @@ class JSONGenerator(Generator):
             cls,
             parent: dict | list | None,
             node_meta: dict,
-            context: MimeoContext = None,
+            context: MimeoContext | None = None,
     ) -> dict | list:
         """Process a single template's node.
 

@@ -38,7 +38,7 @@ class MimeoContextManager(Alive, metaclass=OnlyOneAlive):
 
     def __init__(
             self,
-            mimeo_config: MimeoConfig = None,
+            mimeo_config: MimeoConfig | None = None,
     ):
         """Initialize MimeoContextManager class.
 

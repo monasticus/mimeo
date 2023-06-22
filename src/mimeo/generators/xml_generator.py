@@ -58,7 +58,7 @@ class XMLGenerator(Generator):
     def generate(
             cls,
             templates: list | Iterator[MimeoTemplate],
-            parent: ElemTree.Element = None,
+            parent: ElemTree.Element | None = None,
     ) -> Iterator[ElemTree.Element]:
         """Generate XML data based on the Mimeo Configuration.
 

@@ -13,6 +13,7 @@ import json
 import logging
 from argparse import ArgumentParser, Namespace
 from pathlib import Path
+from typing import ClassVar
 
 from mimeo import MimeoConfig
 from mimeo.cli.exc import (EnvironmentNotFoundError,
@@ -22,7 +23,7 @@ from mimeo.config import constants as cc
 
 logger = logging.getLogger(__name__)
 
-DEFAULT_ENVS_PATH = "mimeo.envs.json"
+DEFAULT_ENVS_PATH: str = "mimeo.envs.json"
 
 
 class MimeoArgumentParser(ArgumentParser):
@@ -239,15 +240,16 @@ class MimeoConfigParser:
         Parse a Mimeo Configuration using Mimeo arguments.
     """
 
-    _ENVIRONMENT_PROPS = [cc.OUTPUT_PROTOCOL_KEY,
-                          cc.OUTPUT_HOST_KEY,
-                          cc.OUTPUT_PORT_KEY,
-                          cc.OUTPUT_USERNAME_KEY,
-                          cc.OUTPUT_PASSWORD_KEY]
+    _ENVIRONMENT_PROPS: ClassVar[list] = [
+        cc.OUTPUT_PROTOCOL_KEY,
+        cc.OUTPUT_HOST_KEY,
+        cc.OUTPUT_PORT_KEY,
+        cc.OUTPUT_USERNAME_KEY,
+        cc.OUTPUT_PASSWORD_KEY]
 
-    _ENTRY_PATH_KEY = "entry_path"
-    _GET_VALUE_KEY = "get_value"
-    _ARGS_MAPPING = {
+    _ENTRY_PATH_KEY: str = "entry_path"
+    _GET_VALUE_KEY: str = "get_value"
+    _ARGS_MAPPING: ClassVar[dict] = {
         "format": {
             "entry_path": [cc.OUTPUT_KEY, cc.OUTPUT_FORMAT_KEY],
         },

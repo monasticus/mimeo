@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import logging
 import xml.etree.ElementTree as ElemTree
-from typing import Iterator, Iterable
+from typing import Iterable, Iterator
 
 from mimeo.config.mimeo_config import MimeoConfig
 from mimeo.consumers import ConsumerFactory

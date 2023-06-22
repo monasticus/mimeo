@@ -58,19 +58,19 @@ from typing import Callable
 import pandas
 from requests import Session
 
-MIMEO_DB_PACKAGE = "src/mimeo/database"
-MIMEO_DB_CITIES = "cities.py"
-MIMEO_DB_COUNTRIES = "countries.py"
-MIMEO_DB_CURRENCIES = "currencies.py"
-MIMEO_DB_FORENAMES = "first_names.py"
-MIMEO_DB_SURNAMES = "last_names.py"
+MIMEO_DB_PACKAGE: str = "src/mimeo/database"
+MIMEO_DB_CITIES: str = "cities.py"
+MIMEO_DB_COUNTRIES: str = "countries.py"
+MIMEO_DB_CURRENCIES: str = "currencies.py"
+MIMEO_DB_FORENAMES: str = "first_names.py"
+MIMEO_DB_SURNAMES: str = "last_names.py"
 
-MIMEO_RESOURCES_PACKAGE = "src/mimeo/resources"
-MIMEO_RESOURCES_CITIES = "cities.csv"
-MIMEO_RESOURCES_COUNTRIES = "countries.csv"
-MIMEO_RESOURCES_CURRENCIES = "currencies.csv"
-MIMEO_RESOURCES_FORENAMES = "forenames.csv"
-MIMEO_RESOURCES_SURNAMES = "surnames.txt"
+MIMEO_RESOURCES_PACKAGE: str = "src/mimeo/resources"
+MIMEO_RESOURCES_CITIES: str = "cities.csv"
+MIMEO_RESOURCES_COUNTRIES: str = "countries.csv"
+MIMEO_RESOURCES_CURRENCIES: str = "currencies.csv"
+MIMEO_RESOURCES_FORENAMES: str = "forenames.csv"
+MIMEO_RESOURCES_SURNAMES: str = "surnames.txt"
 
 
 def download_file(
@@ -103,7 +103,7 @@ def download_file(
 
 def extract_zip_data(
         zip_path: str,
-        files_to_extract: list = None,
+        files_to_extract: list | None = None,
 ):
     """Extract data from ZIP file.
 

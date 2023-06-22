@@ -8,7 +8,10 @@ It exports classes related to cities CSV data:
 """
 from __future__ import annotations
 
+from typing import ClassVar
+
 import pandas
+from pandas import DataFrame
 
 from mimeo import tools
 from mimeo.database.exc import InvalidIndexError
@@ -106,11 +109,11 @@ class CitiesDB:
         Get a city at `index` position.
     """
 
-    NUM_OF_RECORDS = 42905
-    _CITIES_DB = "cities.csv"
-    _CITIES_DF = None
-    _CITIES = None
-    _COUNTRY_CITIES = {}
+    NUM_OF_RECORDS: int = 42905
+    _CITIES_DB: str = "cities.csv"
+    _CITIES_DF: DataFrame = None
+    _CITIES: ClassVar[list] = None
+    _COUNTRY_CITIES: ClassVar[dict] = {}
 
     def get_city_at(
             self,
