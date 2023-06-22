@@ -866,6 +866,28 @@ def test_xml_custom_long_direction():
     assert not Path("test_mimeo_cli-dir/output").exists()
 
 
+def test_json_custom_direction_using_raw_param():
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/default-config.json",
+                "--raw"]
+
+    assert not Path("test_mimeo_cli-dir/output").exists()
+
+    mimeo_cli.main()
+
+    assert not Path("test_mimeo_cli-dir/output").exists()
+
+
+def test_xml_custom_direction_using_raw_param():
+    sys.argv = ["mimeo", "test_mimeo_cli-dir/default-config.xml",
+                "--raw"]
+
+    assert not Path("test_mimeo_cli-dir/output").exists()
+
+    mimeo_cli.main()
+
+    assert not Path("test_mimeo_cli-dir/output").exists()
+
+
 def test_json_custom_direction_does_not_throw_error_when_output_is_none():
     sys.argv = ["mimeo", "test_mimeo_cli-dir/minimum-config.json",
                 "-o", "stdout"]

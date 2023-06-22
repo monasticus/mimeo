@@ -81,6 +81,8 @@ class MimeoArgumentParser(ArgumentParser):
           --http-envs-file PATH
                                 use a custom environments file
                                 (by default: mimeo.envs.json)
+          --raw
+                                same as -o stdout - overwrite the output/direction property to stdout
 
         Logging arguments:
           --silent              disable INFO logs
@@ -201,6 +203,10 @@ class MimeoArgumentParser(ArgumentParser):
             type=str,
             metavar="PATH",
             help=f"use a custom environments file (by default: {DEFAULT_ENVS_PATH})")
+        mimeo_config_args.add_argument(
+            "--raw",
+            action="store_true",
+            help=f"same as -o stdout - overwrite the output/direction property to stdout")
 
     def _add_logging_arguments(
             self,
@@ -389,6 +395,8 @@ class MimeoConfigParser:
             some configuration arguments have been provided. Otherwise,
             the source one, without any modification.
         """
+        if self._args.raw:
+            setattr(self._args, "output", "stdout")
         for arg_name, mapping in self._ARGS_MAPPING.items():
             arg = getattr(self._args, arg_name, None)
             if arg is not None:
