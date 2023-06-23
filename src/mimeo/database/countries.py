@@ -48,9 +48,9 @@ class Country:
         name : str
             A country name
         """
-        self.iso_3 = iso_3
-        self.iso_2 = iso_2
-        self.name = name
+        self.iso_3: str = iso_3
+        self.iso_2: str = iso_2
+        self.name: str = name
 
     def __str__(
             self,

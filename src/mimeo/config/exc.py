@@ -130,9 +130,9 @@ class InvalidVarsError(Exception):
             An error code for vars with not allowed characters
         """
 
-        ERR_1 = "NOT_A_DICT"
-        ERR_2 = "COMPLEX_VALUE"
-        ERR_3 = "INVALID_NAME"
+        ERR_1: str = "NOT_A_DICT"
+        ERR_2: str = "COMPLEX_VALUE"
+        ERR_3: str = "INVALID_NAME"
 
     def __init__(
             self,
@@ -212,9 +212,9 @@ class InvalidMimeoModelError(Exception):
             An error code for invalid context name in Mimeo Model
         """
 
-        ERR_1 = "MISSING_ROOT"
-        ERR_2 = "MULTIPLE_ROOTS"
-        ERR_3 = "INVALID_CONTEXT_NAME"
+        ERR_1: str = "MISSING_ROOT"
+        ERR_2: str = "MULTIPLE_ROOTS"
+        ERR_3: str = "INVALID_CONTEXT_NAME"
 
     def __init__(
             self,
@@ -316,8 +316,8 @@ class InvalidMimeoConfigError(Exception):
             An error code for invalid templates in the Mimeo Configuration
         """
 
-        ERR_1 = "MISSING_TEMPLATES"
-        ERR_2 = "NOT_AN_ARRAY"
+        ERR_1: str = "MISSING_TEMPLATES"
+        ERR_2: str = "NOT_AN_ARRAY"
 
     def __init__(
             self,

@@ -90,7 +90,7 @@ class Alive:
     def __init__(
             self,
     ):
-        self._alive = False
+        self._alive: bool = False
 
     def __enter__(
             self,

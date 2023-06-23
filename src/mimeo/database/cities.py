@@ -52,10 +52,10 @@ class City:
         country : str
             A country of a city
         """
-        self.id = int(identifier)
-        self.name = name
-        self.name_ascii = name_ascii
-        self.country = country
+        self.id: int = int(identifier)
+        self.name: str = name
+        self.name_ascii: str = name_ascii
+        self.country: str = country
 
     def __str__(
             self,

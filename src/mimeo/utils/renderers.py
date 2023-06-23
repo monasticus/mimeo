@@ -15,7 +15,7 @@ from __future__ import annotations
 
 import logging
 import re
-from typing import Any, ClassVar
+from typing import Any, ClassVar, Pattern
 
 from mimeo.config import constants as cc
 from mimeo.context import MimeoContext, MimeoContextManager
@@ -340,9 +340,9 @@ class MimeoRenderer:
         Verify if the value is a parametrized Mimeo Util.
     """
 
-    _UTILS_PATTERN = re.compile("^{(.+)}$")
-    _VARS_PATTERN = re.compile(".*({[A-Z_0-9]+})")
-    _SPECIAL_FIELDS_PATTERN = re.compile(".*({:([a-zA-Z]+:)?[-_a-zA-Z0-9]+:})")
+    _UTILS_PATTERN: Pattern = re.compile("^{(.+)}$")
+    _VARS_PATTERN: Pattern = re.compile(".*({[A-Z_0-9]+})")
+    _SPECIAL_FIELDS_PATTERN: Pattern = re.compile(".*({:([a-zA-Z]+:)?[-_a-zA-Z0-9]+:})")
 
     @classmethod
     def get_special_field_name(

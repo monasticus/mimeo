@@ -26,7 +26,7 @@ class Currency:
         A currency code
     name : str
         A currency name
-    countries : list
+    countries : list[str]
         A countries using the currency
     """
 
@@ -34,7 +34,7 @@ class Currency:
             self,
             code: str,
             name: str,
-            countries: list,
+            countries: list[str],
     ):
         """Initialize Currency class.
 
@@ -47,9 +47,9 @@ class Currency:
         countries : list
             A countries using the currency
         """
-        self.code = code
-        self.name = name
-        self.countries = countries
+        self.code: str = code
+        self.name: str = name
+        self.countries: list[str] = countries
 
     def __str__(
             self,

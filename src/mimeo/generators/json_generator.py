@@ -50,7 +50,7 @@ class JSONGenerator(Generator):
         mimeo_config : MimeoConfig
             A Mimeo Configuration
         """
-        self._indent = mimeo_config.output.indent
+        self._indent: int = mimeo_config.output.indent
 
     @classmethod
     def generate(

@@ -74,14 +74,14 @@ class MimeoContext:
         name : str
             A context name
         """
-        self.name = name
-        self._id = 0
-        self._iterations = []
-        self._countries_indexes = None
-        self._cities_indexes = {}
-        self._currencies_indexes = None
-        self._first_names_indexes = {}
-        self._last_names_indexes = None
+        self.name: str = name
+        self._id: int = 0
+        self._iterations: list[MimeoIteration] = []
+        self._countries_indexes: list[int] | None = None
+        self._cities_indexes: dict = {}
+        self._currencies_indexes: list[int] | None = None
+        self._first_names_indexes: dict = {}
+        self._last_names_indexes: list[int] | None = None
 
     def next_id(
             self,
@@ -164,7 +164,7 @@ class MimeoContext:
 
         Returns
         -------
-        int
+        MimeoIteration
             The current iteration within the context
 
         Raises

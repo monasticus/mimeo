@@ -306,8 +306,8 @@ class MimeoConfigParser:
         args: Namespace
             Arguments parsed by MimeoArgumentParser
         """
-        self._raw_config = MimeoConfigFactory.parse_source(config_path)
-        self._args = args
+        self._raw_config: dict = MimeoConfigFactory.parse_source(config_path)
+        self._args: Namespace = args
 
     def parse_config(
             self,

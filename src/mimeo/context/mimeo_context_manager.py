@@ -48,10 +48,10 @@ class MimeoContextManager(Alive, metaclass=OnlyOneAlive):
             The Mimeo Configuration
         """
         super().__init__()
-        self._mimeo_config = mimeo_config
-        self._vars = {}
-        self._contexts = {}
-        self._current_context = None
+        self._mimeo_config: MimeoConfig = mimeo_config
+        self._vars: dict = {}
+        self._contexts: dict = {}
+        self._current_context: MimeoContext | None = None
 
     def __enter__(
             self,

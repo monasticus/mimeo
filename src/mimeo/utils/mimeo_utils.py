@@ -120,7 +120,7 @@ class RandomStringUtil(MimeoUtil):
         kwargs : dict
             Arbitrary keyword arguments (ignored).
         """
-        self._length = length
+        self._length: int = length
 
     def render(
             self,
@@ -177,8 +177,8 @@ class RandomIntegerUtil(MimeoUtil):
         kwargs : dict
             Arbitrary keyword arguments (ignored)
         """
-        self._start = start
-        self._limit = limit
+        self._start: int = start
+        self._limit: int = limit
 
     def render(
             self,
@@ -233,7 +233,7 @@ class RandomItemUtil(MimeoUtil):
         kwargs : dict
             Arbitrary keyword arguments (ignored)
         """
-        self._items = items if items is not None and len(items) != 0 else [""]
+        self._items: list = items if items is not None and len(items) != 0 else [""]
 
     def render(
             self,
@@ -279,7 +279,7 @@ class DateUtil(MimeoUtil):
         kwargs : dict
             Arbitrary keyword arguments (ignored)
         """
-        self._days_delta = days_delta
+        self._days_delta: int = days_delta
 
     def render(
             self,
@@ -335,10 +335,10 @@ class DateTimeUtil(MimeoUtil):
         kwargs : dict
             Arbitrary keyword arguments (ignored)
         """
-        self._days_delta = days_delta
-        self._hours_delta = hours_delta
-        self._minutes_delta = minutes_delta
-        self._seconds_delta = seconds_delta
+        self._days_delta: int = days_delta
+        self._hours_delta: int = hours_delta
+        self._minutes_delta: int = minutes_delta
+        self._seconds_delta: int = seconds_delta
 
     def render(
             self,
@@ -390,7 +390,7 @@ class AutoIncrementUtil(MimeoUtil):
         kwargs : dict
             Arbitrary keyword arguments (ignored)
         """
-        self._pattern = pattern
+        self._pattern: str = pattern
 
     @mimeo_context
     def render(
@@ -459,7 +459,7 @@ class CurrentIterationUtil(MimeoUtil):
         kwargs : dict
             Arbitrary keyword arguments (ignored)
         """
-        self._context_name = context
+        self._context_name: str = context
 
     @mimeo_context
     def render(
@@ -520,8 +520,8 @@ class KeyUtil(MimeoUtil):
         kwargs : dict
             Arbitrary keyword arguments (ignored)
         """
-        self._context_name = context
-        self._iteration = iteration
+        self._context_name: str = context
+        self._iteration: int = iteration
 
     @mimeo_context
     def render(
@@ -595,8 +595,8 @@ class CityUtil(MimeoUtil):
         kwargs : dict
             Arbitrary keyword arguments (ignored)
         """
-        self._unique = unique
-        self._country = country
+        self._unique: bool = unique
+        self._country: str = country
 
     @mimeo_context
     def render(
@@ -699,9 +699,9 @@ class CountryUtil(MimeoUtil):
         kwargs : dict
             Arbitrary keyword arguments (ignored)
         """
-        self._value = value if value is not None else self._VALUE_NAME
-        self._unique = unique
-        self._country = country
+        self._value: str = value if value is not None else self._VALUE_NAME
+        self._unique: bool = unique
+        self._country: str = country
 
     @mimeo_context
     def render(
@@ -818,9 +818,9 @@ class CurrencyUtil(MimeoUtil):
         kwargs : dict
             Arbitrary keyword arguments (ignored)
         """
-        self._value = value if value is not None else self._VALUE_CODE
-        self._unique = unique
-        self._country = country
+        self._value: str = value if value is not None else self._VALUE_CODE
+        self._unique: bool = unique
+        self._country: str = country
 
     @mimeo_context
     def render(
@@ -921,8 +921,8 @@ class FirstNameUtil(MimeoUtil):
         kwargs : dict
             Arbitrary keyword arguments (ignored)
         """
-        self._unique = unique
-        self._sex = self._standardize_sex(sex)
+        self._unique: bool = unique
+        self._sex: str = self._standardize_sex(sex)
 
     @mimeo_context
     def render(
@@ -1020,7 +1020,7 @@ class LastNameUtil(MimeoUtil):
         kwargs : dict
             Arbitrary keyword arguments (ignored)
         """
-        self._unique = unique
+        self._unique: bool = unique
 
     @mimeo_context
     def render(

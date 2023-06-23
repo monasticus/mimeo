@@ -4,47 +4,70 @@ This module contains all functions and constants being useful in
 retrieving data to Mimeo Database.
 
 It exports the following constants:
-    * MIMEO_DB_PACKAGE
+    * MIMEO_DB_PACKAGE: str
         A Mimeo Database package path
-    * MIMEO_DB_CITIES
+    * MIMEO_DB_CITIES: str
         A Mimeo Cities module file name
-    * MIMEO_DB_COUNTRIES
+    * MIMEO_DB_COUNTRIES: str
         A Mimeo Countries module file name
-    * MIMEO_DB_CURRENCIES
+    * MIMEO_DB_CURRENCIES: str
         A Mimeo Currencies module file name
-    * MIMEO_DB_FORENAMES
+    * MIMEO_DB_FORENAMES: str
         A Mimeo First Names module file name
-    * MIMEO_DB_SURNAMES
+    * MIMEO_DB_SURNAMES: str
         A Mimeo Last Names module file name
-    * MIMEO_RESOURCES_PACKAGE
+    * MIMEO_RESOURCES_PACKAGE: str
         A Mimeo Resources package path
-    * MIMEO_RESOURCES_CITIES
+    * MIMEO_RESOURCES_CITIES: str
         A cities CSV file name
-    * MIMEO_RESOURCES_COUNTRIES
+    * MIMEO_RESOURCES_COUNTRIES: str
         A countries CSV file name
-    * MIMEO_RESOURCES_CURRENCIES
+    * MIMEO_RESOURCES_CURRENCIES: str
         A currencies CSV file name
-    * MIMEO_RESOURCES_FORENAMES
+    * MIMEO_RESOURCES_FORENAMES: str
         A forenames CSV file name
-    * MIMEO_RESOURCES_SURNAMES
+    * MIMEO_RESOURCES_SURNAMES: str
         A surnames text file name
 
 It exports the following functions:
-    * download_file
+    * download_file(
+        url: str,
+      ) -> str
         Download a file from `url`.
-    * extract_zip_data
+    * extract_zip_data(
+        zip_path: str,
+        files_to_extract: list | None = None,
+      )
         Extract data from ZIP file.
-    * remove_file
+    * remove_file(
+        file_path: str,
+      )
         Remove a file if it exists.
-    * adjust_data
+    * adjust_data(
+        source_data_path: str,
+        target_db: str,
+        target_file_name: str,
+        modify: Callable,
+      )
         Adjust source data for Mimeo usage.
-    * dump_to_database
+    * dump_to_database(
+        data_frame: pandas.DataFrame,
+        target_file: str,
+      )
         Save data frame to a file.
-    * overwrite_num_of_records
+    * overwrite_num_of_records(
+        mimeo_db: str,
+        data_frame: pandas.DataFrame,
+      )
         Overwrite a number of records in Mimeo Database package.
-    * apply_ascii_encoding_on_column
+    * apply_ascii_encoding_on_column(
+        data_frame: pandas.DataFrame,
+        column_name: str,
+      ) -> pandas.Series
         Apply ASCII encoding on a specific data frame's column.
-    * apply_ascii_encoding
+    * apply_ascii_encoding(
+        value: str,
+      ) -> str
         Apply ASCII encoding.
 """
 from __future__ import annotations

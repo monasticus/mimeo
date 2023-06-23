@@ -42,8 +42,8 @@ class FirstName:
         sex : str
             A sex value
         """
-        self.name = name
-        self.sex = sex
+        self.name: str = name
+        self.sex: str = sex
 
     def __str__(
             self,
