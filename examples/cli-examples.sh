@@ -5,6 +5,7 @@ mimeo examples/1-introduction/01-basic.json
 
 # Custom output
 mimeo examples/1-introduction/01-basic.json -o stdout
+mimeo examples/1-introduction/01-basic.json --raw
 
 # Custom directory and file name
 mimeo examples/1-introduction/01-basic.json -d basic-data -f some-entity

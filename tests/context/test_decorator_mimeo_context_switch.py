@@ -1,3 +1,5 @@
+from typing import ClassVar
+
 import pytest
 
 from mimeo.config import MimeoConfig
@@ -46,10 +48,11 @@ def default_config():
 
 class ContextBucket:
 
-    CONTEXTS = []
+    CONTEXTS: ClassVar[list] = []
 
-    def reset(self):
-        self.CONTEXTS = []
+    @classmethod
+    def reset(cls):
+        cls.CONTEXTS = []
 
     def collect_contexts(self, template: MimeoTemplate):
         prev_ctx = MimeoContextManager().get_current_context()

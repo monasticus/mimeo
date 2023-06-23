@@ -38,7 +38,7 @@ class MimeoJob:
             self,
     ):
         """Initialize MimeoJob class."""
-        self._args = MimeoArgumentParser().parse_args()
+        self._args: Namespace = MimeoArgumentParser().parse_args()
 
     def run(
             self,

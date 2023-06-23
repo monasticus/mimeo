@@ -11,8 +11,7 @@ import logging
 import uuid
 from typing import Collection, Generator
 
-import aiohttp
-from aiohttp import ClientSession
+from aiohttp import ClientSession, BasicAuth
 
 from mimeo.config.mimeo_config import MimeoOutput
 from mimeo.consumers import Consumer
@@ -51,10 +50,10 @@ class HttpConsumer(Consumer):
         output : MimeoOutput
             Configured Mimeo Output Details
         """
-        self.method = output.method
-        self.url = HttpConsumer.__build_url(output)
-        self.__auth = aiohttp.BasicAuth(output.username, output.password, "utf-8")
-        self.__content_type = f"application/{output.format}"
+        self.method: str = output.method
+        self.url: str = HttpConsumer.__build_url(output)
+        self.__auth: BasicAuth = BasicAuth(output.username, output.password, "utf-8")
+        self.__content_type: str = f"application/{output.format}"
 
     async def consume(
             self,

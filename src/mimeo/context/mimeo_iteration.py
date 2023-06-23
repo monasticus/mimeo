@@ -46,9 +46,9 @@ class MimeoIteration:
         identifier : int
             An ordinal number in a Mimeo Context
         """
-        self.id = identifier
-        self.key = str(uuid.uuid4())
-        self._special_fields = {}
+        self.id: identifier = identifier
+        self.key: str = str(uuid.uuid4())
+        self._special_fields: dict = {}
 
     def add_special_field(
             self,

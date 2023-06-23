@@ -15,7 +15,7 @@ from __future__ import annotations
 
 import logging
 import re
-from typing import Any
+from typing import Any, ClassVar, Pattern
 
 from mimeo.config import constants as cc
 from mimeo.context import MimeoContext, MimeoContextManager
@@ -43,7 +43,7 @@ class UtilsRenderer:
         Render a Mimeo Util in a parametrized form.
     """
 
-    MIMEO_UTILS = {
+    MIMEO_UTILS: ClassVar[dict] = {
         RandomStringUtil.KEY: RandomStringUtil,
         RandomIntegerUtil.KEY: RandomIntegerUtil,
         RandomItemUtil.KEY: RandomItemUtil,
@@ -58,7 +58,7 @@ class UtilsRenderer:
         FirstNameUtil.KEY: FirstNameUtil,
         LastNameUtil.KEY: LastNameUtil,
     }
-    _INSTANCES = {}
+    _INSTANCES: ClassVar[dict] = {}
 
     @classmethod
     def render_raw(
@@ -295,7 +295,7 @@ class SpecialFieldsRenderer:
     def render(
             cls,
             field: str,
-            context: MimeoContext = None,
+            context: MimeoContext | None = None,
     ) -> str | int | bool:
         """Render a Mimeo Special Field.
 
@@ -340,9 +340,9 @@ class MimeoRenderer:
         Verify if the value is a parametrized Mimeo Util.
     """
 
-    _UTILS_PATTERN = re.compile("^{(.+)}$")
-    _VARS_PATTERN = re.compile(".*({[A-Z_0-9]+})")
-    _SPECIAL_FIELDS_PATTERN = re.compile(".*({:([a-zA-Z]+:)?[-_a-zA-Z0-9]+:})")
+    _UTILS_PATTERN: Pattern = re.compile("^{(.+)}$")
+    _VARS_PATTERN: Pattern = re.compile(".*({[A-Z_0-9]+})")
+    _SPECIAL_FIELDS_PATTERN: Pattern = re.compile(".*({:([a-zA-Z]+:)?[-_a-zA-Z0-9]+:})")
 
     @classmethod
     def get_special_field_name(

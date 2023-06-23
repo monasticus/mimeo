@@ -37,8 +37,8 @@ class InvalidMimeoUtilError(Exception):
             An error code for an unsupported Mimeo Util
         """
 
-        ERR_1 = "MISSING_NAME"
-        ERR_2 = "UNSUPPORTED_MIMEO_UTIL"
+        ERR_1: str = "MISSING_NAME"
+        ERR_2: str = "UNSUPPORTED_MIMEO_UTIL"
 
     def __init__(
             self,
@@ -115,10 +115,10 @@ class InvalidValueError(Exception):
             An error code for an unsupported value
         """
 
-        ERR_1 = "NEGATIVE_LENGTH"
-        ERR_2 = "LIMIT_LOWER_THAN_START"
-        ERR_3 = "INVALID_TYPE"
-        ERR_4 = "UNSUPPORTED_VALUE"
+        ERR_1: str = "NEGATIVE_LENGTH"
+        ERR_2: str = "LIMIT_LOWER_THAN_START"
+        ERR_3: str = "INVALID_TYPE"
+        ERR_4: str = "UNSUPPORTED_VALUE"
 
     def __init__(
             self,

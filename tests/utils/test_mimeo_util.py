@@ -6,7 +6,7 @@ from tests.utils import assert_throws
 
 class ValidMimeoUtil(MimeoUtil):
 
-    KEY = "invalid_mimeo_util"
+    KEY: str = "invalid_mimeo_util"
 
     def render(self):
         pass
@@ -29,7 +29,7 @@ class InvalidMimeoUtilWithKeyMethod(MimeoUtil):
 
 class InvalidMimeoUtilWithoutRender(MimeoUtil):
 
-    KEY = "invalid_mimeo_util"
+    KEY: str = "invalid_mimeo_util"
 
 
 class InvalidMimeoUtilWithoutKeyAndRender(MimeoUtil):
