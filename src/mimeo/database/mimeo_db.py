@@ -70,11 +70,11 @@ class MimeoDB:
         Get a last name at `index` position.
     """
 
-    NUM_OF_CITIES = CitiesDB.NUM_OF_RECORDS
-    NUM_OF_COUNTRIES = CountriesDB.NUM_OF_RECORDS
-    NUM_OF_CURRENCIES = CurrenciesDB.NUM_OF_RECORDS
-    NUM_OF_FIRST_NAMES = FirstNamesDB.NUM_OF_RECORDS
-    NUM_OF_LAST_NAMES = LastNamesDB.NUM_OF_RECORDS
+    NUM_OF_CITIES: int = CitiesDB.NUM_OF_RECORDS
+    NUM_OF_COUNTRIES: int = CountriesDB.NUM_OF_RECORDS
+    NUM_OF_CURRENCIES: int = CurrenciesDB.NUM_OF_RECORDS
+    NUM_OF_FIRST_NAMES: int = FirstNamesDB.NUM_OF_RECORDS
+    NUM_OF_LAST_NAMES: int = LastNamesDB.NUM_OF_RECORDS
 
     def __init__(
             self,

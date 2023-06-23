@@ -14,10 +14,10 @@ from __future__ import annotations
 import pandas
 import utils
 
-SOURCE_URL = "https://simplemaps.com/static/data/world-cities/basic/simplemaps_worldcities_basicv1.75.zip"
-SOURCE_DATA_FILE = "worldcities.csv"
-TARGET_CITIES_FILE = utils.MIMEO_RESOURCES_CITIES
-TARGET_COUNTRIES_FILE = utils.MIMEO_RESOURCES_COUNTRIES
+SOURCE_URL: str = "https://simplemaps.com/static/data/world-cities/basic/simplemaps_worldcities_basicv1.75.zip"
+SOURCE_DATA_FILE: str = "worldcities.csv"
+TARGET_CITIES_FILE: str = utils.MIMEO_RESOURCES_CITIES
+TARGET_COUNTRIES_FILE: str = utils.MIMEO_RESOURCES_COUNTRIES
 
 
 def main():

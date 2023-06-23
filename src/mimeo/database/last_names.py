@@ -6,6 +6,8 @@ It exports a class related to surnames CSV data:
 """
 from __future__ import annotations
 
+from typing import ClassVar
+
 from mimeo import tools
 from mimeo.database.exc import InvalidIndexError
 
@@ -26,9 +28,9 @@ class LastNamesDB:
         Get a last name at `index` position.
     """
 
-    NUM_OF_RECORDS = 151670
-    _LAST_NAMES_DB = "surnames.txt"
-    _LAST_NAMES = None
+    NUM_OF_RECORDS: int = 151670
+    _LAST_NAMES_DB: str = "surnames.txt"
+    _LAST_NAMES: ClassVar[list] = None
 
     def get_last_name_at(
             self,

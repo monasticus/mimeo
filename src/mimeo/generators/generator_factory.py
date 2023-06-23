@@ -31,8 +31,8 @@ class GeneratorFactory:
         Initialize a Generator based on the Mimeo Output Format.
     """
 
-    XML = cc.OUTPUT_FORMAT_XML
-    JSON = cc.OUTPUT_FORMAT_JSON
+    XML: str = cc.OUTPUT_FORMAT_XML
+    JSON: str = cc.OUTPUT_FORMAT_JSON
 
     @staticmethod
     def get_generator(

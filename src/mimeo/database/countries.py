@@ -9,7 +9,10 @@ It exports classes related to countries CSV data:
 """
 from __future__ import annotations
 
+from typing import ClassVar
+
 import pandas
+from pandas import DataFrame
 
 from mimeo import tools
 from mimeo.database.exc import InvalidIndexError
@@ -45,9 +48,9 @@ class Country:
         name : str
             A country name
         """
-        self.iso_3 = iso_3
-        self.iso_2 = iso_2
-        self.name = name
+        self.iso_3: str = iso_3
+        self.iso_2: str = iso_2
+        self.name: str = name
 
     def __str__(
             self,
@@ -103,10 +106,10 @@ class CountriesDB:
         Get a country having a specific name.
     """
 
-    NUM_OF_RECORDS = 239
-    _COUNTRIES_DB = "countries.csv"
-    _COUNTRIES_DF = None
-    _COUNTRIES = None
+    NUM_OF_RECORDS: int = 239
+    _COUNTRIES_DB: str = "countries.csv"
+    _COUNTRIES_DF: DataFrame = None
+    _COUNTRIES: ClassVar[list] = None
 
     def get_country_at(
             self,

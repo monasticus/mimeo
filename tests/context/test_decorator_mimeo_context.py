@@ -1,3 +1,5 @@
+from typing import Optional
+
 import pytest
 
 from mimeo.config import MimeoConfigFactory
@@ -26,7 +28,7 @@ def default_config():
 class ContextNameProvider:
 
     @mimeo_context
-    def context_name(self, context: MimeoContext = None):
+    def context_name(self, context: Optional[MimeoContext] = None):
         return context.name
 
 

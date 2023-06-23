@@ -261,7 +261,7 @@ class Generator(metaclass=ABCMeta):
             cls,
             parent: ElemTree.Element | dict | list | None,
             node_meta: dict,
-            context: MimeoContext = None,
+            context: MimeoContext | None = None,
     ) -> ElemTree.Element | dict:
         """Process a single template's node.
 

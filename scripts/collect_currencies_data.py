@@ -14,7 +14,7 @@ from __future__ import annotations
 import pandas
 import utils
 
-SOURCE_URL = "https://raw.githubusercontent.com/datasets/currency-codes/master/data/codes-all.csv"
+SOURCE_URL: str = "https://raw.githubusercontent.com/datasets/currency-codes/master/data/codes-all.csv"
 
 
 def main():
@@ -104,10 +104,9 @@ def _apply_specific_countries_modifications(
     country = country.replace(
         " (THE)",
         "")
-    country = country.replace(
+    return country.replace(
         "UNITED KINGDOM OF GREAT BRITAIN AND NORTHERN IRELAND",
         "UNITED KINGDOM")
-    return country
 
 
 if __name__ == "__main__":

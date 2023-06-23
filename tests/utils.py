@@ -82,9 +82,9 @@ def assert_requests_count(
 
 def _matches_request(
         request: RequestCall,
-        body: str = None,
-        auth: tuple[str, str] = None,
-        content_type: str = None,
+        body: str | None = None,
+        auth: tuple[str, str] | None = None,
+        content_type: str | None = None,
 ) -> bool:
     actual_body = request.kwargs.get("data")
     actual_auth = request.kwargs.get("auth")

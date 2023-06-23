@@ -13,7 +13,7 @@ from __future__ import annotations
 import pandas
 import utils
 
-SOURCE_URL = "https://raw.githubusercontent.com/hadley/data-baby-names/master/baby-names.csv"
+SOURCE_URL: str = "https://raw.githubusercontent.com/hadley/data-baby-names/master/baby-names.csv"
 
 
 def main():

@@ -13,6 +13,7 @@ import json
 import logging
 from argparse import ArgumentParser, Namespace
 from pathlib import Path
+from typing import ClassVar
 
 from mimeo import MimeoConfig
 from mimeo.cli.exc import (EnvironmentNotFoundError,
@@ -22,7 +23,7 @@ from mimeo.config import constants as cc
 
 logger = logging.getLogger(__name__)
 
-DEFAULT_ENVS_PATH = "mimeo.envs.json"
+DEFAULT_ENVS_PATH: str = "mimeo.envs.json"
 
 
 class MimeoArgumentParser(ArgumentParser):
@@ -81,6 +82,9 @@ class MimeoArgumentParser(ArgumentParser):
           --http-envs-file PATH
                                 use a custom environments file
                                 (by default: mimeo.envs.json)
+          --raw
+                                same as -o stdout
+                                overwrite the output/direction property to stdout
 
         Logging arguments:
           --silent              disable INFO logs
@@ -201,6 +205,11 @@ class MimeoArgumentParser(ArgumentParser):
             type=str,
             metavar="PATH",
             help=f"use a custom environments file (by default: {DEFAULT_ENVS_PATH})")
+        mimeo_config_args.add_argument(
+            "--raw",
+            action="store_true",
+            help="same as -o stdout - "
+                 "overwrite the output/direction property to stdout")
 
     def _add_logging_arguments(
             self,
@@ -231,15 +240,16 @@ class MimeoConfigParser:
         Parse a Mimeo Configuration using Mimeo arguments.
     """
 
-    _ENVIRONMENT_PROPS = [cc.OUTPUT_PROTOCOL_KEY,
-                          cc.OUTPUT_HOST_KEY,
-                          cc.OUTPUT_PORT_KEY,
-                          cc.OUTPUT_USERNAME_KEY,
-                          cc.OUTPUT_PASSWORD_KEY]
+    _ENVIRONMENT_PROPS: ClassVar[list] = [
+        cc.OUTPUT_PROTOCOL_KEY,
+        cc.OUTPUT_HOST_KEY,
+        cc.OUTPUT_PORT_KEY,
+        cc.OUTPUT_USERNAME_KEY,
+        cc.OUTPUT_PASSWORD_KEY]
 
-    _ENTRY_PATH_KEY = "entry_path"
-    _GET_VALUE_KEY = "get_value"
-    _ARGS_MAPPING = {
+    _ENTRY_PATH_KEY: str = "entry_path"
+    _GET_VALUE_KEY: str = "get_value"
+    _ARGS_MAPPING: ClassVar[dict] = {
         "format": {
             "entry_path": [cc.OUTPUT_KEY, cc.OUTPUT_FORMAT_KEY],
         },
@@ -296,8 +306,8 @@ class MimeoConfigParser:
         args: Namespace
             Arguments parsed by MimeoArgumentParser
         """
-        self._raw_config = MimeoConfigFactory.parse_source(config_path)
-        self._args = args
+        self._raw_config: dict = MimeoConfigFactory.parse_source(config_path)
+        self._args: Namespace = args
 
     def parse_config(
             self,
@@ -389,6 +399,8 @@ class MimeoConfigParser:
             some configuration arguments have been provided. Otherwise,
             the source one, without any modification.
         """
+        if self._args.raw:
+            self._args.output = "stdout"
         for arg_name, mapping in self._ARGS_MAPPING.items():
             arg = getattr(self._args, arg_name, None)
             if arg is not None:

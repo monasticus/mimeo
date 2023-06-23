@@ -451,7 +451,7 @@ class MimeoDTO:
         source : dict
             The source dictionary for a Mimeo DTO
         """
-        self._source = source
+        self._source: dict = source
 
     def __str__(
             self,
@@ -487,9 +487,9 @@ class MimeoConfig(MimeoDTO):
             A source config dictionary
         """
         super().__init__(config)
-        self.output = MimeoOutput(config.get(cc.OUTPUT_KEY, {}))
-        self.vars = self._get_vars(config)
-        self.templates = self._get_templates(config)
+        self.output: MimeoOutput = MimeoOutput(config.get(cc.OUTPUT_KEY, {}))
+        self.vars: dict = self._get_vars(config)
+        self.templates: list[MimeoTemplate] = self._get_templates(config)
 
     @classmethod
     def _get_vars(
@@ -530,7 +530,7 @@ class MimeoConfig(MimeoDTO):
     def _get_templates(
             cls,
             config: dict,
-    ) -> list:
+    ) -> list[MimeoTemplate]:
         """Extract Mimeo Templates from the source dictionary.
 
         Parameters
@@ -540,7 +540,7 @@ class MimeoConfig(MimeoDTO):
 
         Returns
         -------
-        list
+        list[MimeoTemplate]
             A Mimeo Templates list
 
         Raises
@@ -631,20 +631,20 @@ class MimeoOutput(MimeoDTO):
             A source config output details dictionary
         """
         super().__init__(output)
-        self.direction = self._get_direction(output)
+        self.direction: str = self._get_direction(output)
         self._validate_output(self.direction, output)
-        self.format = self._get_format(output)
-        self.xml_declaration = self._get_xml_declaration(output, self.format)
-        self.indent = self._get_indent(output)
-        self.directory_path = self._get_directory_path(self.direction, output)
-        self.file_name = self._get_file_name(self.direction, output, self.format)
-        self.method = self._get_method(self.direction, output)
-        self.protocol = self._get_protocol(self.direction, output)
-        self.host = self._get_host(self.direction, output)
-        self.port = self._get_port(self.direction, output)
-        self.endpoint = self._get_endpoint(self.direction, output)
-        self.username = self._get_username(self.direction, output)
-        self.password = self._get_password(self.direction, output)
+        self.format: str = self._get_format(output)
+        self.xml_declaration: bool = self._get_xml_declaration(output, self.format)
+        self.indent: int = self._get_indent(output)
+        self.directory_path: str = self._get_directory_path(self.direction, output)
+        self.file_name: str = self._get_file_name(self.direction, output, self.format)
+        self.method: str = self._get_method(self.direction, output)
+        self.protocol: str = self._get_protocol(self.direction, output)
+        self.host: str = self._get_host(self.direction, output)
+        self.port: int = self._get_port(self.direction, output)
+        self.endpoint: str = self._get_endpoint(self.direction, output)
+        self.username: str = self._get_username(self.direction, output)
+        self.password: str = self._get_password(self.direction, output)
 
     @staticmethod
     def _get_direction(
@@ -708,7 +708,7 @@ class MimeoOutput(MimeoDTO):
     def _get_xml_declaration(
             config: dict,
             output_format: str,
-    ) -> str | None:
+    ) -> bool | None:
         """Extract an XML declaration setting from the source dictionary.
 
         Parameters
@@ -720,7 +720,7 @@ class MimeoOutput(MimeoDTO):
 
         Returns
         -------
-        str | None
+        bool | None
             The configured XML declaration setting when the output format is 'xml'.
             Otherwise, None. If the 'xml_declaration' setting is missing returns
             False by default.
@@ -919,7 +919,7 @@ class MimeoOutput(MimeoDTO):
     def _get_port(
             direction: str,
             output: dict,
-    ) -> str | None:
+    ) -> int | None:
         """Extract an HTTP port from the source dictionary.
 
         It is extracted only when the output direction is 'http'.
@@ -933,7 +933,7 @@ class MimeoOutput(MimeoDTO):
 
         Returns
         -------
-        str | None
+        int | None
             The configured HTTP port when the output direction is 'http'.
             Otherwise, None.
         """
@@ -1079,8 +1079,8 @@ class MimeoTemplate(MimeoDTO):
         """
         super().__init__(template)
         self._validate_template(template)
-        self.count = template.get(cc.TEMPLATES_COUNT_KEY)
-        self.model = MimeoModel(template.get(cc.TEMPLATES_MODEL_KEY))
+        self.count: int = template.get(cc.TEMPLATES_COUNT_KEY)
+        self.model: MimeoModel = MimeoModel(template.get(cc.TEMPLATES_MODEL_KEY))
 
     @staticmethod
     def _validate_template(
@@ -1135,9 +1135,9 @@ class MimeoModel(MimeoDTO):
             A source config model dictionary
         """
         super().__init__(model)
-        self.root_name = MimeoModel._get_root_name(model)
-        self.root_data = model.get(self.root_name)
-        self.context_name = MimeoModel._get_context_name(model, self.root_name)
+        self.root_name: str = MimeoModel._get_root_name(model)
+        self.root_data: dict = model.get(self.root_name)
+        self.context_name: str = MimeoModel._get_context_name(model, self.root_name)
 
     @staticmethod
     def _get_root_name(

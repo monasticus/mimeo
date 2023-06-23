@@ -104,7 +104,7 @@ class RandomStringUtil(MimeoUtil):
         A Mimeo Util key
     """
 
-    KEY = "random_str"
+    KEY: str = "random_str"
 
     def __init__(
             self,
@@ -120,7 +120,7 @@ class RandomStringUtil(MimeoUtil):
         kwargs : dict
             Arbitrary keyword arguments (ignored).
         """
-        self._length = length
+        self._length: int = length
 
     def render(
             self,
@@ -158,7 +158,7 @@ class RandomIntegerUtil(MimeoUtil):
         A Mimeo Util key
     """
 
-    KEY = "random_int"
+    KEY: str = "random_int"
 
     def __init__(
             self,
@@ -177,8 +177,8 @@ class RandomIntegerUtil(MimeoUtil):
         kwargs : dict
             Arbitrary keyword arguments (ignored)
         """
-        self._start = start
-        self._limit = limit
+        self._start: int = start
+        self._limit: int = limit
 
     def render(
             self,
@@ -217,11 +217,11 @@ class RandomItemUtil(MimeoUtil):
         A Mimeo Util key
     """
 
-    KEY = "random_item"
+    KEY: str = "random_item"
 
     def __init__(
             self,
-            items: list = None,
+            items: list | None = None,
             **kwargs,
     ):
         """Initialize RandomItemUtil class.
@@ -233,7 +233,7 @@ class RandomItemUtil(MimeoUtil):
         kwargs : dict
             Arbitrary keyword arguments (ignored)
         """
-        self._items = items if items is not None and len(items) != 0 else [""]
+        self._items: list = items if items is not None and len(items) != 0 else [""]
 
     def render(
             self,
@@ -263,7 +263,7 @@ class DateUtil(MimeoUtil):
         A Mimeo Util key
     """
 
-    KEY = "date"
+    KEY: str = "date"
 
     def __init__(
             self,
@@ -279,7 +279,7 @@ class DateUtil(MimeoUtil):
         kwargs : dict
             Arbitrary keyword arguments (ignored)
         """
-        self._days_delta = days_delta
+        self._days_delta: int = days_delta
 
     def render(
             self,
@@ -312,7 +312,7 @@ class DateTimeUtil(MimeoUtil):
         A Mimeo Util key
     """
 
-    KEY = "date_time"
+    KEY: str = "date_time"
 
     def __init__(self,
                  days_delta: int = 0,
@@ -335,10 +335,10 @@ class DateTimeUtil(MimeoUtil):
         kwargs : dict
             Arbitrary keyword arguments (ignored)
         """
-        self._days_delta = days_delta
-        self._hours_delta = hours_delta
-        self._minutes_delta = minutes_delta
-        self._seconds_delta = seconds_delta
+        self._days_delta: int = days_delta
+        self._hours_delta: int = hours_delta
+        self._minutes_delta: int = minutes_delta
+        self._seconds_delta: int = seconds_delta
 
     def render(
             self,
@@ -374,7 +374,7 @@ class AutoIncrementUtil(MimeoUtil):
         A Mimeo Util key
     """
 
-    KEY = "auto_increment"
+    KEY: str = "auto_increment"
 
     def __init__(
             self,
@@ -390,12 +390,12 @@ class AutoIncrementUtil(MimeoUtil):
         kwargs : dict
             Arbitrary keyword arguments (ignored)
         """
-        self._pattern = pattern
+        self._pattern: str = pattern
 
     @mimeo_context
     def render(
             self,
-            context: MimeoContext = None,
+            context: MimeoContext | None = None,
     ) -> str:
         """Render an auto incremented identifier.
 
@@ -443,11 +443,11 @@ class CurrentIterationUtil(MimeoUtil):
         A Mimeo Util key
     """
 
-    KEY = "curr_iter"
+    KEY: str = "curr_iter"
 
     def __init__(
             self,
-            context: str = None,
+            context: str | None = None,
             **kwargs,
     ):
         """Initialize CurrentIterationUtil class.
@@ -459,12 +459,12 @@ class CurrentIterationUtil(MimeoUtil):
         kwargs : dict
             Arbitrary keyword arguments (ignored)
         """
-        self._context_name = context
+        self._context_name: str = context
 
     @mimeo_context
     def render(
             self,
-            context: MimeoContext = None,
+            context: MimeoContext | None = None,
     ) -> int:
         """Render a current iteration ID.
 
@@ -501,12 +501,12 @@ class KeyUtil(MimeoUtil):
         A Mimeo Util key
     """
 
-    KEY = "key"
+    KEY: str = "key"
 
     def __init__(
             self,
-            context: str = None,
-            iteration: int = None,
+            context: str | None = None,
+            iteration: int | None = None,
             **kwargs,
     ):
         """Initialize KeyUtil class.
@@ -520,13 +520,13 @@ class KeyUtil(MimeoUtil):
         kwargs : dict
             Arbitrary keyword arguments (ignored)
         """
-        self._context_name = context
-        self._iteration = iteration
+        self._context_name: str = context
+        self._iteration: int = iteration
 
     @mimeo_context
     def render(
             self,
-            context: MimeoContext = None,
+            context: MimeoContext | None = None,
     ) -> str:
         """Render a unique identifier.
 
@@ -574,13 +574,13 @@ class CityUtil(MimeoUtil):
         A Mimeo Util key
     """
 
-    KEY = "city"
-    _MIMEO_DB = MimeoDB()
+    KEY: str = "city"
+    _MIMEO_DB: MimeoDB = MimeoDB()
 
     def __init__(
             self,
             unique: bool = True,
-            country: str = None,
+            country: str | None = None,
             **kwargs,
     ):
         """Initialize CityUtil class.
@@ -595,13 +595,13 @@ class CityUtil(MimeoUtil):
         kwargs : dict
             Arbitrary keyword arguments (ignored)
         """
-        self._unique = unique
-        self._country = country
+        self._unique: bool = unique
+        self._country: str = country
 
     @mimeo_context
     def render(
             self,
-            context: MimeoContext = None,
+            context: MimeoContext | None = None,
     ) -> str:
         """Render a city name.
 
@@ -669,19 +669,19 @@ class CountryUtil(MimeoUtil):
         A Mimeo Util key
     """
 
-    KEY = "country"
+    KEY: str = "country"
 
-    _VALUE_NAME = "name"
-    _VALUE_ISO3 = "iso3"
-    _VALUE_ISO2 = "iso2"
-    _SUPPORTED_VALUES = (_VALUE_NAME, _VALUE_ISO3, _VALUE_ISO2)
-    _MIMEO_DB = MimeoDB()
+    _VALUE_NAME: str = "name"
+    _VALUE_ISO3: str = "iso3"
+    _VALUE_ISO2: str = "iso2"
+    _SUPPORTED_VALUES: tuple = (_VALUE_NAME, _VALUE_ISO3, _VALUE_ISO2)
+    _MIMEO_DB: MimeoDB = MimeoDB()
 
     def __init__(
             self,
-            value: str = None,
+            value: str | None = None,
             unique: bool = True,
-            country: str = None,
+            country: str | None = None,
             **kwargs,
     ):
         """Initialize CountryUtil class.
@@ -699,14 +699,14 @@ class CountryUtil(MimeoUtil):
         kwargs : dict
             Arbitrary keyword arguments (ignored)
         """
-        self._value = value if value is not None else self._VALUE_NAME
-        self._unique = unique
-        self._country = country
+        self._value: str = value if value is not None else self._VALUE_NAME
+        self._unique: bool = unique
+        self._country: str = country
 
     @mimeo_context
     def render(
             self,
-            context: MimeoContext = None,
+            context: MimeoContext | None = None,
     ) -> str:
         """Render a country name.
 
@@ -789,18 +789,18 @@ class CurrencyUtil(MimeoUtil):
         A Mimeo Util key
     """
 
-    KEY = "currency"
+    KEY: str = "currency"
 
-    _VALUE_CODE = "code"
-    _VALUE_NAME = "name"
-    _SUPPORTED_VALUES = (_VALUE_CODE, _VALUE_NAME)
-    _MIMEO_DB = MimeoDB()
+    _VALUE_CODE: str = "code"
+    _VALUE_NAME: str = "name"
+    _SUPPORTED_VALUES: tuple = (_VALUE_CODE, _VALUE_NAME)
+    _MIMEO_DB: MimeoDB = MimeoDB()
 
     def __init__(
             self,
-            value: str = None,
+            value: str | None = None,
             unique: bool = False,
-            country: str = None,
+            country: str | None = None,
             **kwargs,
     ):
         """Initialize CurrencyUtil class.
@@ -818,14 +818,14 @@ class CurrencyUtil(MimeoUtil):
         kwargs : dict
             Arbitrary keyword arguments (ignored)
         """
-        self._value = value if value is not None else self._VALUE_CODE
-        self._unique = unique
-        self._country = country
+        self._value: str = value if value is not None else self._VALUE_CODE
+        self._unique: bool = unique
+        self._country: str = country
 
     @mimeo_context
     def render(
             self,
-            context: MimeoContext = None,
+            context: MimeoContext | None = None,
     ) -> str:
         """Render a currency code.
 
@@ -900,13 +900,13 @@ class FirstNameUtil(MimeoUtil):
         A Mimeo Util key
     """
 
-    KEY = "first_name"
-    __MIMEO_DB = MimeoDB()
+    KEY: str = "first_name"
+    __MIMEO_DB: MimeoDB = MimeoDB()
 
     def __init__(
             self,
             unique: bool = True,
-            sex: str = None,
+            sex: str | None = None,
             **kwargs,
     ):
         """Initialize FirstNameUtil class.
@@ -921,13 +921,13 @@ class FirstNameUtil(MimeoUtil):
         kwargs : dict
             Arbitrary keyword arguments (ignored)
         """
-        self._unique = unique
-        self._sex = self._standardize_sex(sex)
+        self._unique: bool = unique
+        self._sex: str = self._standardize_sex(sex)
 
     @mimeo_context
     def render(
             self,
-            context: MimeoContext = None,
+            context: MimeoContext | None = None,
     ) -> str:
         """Render a first name.
 
@@ -1002,8 +1002,8 @@ class LastNameUtil(MimeoUtil):
         A Mimeo Util key
     """
 
-    KEY = "last_name"
-    __MIMEO_DB = MimeoDB()
+    KEY: str = "last_name"
+    __MIMEO_DB: MimeoDB = MimeoDB()
 
     def __init__(
             self,
@@ -1020,12 +1020,12 @@ class LastNameUtil(MimeoUtil):
         kwargs : dict
             Arbitrary keyword arguments (ignored)
         """
-        self._unique = unique
+        self._unique: bool = unique
 
     @mimeo_context
     def render(
             self,
-            context: MimeoContext = None,
+            context: MimeoContext | None = None,
     ) -> str:
         """Render a last name.
 

@@ -49,8 +49,8 @@ class FileConsumer(Consumer):
         output : MimeoOutput
             Configured Mimeo Output Details
         """
-        self.directory = output.directory_path
-        self.output_path_tmplt = f"{self.directory}/{output.file_name}"
+        self.directory: str = output.directory_path
+        self.output_path_tmplt: str = f"{self.directory}/{output.file_name}"
 
     async def consume(
             self,

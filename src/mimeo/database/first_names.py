@@ -8,7 +8,10 @@ It exports classes related to forenames CSV data:
 """
 from __future__ import annotations
 
+from typing import ClassVar
+
 import pandas
+from pandas import DataFrame
 
 from mimeo import tools
 from mimeo.database.exc import InvalidIndexError, InvalidSexError
@@ -39,8 +42,8 @@ class FirstName:
         sex : str
             A sex value
         """
-        self.name = name
-        self.sex = sex
+        self.name: str = name
+        self.sex: str = sex
 
     def __str__(
             self,
@@ -90,12 +93,12 @@ class FirstNamesDB:
         Get a first name at `index` position.
     """
 
-    NUM_OF_RECORDS = 7455
-    __SUPPORTED_SEX = ("M", "F")
-    __FIRST_NAMES_DB = "forenames.csv"
-    __FIRST_NAMES_DF = None
-    __FIRST_NAMES = None
-    __NAMES_FOR_SEX = {}
+    NUM_OF_RECORDS: int = 7455
+    __SUPPORTED_SEX: tuple = ("M", "F")
+    __FIRST_NAMES_DB: str = "forenames.csv"
+    __FIRST_NAMES_DF: DataFrame = None
+    __FIRST_NAMES: ClassVar[list] = None
+    __NAMES_FOR_SEX: ClassVar[dict] = {}
 
     def get_first_name_at(
             self,
