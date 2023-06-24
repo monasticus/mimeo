@@ -6,7 +6,6 @@ It exports a single class:
 """
 from __future__ import annotations
 
-import asyncio
 import logging
 from argparse import Namespace
 from os import walk
@@ -52,9 +51,13 @@ class MimeoJob:
         """
         self._customize_log_level(self._args)
         logger.info("Starting a Mimeo job")
-        for config_path in self._get_config_paths(self._args.paths):
-            mimeo_config = self._get_mimeo_config(config_path, self._args)
-            Mimeograph.process(mimeo_config)
+        config_paths = self._get_config_paths(self._args.paths)
+        with Mimeograph() as mimeo:
+            for config_path in config_paths:
+                logger.debug("Processing config [%s]", config_path)
+                mimeo_config = self._get_mimeo_config(config_path, self._args)
+                mimeo.submit(mimeo_config)
+            mimeo.submit(None)
 
     @staticmethod
     def _customize_log_level(
@@ -70,8 +73,8 @@ class MimeoJob:
 
     @staticmethod
     def _get_config_paths(
-            paths: list,
-    ) -> list:
+            paths: list[str],
+    ) -> list[str]:
         """Collect Mimeo Configuration paths.
 
         This method traverses directory paths and collects all files
@@ -79,12 +82,12 @@ class MimeoJob:
 
         Parameters
         ----------
-        paths : list
+        paths : list[str]
             A list of paths provided in command line
 
         Returns
         -------
-        file_paths : list
+        file_paths : list[str]
             A list of file paths
         """
         file_paths = []
