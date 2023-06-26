@@ -503,7 +503,7 @@ def test_config_failed_at_generation_step():
     assert not Path("test_mimeograph-dir").exists()
     with Mimeograph() as mimeo:
         mimeo.submit(("non-ascii-character-config", mimeo_config))
-        time.sleep(0.01)
+        time.sleep(0.05)
         assert mimeo._failed_configs == ["non-ascii-character-config"]
     assert not Path("test_mimeograph-dir").exists()
 
@@ -534,6 +534,6 @@ def test_config_failed_at_consuming_step():
     assert not Path("test_mimeograph-dir").exists()
     with Mimeograph() as mimeo:
         mimeo.submit(("no-connection-config", mimeo_config))
-        time.sleep(0.01)
+        time.sleep(0.05)
         assert mimeo._failed_configs == ["no-connection-config"]
     assert not Path("test_mimeograph-dir").exists()
