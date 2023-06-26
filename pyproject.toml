@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "mimeograph"
-version = "0.7.0"
+version = "1.0.0"
 description = "Generate NoSQL data based on a simple template"
 readme = "README.md"
 requires-python = ">=3.8"
@@ -65,7 +65,7 @@ test = [
 mimeo = "mimeo.__main__:main"
 
 [tool.bumpver]
-current_version = "0.7.0"
+current_version = "1.0.0"
 version_pattern = "MAJOR.MINOR.PATCH"
 commit_message  = "Bump version {old_version} to {new_version}"
 commit          = true
