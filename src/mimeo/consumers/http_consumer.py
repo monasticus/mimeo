@@ -11,7 +11,7 @@ import logging
 import uuid
 from typing import Collection, Generator
 
-from aiohttp import ClientSession, BasicAuth
+from aiohttp import BasicAuth, ClientSession
 
 from mimeo.config.mimeo_config import MimeoOutput
 from mimeo.consumers import Consumer

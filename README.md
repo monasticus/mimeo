@@ -6,8 +6,8 @@
 [![Build](https://img.shields.io/github/actions/workflow/status/TomaszAniolowski/mimeo/test.yml?color=brightgreen&label=Test%20Mimeo&style=plastic)](https://github.com/TomaszAniolowski/mimeo/actions/workflows/test.yml?query=branch%3Amain)
 [![Code Coverage](https://img.shields.io/badge/Code%20Coverage-100%25-brightgreen?style=plastic)](https://github.com/TomaszAniolowski/mimeo/actions/workflows/coverage_badge.yml?query=branch%3Amain)
 
-[Mimeo](https://github.com/TomaszAniolowski/mimeo) is a command line tool and python library generating NoSQL data based on a template.
-It can be used by developers, testers or even business analysts in their daily work.
+[Mimeo](https://github.com/TomaszAniolowski/mimeo) is a command line tool and a python library generating NoSQL data based on a template.
+It can be used by developers, testers or business analysts in their daily work.
 
 
 ## Installation
@@ -27,13 +27,11 @@ Prepare Mimeo Configuration first
 
 <table>
     <tr>
-        <th></th>
         <th>JSON</th>
         <th>XML</th>
     </tr>
     <tr>
-        <td><b>CLI</b></td>
-        <td valign="top">SomeEntity-config.json
+        <td valign="top">
 
 ```json
 {
@@ -54,7 +52,7 @@ Prepare Mimeo Configuration first
 }
 ```
 </td>
-    <td valign="top">SomeEntity-config.xml
+        <td valign="top">
 
 ```xml
 <mimeo_configuration>
@@ -75,80 +73,6 @@ Prepare Mimeo Configuration first
         </_template_>
     </_templates_>
 </mimeo_configuration>
-```
-</td>
-  </tr>
-    <tr>
-        <td rowspan="2"><b>Python</b></td>
-        <td valign="top">
-
-```python
-from mimeo import MimeoConfigFactory
-
-config = {
-  "_templates_": [
-    {
-      "count": 30,
-      "model": {
-        "SomeEntity": {
-          "@xmlns": "http://mimeo.arch.com/default-namespace",
-          "@xmlns:pn": "http://mimeo.arch.com/prefixed-namespace",
-          "ChildNode1": 1,
-          "ChildNode2": "value-2",
-          "ChildNode3": True
-        }
-      }
-    }
-  ]
-}
-mimeo_config = MimeoConfigFactory.parse(config)
-```
-</td>
-    <td valign="top">
-
-```python
-from mimeo import MimeoConfigFactory
-
-config = (
-    '<mimeo_configuration>'
-    '    <_templates_>'
-    '        <_template_>'
-    '            <count>30</count>'
-    '            <model>'
-    ''
-    '                <SomeEntity'
-    '                    xmlns="http://mimeo.arch.com/default-namespace"'
-    '                    xmlns:pn="http://mimeo.arch.com/prefixed-namespace">'
-    '                    <ChildNode1>1</ChildNode1>'
-    '                    <pn:ChildNode2>value-2</pn:ChildNode2>'
-    '                    <ChildNode3>true</ChildNode3>'
-    '                </SomeEntity>'
-    ''
-    '            </model>'
-    '        </_template_>'
-    '    </_templates_>'
-    '</mimeo_configuration>')
-mimeo_config = MimeoConfigFactory.parse(config)
-```
-</td>
-  </tr>
-    <tr>
-        <td valign="top">
-
-```python
-from mimeo import MimeoConfigFactory
-
-config = "SomeEntity-config.json"
-mimeo_config = MimeoConfigFactory.parse(config)
-```
-</td>
-    <td valign="top">
-
-```python
-from mimeo import MimeoConfigFactory
-
-config = "SomeEntity-config.xml"
-mimeo_config = MimeoConfigFactory.parse(config)
 ```
 </td>
   </tr>
@@ -178,7 +102,7 @@ The Mimeo Configuration above will produce 2 files:
 </SomeEntity>
 ```
 
-When we would configure output format as `json` then it would produce:
+When we would configure output format as `json` then it would produce JSON nodes:
 
 ```json
 {
@@ -202,48 +126,17 @@ When we would configure output format as `json` then it would produce:
   }
 }
 ```
-
-#### CLI
 
 ```sh
 mimeo SomeEntity-config.json
 mimeo SomeEntity-config.xml
 ```
 
-#### Python
-
-##### `Mimeograph.process()`
-
-This function generates data and consumes it.
-
-```python
-from mimeo import MimeoConfigFactory, Mimeograph
-
-config = "SomeEntity-config.xml"
-mimeo_config = MimeoConfigFactory.parse(config)
-Mimeograph.process(mimeo_config)
-```
-
-##### `Mimeograph.generate()`
-
-If you want to generate data and get it in a python representation,
-you can use `Mimeograph.generate()` method. It will return dictionaries
-(`json`) or `xml.etree.ElementTree.Element` instances (`xml`). 
-
-```python
-from mimeo import MimeoConfigFactory, Mimeograph
-
-config = "SomeEntity-config.xml"
-mimeo_config = MimeoConfigFactory.parse(config)
-data = Mimeograph.generate(mimeo_config)
-```
-
-To consume data in a separated step you can make any modifications you want
-and use `Mimeograph.consume()` method then.
 
 ### Mimeo Utils
 
 Mimeo exposes several functions for data generation that will make it more useful for testing purposes.
+To see all Mimeo Utils, go to the documentation below.
 
 **Template**
 ```json
@@ -344,6 +237,12 @@ When using Mimeo command line tool you can overwrite Mimeo Configuration propert
 |              | `--silent`  | disable INFO logs |
 |              | `--debug`   | enable DEBUG mode |
 |              | `--fine`    | enable FINE mode  |
+
+#### Other arguments
+
+| Short option | Long option      | Description                                     |
+|:------------:|:-----------------|:------------------------------------------------|
+|              | `--sequentially` | process Mimeo Configurations in a single thread |
 
 ### Mimeo Configuration
 
@@ -1047,6 +946,206 @@ Uses `unique` flag to generate a last name.
 }
 ```
 
+### Python Lib
+
+To generate data using Mimeo as a python library you need 3 classes:
+* `MimeoConfig` (A python representation of a Mimeo Configuration)
+* `MimeoConfigFactory` (A factory parsing a Mimeo Configuration)
+* `Mimeograph` (a class generating and consuming data from a Mimeo Configuration)
+
+#### Parsing Mimeo Configuration
+
+##### `MimeoConfig`
+
+The `MimeoConfig` class takes a dictionary as a parameter and initializes all settings.
+
+```python
+from mimeo import MimeoConfig
+
+config = {
+  "_templates_": [
+    {
+      "count": 30,
+      "model": {
+        "SomeEntity": {
+          "@xmlns": "http://mimeo.arch.com/default-namespace",
+          "@xmlns:pn": "http://mimeo.arch.com/prefixed-namespace",
+          "ChildNode1": 1,
+          "ChildNode2": "value-2",
+          "ChildNode3": True
+        }
+      }
+    }
+  ]
+}
+mimeo_config = MimeoConfig(config)
+```
+
+##### `MimeoConfigFactory`
+
+To easily parse Mimeo Configuration you can use the `MimeoConfigFactory`.
+It allows you to provide a raw config as:
+* a dictionary
+* a stringified XML node
+* a file path
+
+<table>
+    <tr>
+        <th></th>
+        <th>JSON</th>
+        <th>XML</th>
+    </tr>
+    <tr>
+        <td><b>Raw data</b></td>
+        <td valign="top">
+
+```python
+from mimeo import MimeoConfigFactory
+
+config = {
+  "_templates_": [
+    {
+      "count": 30,
+      "model": {
+        "SomeEntity": {
+          "@xmlns": "http://mimeo.arch.com/default-namespace",
+          "@xmlns:pn": "http://mimeo.arch.com/prefixed-namespace",
+          "ChildNode1": 1,
+          "ChildNode2": "value-2",
+          "ChildNode3": True
+        }
+      }
+    }
+  ]
+}
+mimeo_config = MimeoConfigFactory.parse(config)
+```
+</td>
+    <td valign="top">
+
+```python
+from mimeo import MimeoConfigFactory
+
+config = (
+    '<mimeo_configuration>'
+    '    <_templates_>'
+    '        <_template_>'
+    '            <count>30</count>'
+    '            <model>'
+    ''
+    '                <SomeEntity'
+    '                    xmlns="http://mimeo.arch.com/default-namespace"'
+    '                    xmlns:pn="http://mimeo.arch.com/prefixed-namespace">'
+    '                    <ChildNode1>1</ChildNode1>'
+    '                    <pn:ChildNode2>value-2</pn:ChildNode2>'
+    '                    <ChildNode3>true</ChildNode3>'
+    '                </SomeEntity>'
+    ''
+    '            </model>'
+    '        </_template_>'
+    '    </_templates_>'
+    '</mimeo_configuration>')
+mimeo_config = MimeoConfigFactory.parse(config)
+```
+</td>
+  </tr>
+    <tr>
+        <td><b>File path</b></td>
+        <td valign="top">
+
+```python
+from mimeo import MimeoConfigFactory
+
+config = "SomeEntity-config.json"
+mimeo_config = MimeoConfigFactory.parse(config)
+```
+</td>
+    <td valign="top">
+
+```python
+from mimeo import MimeoConfigFactory
+
+config = "SomeEntity-config.xml"
+mimeo_config = MimeoConfigFactory.parse(config)
+```
+</td>
+  </tr>
+</table>
+
+#### Processing Mimeo Configuration
+
+Using the Mimeo as a python library you can use 2 processing approaches:
+* sequential processing
+* processing in parallel (used by default in Mimeo CLI)
+
+Both need the `Mimeograph` class.
+
+
+##### Sequential processing
+
+Sequential processing is pretty straightforward and can be done without `Mimeograph` instantiation.
+
+###### Processing
+
+To simply process data from a Mimeo Configuration you can use the `Mimeograph.process()` method:
+```python
+from mimeo import MimeoConfigFactory, Mimeograph
+
+config_path = "examples/1-introduction/01-basic.json"
+mimeo_config = MimeoConfigFactory.parse(config_path)
+Mimeograph.process(mimeo_config)
+```
+
+It will generate data and consume it immediately.
+
+###### Generating only
+
+If you're going to generate data and use it as a python representation
+(`dict`, `xml.etree.ElementTree.Element`) - use `Mimeograph.generate()` method:
+```python
+from mimeo import MimeoConfigFactory, Mimeograph
+
+config_path = "examples/1-introduction/01-basic.json"
+mimeo_config = MimeoConfigFactory.parse(config_path)
+data = Mimeograph.generate(mimeo_config)
+```
+
+###### Generating and consuming in 2 stages
+
+In case you would like to somehow modify generated data before it will be consumed,
+use `Mimeograph.generate()` and `Mimeograph.consume()` methods.
+```python
+from mimeo import MimeoConfigFactory, Mimeograph
+
+config_path = "examples/1-introduction/01-basic.json"
+mimeo_config = MimeoConfigFactory.parse(config_path)
+data = Mimeograph.generate(mimeo_config)
+# ... your modifications ...
+Mimeograph.consume(mimeo_config, data)
+```
+
+##### Processing in parallel
+
+When you're going to process data (generate and consume) from several Mimeo Configurations
+processing in parallel is more performant way. To do that, you need use the `Mimeograph` as a Context Manager
+and submit configs together with some kind of identifier (e.g. config path). Thanks to that you will know
+which config has failed (if so).
+
+```python
+from mimeo import MimeoConfigFactory, Mimeograph
+
+config_paths = [
+    "examples/1-introduction/01-basic.json",
+    "examples/1-introduction/02-complex.json",
+    "examples/1-introduction/03-output-format-xml.json",
+    "examples/1-introduction/04-output-format-json.json",
+]
+with Mimeograph() as mimeo:
+    for config_path in config_paths:
+        mimeo_config = MimeoConfigFactory.parse(config_path)
+        mimeo_config.output.direction = "stdout"
+        mimeo.submit((config_path, mimeo_config))
+```
 
 ## License
 
@@ -1063,4 +1162,4 @@ MIT
  - [SimpleMaps.com](https://simplemaps.com/data/world-cities) (Cities & countries data)
  - [@hadley/data-baby-names](https://github.com/hadley/data-baby-names/) (Forenames data)
  - [@fivethirtyeigh/data/most-common-name](https://github.com/fivethirtyeight/data/tree/master/most-common-name) (Surnames data)
-
+ - [@datasets/currency-codes](https://github.com/datasets/currency-codes/) (Currencies data)
