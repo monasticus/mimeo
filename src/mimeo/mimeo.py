@@ -190,7 +190,6 @@ class Mimeograph:
             config_id, mimeo_config, data = self._consumer_queue.get()
             if mimeo_config is None and data is None:
                 logger.fine("Closing data consumer")
-                # self._consumer_queue.put((config_id, mimeo_config, data))
                 self._consumer_queue.task_done()
                 break
 
@@ -198,7 +197,7 @@ class Mimeograph:
                 self.consume(mimeo_config, data)
             except Exception:
                 self._failed_configs.append(config_id)
-                logger.exception("An unexpected error occurred while generating data "
+                logger.exception("An unexpected error occurred while consuming data "
                                  "from a config [%s]", config_id)
             finally:
                 self._consumer_queue.task_done()

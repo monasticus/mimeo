@@ -136,7 +136,8 @@ max-complexity = 10
     "D", # disable pydocstyle for tests
     "EM101", # allow string literals in exceptions' tests
     "PLC1901", # allow comparison to blank string in tests
-    "PLR2004" # allow magic values in tests
+    "PLR2004", # allow magic values in tests
+    "SLF001" # allow private members access in tests
 ]
 "src/mimeo/consumers/raw_consumer.py" = [
     "T20" # allow for print in raw consumer
