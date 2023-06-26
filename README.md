@@ -345,6 +345,12 @@ When using Mimeo command line tool you can overwrite Mimeo Configuration propert
 |              | `--debug`   | enable DEBUG mode |
 |              | `--fine`    | enable FINE mode  |
 
+#### Other arguments
+
+| Short option | Long option      | Description                                     |
+|:------------:|:-----------------|:------------------------------------------------|
+|              | `--sequentially` | process Mimeo Configurations in a single thread |
+
 ### Mimeo Configuration
 
 Mimeo configuration is defined in a JSON file using internal settings and data templates.

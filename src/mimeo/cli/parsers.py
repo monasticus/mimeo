@@ -90,6 +90,9 @@ class MimeoArgumentParser(ArgumentParser):
           --silent              disable INFO logs
           --debug               enable DEBUG mode
           --fine                enable FINE mode
+
+        Other arguments:
+          --sequentially        process Mimeo Configurations in a single thread
         """
         super().__init__(
             prog="mimeo",
@@ -98,6 +101,7 @@ class MimeoArgumentParser(ArgumentParser):
         self._add_positional_arguments()
         self._add_mimeo_configuration_arguments()
         self._add_logging_arguments()
+        self._add_other_arguments()
 
     def _add_positional_arguments(
             self,
@@ -229,6 +233,16 @@ class MimeoArgumentParser(ArgumentParser):
             "--fine",
             action="store_true",
             help="enable FINE mode")
+
+    def _add_other_arguments(
+            self,
+    ):
+        """Add other arguments."""
+        other_args = self.add_argument_group("Other arguments")
+        other_args.add_argument(
+            "--sequentially",
+            action="store_true",
+            help="process Mimeo Configurations in a single thread")
 
 
 class MimeoConfigParser:

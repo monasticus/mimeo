@@ -362,6 +362,72 @@ def test_existing_and_non_existing_path():
     mimeo_cli.main()
 
 
+def test_processing_data_sequentially(aioresponses):
+    sys.argv = ["mimeo", "test_mimeo_cli-dir",
+                "--sequentially"]
+
+    assert not Path("test_mimeo_cli-dir/output").exists()
+    assert not Path("mimeo-output").exists()
+
+    aioresponses.post("http://localhost:8080/document", status=200, repeat=True)
+    mimeo_cli.main()
+
+    # http-config.json + http-config.xml
+    utils.assert_requests_sent(
+        aioresponses, [
+            {
+                "method": "POST",
+                "url": "http://localhost:8080/document",
+                "details": {
+                    "body": "<SomeEntity>"
+                            "<ChildNode1>1</ChildNode1>"
+                            "<ChildNode2>value-2</ChildNode2>"
+                            "<ChildNode3>true</ChildNode3>"
+                            "</SomeEntity>",
+                },
+            },
+            {
+                "method": "POST",
+                "url": "http://localhost:8080/document",
+                "details": {
+                    "body": "<SomeEntity>"
+                            "<ChildNode1>1</ChildNode1>"
+                            "<ChildNode2>value-2</ChildNode2>"
+                            "<ChildNode3>true</ChildNode3>"
+                            "</SomeEntity>",
+                },
+            },
+        ],
+    )
+
+    # default-config.json and default-config.xml
+    assert Path("test_mimeo_cli-dir/output").exists()
+    for i in range(1, 11):
+        file_path = f"test_mimeo_cli-dir/output/output-file-{i}.xml"
+        assert Path(file_path).exists()
+
+        with Path(file_path).open() as file_content:
+            assert file_content.readline() == '<?xml version="1.0" encoding="utf-8"?>\n'
+            assert file_content.readline() == "<SomeEntity>\n"
+            assert file_content.readline() == "    <ChildNode1>1</ChildNode1>\n"
+            assert file_content.readline() == "    <ChildNode2>value-2</ChildNode2>\n"
+            assert file_content.readline() == "    <ChildNode3>true</ChildNode3>\n"
+            assert file_content.readline() == "</SomeEntity>\n"
+
+    # minimum-config.json and minimum-config.xml
+    assert Path("mimeo-output").exists()
+    for i in range(1, 11):
+        file_path = f"mimeo-output/mimeo-output-{i}.xml"
+        assert Path(file_path).exists()
+
+        with Path(file_path).open() as file_content:
+            assert file_content.readline() == ("<SomeEntity>"
+                                               "<ChildNode1>1</ChildNode1>"
+                                               "<ChildNode2>value-2</ChildNode2>"
+                                               "<ChildNode3>true</ChildNode3>"
+                                               "</SomeEntity>")
+
+
 def test_json_custom_short_xml_declaration_false():
     sys.argv = ["mimeo", "test_mimeo_cli-dir/default-config.json",
                 "-x", "false"]

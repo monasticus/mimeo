@@ -44,18 +44,17 @@ class MimeoJob:
     ):
         """Execute a Mimeo Job based on the CLI arguments.
 
-        First it customizes a log level. After that all Mimeo Configs
-        paths are collected. Each of them is used in the next steps,
-        which are: (1) parsing the configuration and (2) processing
-        it.
+        First it customizes a log level. After that all Mimeo Configs paths are
+        collected. Each of them is used in the next steps, which are: (1) parsing
+        the configuration and (2) processing it. Depending on arguments provided,
+        it processes configs sequentially or in parallel.
         """
         self._customize_log_level(self._args)
         logger.info("Starting a Mimeo job")
-        config_paths = self._get_config_paths(self._args.paths)
-        with Mimeograph() as mimeo:
-            for config_path in config_paths:
-                mimeo_config = self._get_mimeo_config(config_path, self._args)
-                mimeo.submit((config_path, mimeo_config))
+        if self._args.sequentially:
+            self._process_sequentially()
+        else:
+            self._process_in_parallel()
 
     @staticmethod
     def _customize_log_level(
@@ -68,6 +67,19 @@ class MimeoJob:
             logging.getLogger("mimeo").setLevel(logging.DEBUG)
         elif args.fine and hasattr(logging, "FINE"):
             logging.getLogger("mimeo").setLevel(logging.FINE)
+
+    def _process_sequentially(self):
+        config_paths = self._get_config_paths(self._args.paths)
+        for config_path in config_paths:
+            mimeo_config = self._get_mimeo_config(config_path, self._args)
+            Mimeograph.process(mimeo_config)
+
+    def _process_in_parallel(self):
+        config_paths = self._get_config_paths(self._args.paths)
+        with Mimeograph() as mimeo:
+            for config_path in config_paths:
+                mimeo_config = self._get_mimeo_config(config_path, self._args)
+                mimeo.submit((config_path, mimeo_config))
 
     @staticmethod
     def _get_config_paths(
