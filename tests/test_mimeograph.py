@@ -274,8 +274,7 @@ def test_generate_json_stringified():
     assert count == 10
 
 
-@pytest.mark.asyncio()
-async def test_consume_xml():
+def test_consume_xml():
     config = {
         "output": {
             "direction": "file",
@@ -301,7 +300,7 @@ async def test_consume_xml():
     mimeo_config = MimeoConfigFactory.parse(config)
     assert not Path("test_mimeograph-dir").exists()
     data = Mimeograph.generate(mimeo_config, stringify=True)
-    await Mimeograph.consume(mimeo_config, data)
+    Mimeograph.consume(mimeo_config, data)
     assert Path("test_mimeograph-dir").exists()
     for i in range(1, 11):
         file_path = f"test_mimeograph-dir/output-{i}.xml"
@@ -316,8 +315,7 @@ async def test_consume_xml():
             assert file.readline() == "</SomeEntity>\n"
 
 
-@pytest.mark.asyncio()
-async def test_consume_json():
+def test_consume_json():
     config = {
         "output": {
             "direction": "file",
@@ -342,7 +340,7 @@ async def test_consume_json():
     mimeo_config = MimeoConfigFactory.parse(config)
     assert not Path("test_mimeograph-dir").exists()
     data = Mimeograph.generate(mimeo_config, stringify=True)
-    await Mimeograph.consume(mimeo_config, data)
+    Mimeograph.consume(mimeo_config, data)
     assert Path("test_mimeograph-dir").exists()
     for i in range(1, 11):
         file_path = f"test_mimeograph-dir/output-{i}.json"
