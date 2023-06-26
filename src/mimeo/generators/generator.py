@@ -285,7 +285,8 @@ class Generator(metaclass=ABCMeta):
             A single data unit generated within a single template iteration.
         """
         logger.fine("Rendering element - parent [%s], node_meta [%s]",
-                    parent, node_meta)
+                    parent if not isinstance(parent, ElemTree.Element) else parent.tag,
+                    node_meta)
         node_meta = cls._pre_process_node(node_meta)
 
         if cls._is_complex(node_meta):
