@@ -7,6 +7,8 @@ import pytest
 
 from mimeo import Mimeograph
 from mimeo.config import MimeoConfigFactory
+from mimeo.exc import NotRunningMimeographError
+from tests.utils import assert_throws
 
 
 @pytest.fixture(autouse=True)
@@ -357,7 +359,7 @@ def test_consume_json():
             assert file.readline() == "}"
 
 
-def test_mimeograph_submit_xml():
+def test_submit_using_run_and_stop():
     config = {
         "output": {
             "direction": "file",
@@ -382,8 +384,10 @@ def test_mimeograph_submit_xml():
     }
     mimeo_config = MimeoConfigFactory.parse(config)
     assert not Path("test_mimeograph-dir").exists()
-    with Mimeograph() as mimeo:
-        mimeo.submit(("xml-config", mimeo_config))
+    mimeo = Mimeograph()
+    mimeo.run()
+    mimeo.submit(("xml-config", mimeo_config))
+    mimeo.stop()
     assert Path("test_mimeograph-dir").exists()
     for i in range(1, 11):
         file_path = f"test_mimeograph-dir/output-{i}.xml"
@@ -398,7 +402,7 @@ def test_mimeograph_submit_xml():
             assert file.readline() == "</SomeEntity>\n"
 
 
-def test_submit_json():
+def test_submit_as_context_manager():
     config = {
         "output": {
             "direction": "file",
@@ -437,6 +441,35 @@ def test_submit_json():
             assert file.readline() == '        "ChildNode3": true\n'
             assert file.readline() == "    }\n"
             assert file.readline() == "}"
+
+
+@assert_throws(err_type=NotRunningMimeographError,
+               msg="The Mimeograph instance is not running!")
+def test_submit_when_non_running():
+    config = {
+        "output": {
+            "direction": "file",
+            "format": "xml",
+            "indent": 4,
+            "directory_path": "test_mimeograph-dir",
+            "file_name": "output",
+        },
+        "_templates_": [
+            {
+                "count": 10,
+                "model": {
+                    "SomeEntity": {
+                        "ChildNode1": 1,
+                        "ChildNode2": "value-2",
+                        "ChildNode3": True,
+                    },
+                },
+            },
+        ],
+    }
+    mimeo_config = MimeoConfigFactory.parse(config)
+    mimeo = Mimeograph()
+    mimeo.submit(("xml-config", mimeo_config))
 
 
 def test_default_number_of_workers():
@@ -504,4 +537,3 @@ def test_config_failed_at_consuming_step():
         time.sleep(0.01)
         assert mimeo._failed_configs == ["no-connection-config"]
     assert not Path("test_mimeograph-dir").exists()
-

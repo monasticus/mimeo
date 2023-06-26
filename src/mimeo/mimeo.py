@@ -19,6 +19,7 @@ from typing import Iterable, Iterator
 from mimeo.config.mimeo_config import MimeoConfig
 from mimeo.consumers import ConsumerFactory
 from mimeo.context import MimeoContextManager
+from mimeo.exc import NotRunningMimeographError
 from mimeo.generators import GeneratorFactory
 
 logger = logging.getLogger(__name__)
@@ -29,6 +30,9 @@ class Mimeograph:
 
     Based on the Mimeo Configuration it instantiates generator and
     consumer to produce desired data.
+    For sequential processing it is enough to use its static methods, without
+    instantiation [process(), generate(), consume()]. However, Mimeograph exposes
+    an interface to process data in parallel [run(), submit(), close()].
 
     Methods
     -------
@@ -48,6 +52,46 @@ class Mimeograph:
         mimeo_config: MimeoConfig,
     )
         Process the Mimeo Configuration (generate data and consume).
+
+    run(
+    )
+        Run the Mimeograph instance.
+    stop(
+    )
+        Stop the Mimeograph instance.
+    submit(
+        mimeo_config: tuple[str | None, MimeoConfig | None],
+    ):
+        Put a Mimeo Config with identifier into a queue to process.
+
+    Examples
+    --------
+    # Simple processing of a mimeo config
+    config_path = "SomeEntity-config.json"
+    mimeo_config = MimeoConfigFactory.parse(config_path)
+    Mimeograph.process(mimeo_config)
+
+    # Generating and consuming data from a mimeo config
+    config_path = "SomeEntity-config.json"
+    mimeo_config = MimeoConfigFactory.parse(config_path)
+    data = Mimeograph.generate(mimeo_config)
+    Mimeograph.consume(mimeo_config, data)
+
+    # Processing mimeo configs in parallel
+    config_paths = []
+    with Mimeograph() as mimeo:
+        for config_path in config_paths:
+            mimeo_config = MimeoConfigFactory.parse(config_path)
+            mimeo.submit((config_path, mimeo_config))
+
+    # Processing mimeo configs in parallel outside context manager
+    config_paths = []
+    mimeo = Mimeograph()
+    mimeo.run()
+    for config_path in config_paths:
+        mimeo_config = MimeoConfigFactory.parse(config_path)
+        mimeo.submit((config_path, mimeo_config))
+    mimeo.stop()
     """
 
     def __init__(
@@ -61,6 +105,7 @@ class Mimeograph:
         workers : int
             A number of consumer workers
         """
+        self._is_running: bool = False
         self._generator_queue: queue.Queue = queue.Queue()
         self._consumer_queue: queue.Queue = queue.Queue()
         self._generate_executor: ThreadPoolExecutor | None = None
@@ -76,23 +121,14 @@ class Mimeograph:
     ) -> Mimeograph:
         """Enter the Mimeograph instance.
 
-        It initializes generator and consumer workers and starts their tasks.
+        It runs the Mimeograph instance.
 
         Returns
         -------
         self : Mimeograph
             A Mimeograph instance
         """
-        self._generate_executor = ThreadPoolExecutor(
-            max_workers=1,
-            thread_name_prefix="generator_thread")
-        self._consume_executor = ThreadPoolExecutor(
-            max_workers=self._consumer_workers,
-            thread_name_prefix="consumer_thread")
-
-        self._generate_executor.submit(self._start_generate)
-        for _ in range(self._consumer_workers):
-            self._consume_executor.submit(self._start_consume)
+        self.run()
         return self
 
     def __exit__(
@@ -103,8 +139,7 @@ class Mimeograph:
     ) -> None:
         """Exit the Mimeograph instance.
 
-        It puts a poison pill to generator queue and awaits for all threads to stop
-        before shutting executors down.
+        It stops the Mimeograph instance.
 
         Parameters
         ----------
@@ -114,23 +149,52 @@ class Mimeograph:
             An exception's value
         exc_tb  TracebackType | None
             An exception's traceback
-
-        Returns
-        -------
-        None
-            A None value
         """
-        self._generator_queue.put((None, None))
-        self._generator_queue.join()
-        self._consumer_queue.join()
-        self._generate_executor.shutdown()
-        self._consume_executor.shutdown()
-        if len(self._failed_configs) > 0:
-            logger.info("All configs have been processed. "
-                        "The following configs have failed: %s",
-                        self._failed_configs)
-        else:
-            logger.info("All configs have been successfully processed.")
+        self.stop()
+
+    def run(
+            self,
+    ):
+        """Run the Mimeograph instance.
+
+        It initializes generator and consumer workers and starts their tasks.
+        """
+        if not self._is_running:
+            self._is_running = not self._is_running
+            self._generate_executor = ThreadPoolExecutor(
+                max_workers=1,
+                thread_name_prefix="generator_thread")
+            self._consume_executor = ThreadPoolExecutor(
+                max_workers=self._consumer_workers,
+                thread_name_prefix="consumer_thread")
+
+            self._generate_executor.submit(self._start_generate)
+            for _ in range(self._consumer_workers):
+                self._consume_executor.submit(self._start_consume)
+
+    def stop(
+            self,
+    ):
+        """Stop the Mimeograph instance.
+
+        It puts a poison pill to generator queue and awaits for all threads to stop
+        before shutting executors down.
+        """
+        if self._is_running:
+            self._is_running = not self._is_running
+            self._generator_queue.put((None, None))
+            self._generator_queue.join()
+            self._consumer_queue.join()
+            self._generate_executor.shutdown()
+            self._consume_executor.shutdown()
+            if len(self._failed_configs) > 0:
+                logger.info("All configs have been processed. "
+                            "The following configs have failed: %s",
+                            self._failed_configs)
+            else:
+                logger.info("All configs have been successfully processed.")
+            self._generate_executor = None
+            self._consume_executor = None
 
     def submit(
             self,
@@ -143,6 +207,8 @@ class Mimeograph:
         mimeo_config: tuple[str | None, MimeoConfig | None]
             A config ID and a Mimeo Config itself
         """
+        if not self._is_running:
+            raise NotRunningMimeographError
         logger.info("Putting a config for data generation into queue [%s]",
                     mimeo_config[0])
         self._generator_queue.put(mimeo_config)

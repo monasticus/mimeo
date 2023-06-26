@@ -41,6 +41,8 @@ The same apply to the following modules included by the Mimeo package:
     The Mimeo module
 * tools
     The Mimeo Tools module
+* exc
+    The Mimeograph Exceptions module.
 
 To use this package, simply import the desired classes:
     from mimeo import MimeoConfig, Mimeograph
