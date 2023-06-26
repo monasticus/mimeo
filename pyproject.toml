@@ -5,14 +5,14 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "mimeograph"
 version = "0.7.0"
-description = "Generate data based on a simple template"
+description = "Generate NoSQL data based on a simple template"
 readme = "README.md"
 requires-python = ">=3.8"
 authors = [{ name = "T.A. Programming Svcs.", email = "tomasz.maciej.aniolowski@gmail.com" }]
 license = { file = "LICENSE" }
 classifiers = [
     "License :: OSI Approved :: MIT License",
-    "Development Status :: 4 - Beta",
+    "Development Status :: 5 - Production/Stable",
     "Environment :: Console",
     "Intended Audience :: Developers",
     "Programming Language :: Python",
@@ -27,7 +27,7 @@ classifiers = [
     "Topic :: Software Development :: Testing",
     "Topic :: Utilities",
 ]
-keywords = ["mimeograph", "mimeo", "generate", "generator", "data", "xml"]
+keywords = ["mimeograph", "mimeo", "generate", "generator", "data", "xml", "json", "nosql"]
 dependencies = [
     "xmltodict",
     "aiohttp",
