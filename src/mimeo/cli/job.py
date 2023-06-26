@@ -54,10 +54,8 @@ class MimeoJob:
         config_paths = self._get_config_paths(self._args.paths)
         with Mimeograph() as mimeo:
             for config_path in config_paths:
-                logger.debug("Processing config [%s]", config_path)
                 mimeo_config = self._get_mimeo_config(config_path, self._args)
-                mimeo.submit(mimeo_config)
-            mimeo.submit(None)
+                mimeo.submit((config_path, mimeo_config))
 
     @staticmethod
     def _customize_log_level(
