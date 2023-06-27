@@ -109,7 +109,7 @@ class CitiesDB:
         Get a city at `index` position.
     """
 
-    NUM_OF_RECORDS: int = 42905
+    NUM_OF_RECORDS: int = 42904
     _CITIES_DB: str = "cities.csv"
     _CITIES_DF: DataFrame = None
     _CITIES: ClassVar[list] = None

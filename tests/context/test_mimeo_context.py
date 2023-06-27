@@ -133,7 +133,7 @@ def test_next_city_index_default():
 
 @assert_throws(err_type=OutOfStockError,
                msg="No more unique values, database contain only {c} cities.",
-               c=42905)
+               c=42904)
 def test_next_city_index_default_out_of_stock():
     ctx = MimeoContext("SomeContext")
     for _ in range(MimeoDB.NUM_OF_CITIES):
