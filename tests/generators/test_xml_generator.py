@@ -157,7 +157,7 @@ def test_generate_single_template_model_with_prefixed_ns():
     _test(config_from_xml)
 
 
-def test_generate_single_template_model_with_attributes_in_atomic_child():
+def test_generate_single_template_model_with_attributes_in_atomic_child_atomic_value():
     config_from_dict = MimeoConfigFactory.parse({
         "output": {
             "format": "xml",
@@ -217,6 +217,118 @@ def test_generate_single_template_model_with_attributes_in_atomic_child():
 
     _test(config_from_dict)
     _test(config_from_xml)
+
+
+def test_generate_single_template_model_with_attributes_in_atomic_child_dict_value():
+    config_from_dict = MimeoConfigFactory.parse({
+        "output": {
+            "format": "xml",
+        },
+        "_templates_": [
+            {
+                "count": 5,
+                "model": {
+                    "SomeEntity": {
+                        "pn:ChildNode": {
+                            "@xmlns:pn": "http://mimeo.arch.com/prefixed-namespace",
+                            "#text": {
+                                "pn:GrandChild": "string-value",
+                            },
+                        },
+                    },
+                },
+            },
+        ],
+    })
+
+    def _test(
+            config: MimeoConfig,
+    ):
+        with MimeoContextManager(config):
+            generator = XMLGenerator(config)
+            count = 0
+            for data in generator.generate(config.templates):
+                assert data.tag == "SomeEntity"
+                assert data.attrib == {}
+                assert len(list(data)) == 1  # number of children
+
+                child = data.find("pn:ChildNode")
+                assert child.tag == "pn:ChildNode"
+                assert child.attrib == {"xmlns:pn": "http://mimeo.arch.com/prefixed-namespace"}
+                assert len(list(child)) == 1  # number of children
+
+                grand_child = child.find("pn:GrandChild")
+                assert grand_child.tag == "pn:GrandChild"
+                assert grand_child.attrib == {}
+                assert grand_child.text == "string-value"
+                assert len(list(grand_child)) == 0  # number of children
+
+                count += 1
+
+            assert count == 5
+
+    _test(config_from_dict)
+
+
+def test_generate_single_template_model_with_attributes_in_atomic_child_list_value():
+    config_from_dict = MimeoConfigFactory.parse({
+        "output": {
+            "format": "xml",
+        },
+        "_templates_": [
+            {
+                "count": 5,
+                "model": {
+                    "SomeEntity": {
+                        "pn:ChildNode": {
+                            "@xmlns:pn": "http://mimeo.arch.com/prefixed-namespace",
+                            "#text": [
+                                "string-value",
+                                1,
+                                True,
+                            ],
+                        },
+                    },
+                },
+            },
+        ],
+    })
+
+    def _test(
+            config: MimeoConfig,
+    ):
+        with MimeoContextManager(config):
+            generator = XMLGenerator(config)
+            count = 0
+            for data in generator.generate(config.templates):
+                assert data.tag == "SomeEntity"
+                assert data.attrib == {}
+                assert len(list(data)) == 3  # number of children
+
+                children = data.findall("pn:ChildNode")
+                child_node1 = children[0]
+                assert child_node1.tag == "pn:ChildNode"
+                assert child_node1.attrib == {"xmlns:pn": "http://mimeo.arch.com/prefixed-namespace"}
+                assert child_node1.text == "string-value"
+                assert len(list(child_node1)) == 0  # number of children
+
+                child_node2 = children[1]
+                assert child_node2.tag == "pn:ChildNode"
+                assert child_node2.attrib == {"xmlns:pn": "http://mimeo.arch.com/prefixed-namespace"}
+                assert child_node2.text == "1"
+                assert len(list(child_node2)) == 0  # number of children
+
+                child_node3 = children[2]
+                assert child_node3.tag == "pn:ChildNode"
+                assert child_node3.attrib == {"xmlns:pn": "http://mimeo.arch.com/prefixed-namespace"}
+                assert child_node3.text == "true"
+                assert len(list(child_node3)) == 0  # number of children
+
+                count += 1
+
+            assert count == 5
+
+    _test(config_from_dict)
 
 
 def test_generate_single_template_model_with_attributes_in_complex_child():
