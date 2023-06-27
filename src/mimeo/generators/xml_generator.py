@@ -150,7 +150,7 @@ class XMLGenerator(Generator):
         """
         name = node_meta["name"]
         value = node_meta["value"]
-        attrs = {}
+        attrs = node_meta["attrs"] if node_meta["attrs"] is not None else {}
         is_mimeo_util = MimeoRenderer.is_parametrized_mimeo_util(value)
         is_special_field = MimeoRenderer.is_special_field(name)
         if is_special_field:
@@ -320,7 +320,10 @@ class XMLGenerator(Generator):
                 raise UnsupportedStructureError(
                     node_meta["name"],
                     node_meta["value"])
-            node_meta = cls._node_meta(node_meta["name"], child)
+            node_meta = cls._node_meta(
+                name=node_meta["name"],
+                value=child,
+                attrs=node_meta["attrs"])
             cls._process_node(parent, node_meta)
         return parent
 
