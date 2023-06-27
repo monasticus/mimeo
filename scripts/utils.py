@@ -229,13 +229,15 @@ def overwrite_num_of_records(
         with Path(mimeo_db_path).open() as module_file:
             module = module_file.read()
 
-        curr_num_of_records = re.compile("NUM_OF_RECORDS = (.*)").findall(module)[0]
+        curr_num_of_records = re.compile(
+            "NUM_OF_RECORDS: int = (.*)").findall(module)[0]
         if int(curr_num_of_records) == num_of_records:
             print(f"Number of records [{num_of_records}] has not been changed.")
         else:
-            module = re.sub(r"NUM_OF_RECORDS = .*",
-                            f"NUM_OF_RECORDS = {num_of_records}",
-                            module)
+            module = re.sub(
+                r"NUM_OF_RECORDS: int = .*",
+                f"NUM_OF_RECORDS: int = {num_of_records}",
+                module)
             with Path(mimeo_db_path).open("w") as module_file:
                 module_file.write(module)
             print("Number of records has been updated "

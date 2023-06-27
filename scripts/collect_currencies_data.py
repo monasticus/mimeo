@@ -78,6 +78,7 @@ def _modify_source_data(
         .agg({"CODE": "first", "NAME": "first", "COUNTRIES": lambda c: list(c)})
         .reset_index(drop=True)
         .sort_values(sort_column))
+    currencies_df["NAME"] = utils.apply_ascii_encoding_on_column(currencies_df, "NAME")
     print("Currencies data has been prepared.")
     return currencies_df
 

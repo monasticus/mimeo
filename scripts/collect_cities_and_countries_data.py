@@ -126,6 +126,7 @@ def _modify_source_data_for_cities(
         .copy()
         .rename(columns=columns_mapping)
         .loc[:, columns_order]
+        .dropna()
         .sort_values(sort_column))
     print("Cities data has been prepared.")
     return cities_df
