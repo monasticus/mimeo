@@ -34,7 +34,10 @@ build_and_publish:
 	@make --no-print-directory build
 	@make --no-print-directory publish v=`make --no-print-directory latest_tag`
 
-check_new_linters:
+linters:
 	python -m pip install --upgrade ruff
 	@./meta/linters/look_for_new_linters.py
+
+update_linters:
+	@ruff linter --format=json > ./meta/linters/linters.json
 
