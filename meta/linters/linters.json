@@ -74,6 +74,10 @@
     "name": "flake8-commas"
   },
   {
+    "prefix": "CPY",
+    "name": "Copyright-related rules"
+  },
+  {
     "prefix": "C4",
     "name": "flake8-comprehensions"
   },
@@ -148,6 +152,10 @@
   {
     "prefix": "SLF",
     "name": "flake8-self"
+  },
+  {
+    "prefix": "SLOT",
+    "name": "flake8-slots"
   },
   {
     "prefix": "SIM",
@@ -230,6 +238,10 @@
   {
     "prefix": "AIR",
     "name": "Airflow"
+  },
+  {
+    "prefix": "PERF",
+    "name": "Perflint"
   },
   {
     "prefix": "RUF",
