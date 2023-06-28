@@ -63,6 +63,9 @@ mimeo-config:
   vars:
     key: vars
 
+  refs:
+    key: refs
+
 
   templates:
     key: _templates_

@@ -81,6 +81,12 @@ _vars_constants = _cc["vars"]
 VARS_KEY: str = _vars_constants["key"]
 
 ########################################################################################
+#                                      MIMEO REFS                                      #
+########################################################################################
+_refs_constants = _cc["refs"]
+REFS_KEY: str = _refs_constants["key"]
+
+########################################################################################
 #                                   MIMEO TEMPLATES                                    #
 ########################################################################################
 _templates_constants = _cc["templates"]
@@ -129,6 +135,7 @@ __all__ = [
     "OUTPUT_PROTOCOL_HTTP",
     "OUTPUT_PROTOCOL_HTTPS",
     "VARS_KEY",
+    "REFS_KEY",
     "TEMPLATES_KEY",
     "TEMPLATES_XML_TEMPLATE_TAG",
     "TEMPLATES_COUNT_KEY",

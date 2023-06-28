@@ -11,6 +11,13 @@ def test_str():
         "vars": {
             "CUSTOM_KEY1": "custom value",
         },
+        "refs": {
+            "custom_ref": {
+                "context": "SomeEntity",
+                "field": "ChildNode",
+                "type": "any",
+            },
+        },
         "_templates_": [
             {
                 "count": 5,
@@ -41,6 +48,18 @@ def test_parsing_config():
                 },
             },
         },
+        "refs": {
+            "custom_ref_1": {
+                "context": "SomeEntity",
+                "field": "ChildNode",
+                "type": "any",
+            },
+            "custom_ref_2": {
+                "context": "SomeEntity",
+                "field": "ChildNode",
+                "type": "parallel",
+            },
+        },
         "_templates_": [
             {
                 "count": 5,
@@ -62,6 +81,18 @@ def test_parsing_config():
                 "_name": "auto_increment",
                 "pattern": "{}",
             },
+        },
+    }
+    assert mimeo_config.refs == {
+        "custom_ref_1": {
+            "context": "SomeEntity",
+            "field": "ChildNode",
+            "type": "any",
+        },
+        "custom_ref_2": {
+            "context": "SomeEntity",
+            "field": "ChildNode",
+            "type": "parallel",
         },
     }
 

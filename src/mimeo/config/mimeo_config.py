@@ -469,6 +469,8 @@ class MimeoConfig(MimeoDTO):
         A Mimeo Output Details settings
     vars : dict, default {}
         A Mimeo Configuration vars setting
+    refs : dict, default {}
+        A Mimeo Configuration refs setting
     templates : list
         A Mimeo Templates setting
     """
@@ -489,6 +491,7 @@ class MimeoConfig(MimeoDTO):
         super().__init__(config)
         self.output: MimeoOutput = MimeoOutput(config.get(cc.OUTPUT_KEY, {}))
         self.vars: dict = self._get_vars(config)
+        self.refs: dict = self._get_refs(config)
         self.templates: list[MimeoTemplate] = self._get_templates(config)
 
     @classmethod
@@ -525,6 +528,25 @@ class MimeoConfig(MimeoDTO):
             if not re.match(r"^[A-Z][A-Z_0-9]*$", var):
                 raise InvalidVarsError(InvalidVarsError.Code.ERR_3, var=var)
         return variables
+
+    @classmethod
+    def _get_refs(
+            cls,
+            config: dict,
+    ) -> dict:
+        """Extract references from the source dictionary.
+
+        Parameters
+        ----------
+        config : dict
+            A source config dictionary
+
+        Returns
+        -------
+        dict
+            Customized references or an empty dictionary
+        """
+        return config.get(cc.REFS_KEY, {})
 
     @classmethod
     def _get_templates(
