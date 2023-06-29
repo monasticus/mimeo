@@ -6,6 +6,7 @@ It exports only one class:
 """
 from __future__ import annotations
 
+import random
 from types import TracebackType
 
 from mimeo.config import MimeoConfig
@@ -50,6 +51,7 @@ class MimeoContextManager(Alive, metaclass=OnlyOneAlive):
         super().__init__()
         self._mimeo_config: MimeoConfig = mimeo_config
         self._vars: dict = {}
+        self._refs: dict = {}
         self._contexts: dict = {}
         self._current_context: MimeoContext | None = None
 
@@ -67,6 +69,7 @@ class MimeoContextManager(Alive, metaclass=OnlyOneAlive):
         """
         super().__enter__()
         self._vars = self._mimeo_config.vars
+        self._refs = {ref: [] for ref in self._mimeo_config.refs}
         return self
 
     def __exit__(
@@ -192,3 +195,38 @@ class MimeoContextManager(Alive, metaclass=OnlyOneAlive):
         if value is None:
             raise VarNotFoundError(variable_name)
         return value
+
+    def cache_ref(
+            self,
+            field_name: str,
+            field_value: str | int | float | bool,
+    ):
+        ref_names = [ref_name
+                     for ref_name, ref_meta in self._mimeo_config.refs.items()
+                     if ref_meta["context"] == self._current_context.name
+                     and ref_meta["field"] == field_name]
+        for ref_name in ref_names:
+            self._refs[ref_name].append(field_value)
+
+    def get_ref(
+            self,
+            ref_name: str,
+    ) -> str | int | float | bool:
+        ref_meta = self._mimeo_config.refs.get(ref_name)
+        if not ref_meta:
+            raise Exception
+
+        values = self._refs.get(ref_name)
+        if len(values) == 0:
+            raise Exception
+
+        if ref_meta["type"] == "parallel":
+            index = self._current_context.curr_iteration().id - 1
+            if index >= len(values):
+                raise Exception
+        else:
+            index = random.randrange(0, len(values))
+        return values[index]
+
+
+

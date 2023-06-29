@@ -15,6 +15,18 @@ def default_config():
             "CUSTOM_VAR_2": "custom-value",
             "CUSTOM_VAR_3": True,
         },
+        "refs": {
+            "custom_ref_any": {
+                "context": "SomeContext",
+                "field": "ChildNode",
+                "type": "any",
+            },
+            "custom_ref_parallel": {
+                "context": "SomeContext",
+                "field": "ChildNode",
+                "type": "parallel",
+            },
+        },
         "_templates_": [
             {
                 "count": 10,
@@ -83,5 +95,72 @@ def test_get_var(default_config):
 def test_get_non_existing_var(default_config):
     with MimeoContextManager(default_config) as mimeo_manager:
         mimeo_manager.get_var("NON_EXISTING_VAR")
+
+
+def test_ref_any(default_config):
+    with MimeoContextManager(default_config) as mimeo_manager:
+        context = mimeo_manager.get_context("SomeContext")
+        mimeo_manager.set_current_context(context)
+
+        mimeo_manager.cache_ref("ChildNode", 1)
+        mimeo_manager.cache_ref("ChildNode", 2)
+        mimeo_manager.cache_ref("ChildNode", 3)
+        assert mimeo_manager.get_ref("custom_ref_any") in [1, 2, 3]
+
+
+def test_ref_parallel(default_config):
+    with MimeoContextManager(default_config) as mimeo_manager:
+        context = mimeo_manager.get_context("SomeContext")
+        mimeo_manager.set_current_context(context)
+        context.next_iteration()
+        mimeo_manager.cache_ref("ChildNode", 1)
+        assert mimeo_manager.get_ref("custom_ref_parallel") == 1
+        assert mimeo_manager.get_ref("custom_ref_parallel") == 1
+
+        context.next_iteration()
+        mimeo_manager.cache_ref("ChildNode", 2)
+        assert mimeo_manager.get_ref("custom_ref_parallel") == 2
+        assert mimeo_manager.get_ref("custom_ref_parallel") == 2
+
+        context.next_iteration()
+        mimeo_manager.cache_ref("ChildNode", 3)
+        assert mimeo_manager.get_ref("custom_ref_parallel") == 3
+        assert mimeo_manager.get_ref("custom_ref_parallel") == 3
+
+
+def test_ref_str(default_config):
+    with MimeoContextManager(default_config) as mimeo_manager:
+        context = mimeo_manager.get_context("SomeContext")
+        mimeo_manager.set_current_context(context)
+
+        mimeo_manager.cache_ref("ChildNode", "value")
+        assert mimeo_manager.get_ref("custom_ref_any") == "value"
+
+
+def test_ref_int(default_config):
+    with MimeoContextManager(default_config) as mimeo_manager:
+        context = mimeo_manager.get_context("SomeContext")
+        mimeo_manager.set_current_context(context)
+
+        mimeo_manager.cache_ref("ChildNode", 1)
+        assert mimeo_manager.get_ref("custom_ref_any") == 1
+
+
+def test_ref_float(default_config):
+    with MimeoContextManager(default_config) as mimeo_manager:
+        context = mimeo_manager.get_context("SomeContext")
+        mimeo_manager.set_current_context(context)
+
+        mimeo_manager.cache_ref("ChildNode", 1.5)
+        assert mimeo_manager.get_ref("custom_ref_any") == 1.5
+
+
+def test_ref_bool(default_config):
+    with MimeoContextManager(default_config) as mimeo_manager:
+        context = mimeo_manager.get_context("SomeContext")
+        mimeo_manager.set_current_context(context)
+
+        mimeo_manager.cache_ref("ChildNode", False)
+        assert mimeo_manager.get_ref("custom_ref_any") is False
 
 
