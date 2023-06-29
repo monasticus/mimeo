@@ -65,12 +65,12 @@ OUTPUT_USERNAME_KEY: str = _http_direction_details["username"]["key"]
 OUTPUT_PASSWORD_KEY: str = _http_direction_details["password"]["key"]
 
 _req_method_details: dict = _http_direction_details["method"]["values"]
-SUPPORTED_REQUEST_METHODS: str = _req_method_details.values()
+SUPPORTED_REQUEST_METHODS: tuple = tuple(_req_method_details.values())
 OUTPUT_HTTP_REQUEST_POST: str = _req_method_details["post"]
 OUTPUT_HTTP_REQUEST_PUT: str = _req_method_details["put"]
 
 _req_protocol_details: dict = _http_direction_details["protocol"]["values"]
-SUPPORTED_REQUEST_PROTOCOLS: str = _req_protocol_details.values()
+SUPPORTED_REQUEST_PROTOCOLS: tuple = tuple(_req_protocol_details.values())
 OUTPUT_PROTOCOL_HTTP: str = _req_protocol_details["http"]
 OUTPUT_PROTOCOL_HTTPS: str = _req_protocol_details["https"]
 
@@ -87,7 +87,7 @@ _refs_constants: dict = _cc["refs"]
 REFS_KEY: str = _refs_constants["key"]
 
 ########################################################################################
-# ---------------------------------- Refs details ------------------------------------ #
+# ---------------------------------- refs details ------------------------------------ #
 _refs_details: dict = _refs_constants["details"]
 REQUIRED_REFS_DETAILS: tuple = tuple(
     prop["key"] for prop in _refs_details.values()
@@ -95,6 +95,12 @@ REQUIRED_REFS_DETAILS: tuple = tuple(
 REFS_DETAIL_CONTEXT: str = _refs_details["context"]["key"]
 REFS_DETAIL_FIELD: str = _refs_details["field"]["key"]
 REFS_DETAIL_TYPE: str = _refs_details["type"]["key"]
+
+# ------------------------------------ refs types ------------------------------------ #
+_refs_types: dict = _refs_details["type"]["values"]
+SUPPORTED_REFS_TYPES: tuple = tuple(_refs_types.values())
+REFS_TYPE_ANY: str = _refs_details["type"]["values"]["any"]
+REFS_TYPE_PARALLEL: str = _refs_details["type"]["values"]["parallel"]
 
 ########################################################################################
 #                                   MIMEO TEMPLATES                                    #
@@ -150,6 +156,9 @@ __all__ = [
     "REFS_DETAIL_CONTEXT",
     "REFS_DETAIL_FIELD",
     "REFS_DETAIL_TYPE",
+    "SUPPORTED_REFS_TYPES",
+    "REFS_TYPE_ANY",
+    "REFS_TYPE_PARALLEL",
     "TEMPLATES_KEY",
     "TEMPLATES_XML_TEMPLATE_TAG",
     "TEMPLATES_COUNT_KEY",

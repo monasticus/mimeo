@@ -1,6 +1,6 @@
 from mimeo.config import MimeoConfigFactory
 from mimeo.config.exc import (InvalidMimeoConfigError, InvalidRefsError,
-                              InvalidVarsError)
+                              InvalidVarsError, UnsupportedPropertyValueError)
 from tests.utils import assert_throws
 
 
@@ -321,6 +321,33 @@ def test_parsing_config_invalid_refs_missing_details():
                 "context": "SomeEntity",
                 "field": "ChildNode",
                 "type": "parallel",
+            },
+        },
+        "_templates_": [
+            {
+                "count": 5,
+                "model": {
+                    "SomeEntity": {
+                        "ChildNode": "value",
+                    },
+                },
+            },
+        ],
+    }
+    MimeoConfigFactory.parse(config)
+
+
+@assert_throws(err_type=UnsupportedPropertyValueError,
+               msg="Provided type [{type}] is not supported! "
+                   "Supported values: [{values}].",
+               type="unsupported_type", values="any, parallel")
+def test_parsing_config_invalid_refs_unsupported_type():
+    config = {
+        "refs": {
+            "custom_ref_4": {
+                "context": "SomeEntity",
+                "field": "ChildNode",
+                "type": "unsupported_type",
             },
         },
         "_templates_": [

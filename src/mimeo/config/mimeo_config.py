@@ -553,6 +553,8 @@ class MimeoConfig(MimeoDTO):
             If (1) the refs key does not point to a dictionary or
             (2) any ref is not a dictionary or
             (3) some refs does not have required details (context, field, type)
+        UnsupportedPropertyValueError
+            If the configured reference type is not supported
         """
         references = config.get(cc.REFS_KEY, {})
         if not isinstance(references, dict):
@@ -561,8 +563,16 @@ class MimeoConfig(MimeoDTO):
         for name, reference in references.items():
             if not isinstance(reference, dict):
                 raise InvalidRefsError(InvalidRefsError.Code.ERR_2, ref=name)
+
             if any(detail not in reference for detail in cc.REQUIRED_REFS_DETAILS):
                 invalid_references.append(name)
+            else:
+                ref_type = reference[cc.REFS_DETAIL_TYPE]
+                if ref_type not in cc.SUPPORTED_REFS_TYPES:
+                    raise UnsupportedPropertyValueError(
+                        cc.REFS_DETAIL_TYPE,
+                        ref_type,
+                        cc.SUPPORTED_REFS_TYPES)
         if len(invalid_references) > 0:
             raise InvalidRefsError(
                 InvalidRefsError.Code.ERR_3,
