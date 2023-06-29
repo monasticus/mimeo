@@ -65,6 +65,16 @@ mimeo-config:
 
   refs:
     key: refs
+    details:
+      context:
+        key: context
+        required: Yes
+      field:
+        key: field
+        required: Yes
+      type:
+        key: type
+        required: Yes
 
 
   templates:

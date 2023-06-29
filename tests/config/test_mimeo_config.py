@@ -1,5 +1,6 @@
 from mimeo.config import MimeoConfigFactory
-from mimeo.config.exc import InvalidMimeoConfigError, InvalidVarsError
+from mimeo.config.exc import (InvalidMimeoConfigError, InvalidRefsError,
+                              InvalidVarsError)
 from tests.utils import assert_throws
 
 
@@ -148,6 +149,54 @@ def test_parsing_config_with_templates_object():
 
 
 @assert_throws(err_type=InvalidVarsError,
+               msg="vars property does not store an object: {vars}",
+               vars="[{'CUSTOM_KEY1': 'value1', 'CuSTOM_KEY1': 'value2'}]")
+def test_parsing_config_invalid_vars_not_being_object():
+    config = {
+        "vars": [
+            {
+                "CUSTOM_KEY1": "value1",
+                "CuSTOM_KEY1": "value2",
+            },
+        ],
+        "_templates_": [
+            {
+                "count": 5,
+                "model": {
+                    "SomeEntity": {
+                        "ChildNode": "value",
+                    },
+                },
+            },
+        ],
+    }
+    MimeoConfigFactory.parse(config)
+
+
+@assert_throws(err_type=InvalidVarsError,
+               msg="Provided var [{var}] is invalid (you can use ony atomic values "
+                   "and Mimeo Utils)!",
+               var="CUSTOM_KEY1")
+def test_parsing_config_with_invalid_vars_using_non_atomic_value_and_non_mimeo_util():
+    config = {
+        "vars": {
+            "CUSTOM_KEY1": {},
+        },
+        "_templates_": [
+            {
+                "count": 5,
+                "model": {
+                    "SomeEntity": {
+                        "ChildNode": "value",
+                    },
+                },
+            },
+        ],
+    }
+    MimeoConfigFactory.parse(config)
+
+
+@assert_throws(err_type=InvalidVarsError,
                msg="Provided var [{var}] is invalid (you can use upper-cased name "
                    "with underscore and digits, starting with a letter)!",
                var="CuSTOM_KEY2")
@@ -195,14 +244,45 @@ def test_parsing_config_with_invalid_vars_starting_with_digit():
     MimeoConfigFactory.parse(config)
 
 
-@assert_throws(err_type=InvalidVarsError,
-               msg="Provided var [{var}] is invalid (you can use ony atomic values "
-                   "and Mimeo Utils)!",
-               var="CUSTOM_KEY1")
-def test_parsing_config_with_invalid_vars_using_non_atomic_value_and_non_mimeo_util():
+@assert_throws(err_type=InvalidRefsError,
+               msg="refs property does not store an object: {refs}",
+               refs="[{'context': 'SomeEntity', 'field': 'Child', 'type': 'any'}, "
+                    "{'context': 'SomeEntity', 'field': 'Child', 'type': 'parallel'}]")
+def test_parsing_config_invalid_refs_not_being_object():
     config = {
-        "vars": {
-            "CUSTOM_KEY1": {},
+        "refs": [
+            {
+                "context": "SomeEntity",
+                "field": "Child",
+                "type": "any",
+            },
+            {
+                "context": "SomeEntity",
+                "field": "Child",
+                "type": "parallel",
+            },
+        ],
+        "_templates_": [
+            {
+                "count": 5,
+                "model": {
+                    "SomeEntity": {
+                        "ChildNode": "value",
+                    },
+                },
+            },
+        ],
+    }
+    MimeoConfigFactory.parse(config)
+
+
+@assert_throws(err_type=InvalidRefsError,
+               msg="The following ref does not store an object: {ref}",
+               ref="custom_ref_1")
+def test_parsing_config_invalid_refs_ref_not_being_object():
+    config = {
+        "refs": {
+            "custom_ref_1": "not-a-dict",
         },
         "_templates_": [
             {
@@ -218,17 +298,31 @@ def test_parsing_config_with_invalid_vars_using_non_atomic_value_and_non_mimeo_u
     MimeoConfigFactory.parse(config)
 
 
-@assert_throws(err_type=InvalidVarsError,
-               msg="vars property does not store an object: {vars}",
-               vars="[{'CUSTOM_KEY1': 'value1', 'CuSTOM_KEY1': 'value2'}]")
-def test_parsing_config_invalid_vars_not_being_object():
+@assert_throws(err_type=InvalidRefsError,
+               msg="Missing required details [context, field, type] in the following "
+                   "refs [{refs}]",
+               refs="custom_ref_1, custom_ref_2, custom_ref_3")
+def test_parsing_config_invalid_refs_missing_details():
     config = {
-        "vars": [
-            {
-                "CUSTOM_KEY1": "value1",
-                "CuSTOM_KEY1": "value2",
+        "refs": {
+            "custom_ref_1": {
+                "field": "ChildNode",
+                "type": "any",
             },
-        ],
+            "custom_ref_2": {
+                "context": "SomeEntity",
+                "type": "parallel",
+            },
+            "custom_ref_3": {
+                "context": "SomeEntity",
+                "field": "ChildNode",
+            },
+            "custom_ref_4": {
+                "context": "SomeEntity",
+                "field": "ChildNode",
+                "type": "parallel",
+            },
+        },
         "_templates_": [
             {
                 "count": 5,

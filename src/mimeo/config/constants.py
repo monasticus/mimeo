@@ -14,17 +14,17 @@ CONFIG_XML_ROOT_NAME: str = _cc["key"]
 ########################################################################################
 #                                    OUTPUT DETAILS                                    #
 ########################################################################################
-_output_constants = _cc["output"]
+_output_constants: dict = _cc["output"]
 OUTPUT_KEY: str = _output_constants["key"]
 OUTPUT_FORMAT_KEY: str = _output_constants["format"]["key"]
 OUTPUT_DIRECTION_KEY: str = _output_constants["direction"]["key"]
 
 ########################################################################################
 # --------------------------------- format specific ---------------------------------- #
-_format_details = _output_constants["format"]["details"]
+_format_details: dict = _output_constants["format"]["details"]
 OUTPUT_INDENT_KEY: str = _format_details["indent"]["key"]
 
-_format_values = _output_constants["format"]["values"]
+_format_values: dict = _output_constants["format"]["values"]
 SUPPORTED_OUTPUT_FORMATS: tuple = tuple(
     format_["key"]
     for format_ in _format_values.values())
@@ -32,12 +32,12 @@ OUTPUT_FORMAT_XML: str = _format_values["xml"]["key"]
 OUTPUT_FORMAT_JSON: str = _format_values["json"]["key"]
 
 # -------------------------------- xml format specific ------------------------------- #
-_xml_format_details = _format_values["xml"]["details"]
+_xml_format_details: dict = _format_values["xml"]["details"]
 OUTPUT_XML_DECLARATION_KEY: str = _xml_format_details["xml-declaration"]["key"]
 
 ########################################################################################
 # -------------------------------- direction specific -------------------------------- #
-_direction_details = _output_constants["direction"]["values"]
+_direction_details: dict = _output_constants["direction"]["values"]
 SUPPORTED_OUTPUT_DIRECTIONS: tuple = tuple(
     direction["key"]
     for direction in _direction_details.values())
@@ -46,12 +46,12 @@ OUTPUT_DIRECTION_STD_OUT: str = _direction_details["std-out"]["key"]
 OUTPUT_DIRECTION_HTTP: str = _direction_details["http"]["key"]
 
 # ----------------------------- file direction specific ------------------------------ #
-_file_direction_details = _direction_details["file"]["details"]
+_file_direction_details: dict = _direction_details["file"]["details"]
 OUTPUT_DIRECTORY_PATH_KEY: str = _file_direction_details["directory-path"]["key"]
 OUTPUT_FILE_NAME_KEY: str = _file_direction_details["file-name"]["key"]
 
 # ----------------------------- http direction specific ------------------------------ #
-_http_direction_details = _direction_details["http"]["details"]
+_http_direction_details: dict = _direction_details["http"]["details"]
 REQUIRED_HTTP_DETAILS: tuple = tuple(
     prop["key"] for prop in _http_direction_details.values()
     if prop.get("required", False) is True)
@@ -64,12 +64,12 @@ OUTPUT_ENDPOINT_KEY: str = _http_direction_details["endpoint"]["key"]
 OUTPUT_USERNAME_KEY: str = _http_direction_details["username"]["key"]
 OUTPUT_PASSWORD_KEY: str = _http_direction_details["password"]["key"]
 
-_req_method_details = _http_direction_details["method"]["values"]
+_req_method_details: dict = _http_direction_details["method"]["values"]
 SUPPORTED_REQUEST_METHODS: str = _req_method_details.values()
 OUTPUT_HTTP_REQUEST_POST: str = _req_method_details["post"]
 OUTPUT_HTTP_REQUEST_PUT: str = _req_method_details["put"]
 
-_req_protocol_details = _http_direction_details["protocol"]["values"]
+_req_protocol_details: dict = _http_direction_details["protocol"]["values"]
 SUPPORTED_REQUEST_PROTOCOLS: str = _req_protocol_details.values()
 OUTPUT_PROTOCOL_HTTP: str = _req_protocol_details["http"]
 OUTPUT_PROTOCOL_HTTPS: str = _req_protocol_details["https"]
@@ -77,19 +77,29 @@ OUTPUT_PROTOCOL_HTTPS: str = _req_protocol_details["https"]
 ########################################################################################
 #                                      MIMEO VARS                                      #
 ########################################################################################
-_vars_constants = _cc["vars"]
+_vars_constants: dict = _cc["vars"]
 VARS_KEY: str = _vars_constants["key"]
 
 ########################################################################################
 #                                      MIMEO REFS                                      #
 ########################################################################################
-_refs_constants = _cc["refs"]
+_refs_constants: dict = _cc["refs"]
 REFS_KEY: str = _refs_constants["key"]
+
+########################################################################################
+# ---------------------------------- Refs details ------------------------------------ #
+_refs_details: dict = _refs_constants["details"]
+REQUIRED_REFS_DETAILS: tuple = tuple(
+    prop["key"] for prop in _refs_details.values()
+    if prop.get("required", False) is True)
+REFS_DETAIL_CONTEXT: str = _refs_details["context"]["key"]
+REFS_DETAIL_FIELD: str = _refs_details["field"]["key"]
+REFS_DETAIL_TYPE: str = _refs_details["type"]["key"]
 
 ########################################################################################
 #                                   MIMEO TEMPLATES                                    #
 ########################################################################################
-_templates_constants = _cc["templates"]
+_templates_constants: dict = _cc["templates"]
 TEMPLATES_KEY: str = _templates_constants["key"]
 TEMPLATES_XML_TEMPLATE_TAG: str = _templates_constants["xml-template-tag"]["key"]
 TEMPLATES_COUNT_KEY: str = _templates_constants["count"]["key"]
@@ -97,7 +107,7 @@ TEMPLATES_MODEL_KEY: str = _templates_constants["model"]["key"]
 
 ########################################################################################
 # -------------------------------- Mimeo Model level --------------------------------- #
-_model_constants = _templates_constants["model"]
+_model_constants: dict = _templates_constants["model"]
 MODEL_CONTEXT_KEY: str = _model_constants["context"]["key"]
 MODEL_ATTRIBUTES_KEY: str = _model_constants["attributes"]["key"]
 MODEL_TEXT_VALUE_KEY: str = _model_constants["text-node-value"]["key"]
@@ -136,6 +146,10 @@ __all__ = [
     "OUTPUT_PROTOCOL_HTTPS",
     "VARS_KEY",
     "REFS_KEY",
+    "REQUIRED_REFS_DETAILS",
+    "REFS_DETAIL_CONTEXT",
+    "REFS_DETAIL_FIELD",
+    "REFS_DETAIL_TYPE",
     "TEMPLATES_KEY",
     "TEMPLATES_XML_TEMPLATE_TAG",
     "TEMPLATES_COUNT_KEY",

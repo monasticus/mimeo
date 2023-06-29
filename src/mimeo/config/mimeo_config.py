@@ -26,7 +26,8 @@ import xmltodict
 from mimeo.config import constants as cc
 from mimeo.config.exc import (InvalidIndentError, InvalidMimeoConfigError,
                               InvalidMimeoModelError,
-                              InvalidMimeoTemplateError, InvalidVarsError,
+                              InvalidMimeoTemplateError, InvalidRefsError,
+                              InvalidVarsError,
                               MimeoConfigurationNotFoundError,
                               MissingRequiredPropertyError,
                               UnsupportedMimeoConfigSourceError,
@@ -543,10 +544,31 @@ class MimeoConfig(MimeoDTO):
 
         Returns
         -------
-        dict
+        references : dict
             Customized references or an empty dictionary
+
+        Raises
+        ------
+        InvalidRefsError
+            If (1) the refs key does not point to a dictionary or
+            (2) any ref is not a dictionary or
+            (3) some refs does not have required details (context, field, type)
         """
-        return config.get(cc.REFS_KEY, {})
+        references = config.get(cc.REFS_KEY, {})
+        if not isinstance(references, dict):
+            raise InvalidRefsError(InvalidRefsError.Code.ERR_1, refs=references)
+        invalid_references = []
+        for name, reference in references.items():
+            if not isinstance(reference, dict):
+                raise InvalidRefsError(InvalidRefsError.Code.ERR_2, ref=name)
+            if any(detail not in reference for detail in cc.REQUIRED_REFS_DETAILS):
+                invalid_references.append(name)
+        if len(invalid_references) > 0:
+            raise InvalidRefsError(
+                InvalidRefsError.Code.ERR_3,
+                required=cc.REQUIRED_REFS_DETAILS,
+                refs=invalid_references)
+        return references
 
     @classmethod
     def _get_templates(
