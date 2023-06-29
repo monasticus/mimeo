@@ -11,7 +11,9 @@ from types import TracebackType
 
 from mimeo.config import MimeoConfig
 from mimeo.context import MimeoContext
-from mimeo.context.exc import VarNotFoundError
+from mimeo.context.exc import (InvalidReferenceValueError,
+                               NonPopulatedReferenceError,
+                               ReferenceNotFoundError, VarNotFoundError)
 from mimeo.meta import Alive, OnlyOneAlive
 
 
@@ -201,6 +203,8 @@ class MimeoContextManager(Alive, metaclass=OnlyOneAlive):
             field_name: str,
             field_value: str | int | float | bool,
     ):
+        if isinstance(field_value, (dict, list)):
+            raise InvalidReferenceValueError(field_value)
         ref_names = [ref_name
                      for ref_name, ref_meta in self._mimeo_config.refs.items()
                      if ref_meta["context"] == self._current_context.name
@@ -214,11 +218,11 @@ class MimeoContextManager(Alive, metaclass=OnlyOneAlive):
     ) -> str | int | float | bool:
         ref_meta = self._mimeo_config.refs.get(ref_name)
         if not ref_meta:
-            raise Exception
+            raise ReferenceNotFoundError(ref_name)
 
         values = self._refs.get(ref_name)
         if len(values) == 0:
-            raise Exception
+            raise NonPopulatedReferenceError(ref_name)
 
         if ref_meta["type"] == "parallel":
             index = self._current_context.curr_iteration().id - 1
@@ -227,6 +231,4 @@ class MimeoContextManager(Alive, metaclass=OnlyOneAlive):
         else:
             index = random.randrange(0, len(values))
         return values[index]
-
-
 

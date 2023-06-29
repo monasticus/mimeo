@@ -2,7 +2,9 @@ import pytest
 
 from mimeo.config import MimeoConfigFactory
 from mimeo.context import MimeoContextManager
-from mimeo.context.exc import VarNotFoundError
+from mimeo.context.exc import (InvalidReferenceValueError,
+                               NonPopulatedReferenceError,
+                               ReferenceNotFoundError, VarNotFoundError)
 from mimeo.meta.exc import InstanceNotAliveError
 from tests.utils import assert_throws
 
@@ -162,5 +164,47 @@ def test_ref_bool(default_config):
 
         mimeo_manager.cache_ref("ChildNode", False)
         assert mimeo_manager.get_ref("custom_ref_any") is False
+
+
+@assert_throws(err_type=InvalidReferenceValueError,
+               msg="Provided reference value [{v}] is invalid (use any atomic value)!",
+               v="{}")
+def test_cache_ref_dict(default_config):
+    with MimeoContextManager(default_config) as mimeo_manager:
+        context = mimeo_manager.get_context("SomeContext")
+        mimeo_manager.set_current_context(context)
+
+        mimeo_manager.cache_ref("custom_ref", {})
+
+
+@assert_throws(err_type=InvalidReferenceValueError,
+               msg="Provided reference value [{v}] is invalid (use any atomic value)!",
+               v="[]")
+def test_cache_ref_list(default_config):
+    with MimeoContextManager(default_config) as mimeo_manager:
+        context = mimeo_manager.get_context("SomeContext")
+        mimeo_manager.set_current_context(context)
+
+        mimeo_manager.cache_ref("custom_ref", [])
+
+
+@assert_throws(err_type=ReferenceNotFoundError,
+               msg="Reference [{ref}] has not been found!",
+               ref="non_configured_ref")
+def test_get_ref_not_found(default_config):
+    with MimeoContextManager(default_config) as mimeo_manager:
+        context = mimeo_manager.get_context("SomeContext")
+        mimeo_manager.set_current_context(context)
+
+        mimeo_manager.cache_ref("non_configured_ref", "value")
+        mimeo_manager.get_ref("non_configured_ref")
+
+
+@assert_throws(err_type=NonPopulatedReferenceError,
+               msg="Reference [{ref}] has not been populated with any value!",
+               ref="custom_ref_any")
+def test_get_ref_non_populated(default_config):
+    with MimeoContextManager(default_config) as mimeo_manager:
+        mimeo_manager.get_ref("custom_ref_any")
 
 
