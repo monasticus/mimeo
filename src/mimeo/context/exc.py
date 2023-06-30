@@ -21,6 +21,8 @@ It contains all custom exceptions related to Mimeo Context:
         A custom Exception class for not found reference.
     * NonPopulatedReferenceError
         A custom Exception class for non-populated reference.
+    * NoCorrespondingReferenceError
+        A custom Exception class for no corresponding reference.
 """
 from __future__ import annotations
 
@@ -248,3 +250,30 @@ class NonPopulatedReferenceError(Exception):
         """
         super().__init__(f"Reference [{ref_name}] has not been populated "
                          "with any value!")
+
+
+class NoCorrespondingReferenceError(Exception):
+    """A custom Exception class for no corresponding reference.
+
+    Raised while attempting to access a parallel reference that does not have
+    a corresponding value at the same index.
+    """
+
+    def __init__(
+            self,
+            ref_name: str,
+            iteration: int,
+    ):
+        """Initialize NoCorrespondingReferenceError exception with details.
+
+        Extends Exception constructor with a custom message.
+
+        Parameters
+        ----------
+        ref_name : str
+            A reference name
+        iteration : int
+            An iteration ID
+        """
+        super().__init__(f"No corresponding reference [{ref_name}] "
+                         f"for the iteration [{iteration}].")

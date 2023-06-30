@@ -3,6 +3,7 @@ import pytest
 from mimeo.config import MimeoConfigFactory
 from mimeo.context import MimeoContextManager
 from mimeo.context.exc import (InvalidReferenceValueError,
+                               NoCorrespondingReferenceError,
                                NonPopulatedReferenceError,
                                ReferenceNotFoundError, VarNotFoundError)
 from mimeo.meta.exc import InstanceNotAliveError
@@ -206,5 +207,30 @@ def test_get_ref_not_found(default_config):
 def test_get_ref_non_populated(default_config):
     with MimeoContextManager(default_config) as mimeo_manager:
         mimeo_manager.get_ref("custom_ref_any")
+
+
+@assert_throws(err_type=NoCorrespondingReferenceError,
+               msg="No corresponding reference [{ref}] for the iteration [{iter}].",
+               ref="custom_ref_parallel",
+               iter=3)
+def test_get_ref_no_corresponding(default_config):
+    with MimeoContextManager(default_config) as mimeo_manager:
+        context = mimeo_manager.get_context("SomeContext")
+        mimeo_manager.set_current_context(context)
+
+        context.next_iteration()
+        mimeo_manager.cache_ref("ChildNode", 1)
+        context.next_iteration()
+        mimeo_manager.cache_ref("ChildNode", 2)
+
+        context2 = mimeo_manager.get_context("SomeContext2")
+        mimeo_manager.set_current_context(context2)
+
+        context2.next_iteration()
+        mimeo_manager.get_ref("custom_ref_parallel")
+        context2.next_iteration()
+        mimeo_manager.get_ref("custom_ref_parallel")
+        context2.next_iteration()
+        mimeo_manager.get_ref("custom_ref_parallel")
 
 
