@@ -205,6 +205,24 @@ class MimeoContextManager(Alive, metaclass=OnlyOneAlive):
             field_name: str,
             field_value: str | int | float | bool,
     ):
+        """Cache a field's value in references.
+
+        It saves the field's value in all references having context configured
+        to the current and field's to the one provided. When there's such a reference
+        the field's value is not cached.
+
+        Parameters
+        ----------
+        field_name : str
+            A field name
+        field_value : str | int | float | bool
+            A field value
+
+        Raises
+        ------
+        InvalidReferenceValueError
+            If the field's value is not atomic one
+        """
         if isinstance(field_value, (dict, list)):
             raise InvalidReferenceValueError(field_value)
         ref_names = [ref_name
@@ -218,6 +236,32 @@ class MimeoContextManager(Alive, metaclass=OnlyOneAlive):
             self,
             ref_name: str,
     ) -> str | int | float | bool:
+        """Get a reference value.
+
+        It provides a reference value depending on its type. For 'any' returns a value
+        on any index. For 'parallel' it uses a value produced in a corresponding
+        iteration for a source context.
+
+        Parameters
+        ----------
+        ref_name : str
+            A reference name
+
+        Returns
+        -------
+        str | int | float | bool
+            A reference value
+
+        Raises
+        ------
+        ReferenceNotFoundError
+            If there's such a reference configured
+        NonPopulatedReferenceError
+            If the reference has no values
+        NoCorrespondingReferenceError
+            If there was no value cached in a corresponding iteration of the source
+            context
+        """
         ref_meta = self._mimeo_config.refs.get(ref_name)
         if not ref_meta:
             raise ReferenceNotFoundError(ref_name)
