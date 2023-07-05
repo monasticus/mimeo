@@ -17,6 +17,18 @@ def default_config():
             "CUSTOM_VAR_1": 2,
             "CUSTOM_VAR_2": "{CUSTOM_VAR_1}",
         },
+        "refs": {
+            "custom_ref_any": {
+                "context": "SomeContext",
+                "field": "ChildNode",
+                "type": "any",
+            },
+            "custom_ref_parallel": {
+                "context": "SomeContext",
+                "field": "ChildNode",
+                "type": "parallel",
+            },
+        },
         "_templates_": [
             {
                 "count": 10,
@@ -100,6 +112,19 @@ def test_is_parametrized_mimeo_util_false():
             "_mimeo_util": {},
         },
     ])
+
+
+def test_is_reference_true(default_config):
+    with MimeoContextManager(default_config):
+        assert MimeoRenderer.is_reference("{custom_ref_any}")
+        assert MimeoRenderer.is_reference("{custom_ref_parallel}")
+
+
+def test_is_reference_false(default_config):
+    with MimeoContextManager(default_config):
+        assert not MimeoRenderer.is_reference("{non_existing_custom_ref}")
+        assert not MimeoRenderer.is_reference("custom_ref_any")
+        assert not MimeoRenderer.is_reference("custom_ref_parallel")
 
 
 def test_render_value_str_value(default_config):

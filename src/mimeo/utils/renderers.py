@@ -340,7 +340,6 @@ class MimeoRenderer:
         Verify if the value is a parametrized Mimeo Util.
     """
 
-    _UTILS_PATTERN: Pattern = re.compile("^{(.+)}$")
     _VARS_PATTERN: Pattern = re.compile(".*({[A-Z_0-9]+})")
     _SPECIAL_FIELDS_PATTERN: Pattern = re.compile(".*({:([a-zA-Z]+:)?[-_a-zA-Z0-9]+:})")
 
@@ -435,6 +434,27 @@ class MimeoRenderer:
         return (isinstance(value, dict) and
                 len(value) == 1 and
                 cc.MODEL_MIMEO_UTIL_KEY in value)
+
+    @classmethod
+    def is_reference(
+            cls,
+            value: str,
+    ) -> bool:
+        """Verify if the value is a Mimeo Reference.
+
+        Parameters
+        ----------
+        value : str
+            A string value
+
+        Returns
+        -------
+        bool
+            True if the value is a Mimeo Reference. Otherwise, False.
+        """
+        reference_names = MimeoContextManager().get_ref_names()
+        reference_re = "^{(" + "|".join(reference_names) + ")}$"
+        return bool(re.match(reference_re, value))
 
     @classmethod
     def render(
