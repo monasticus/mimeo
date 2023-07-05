@@ -8,6 +8,8 @@ the following renderers:
         A class rendering Mimeo Utils.
     * VarsRenderer
         A class rendering Mimeo Vars.
+    * RefsRenderer
+        A class rendering Mimeo Refs.
     * SpecialFieldsRenderer
         A class rendering Mimeo Special Fields.
 """
@@ -277,6 +279,50 @@ class VarsRenderer:
         """
         logger.fine("Rendering a variable [%s]", var)
         return MimeoContextManager().get_var(var)
+
+
+class RefsRenderer:
+    """A class rendering Mimeo Refs.
+
+    It contains only a class method.
+
+    Methods
+    -------
+    render(var: str) -> Any
+        Render a Mimeo Ref.
+    """
+
+    @classmethod
+    def render(
+            cls,
+            ref_name: str,
+    ) -> str | int | bool | dict:
+        """Render a Mimeo Ref.
+
+        Parameters
+        ----------
+        ref_name : str
+            A reference name
+
+        Returns
+        -------
+        str | int | bool | dict
+            A reference value
+
+        Raises
+        ------
+        InstanceNotAliveError
+            If the MimeoContextManager instance is not alive
+        ReferenceNotFoundError
+            If there's such a reference configured
+        NonPopulatedReferenceError
+            If the reference has no values
+        NoCorrespondingReferenceError
+            If there was no value cached in a corresponding iteration of the source
+            context
+        """
+        logger.fine("Rendering a reference [%s]", ref_name)
+        return MimeoContextManager().get_ref(ref_name)
 
 
 class SpecialFieldsRenderer:
