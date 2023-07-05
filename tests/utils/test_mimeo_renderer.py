@@ -114,14 +114,33 @@ def test_is_parametrized_mimeo_util_false():
     ])
 
 
-def test_is_reference_true(default_config):
-    with MimeoContextManager(default_config):
+def test_is_reference_true():
+    config = MimeoConfigFactory.parse({
+        "refs": {
+            "custom_ref_any": {
+                "context": "SomeContext",
+                "field": "ChildNode",
+                "type": "any",
+            },
+            "custom_ref_parallel": {
+                "context": "SomeContext",
+                "field": "ChildNode",
+                "type": "parallel",
+            },
+        },
+        "_templates_": [],
+    })
+    with MimeoContextManager(config):
         assert MimeoRenderer.is_reference("{custom_ref_any}")
         assert MimeoRenderer.is_reference("{custom_ref_parallel}")
 
 
-def test_is_reference_false(default_config):
-    with MimeoContextManager(default_config):
+def test_is_reference_false():
+    config = MimeoConfigFactory.parse({
+        "_templates_": [],
+    })
+    with MimeoContextManager(config):
+        assert not MimeoRenderer.is_reference("{}")
         assert not MimeoRenderer.is_reference("{non_existing_custom_ref}")
         assert not MimeoRenderer.is_reference("custom_ref_any")
         assert not MimeoRenderer.is_reference("custom_ref_parallel")
@@ -145,31 +164,34 @@ def test_render_value_bool_value(default_config):
         assert value is True
 
 
-def test_raw_mimeo_util():
-    date_value = MimeoRenderer.render("{date}")
-    assert date_value == date.today().strftime("%Y-%m-%d")
+def test_raw_mimeo_util(default_config):
+    with MimeoContextManager(default_config):
+        date_value = MimeoRenderer.render("{date}")
+        assert date_value == date.today().strftime("%Y-%m-%d")
 
 
-def test_parametrized_mimeo_util_default():
+def test_parametrized_mimeo_util_default(default_config):
     mimeo_util = {
         "_mimeo_util": {
             "_name": "date",
         },
     }
-    date_value = MimeoRenderer.render(mimeo_util)
-    assert date_value == date.today().strftime("%Y-%m-%d")
+    with MimeoContextManager(default_config):
+        date_value = MimeoRenderer.render(mimeo_util)
+        assert date_value == date.today().strftime("%Y-%m-%d")
 
 
-def test_parametrized_mimeo_util_custom():
+def test_parametrized_mimeo_util_custom(default_config):
     mimeo_util = {
         "_mimeo_util": {
             "_name": "date",
             "days_delta": 5,
         },
     }
-    date_value = MimeoRenderer.render(mimeo_util)
-    expected_date_value = date.today() + timedelta(5)
-    assert date_value == expected_date_value.strftime("%Y-%m-%d")
+    with MimeoContextManager(default_config):
+        date_value = MimeoRenderer.render(mimeo_util)
+        expected_date_value = date.today() + timedelta(5)
+        assert date_value == expected_date_value.strftime("%Y-%m-%d")
 
 
 def test_parametrized_util_using_raw_mimeo_util(default_config):
@@ -449,6 +471,42 @@ def test_vars_as_partial_values_bool():
     with MimeoContextManager(config):
         value = MimeoRenderer.render("/data/{VALIDATED}/1.xml")
         assert value == "/data/true/1.xml"
+
+
+def test_refs_render_str(default_config):
+    with MimeoContextManager(default_config) as mimeo_manager:
+        context = mimeo_manager.get_context("SomeContext")
+        mimeo_manager.set_current_context(context)
+
+        mimeo_manager.cache_ref("ChildNode", "value")
+        assert MimeoRenderer.render("{custom_ref_any}") == "value"
+
+
+def test_refs_render_int(default_config):
+    with MimeoContextManager(default_config) as mimeo_manager:
+        context = mimeo_manager.get_context("SomeContext")
+        mimeo_manager.set_current_context(context)
+
+        mimeo_manager.cache_ref("ChildNode", 1)
+        assert MimeoRenderer.render("{custom_ref_any}") == 1
+
+
+def test_refs_render_float(default_config):
+    with MimeoContextManager(default_config) as mimeo_manager:
+        context = mimeo_manager.get_context("SomeContext")
+        mimeo_manager.set_current_context(context)
+
+        mimeo_manager.cache_ref("ChildNode", 1.5)
+        assert MimeoRenderer.render("{custom_ref_any}") == 1.5
+
+
+def test_refs_render_bool(default_config):
+    with MimeoContextManager(default_config) as mimeo_manager:
+        context = mimeo_manager.get_context("SomeContext")
+        mimeo_manager.set_current_context(context)
+
+        mimeo_manager.cache_ref("ChildNode", False)
+        assert MimeoRenderer.render("{custom_ref_any}") is False
 
 
 def test_special_fields_render_str(default_config):

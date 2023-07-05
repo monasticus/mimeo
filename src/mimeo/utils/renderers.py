@@ -499,6 +499,8 @@ class MimeoRenderer:
             True if the value is a Mimeo Reference. Otherwise, False.
         """
         reference_names = MimeoContextManager().get_ref_names()
+        if len(reference_names) == 0:
+            return False
         reference_re = "^{(" + "|".join(reference_names) + ")}$"
         return bool(re.match(reference_re, value))
 
@@ -509,12 +511,12 @@ class MimeoRenderer:
     ) -> Any:
         """Render a value.
 
-        This method renders a value accordingly to its type and form.
-        If the value takes a form of Mimeo Util it is rendered as
-        Mimeo Util (raw or parametrized); if it takes a form of
-        a special field this renderer will try to reach it from
-        the current context; when the value takes a form of a Mimeo Var,
-        then it uses Mimeo Vars defined in Mimeo Config.
+        This method renders a value accordingly to its type and form. If the value
+        takes a form of Mimeo Util it is rendered as a Mimeo Util (raw or parametrized);
+        if it takes a form of a special field this renderer will try to reach it from
+        the current context; when the value takes a form of a Mimeo Var, then it uses
+        Mimeo Vars defined in Mimeo Config; when it is a Mimeo Ref the renderer will
+        try to find a reference value using its metadata from Mimeo Configuration.
         Otherwise, the raw value is returned.
         It is recursively called to return a final value.
 
@@ -548,6 +550,13 @@ class MimeoRenderer:
         InvalidSexError
             If the First Name Mimeo Util has not supported `sex`
             parameter value assigned.
+        ReferenceNotFoundError
+            If there's such a reference configured
+        NonPopulatedReferenceError
+            If the reference has no values
+        NoCorrespondingReferenceError
+            If there was no value cached in a corresponding iteration of the source
+            context
         """
         logger.fine("Rendering a value [%s]", value)
         try:
@@ -567,8 +576,8 @@ class MimeoRenderer:
     ) -> Any:
         """Render a string value.
 
-        Depending on value form it can render it as a raw value,
-        a special field, a Mimeo Var or a raw Mimeo Util.
+        Depending on value form it can render it as a raw value, a special field,
+        a Mimeo Var, a raw Mimeo Util or Mimeo Ref.
 
         Parameters
         ----------
@@ -586,6 +595,8 @@ class MimeoRenderer:
             return cls._render_var(value)
         if cls.is_raw_mimeo_util(value):
             return cls._render_raw_mimeo_util(value)
+        if cls.is_reference(value):
+            return cls._render_reference(value)
         return value
 
     @classmethod
@@ -663,6 +674,38 @@ class MimeoRenderer:
             r_val = str(r_val).lower() if isinstance(r_val, bool) else str(r_val)
             r_val = value.replace(wrapped_var, str(r_val))
         return cls.render(r_val)
+
+    @classmethod
+    def _render_reference(
+            cls,
+            value: str,
+    ) -> Any:
+        """Render a Mimeo Ref.
+
+        Parameters
+        ----------
+        value : str
+            A Mimeo Ref
+
+        Returns
+        -------
+        Any
+            A rendered value
+
+        Raises
+        ------
+        InstanceNotAliveError
+            If the MimeoContextManager instance is not alive
+        ReferenceNotFoundError
+            If there's such a reference configured
+        NonPopulatedReferenceError
+            If the reference has no values
+        NoCorrespondingReferenceError
+            If there was no value cached in a corresponding iteration of the source
+            context
+        """
+        rendered_value = RefsRenderer.render(value[1:][:-1])
+        return cls.render(rendered_value)
 
     @classmethod
     def _render_raw_mimeo_util(
