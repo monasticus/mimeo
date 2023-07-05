@@ -279,3 +279,15 @@ class MimeoContextManager(Alive, metaclass=OnlyOneAlive):
             index = random.randrange(0, len(values))
         return values[index]
 
+    def get_ref_names(
+            self,
+    ) -> list[str]:
+        """Get reference names.
+
+        Returns
+        -------
+        list
+            List of reference names
+        """
+        return list(self._mimeo_config.refs.keys())
+

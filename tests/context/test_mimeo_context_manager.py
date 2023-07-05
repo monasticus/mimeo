@@ -167,6 +167,12 @@ def test_ref_bool(default_config):
         assert mimeo_manager.get_ref("custom_ref_any") is False
 
 
+def test_get_ref_names(default_config):
+    with MimeoContextManager(default_config) as mimeo_manager:
+        expected_ref_names = ["custom_ref_any", "custom_ref_parallel"]
+        assert mimeo_manager.get_ref_names() == expected_ref_names
+
+
 @assert_throws(err_type=InvalidReferenceValueError,
                msg="Provided reference value [{v}] is invalid (use any atomic value)!",
                v="{}")
