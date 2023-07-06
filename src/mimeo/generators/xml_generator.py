@@ -13,7 +13,6 @@ from xml.dom import minidom
 
 from mimeo.config import constants as cc
 from mimeo.config.mimeo_config import MimeoConfig, MimeoTemplate
-from mimeo.context import MimeoContext
 from mimeo.generators import Generator
 from mimeo.generators.exc import UnsupportedStructureError
 from mimeo.utils import MimeoRenderer
@@ -396,7 +395,6 @@ class XMLGenerator(Generator):
             cls,
             parent: ElemTree.Element,
             node_meta: dict,
-            context: MimeoContext,
     ) -> ElemTree.Element:
         """Process a node with an atomic value.
 
@@ -409,8 +407,6 @@ class XMLGenerator(Generator):
             A parent node
         node_meta : dict
             Node's metadata
-        context : MimeoContext, default None
-            The current Mimeo Context (injected by MimeoContextManager)
 
         Returns
         -------
@@ -428,20 +424,17 @@ class XMLGenerator(Generator):
 
         Examples
         --------
-        context = MimeoContextManager().get_current_context()
         parent = ElemTree.Element("Root")
         node_meta = cls._node_meta(
             name="SomeField",
             value="value-1",
         )
-        cls._process_atomic_value(parent, node_meta, context)
+        cls._process_atomic_value(parent, node_meta)
         ->
         <SomeField>value-1</SomeField>
         """
         element = cls._create_node(parent, node_meta)
-        value = MimeoRenderer.render(node_meta["value"])
-        if node_meta["special"]:
-            context.curr_iteration().add_special_field(node_meta["name"], value)
+        value = super()._render_atomic_value(node_meta)
         val_str = str(value) if value is not None else ""
         element.text = val_str.lower() if isinstance(value, bool) else val_str
         logger.fine("Rendered value [%s]", element.text)
