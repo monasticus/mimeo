@@ -12,8 +12,6 @@ from typing import Iterator
 
 from mimeo.config import constants as cc
 from mimeo.config.mimeo_config import MimeoConfig, MimeoTemplate
-from mimeo.context import MimeoContext
-from mimeo.context.decorators import mimeo_context
 from mimeo.generators import Generator
 from mimeo.utils import MimeoRenderer
 
@@ -105,12 +103,10 @@ class JSONGenerator(Generator):
         return json.dumps(data_unit)
 
     @classmethod
-    @mimeo_context
     def _process_node(
             cls,
             parent: dict | list | None,
             node_meta: dict,
-            context: MimeoContext | None = None,
     ) -> dict | list:
         """Process a single template's node.
 
@@ -123,8 +119,6 @@ class JSONGenerator(Generator):
             A parent node
         node_meta : dict
             Node's metadata
-        context : MimeoContext, default None
-            The current Mimeo Context (injected by MimeoContextManager)
 
         Returns
         -------
@@ -139,7 +133,7 @@ class JSONGenerator(Generator):
             If a special field does not exist.
         """
         parent = parent if parent is not None else {}
-        return super()._process_node(parent, node_meta, context)
+        return super()._process_node(parent, node_meta)
 
     @classmethod
     def _pre_process_node(
@@ -489,7 +483,6 @@ class JSONGenerator(Generator):
             cls,
             parent: dict | list,
             node_meta: dict,
-            context: MimeoContext,
     ) -> dict | list:
         """Process a node with an atomic value.
 
@@ -502,8 +495,6 @@ class JSONGenerator(Generator):
             A parent node
         node_meta : dict
             Node's metadata
-        context : MimeoContext, default None
-            The current Mimeo Context (injected by MimeoContextManager)
 
         Returns
         -------
@@ -519,33 +510,29 @@ class JSONGenerator(Generator):
 
         Examples
         --------
-        context = MimeoContextManager().get_current_context()
         parent = {}
         node_meta = cls._node_meta(
             name="SomeField",
             value="value-1",
         )
-        cls._process_atomic_value(parent, node_meta, context)
+        cls._process_atomic_value(parent, node_meta)
         ->
         {
           "SomeField": "value-1"
         }
 
-        context = MimeoContextManager().get_current_context()
         parent = []
         node_meta = cls._node_meta(
             name=None,
             value="value-1",
         )
-        cls._process_atomic_value(parent, node_meta, context)
+        cls._process_atomic_value(parent, node_meta)
         ->
         [
           "value-1"
         ]
         """
-        value = MimeoRenderer.render(node_meta["value"])
-        if node_meta["special"]:
-            context.curr_iteration().add_special_field(node_meta["name"], value)
+        value = super()._render_atomic_value(node_meta)
         if isinstance(parent, dict):
             parent[node_meta["name"]] = value
         elif isinstance(parent, list):
