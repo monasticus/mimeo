@@ -1,0 +1,46 @@
+<mimeo_configuration>
+    <refs>
+        <parent-one-to-many>
+            <context>SomeEntity</context>
+            <field>ID</field>
+            <type>any</type>
+        </parent-one-to-many>
+        <parent-one-to-one>
+            <context>SomeEntity</context>
+            <field>ID</field>
+            <type>parallel</type>
+        </parent-one-to-one>
+    </refs>
+    <_templates_>
+        <_template_>
+            <count>5</count>
+            <model>
+
+                <SomeEntity>
+                    <ID>{key}</ID>
+                </SomeEntity>
+
+            </model>
+        </_template_>
+        <_template_>
+            <count>5</count>
+            <model>
+
+                <OneToOneChildEntity>
+                    <Parent>{parent-one-to-one}</Parent>
+                </OneToOneChildEntity>
+
+            </model>
+        </_template_>
+        <_template_>
+            <count>10</count>
+            <model>
+
+                <ManyToOneChildEntity>
+                    <Parent>{parent-one-to-many}</Parent>
+                </ManyToOneChildEntity>
+
+            </model>
+        </_template_>
+    </_templates_>
+</mimeo_configuration>

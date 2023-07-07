@@ -1,0 +1,40 @@
+{
+  "refs": {
+    "parent-one-to-many": {
+      "context": "SomeEntity",
+      "field": "ID",
+      "type": "any"
+    },
+    "parent-one-to-one": {
+      "context": "SomeEntity",
+      "field": "ID",
+      "type": "parallel"
+    }
+  },
+  "_templates_": [
+    {
+      "count": 5,
+      "model": {
+        "SomeEntity": {
+          "ID": "{key}"
+        }
+      }
+    },
+    {
+      "count": 5,
+      "model": {
+        "OneToOneChildEntity": {
+          "Parent": "{parent-one-to-one}"
+        }
+      }
+    },
+    {
+      "count": 10,
+      "model": {
+        "ManyToOneChildEntity": {
+          "Parent": "{parent-one-to-many}"
+        }
+      }
+    }
+  ]
+}

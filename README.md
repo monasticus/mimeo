@@ -7,7 +7,8 @@
 [![Code Coverage](https://img.shields.io/badge/Code%20Coverage-100%25-brightgreen?style=plastic)](https://github.com/TomaszAniolowski/mimeo/actions/workflows/coverage_badge.yml?query=branch%3Amain)
 
 [Mimeo](https://github.com/TomaszAniolowski/mimeo) is a command line tool and a python library generating NoSQL data based on a template.
-It can be used by developers, testers or business analysts in their daily work.
+It can be used by developers, testers or business analysts in their daily work. Its main advantage over other generators
+is that it can build data with nested nodes at any level (as in real data).
 
 
 ## Installation
@@ -248,27 +249,28 @@ When using Mimeo command line tool you can overwrite Mimeo Configuration propert
 
 Mimeo configuration is defined in a JSON file using internal settings and data templates.
 
-| Key                      |  Level   |      Required      |     Supported values     |    Default     | Description                                                                                                                                             |
-|:-------------------------|:--------:|:------------------:|:------------------------:|:--------------:|---------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `output`                 |  Config  |        :x:         |          object          |      ---       | Defines output details on how it will be consumed                                                                                                       |
-| `output/direction`       |  Config  |        :x:         | `file`, `stdout`, `http` |     `file`     | Defines how output will be consumed                                                                                                                     |
-| `output/format`          |  Config  |        :x:         |      `xml`, `json`       |     `xml`      | Defines output data format                                                                                                                              |
-| `output/indent`          |  Config  |        :x:         |         integer          |     `null`     | Defines indent applied in output data                                                                                                                   |
-| `output/xml_declaration` |  Config  |        :x:         |         boolean          |    `false`     | Indicates whether an xml declaration should be added to output data                                                                                     |
-| `output/directory_path`  |  Config  |        :x:         |          string          | `mimeo-output` | For `file` direction - defines an output directory                                                                                                      |
-| `output/file_name`       |  Config  |        :x:         |          string          | `mimeo-output` | For `file` direction - defines an output file name                                                                                                      |
-| `output/method`          |  Config  |        :x:         |      `POST`, `PUT`       |     `POST`     | For `http` direction - defines a request method                                                                                                         |
-| `output/protocol`        |  Config  |        :x:         |     `http`, `https`      |     `http`     | For `http` direction - defines a url protocol                                                                                                           |
-| `output/host`            |  Config  | :heavy_check_mark: |          string          |      ---       | For `http` direction - defines a url host                                                                                                               |
-| `output/port`            |  Config  |        :x:         |         integer          |     `null`     | For `http` direction - defines a url port (can be empty)                                                                                                |
-| `output/endpoint`        |  Config  | :heavy_check_mark: |          string          |      ---       | For `http` direction - defines a url endpoint                                                                                                           |
-| `output/username`        |  Config  | :heavy_check_mark: |          string          |      ---       | For `http` direction - defines a username                                                                                                               |
-| `output/password`        |  Config  | :heavy_check_mark: |          string          |      ---       | For `http` direction - defines a password                                                                                                               |
-| `vars`                   |  Config  |        :x:         |          object          |      ---       | Defines variables to be used in a Mimeo Template (read more in next section)                                                                            |
-| `_templates_`            |  Config  | :heavy_check_mark: |          array           |      ---       | Stores templates for data generation                                                                                                                    |
-| `count`                  | Template | :heavy_check_mark: |         integer          |      ---       | Indicates number of copies                                                                                                                              |
-| `model`                  | Template | :heavy_check_mark: |          object          |      ---       | Defines data template to be copied                                                                                                                      |
-| `context`                |  Model   |        :x:         |          object          |      ---       | Defines a context name that is internally used e.g. using `curr_iter()` and `get_key()` mimeo utils (by default model name is used as the context name) |
+| Key                      |  Level   |  Required   |     Supported values     |    Default     | Description                                                                                                                                             |
+|:-------------------------|:--------:|:-----------:|:------------------------:|:--------------:|---------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `output`                 |  Config  | **&#9744;** |          object          |      ---       | Defines output details on how it will be consumed                                                                                                       |
+| `output/direction`       |  Config  | **&#9744;** | `file`, `stdout`, `http` |     `file`     | Defines how output will be consumed                                                                                                                     |
+| `output/format`          |  Config  | **&#9744;** |      `xml`, `json`       |     `xml`      | Defines output data format                                                                                                                              |
+| `output/indent`          |  Config  | **&#9744;** |         integer          |     `null`     | Defines indent applied in output data                                                                                                                   |
+| `output/xml_declaration` |  Config  | **&#9744;** |         boolean          |    `false`     | Indicates whether an xml declaration should be added to output data                                                                                     |
+| `output/directory_path`  |  Config  | **&#9744;** |          string          | `mimeo-output` | For `file` direction - defines an output directory                                                                                                      |
+| `output/file_name`       |  Config  | **&#9744;** |          string          | `mimeo-output` | For `file` direction - defines an output file name                                                                                                      |
+| `output/method`          |  Config  | **&#9744;** |      `POST`, `PUT`       |     `POST`     | For `http` direction - defines a request method                                                                                                         |
+| `output/protocol`        |  Config  | **&#9744;** |     `http`, `https`      |     `http`     | For `http` direction - defines a url protocol                                                                                                           |
+| `output/host`            |  Config  | **&#9745;** |          string          |      ---       | For `http` direction - defines a url host                                                                                                               |
+| `output/port`            |  Config  | **&#9744;** |         integer          |     `null`     | For `http` direction - defines a url port (can be empty)                                                                                                |
+| `output/endpoint`        |  Config  | **&#9745;** |          string          |      ---       | For `http` direction - defines a url endpoint                                                                                                           |
+| `output/username`        |  Config  | **&#9745;** |          string          |      ---       | For `http` direction - defines a username                                                                                                               |
+| `output/password`        |  Config  | **&#9745;** |          string          |      ---       | For `http` direction - defines a password                                                                                                               |
+| `vars`                   |  Config  | **&#9744;** |          object          |      ---       | Defines variables to be used in a Mimeo Template (read more below)                                                                                      |
+| `refs`                   |  Config  | **&#9744;** |          object          |      ---       | Defines references to be used in a Mimeo Template (read more below)                                                                                     |
+| `_templates_`            |  Config  | **&#9745;** |          array           |      ---       | Stores templates for data generation                                                                                                                    |
+| `count`                  | Template | **&#9745;** |         integer          |      ---       | Indicates number of copies                                                                                                                              |
+| `model`                  | Template | **&#9745;** |          object          |      ---       | Defines data template to be copied                                                                                                                      |
+| `context`                |  Model   | **&#9744;** |          object          |      ---       | Defines a context name that is internally used e.g. using `curr_iter()` and `get_key()` mimeo utils (by default model name is used as the context name) |
 
 #### Mimeo Environment
 
@@ -359,7 +361,8 @@ Example:
 #### Mimeo Special Fields
 
 In Mimeo Template you can use so-called _special fields_.
-Every field in a template can be stored in memory (_provided_) and used later as a value of other fields (_injected_).
+Every field in a template can be stored in memory (_provided_) and used later as a value of other fields (_injected_)
+in context of a single iteration.
 To provide a special field, wrap its name with colons: [`:SomeField:`]. To inject, use additionally curly braces to
 let interpreter know it should be rendered [`{:SomeField:}`].
 They can be injected as partial values, similarly to Mimeo Vars.
@@ -375,6 +378,66 @@ Example
           ":ChildNode1:": "custom-value",
           "ChildNode2": "{:ChildNode1:}",
           "ChildNode3": "{:ChildNode1:}-with-suffix"
+        }
+      }
+    }
+  ]
+}
+```
+
+#### Mimeo Refs
+
+Mimeo Special Fields are useful when an entity has the same value used in several fields.
+However, usually entities are related with each other. To use references between entities, you can use
+Mimeo Refs. They are configured at the highest Mimeo Configuration level and can be defined as of 2 types:
+- `any` - reference of this type will be used randomly
+  - no order
+  - possible duplicates (One-To-Many, Many-To-Many)
+- `parallel` - reference of this type will generate a reference from the same iteration in references entity
+  - same order as in parent entity
+  - unique values (One-To-One)
+
+To use them in a Mimeo Template, simply wrap a reference name with curly braces [`{some-reference}`].
+
+_Note: referenced entity needs to be placed before a referencing one._
+
+Example
+```json
+{
+  "refs": {
+    "parent-one-to-many": {
+      "context": "SomeEntity",
+      "field": "ID",
+      "type": "any"
+    },
+    "parent-one-to-one": {
+      "context": "SomeEntity",
+      "field": "ID",
+      "type": "parallel"
+    }
+  },
+  "_templates_": [
+    {
+      "count": 5,
+      "model": {
+        "SomeEntity": {
+          "ID": "{key}"
+        }
+      }
+    },
+    {
+      "count": 5,
+      "model": {
+        "OneToOneChildEntity": {
+          "Parent": "{parent-one-to-one}"
+        }
+      }
+    },
+    {
+      "count": 10,
+      "model": {
+        "ManyToOneChildEntity": {
+          "Parent": "{parent-one-to-many}"
         }
       }
     }
