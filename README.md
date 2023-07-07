@@ -389,17 +389,22 @@ Example
 
 Mimeo Special Fields are useful when an entity has the same value used in several fields.
 However, usually entities are related with each other. To use references between entities, you can use
-Mimeo Refs. They are configured at the highest Mimeo Configuration level and can be defined as of 2 types:
-- `any` - reference of this type will be used randomly
-  - no order
-  - possible duplicates (One-To-Many, Many-To-Many)
-- `parallel` - reference of this type will generate a reference from the same iteration in references entity
-  - same order as in parent entity
-  - unique values (One-To-One)
+Mimeo Refs. They are configured at the highest Mimeo Configuration level and require 3 settings:
+- context - a context from which values will be cached
+- field - a source field of the reference 
+- type
+  - `any` - reference of this type will be used randomly
+    - no order
+    - possible duplicates (One-To-Many, Many-To-Many)
+  - `parallel` - reference of this type will generate a reference from the same iteration in references entity
+    - same order as in parent entity
+    - unique values (One-To-One)
 
 To use them in a Mimeo Template, simply wrap a reference name with curly braces [`{some-reference}`].
 
-_Note: referenced entity needs to be placed before a referencing one._
+> Note:
+>  - A reference can't be configured using any of Mimeo Utils' names nor existing Mimeo Vars
+>  - A referenced entity needs to be placed before a referencing one
 
 Example
 ```json
