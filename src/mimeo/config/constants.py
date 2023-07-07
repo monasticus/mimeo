@@ -103,6 +103,10 @@ REFS_TYPE_ANY: str = _refs_details["type"]["values"]["any"]
 REFS_TYPE_PARALLEL: str = _refs_details["type"]["values"]["parallel"]
 
 ########################################################################################
+# ------------------------------ refs forbidden names -------------------------------- #
+REFS_FORBIDDEN_NAMES: tuple = tuple(_refs_constants["forbidden-names"])
+
+########################################################################################
 #                                   MIMEO TEMPLATES                                    #
 ########################################################################################
 _templates_constants: dict = _cc["templates"]
@@ -159,6 +163,7 @@ __all__ = [
     "SUPPORTED_REFS_TYPES",
     "REFS_TYPE_ANY",
     "REFS_TYPE_PARALLEL",
+    "REFS_FORBIDDEN_NAMES",
     "TEMPLATES_KEY",
     "TEMPLATES_XML_TEMPLATE_TAG",
     "TEMPLATES_COUNT_KEY",

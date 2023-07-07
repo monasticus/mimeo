@@ -212,11 +212,14 @@ class InvalidRefsError(Exception):
             An error code for a ref not being a dictionary
         ERR_3: str
             An error code for refs with missing required details
+        ERR_4: str
+            An error code for refs having same name as a Mimeo Util or a Mimeo Var
         """
 
         ERR_1: str = "REFS_NOT_A_DICT"
         ERR_2: str = "REF_NOT_A_DICT"
         ERR_3: str = "MISSING_DETAILS"
+        ERR_4: str = "FORBIDDEN_NAME"
 
     def __init__(
             self,
@@ -272,6 +275,11 @@ class InvalidRefsError(Exception):
             references = ", ".join(details["refs"])
             return (f"Missing required details [{required_details}] in the following "
                     f"refs [{references}]")
+        if code == cls.Code.ERR_4:
+            references = ", ".join(details["refs"])
+            return ("A reference can't be configured using name of Mimeo Utils "
+                    "or existing Vars. Please rename following refs: "
+                    f"[{references}]")
 
         msg = f"Provided error code is not a {cls.__name__}.Code enum!"
         raise ValueError(msg)

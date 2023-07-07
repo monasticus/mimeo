@@ -337,6 +337,74 @@ def test_parsing_config_invalid_refs_missing_details():
     MimeoConfigFactory.parse(config)
 
 
+@assert_throws(err_type=InvalidRefsError,
+               msg="A reference can't be configured using name of Mimeo Utils "
+                   "or existing Vars. Please rename following refs: [{refs}]",
+               refs="key, random_item")
+def test_parsing_config_invalid_refs_forbidden_mimeo_utils_name():
+    config = {
+        "refs": {
+            "key": {
+                "context": "SomeEntity",
+                "field": "ChildNode",
+                "type": "any",
+            },
+            "random_item": {
+                "context": "SomeEntity",
+                "field": "ChildNode",
+                "type": "parallel",
+            },
+        },
+        "_templates_": [
+            {
+                "count": 5,
+                "model": {
+                    "SomeEntity": {
+                        "ChildNode": "value",
+                    },
+                },
+            },
+        ],
+    }
+    MimeoConfigFactory.parse(config)
+
+
+@assert_throws(err_type=InvalidRefsError,
+               msg="A reference can't be configured using name of Mimeo Utils "
+                   "or existing Vars. Please rename following refs: [{refs}]",
+               refs="VAR_1, VAR_2")
+def test_parsing_config_invalid_refs_forbidden_vars_name():
+    config = {
+        "vars": {
+            "VAR_1": "value-1",
+            "VAR_2": "value-2",
+        },
+        "refs": {
+            "VAR_1": {
+                "context": "SomeEntity",
+                "field": "ChildNode",
+                "type": "any",
+            },
+            "VAR_2": {
+                "context": "SomeEntity",
+                "field": "ChildNode",
+                "type": "parallel",
+            },
+        },
+        "_templates_": [
+            {
+                "count": 5,
+                "model": {
+                    "SomeEntity": {
+                        "ChildNode": "value",
+                    },
+                },
+            },
+        ],
+    }
+    MimeoConfigFactory.parse(config)
+
+
 @assert_throws(err_type=UnsupportedPropertyValueError,
                msg="Provided type [{type}] is not supported! "
                    "Supported values: [{values}].",

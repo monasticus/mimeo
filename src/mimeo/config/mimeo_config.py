@@ -553,19 +553,25 @@ class MimeoConfig(MimeoDTO):
             If (1) the refs key does not point to a dictionary or
             (2) any ref is not a dictionary or
             (3) some refs does not have required details (context, field, type)
+            (4) some refs are configured using names of Mimeo Utils or Vars
         UnsupportedPropertyValueError
             If the configured reference type is not supported
         """
         references = config.get(cc.REFS_KEY, {})
         if not isinstance(references, dict):
             raise InvalidRefsError(InvalidRefsError.Code.ERR_1, refs=references)
-        invalid_references = []
+
+        variables = config.get(cc.VARS_KEY, {}).keys()
+        missing_details_references = []
+        forbidden_names_references = []
         for name, reference in references.items():
             if not isinstance(reference, dict):
                 raise InvalidRefsError(InvalidRefsError.Code.ERR_2, ref=name)
 
             if any(detail not in reference for detail in cc.REQUIRED_REFS_DETAILS):
-                invalid_references.append(name)
+                missing_details_references.append(name)
+            elif name in cc.REFS_FORBIDDEN_NAMES or name in variables:
+                forbidden_names_references.append(name)
             else:
                 ref_type = reference[cc.REFS_DETAIL_TYPE]
                 if ref_type not in cc.SUPPORTED_REFS_TYPES:
@@ -573,11 +579,16 @@ class MimeoConfig(MimeoDTO):
                         cc.REFS_DETAIL_TYPE,
                         ref_type,
                         cc.SUPPORTED_REFS_TYPES)
-        if len(invalid_references) > 0:
+        if len(missing_details_references) > 0:
             raise InvalidRefsError(
                 InvalidRefsError.Code.ERR_3,
                 required=cc.REQUIRED_REFS_DETAILS,
-                refs=invalid_references)
+                refs=missing_details_references)
+        if len(forbidden_names_references) > 0:
+            raise InvalidRefsError(
+                InvalidRefsError.Code.ERR_4,
+                refs=forbidden_names_references)
+
         return references
 
     @classmethod

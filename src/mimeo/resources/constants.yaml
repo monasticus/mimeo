@@ -1,4 +1,3 @@
----
 mimeo-config:
   key: mimeo_configuration
 
@@ -78,6 +77,20 @@ mimeo-config:
         values:
           any: any
           parallel: parallel
+    forbidden-names:
+      - random_str
+      - random_int
+      - random_item
+      - date
+      - date_time
+      - auto_increment
+      - curr_iter
+      - key
+      - city
+      - country
+      - currency
+      - first_name
+      - last_name
 
 
   templates:
