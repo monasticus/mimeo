@@ -9,6 +9,8 @@ It contains all custom exceptions related to Mimeo Configuration:
         A custom Exception class for invalid indent configuration.
     * InvalidVarsError
         A custom Exception class for invalid vars' configuration.
+    * InvalidRefsError
+        A custom Exception class for invalid refs' configuration.
     * InvalidVarsError.Code
         An Enumeration class for InvalidVarsError error codes.
     * InvalidMimeoModelError
@@ -126,7 +128,7 @@ class InvalidVarsError(Exception):
             An error code for vars not being a dictionary
         ERR_2: str
             An error code for vars with non-atomic values
-        ERR_2: str
+        ERR_3: str
             An error code for vars with not allowed characters
         """
 
@@ -188,6 +190,96 @@ class InvalidVarsError(Exception):
             return (f"Provided var [{details['var']}] is invalid "
                     f"(you can use upper-cased name with underscore and digits, "
                     f"starting with a letter)!")
+
+        msg = f"Provided error code is not a {cls.__name__}.Code enum!"
+        raise ValueError(msg)
+
+
+class InvalidRefsError(Exception):
+    """A custom Exception class for invalid refs' configuration.
+
+    Raised when vars are not configured properly.
+    """
+
+    class Code(Enum):
+        """An Enumeration class for InvalidRefsError error codes.
+
+        Attributes
+        ----------
+        ERR_1: str
+            An error code for refs not being a dictionary
+        ERR_2: str
+            An error code for a ref not being a dictionary
+        ERR_3: str
+            An error code for refs with missing required details
+        ERR_4: str
+            An error code for refs having same name as a Mimeo Util or a Mimeo Var
+        """
+
+        ERR_1: str = "REFS_NOT_A_DICT"
+        ERR_2: str = "REF_NOT_A_DICT"
+        ERR_3: str = "MISSING_DETAILS"
+        ERR_4: str = "FORBIDDEN_NAME"
+
+    def __init__(
+            self,
+            code: InvalidRefsError.Code,
+            **kwargs,
+    ):
+        """Initialize InvalidRefsError exception with details.
+
+        Extends Exception constructor with a custom message. The message depends on
+        an internal InvalidRefsError code.
+
+        Parameters
+        ----------
+        code : InvalidRefsError.Code
+            An internal error code
+        kwargs
+            An error details
+        """
+        msg = self._get_msg(code, kwargs)
+        super().__init__(msg)
+
+    @classmethod
+    def _get_msg(
+            cls,
+            code: InvalidVarsError.Code,
+            details: dict,
+    ):
+        """Return a custom message based on an error code.
+
+        Parameters
+        ----------
+        code : InvalidRefsError.Code
+            An internal error code
+        details : dict
+            An error details
+
+        Returns
+        -------
+        str
+            A custom error message
+
+        Raises
+        ------
+        ValueError
+            If the code argument is not InvalidRefsError.Code enum
+        """
+        if code == cls.Code.ERR_1:
+            return f"refs property does not store an object: {details['refs']}"
+        if code == cls.Code.ERR_2:
+            return f"The following ref does not store an object: {details['ref']}"
+        if code == cls.Code.ERR_3:
+            required_details = ", ".join(details["required"])
+            references = ", ".join(details["refs"])
+            return (f"Missing required details [{required_details}] in the following "
+                    f"refs [{references}]")
+        if code == cls.Code.ERR_4:
+            references = ", ".join(details["refs"])
+            return ("A reference can't be configured using name of Mimeo Utils "
+                    "or existing Vars. Please rename following refs: "
+                    f"[{references}]")
 
         msg = f"Provided error code is not a {cls.__name__}.Code enum!"
         raise ValueError(msg)

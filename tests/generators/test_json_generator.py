@@ -1,5 +1,7 @@
 from mimeo.config import MimeoConfig, MimeoConfigFactory
 from mimeo.context import MimeoContextManager
+from mimeo.context.exc import (NoCorrespondingReferenceError,
+                               NonPopulatedReferenceError)
 from mimeo.generators import JSONGenerator
 from mimeo.utils.exc import InvalidValueError
 from tests.utils import assert_throws
@@ -1306,7 +1308,7 @@ def test_generate_nested_templates_mixed_with_other_elements():
     config_from_xml = MimeoConfigFactory.parse("""
         <mimeo_configuration>
             <output>
-                <format>xml</format>
+                <format>json</format>
             </output>
             <_templates_>
                 <_template_>
@@ -3177,6 +3179,361 @@ def test_generate_using_special_fields_in_template_context():
                 count += 1
 
             assert count == 5
+
+    _test(config_from_dict)
+    _test(config_from_xml)
+
+
+def test_generate_using_reference_of_any_type():
+    config_from_dict = MimeoConfigFactory.parse({
+        "output": {
+            "format": "json",
+        },
+        "refs": {
+            "parent": {
+                "context": "SomeEntity",
+                "field": "Node1",
+                "type": "any",
+            },
+        },
+        "_templates_": [
+            {
+                "count": 5,
+                "model": {
+                    "SomeEntity": {
+                        "Node1": "{auto_increment}",
+                    },
+                },
+            },
+            {
+                "count": 5,
+                "model": {
+                    "SomeChildEntity": {
+                        "Parent": "{parent}",
+                    },
+                },
+            },
+        ],
+    })
+    config_from_xml = MimeoConfigFactory.parse("""
+        <mimeo_configuration>
+            <output>
+                <format>json</format>
+            </output>
+            <refs>
+                <parent>
+                    <context>SomeEntity</context>
+                    <field>Node1</field>
+                    <type>any</type>
+                </parent>
+            </refs>
+            <_templates_>
+                <_template_>
+                    <count>5</count>
+                    <model>
+                        <SomeEntity>
+                            <Node1>{auto_increment}</Node1>
+                        </SomeEntity>
+                    </model>
+                </_template_>
+                <_template_>
+                    <count>5</count>
+                    <model>
+                        <SomeChildEntity>
+                            <Parent>{parent}</Parent>
+                        </SomeChildEntity>
+                    </model>
+                </_template_>
+            </_templates_>
+        </mimeo_configuration>
+    """)
+
+    def _test(
+            config: MimeoConfig,
+    ):
+        with MimeoContextManager(config):
+            generator = JSONGenerator(config)
+
+            data = list(generator.generate(config.templates))
+            parent_data = data[:5]
+            child_data = data[5:]
+
+            assert len(data) == 10
+            assert len(parent_data) == 5
+            assert len(child_data) == 5
+
+            refs = []
+            for index, data in enumerate(parent_data):
+                assert data == {
+                    "SomeEntity": {
+                        "Node1": f"{index+1:05d}",
+                    },
+                }
+                refs.append(data["SomeEntity"]["Node1"])
+
+            for data in child_data:
+                assert len(data) == 1
+                assert "SomeChildEntity" in data
+                assert len(data["SomeChildEntity"]) == 1
+                assert "Parent" in data["SomeChildEntity"]
+                assert data["SomeChildEntity"]["Parent"] in refs
+
+    _test(config_from_dict)
+    _test(config_from_xml)
+
+
+def test_generate_using_reference_of_parallel_type():
+    config_from_dict = MimeoConfigFactory.parse({
+        "output": {
+            "format": "json",
+        },
+        "refs": {
+            "parent": {
+                "context": "SomeEntity",
+                "field": "Node1",
+                "type": "parallel",
+            },
+        },
+        "_templates_": [
+            {
+                "count": 5,
+                "model": {
+                    "SomeEntity": {
+                        "Node1": "{auto_increment}",
+                    },
+                },
+            },
+            {
+                "count": 5,
+                "model": {
+                    "SomeChildEntity": {
+                        "Parent": "{parent}",
+                    },
+                },
+            },
+        ],
+    })
+    config_from_xml = MimeoConfigFactory.parse("""
+        <mimeo_configuration>
+            <output>
+                <format>json</format>
+            </output>
+            <refs>
+                <parent>
+                    <context>SomeEntity</context>
+                    <field>Node1</field>
+                    <type>parallel</type>
+                </parent>
+            </refs>
+            <_templates_>
+                <_template_>
+                    <count>5</count>
+                    <model>
+                        <SomeEntity>
+                            <Node1>{auto_increment}</Node1>
+                        </SomeEntity>
+                    </model>
+                </_template_>
+                <_template_>
+                    <count>5</count>
+                    <model>
+                        <SomeChildEntity>
+                            <Parent>{parent}</Parent>
+                        </SomeChildEntity>
+                    </model>
+                </_template_>
+            </_templates_>
+        </mimeo_configuration>
+    """)
+
+    def _test(
+            config: MimeoConfig,
+    ):
+        with MimeoContextManager(config):
+            generator = JSONGenerator(config)
+
+            data = list(generator.generate(config.templates))
+            parent_data = data[:5]
+            child_data = data[5:]
+
+            assert len(data) == 10
+            assert len(parent_data) == 5
+            assert len(child_data) == 5
+
+            refs = []
+            for index, data in enumerate(parent_data):
+                assert data == {
+                    "SomeEntity": {
+                        "Node1": f"{index+1:05d}",
+                    },
+                }
+                refs.append(data["SomeEntity"]["Node1"])
+
+            for index, data in enumerate(child_data):
+                assert len(data) == 1
+                assert "SomeChildEntity" in data
+                assert len(data["SomeChildEntity"]) == 1
+                assert "Parent" in data["SomeChildEntity"]
+                assert data["SomeChildEntity"]["Parent"] == refs[index]
+
+    _test(config_from_dict)
+    _test(config_from_xml)
+
+
+def test_generate_using_reference_before_populated():
+    config_from_dict = MimeoConfigFactory.parse({
+        "output": {
+            "format": "json",
+        },
+        "refs": {
+            "parent": {
+                "context": "SomeEntity",
+                "field": "Node1",
+                "type": "any",
+            },
+        },
+        "_templates_": [
+            {
+                "count": 5,
+                "model": {
+                    "SomeChildEntity": {
+                        "Parent": "{parent}",
+                    },
+                },
+            },
+            {
+                "count": 5,
+                "model": {
+                    "SomeEntity": {
+                        "Node1": "{auto_increment}",
+                    },
+                },
+            },
+        ],
+    })
+    config_from_xml = MimeoConfigFactory.parse("""
+        <mimeo_configuration>
+            <output>
+                <format>json</format>
+            </output>
+            <refs>
+                <parent>
+                    <context>SomeEntity</context>
+                    <field>Node1</field>
+                    <type>any</type>
+                </parent>
+            </refs>
+            <_templates_>
+                <_template_>
+                    <count>5</count>
+                    <model>
+                        <SomeChildEntity>
+                            <Parent>{parent}</Parent>
+                        </SomeChildEntity>
+                    </model>
+                </_template_>
+                <_template_>
+                    <count>5</count>
+                    <model>
+                        <SomeEntity>
+                            <Node1>{auto_increment}</Node1>
+                        </SomeEntity>
+                    </model>
+                </_template_>
+            </_templates_>
+        </mimeo_configuration>
+    """)
+
+    @assert_throws(err_type=NonPopulatedReferenceError,
+                   msg="Reference [{ref}] has not been populated with any value!",
+                   ref="parent")
+    def _test(
+            config: MimeoConfig,
+    ):
+        with MimeoContextManager(config):
+            generator = JSONGenerator(config)
+            for _ in generator.generate(config.templates):
+                pass
+
+    _test(config_from_dict)
+    _test(config_from_xml)
+
+
+def test_generate_using_reference_not_being_generated():
+    config_from_dict = MimeoConfigFactory.parse({
+        "output": {
+            "format": "json",
+        },
+        "refs": {
+            "parent": {
+                "context": "SomeEntity",
+                "field": "Node1",
+                "type": "parallel",
+            },
+        },
+        "_templates_": [
+            {
+                "count": 5,
+                "model": {
+                    "SomeEntity": {
+                        "Node1": "{auto_increment}",
+                    },
+                },
+            },
+            {
+                "count": 6,
+                "model": {
+                    "SomeChildEntity": {
+                        "Parent": "{parent}",
+                    },
+                },
+            },
+        ],
+    })
+    config_from_xml = MimeoConfigFactory.parse("""
+        <mimeo_configuration>
+            <output>
+                <format>json</format>
+            </output>
+            <refs>
+                <parent>
+                    <context>SomeEntity</context>
+                    <field>Node1</field>
+                    <type>parallel</type>
+                </parent>
+            </refs>
+            <_templates_>
+                <_template_>
+                    <count>5</count>
+                    <model>
+                        <SomeEntity>
+                            <Node1>{auto_increment}</Node1>
+                        </SomeEntity>
+                    </model>
+                </_template_>
+                <_template_>
+                    <count>6</count>
+                    <model>
+                        <SomeChildEntity>
+                            <Parent>{parent}</Parent>
+                        </SomeChildEntity>
+                    </model>
+                </_template_>
+            </_templates_>
+        </mimeo_configuration>
+    """)
+
+    @assert_throws(err_type=NoCorrespondingReferenceError,
+                   msg="No corresponding reference [{ref}] for the iteration [{iter}].",
+                   ref="parent",
+                   iter=6)
+    def _test(
+            config: MimeoConfig,
+    ):
+        with MimeoContextManager(config):
+            generator = JSONGenerator(config)
+            for _ in generator.generate(config.templates):
+                pass
 
     _test(config_from_dict)
     _test(config_from_xml)

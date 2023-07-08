@@ -26,7 +26,8 @@ import xmltodict
 from mimeo.config import constants as cc
 from mimeo.config.exc import (InvalidIndentError, InvalidMimeoConfigError,
                               InvalidMimeoModelError,
-                              InvalidMimeoTemplateError, InvalidVarsError,
+                              InvalidMimeoTemplateError, InvalidRefsError,
+                              InvalidVarsError,
                               MimeoConfigurationNotFoundError,
                               MissingRequiredPropertyError,
                               UnsupportedMimeoConfigSourceError,
@@ -469,6 +470,8 @@ class MimeoConfig(MimeoDTO):
         A Mimeo Output Details settings
     vars : dict, default {}
         A Mimeo Configuration vars setting
+    refs : dict, default {}
+        A Mimeo Configuration refs setting
     templates : list
         A Mimeo Templates setting
     """
@@ -489,6 +492,7 @@ class MimeoConfig(MimeoDTO):
         super().__init__(config)
         self.output: MimeoOutput = MimeoOutput(config.get(cc.OUTPUT_KEY, {}))
         self.vars: dict = self._get_vars(config)
+        self.refs: dict = self._get_refs(config)
         self.templates: list[MimeoTemplate] = self._get_templates(config)
 
     @classmethod
@@ -525,6 +529,67 @@ class MimeoConfig(MimeoDTO):
             if not re.match(r"^[A-Z][A-Z_0-9]*$", var):
                 raise InvalidVarsError(InvalidVarsError.Code.ERR_3, var=var)
         return variables
+
+    @classmethod
+    def _get_refs(
+            cls,
+            config: dict,
+    ) -> dict:
+        """Extract references from the source dictionary.
+
+        Parameters
+        ----------
+        config : dict
+            A source config dictionary
+
+        Returns
+        -------
+        references : dict
+            Customized references or an empty dictionary
+
+        Raises
+        ------
+        InvalidRefsError
+            If (1) the refs key does not point to a dictionary or
+            (2) any ref is not a dictionary or
+            (3) some refs does not have required details (context, field, type)
+            (4) some refs are configured using names of Mimeo Utils or Vars
+        UnsupportedPropertyValueError
+            If the configured reference type is not supported
+        """
+        references = config.get(cc.REFS_KEY, {})
+        if not isinstance(references, dict):
+            raise InvalidRefsError(InvalidRefsError.Code.ERR_1, refs=references)
+
+        variables = config.get(cc.VARS_KEY, {}).keys()
+        missing_details_references = []
+        forbidden_names_references = []
+        for name, reference in references.items():
+            if not isinstance(reference, dict):
+                raise InvalidRefsError(InvalidRefsError.Code.ERR_2, ref=name)
+
+            if any(detail not in reference for detail in cc.REQUIRED_REFS_DETAILS):
+                missing_details_references.append(name)
+            elif name in cc.REFS_FORBIDDEN_NAMES or name in variables:
+                forbidden_names_references.append(name)
+            else:
+                ref_type = reference[cc.REFS_DETAIL_TYPE]
+                if ref_type not in cc.SUPPORTED_REFS_TYPES:
+                    raise UnsupportedPropertyValueError(
+                        cc.REFS_DETAIL_TYPE,
+                        ref_type,
+                        cc.SUPPORTED_REFS_TYPES)
+        if len(missing_details_references) > 0:
+            raise InvalidRefsError(
+                InvalidRefsError.Code.ERR_3,
+                required=cc.REQUIRED_REFS_DETAILS,
+                refs=missing_details_references)
+        if len(forbidden_names_references) > 0:
+            raise InvalidRefsError(
+                InvalidRefsError.Code.ERR_4,
+                refs=forbidden_names_references)
+
+        return references
 
     @classmethod
     def _get_templates(

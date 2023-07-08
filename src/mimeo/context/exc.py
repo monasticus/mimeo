@@ -15,6 +15,14 @@ It contains all custom exceptions related to Mimeo Context:
         A custom Exception class for not found special field.
     * VarNotFoundError
         A custom Exception class for not found var.
+    * InvalidReferenceValueError
+        A custom Exception class for invalid reference's value.
+    * ReferenceNotFoundError
+        A custom Exception class for not found reference.
+    * NonPopulatedReferenceError
+        A custom Exception class for non-populated reference.
+    * NoCorrespondingReferenceError
+        A custom Exception class for no corresponding reference.
 """
 from __future__ import annotations
 
@@ -172,3 +180,100 @@ class VarNotFoundError(Exception):
             A variable name
         """
         super().__init__(f"Provided variable [{variable_name}] is not defined!")
+
+
+class InvalidReferenceValueError(Exception):
+    """A custom Exception class for invalid reference's value.
+
+    Raised while attempting to cache a reference value and provided value
+    is non-atomic one.
+    """
+
+    def __init__(
+            self,
+            ref_name: dict | list,
+    ):
+        """Initialize InvalidReferenceValueError exception with details.
+
+        Extends Exception constructor with a custom message.
+
+        Parameters
+        ----------
+        ref_name : dict | list
+            A reference value
+        """
+        msg = (f"Provided reference value [{ref_name}] is invalid "
+               "(use any atomic value)!")
+        super().__init__(msg)
+
+
+class ReferenceNotFoundError(Exception):
+    """A custom Exception class for not found reference.
+
+    Raised while attempting to access a reference that does not exist.
+    """
+
+    def __init__(
+            self,
+            ref_name: str,
+    ):
+        """Initialize ReferenceNotFoundError exception with details.
+
+        Extends Exception constructor with a custom message.
+
+        Parameters
+        ----------
+        ref_name : str
+            A reference name
+        """
+        super().__init__(f"Reference [{ref_name}] has not been found!")
+
+
+class NonPopulatedReferenceError(Exception):
+    """A custom Exception class for non-populated reference.
+
+    Raised while attempting to access a reference that is not populated with any value.
+    """
+
+    def __init__(
+            self,
+            ref_name: str,
+    ):
+        """Initialize NonPopulatedReferenceError exception with details.
+
+        Extends Exception constructor with a custom message.
+
+        Parameters
+        ----------
+        ref_name : str
+            A reference name
+        """
+        super().__init__(f"Reference [{ref_name}] has not been populated "
+                         "with any value!")
+
+
+class NoCorrespondingReferenceError(Exception):
+    """A custom Exception class for no corresponding reference.
+
+    Raised while attempting to access a parallel reference that does not have
+    a corresponding value at the same index.
+    """
+
+    def __init__(
+            self,
+            ref_name: str,
+            iteration: int,
+    ):
+        """Initialize NoCorrespondingReferenceError exception with details.
+
+        Extends Exception constructor with a custom message.
+
+        Parameters
+        ----------
+        ref_name : str
+            A reference name
+        iteration : int
+            An iteration ID
+        """
+        super().__init__(f"No corresponding reference [{ref_name}] "
+                         f"for the iteration [{iteration}].")

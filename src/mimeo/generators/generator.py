@@ -12,10 +12,11 @@ from abc import ABCMeta, abstractmethod
 from typing import Any, Iterator
 
 from mimeo.config.mimeo_config import MimeoTemplate
-from mimeo.context import MimeoContext
+from mimeo.context import MimeoContext, MimeoContextManager
 from mimeo.context.decorators import (mimeo_clear_iterations, mimeo_context,
                                       mimeo_context_switch,
                                       mimeo_next_iteration)
+from mimeo.utils import MimeoRenderer
 
 logger = logging.getLogger(__name__)
 
@@ -161,7 +162,6 @@ class Generator(metaclass=ABCMeta):
             cls,
             parent: ElemTree.Element | dict | list | None,
             node_meta: dict,
-            context: MimeoContext,
     ) -> ElemTree.Element | dict | list | None:
         """Process a node with an atomic value.
 
@@ -174,8 +174,6 @@ class Generator(metaclass=ABCMeta):
             A parent node
         node_meta : dict
             Node's metadata
-        context : MimeoContext, default None
-            The current Mimeo Context (injected by MimeoContextManager)
 
         Returns
         -------
@@ -256,12 +254,10 @@ class Generator(metaclass=ABCMeta):
         return cls._process_node(parent, node_meta)
 
     @classmethod
-    @mimeo_context
     def _process_node(
             cls,
             parent: ElemTree.Element | dict | list | None,
             node_meta: dict,
-            context: MimeoContext | None = None,
     ) -> ElemTree.Element | dict:
         """Process a single template's node.
 
@@ -276,8 +272,6 @@ class Generator(metaclass=ABCMeta):
             A parent node
         node_meta : dict
             Node's metadata
-        context : MimeoContext, default None
-            The current Mimeo Context (injected by MimeoContextManager)
 
         Returns
         -------
@@ -291,7 +285,7 @@ class Generator(metaclass=ABCMeta):
 
         if cls._is_complex(node_meta):
             return cls._process_complex_value(parent, node_meta)
-        return cls._process_atomic_value(parent, node_meta, context)
+        return cls._process_atomic_value(parent, node_meta)
 
     @staticmethod
     def _is_complex(
@@ -348,3 +342,32 @@ class Generator(metaclass=ABCMeta):
             "mimeo_util": is_mimeo_util,
             "special": is_special_field,
         }
+
+    @staticmethod
+    @mimeo_context
+    def _render_atomic_value(
+            node_meta: dict,
+            context: MimeoContext | None = None,
+    ) -> Any:
+        """Render an atomic value for a node.
+
+        It implements a common logic for all generators. Once the atomic value is
+        rendered it is cached in references (if any configured) and special fields.
+
+        Parameters
+        ----------
+        node_meta : dict
+            Node's metadata
+        context
+            The current Mimeo Context (injected by MimeoContextManager)
+
+        Returns
+        -------
+        value : Any
+            A rendered value
+        """
+        value = MimeoRenderer.render(node_meta["value"])
+        MimeoContextManager().cache_ref(node_meta["name"], value)
+        if node_meta["special"]:
+            context.curr_iteration().add_special_field(node_meta["name"], value)
+        return value

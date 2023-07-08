@@ -1,4 +1,3 @@
----
 mimeo-config:
   key: mimeo_configuration
 
@@ -62,6 +61,36 @@ mimeo-config:
 
   vars:
     key: vars
+
+  refs:
+    key: refs
+    details:
+      context:
+        key: context
+        required: Yes
+      field:
+        key: field
+        required: Yes
+      type:
+        key: type
+        required: Yes
+        values:
+          any: any
+          parallel: parallel
+    forbidden-names:
+      - random_str
+      - random_int
+      - random_item
+      - date
+      - date_time
+      - auto_increment
+      - curr_iter
+      - key
+      - city
+      - country
+      - currency
+      - first_name
+      - last_name
 
 
   templates:
