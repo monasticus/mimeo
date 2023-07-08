@@ -226,22 +226,35 @@ class Mimeograph:
             logger.fine("Getting a config for data generation from queue")
             config_id, mimeo_config = self._generator_queue.get()
             if mimeo_config is None:
-                logger.fine("Closing config generator")
-                for _ in range(self._consumer_workers):
-                    self._consumer_queue.put((None, None, None))
-                self._generator_queue.task_done()
+                self._stop_generate()
                 break
+            self._execute_generator_task(config_id, mimeo_config)
 
-            try:
-                data = list(self.generate(mimeo_config, stringify=True))
-                logger.fine("Putting data to consume to queue")
-                self._consumer_queue.put((config_id, mimeo_config, data))
-            except Exception:
-                self._failed_configs.append(config_id)
-                logger.exception("An unexpected error occurred while generating data "
-                                 "from a config [%s]", config_id)
-            finally:
-                self._generator_queue.task_done()
+    def _execute_generator_task(
+            self,
+            config_id: str,
+            mimeo_config: MimeoConfig,
+    ):
+        """Execute a generator task."""
+        try:
+            data = list(self.generate(mimeo_config, stringify=True))
+            logger.fine("Putting data to consume to queue")
+            self._consumer_queue.put((config_id, mimeo_config, data))
+        except Exception:
+            self._failed_configs.append(config_id)
+            logger.exception("An unexpected error occurred while generating data "
+                             "from a config [%s]", config_id)
+        finally:
+            self._generator_queue.task_done()
+
+    def _stop_generate(
+            self,
+    ):
+        """Stop a generator task."""
+        logger.fine("Closing config generator")
+        for _ in range(self._consumer_workers):
+            self._consumer_queue.put((None, None, None))
+        self._generator_queue.task_done()
 
     def _start_consume(
             self,
@@ -255,18 +268,32 @@ class Mimeograph:
             logger.fine("Getting data to consume from queue")
             config_id, mimeo_config, data = self._consumer_queue.get()
             if mimeo_config is None and data is None:
-                logger.fine("Closing data consumer")
-                self._consumer_queue.task_done()
+                self._stop_consume()
                 break
+            self._execute_consumer_task(config_id, mimeo_config, data)
 
-            try:
-                self.consume(mimeo_config, data)
-            except Exception:
-                self._failed_configs.append(config_id)
-                logger.exception("An unexpected error occurred while consuming data "
-                                 "from a config [%s]", config_id)
-            finally:
-                self._consumer_queue.task_done()
+    def _execute_consumer_task(
+            self,
+            config_id: str,
+            mimeo_config: MimeoConfig,
+            data: list,
+    ):
+        """Execute a consumer task."""
+        try:
+            self.consume(mimeo_config, data)
+        except Exception:
+            self._failed_configs.append(config_id)
+            logger.exception("An unexpected error occurred while consuming data "
+                             "from a config [%s]", config_id)
+        finally:
+            self._consumer_queue.task_done()
+
+    def _stop_consume(
+            self,
+    ):
+        """Stop a consumer task."""
+        logger.fine("Closing data consumer")
+        self._consumer_queue.task_done()
 
     @classmethod
     def process(
