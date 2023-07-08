@@ -1043,10 +1043,9 @@ class MimeoOutput(MimeoDTO):
             for the direction
         """
         if direction == cc.OUTPUT_DIRECTION_HTTP:
-            missing_details = []
-            for detail in cc.REQUIRED_HTTP_DETAILS:
-                if detail not in output:
-                    missing_details.append(detail)
+            missing_details = [detail
+                               for detail in cc.REQUIRED_HTTP_DETAILS
+                               if detail not in output]
             if len(missing_details) > 0:
                 raise MissingRequiredPropertyError(missing_details)
 

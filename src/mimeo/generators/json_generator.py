@@ -480,8 +480,7 @@ class JSONGenerator(Generator):
             parent[node_meta["name"]] = []
             target = parent[node_meta["name"]]
 
-        for child in cls.generate(templates):
-            target.append(child)
+        target.extend(cls.generate(templates))
         return parent
 
     @classmethod
