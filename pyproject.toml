@@ -38,7 +38,7 @@ dependencies = [
 ]
 
 [project.urls]
-GitHub = "https://github.com/TomaszAniolowski/mimeo"
+GitHub = "https://github.com/monasticus/mimeo"
 
 [project.optional-dependencies]
 dev = [
