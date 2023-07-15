@@ -9,6 +9,8 @@ This module contains all Mimeo Utils. It exports the following classes:
         A MimeoUtil implementation rendering a random integer value.
     * RandomItemUtil
         A MimeoUtil implementation rendering a random item.
+    * PhoneUtil
+        A MimeoUtil implementation rendering a phone number.
     * DateUtil
         A MimeoUtil implementation rendering a stringified date value.
     * DateTimeUtil
@@ -247,6 +249,48 @@ class RandomItemUtil(MimeoUtil):
         """
         length = len(self._items)
         return self._items[random.randrange(0, length)]
+
+
+class PhoneUtil(MimeoUtil):
+    """A MimeoUtil implementation rendering a phone number.
+
+    Methods
+    -------
+    render
+        Render a phone number.
+
+    Attributes
+    ----------
+    KEY : str
+        A Mimeo Util key
+    """
+
+    KEY: str = "phone"
+
+    def __init__(
+            self,
+            **kwargs,
+    ):
+        """Initialize PhoneUtil class.
+
+        Parameters
+        ----------
+        kwargs : dict
+            Arbitrary keyword arguments (ignored).
+        """
+
+    def render(
+            self,
+    ) -> str:
+        """Render a phone number.
+
+        Returns
+        -------
+        str
+            A phone number
+        """
+        numbers = [random.randrange(0, 10) for _ in range(10)]
+        return "{}{}{}-{}{}{}-{}{}{}{}".format(*numbers)
 
 
 class DateUtil(MimeoUtil):

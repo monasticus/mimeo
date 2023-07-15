@@ -25,8 +25,8 @@ from mimeo.context.decorators import mimeo_context
 from mimeo.utils import (AutoIncrementUtil, CityUtil, CountryUtil,
                          CurrencyUtil, CurrentIterationUtil, DateTimeUtil,
                          DateUtil, FirstNameUtil, KeyUtil, LastNameUtil,
-                         MimeoUtil, RandomIntegerUtil, RandomItemUtil,
-                         RandomStringUtil)
+                         MimeoUtil, PhoneUtil, RandomIntegerUtil,
+                         RandomItemUtil, RandomStringUtil)
 from mimeo.utils.exc import InvalidMimeoUtilError, NotASpecialFieldError
 
 logger = logging.getLogger(__name__)
@@ -49,6 +49,7 @@ class UtilsRenderer:
         RandomStringUtil.KEY: RandomStringUtil,
         RandomIntegerUtil.KEY: RandomIntegerUtil,
         RandomItemUtil.KEY: RandomItemUtil,
+        PhoneUtil.KEY: PhoneUtil,
         DateUtil.KEY: DateUtil,
         DateTimeUtil.KEY: DateTimeUtil,
         AutoIncrementUtil.KEY: AutoIncrementUtil,
