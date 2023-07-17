@@ -454,6 +454,21 @@ Example
 
 You can use several predefined functions to generate data. They can be used in a _raw_ format or _parametrized_.
 
+* Random String [`random_str`]
+* Random Integer [`random_int`]
+* Random Item [`random_item`]
+* Phone [`phone`]
+* Date [`date`]
+* Date Time [`date_time`]
+* Auto Increment [`auto_increment`]
+* Current Iteration [`curr_iter`]
+* Key [`key`]
+* City [`city`]
+* Country [`country`]
+* Currency [`currency`]
+* First Name [`first_name`]
+* Last Name [`last_name`]
+
 ##### Random String
 
 Generates a random string value.
@@ -551,6 +566,37 @@ NOTICE: The raw form of this Mimeo Util will generate a blank string value (as s
     "_mimeo_util": {
       "_name": "random_item",
       "items": ["value", 1, true]
+    }
+  }
+}
+```
+
+##### Phone
+
+Generates a phone number in a specific format.  
+
+| Parameter | Supported values |    Default     |
+|:---------:|:----------------:|:--------------:|
+|  format   |      `str`       | `XXX-XXX-XXXX` |
+
+###### Raw
+
+Uses the default format: `XXX-XXX-XXXX`.
+
+```json
+{
+  "mobile": "{phone}"
+}
+```
+
+###### Parametrized
+
+```json
+{
+  "mobile": {
+    "_mimeo_util": {
+      "_name": "phone",
+      "format": "(+xx) XXX XXX XXX"
     }
   }
 }
