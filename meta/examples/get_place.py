@@ -5,7 +5,7 @@ from pathlib import Path
 FILE_DELIMITER = "-"
 
 
-class PutExampleParser(ArgumentParser):
+class GetPlaceParser(ArgumentParser):
 
     def __init__(self):
         super().__init__()
@@ -20,15 +20,16 @@ class PutExampleParser(ArgumentParser):
             "-d",
             "--directory",
             type=str,
-            required=True,
+            default="examples/2-mimeo-utils/",
             help="take a directory of examples to move")
 
 
 def main():
-    parser = PutExampleParser()
+    parser = GetPlaceParser()
     args = parser.parse_args()
     positions = _get_sorted_and_unique_positions(args.position)
     for position in positions:
+        print(f"\nGetting place for example {position}.")
         with Path(args.directory) as examples_dir:
             for file in _get_sorted_files(examples_dir):
                 file_name_components = file.name.split(FILE_DELIMITER)
