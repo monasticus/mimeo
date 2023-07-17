@@ -205,6 +205,7 @@ class UtilsRenderer:
             existing Mimeo Util.
         """
         mimeo_util_name = cls.get_mimeo_util_name(config)
+        config = cls._adjust_built_in_names(config)
         mimeo_util = cls.MIMEO_UTILS.get(mimeo_util_name)(**config)
         cls._INSTANCES[cache_key] = mimeo_util
         return mimeo_util
@@ -241,6 +242,28 @@ class UtilsRenderer:
             code = InvalidMimeoUtilError.Code.ERR_2
             raise InvalidMimeoUtilError(code, name=mimeo_util_name)
         return mimeo_util_name
+
+    @staticmethod
+    def _adjust_built_in_names(
+            config: dict,
+    ) -> dict:
+        """Apply single_trailing_underscore_ for parameters shadowing built-in names.
+
+        Parameters
+        ----------
+        config : dict
+            A Mimeo Util configuration
+
+        Returns
+        -------
+        config : dict
+            A Mimeo Util configuration with updated parameters' names
+        """
+        config = dict(config)
+        for built_in_name in ["format"]:
+            if built_in_name in config:
+                config[f"{built_in_name}_"] = config.pop(built_in_name)
+        return config
 
 
 class VarsRenderer:

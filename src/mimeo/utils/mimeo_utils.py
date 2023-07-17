@@ -265,19 +265,40 @@ class PhoneUtil(MimeoUtil):
         A Mimeo Util key
     """
 
+    _DIGIT_PLACEHOLDER_UPPER = "X"
+    _DIGIT_PLACEHOLDER_LOWER = "x"
+    _STRING_FORMAT_PLACEHOLDER = "{}"
+
+    """A MimeoUtil implementation rendering a phone number.
+
+    Methods
+    -------
+    render
+        Render a phone number.
+
+    Attributes
+    ----------
+    KEY : str
+        A Mimeo Util key
+    """
+
     KEY: str = "phone"
 
     def __init__(
             self,
+            format_: str = "XXX-XXX-XXXX",
             **kwargs,
     ):
         """Initialize PhoneUtil class.
 
         Parameters
         ----------
+        format : str, default "XXX-XXX-XXXX"
+            A format of phone number (each X represents a digit)
         kwargs : dict
             Arbitrary keyword arguments (ignored).
         """
+        self._format = format_
 
     def render(
             self,
@@ -289,8 +310,15 @@ class PhoneUtil(MimeoUtil):
         str
             A phone number
         """
-        numbers = [random.randrange(0, 10) for _ in range(10)]
-        return "{}{}{}-{}{}{}-{}{}{}{}".format(*numbers)
+        format_ = self._format.replace(
+            self._DIGIT_PLACEHOLDER_LOWER,
+            self._STRING_FORMAT_PLACEHOLDER,
+        ).replace(
+            self._DIGIT_PLACEHOLDER_UPPER,
+            self._STRING_FORMAT_PLACEHOLDER)
+        digits_count = format_.count(self._STRING_FORMAT_PLACEHOLDER)
+        numbers = [random.randrange(0, 10) for _ in range(digits_count)]
+        return format_.format(*numbers)
 
 
 class DateUtil(MimeoUtil):
