@@ -1,0 +1,17 @@
+{
+  "_templates_": [
+    {
+      "count": 30,
+      "model": {
+        "SomeEntity": {
+          "Phone": {
+            "_mimeo_util": {
+              "_name": "phone",
+              "format": "(+xx) XXX XXX XXX"
+            }
+          }
+        }
+      }
+    }
+  ]
+}
