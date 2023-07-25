@@ -1,15 +1,16 @@
 [build-system]
-requires = ["setuptools>=61.0.0", "wheel"]
-build-backend = "setuptools.build_meta"
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
 
-[project]
+[tool.poetry]
 name = "mimeograph"
 version = "1.1.0"
 description = "Generate NoSQL data based on a simple template"
+authors = ["T.A. Programming Svcs. <tomasz.maciej.aniolowski@gmail.com>"]
+license = "MIT"
 readme = "README.md"
-requires-python = ">=3.8"
-authors = [{ name = "T.A. Programming Svcs.", email = "tomasz.maciej.aniolowski@gmail.com" }]
-license = { file = "LICENSE" }
+repository = "https://github.com/monasticus/mimeo"
+keywords = ["mimeograph", "mimeo", "generate", "generator", "data", "xml", "json", "nosql"]
 classifiers = [
     "License :: OSI Approved :: MIT License",
     "Development Status :: 5 - Production/Stable",
@@ -27,55 +28,34 @@ classifiers = [
     "Topic :: Software Development :: Testing",
     "Topic :: Utilities",
 ]
-keywords = ["mimeograph", "mimeo", "generate", "generator", "data", "xml", "json", "nosql"]
-dependencies = [
-    "xmltodict",
-    "aiohttp",
-    "aiofiles",
-    "pandas",
-    "pyyaml",
-    "haggis"
+packages = [
+    { include = "mimeo", from = "src" },
+]
+include = [
+    "src/mimeo/resources/*"
 ]
 
-[project.urls]
-GitHub = "https://github.com/monasticus/mimeo"
+[tool.poetry.dependencies]
+python = "^3.8"
+xmltodict = "^0.13.0"
+aiohttp = "^3.8.5"
+aiofiles = "^23.1.0"
+pandas = "^2.0.3"
+PyYAML = "^6.0.1"
+haggis = "^0.9.1"
 
-[project.optional-dependencies]
-dev = [
-    "bumpver",
-    "build",
-    "twine",
-    "ruff",
-    "isort",
-    "requests",
-    "pytest",
-    "pytest-cov",
-    "aioresponses",
-    "pytest-aioresponses",
-    "pytest-asyncio"
-]
-test = [
-    "pytest",
-    "pytest-cov",
-    "pytest-aioresponses",
-    "pytest-asyncio"
-]
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.0.280"
+isort = "^5.12.0"
+requests = "^2.31.0"
+aioresponses = "^0.7.4"
+pytest = "^7.4.0"
+pytest-cov = "^4.1.0"
+pytest-aioresponses = "^0.2.0"
+pytest-asyncio = "^0.21.1"
 
-[project.scripts]
+[tool.poetry.scripts]
 mimeo = "mimeo.__main__:main"
-
-[tool.bumpver]
-current_version = "1.1.0"
-version_pattern = "MAJOR.MINOR.PATCH"
-commit_message  = "Bump version {old_version} to {new_version}"
-commit          = true
-tag             = false
-push            = false
-
-[tool.bumpver.file_patterns]
-"pyproject.toml" = ['current_version = "{version}"', 'version = "{version}"']
-"src/mimeo/__init__.py" = ["{version}"]
-"src/mimeo/cli/parsers.py" = ["{version}"]
 
 [tool.pytest.ini_options]
 pythonpath = ["."]
