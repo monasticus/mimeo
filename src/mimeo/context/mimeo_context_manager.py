@@ -229,7 +229,7 @@ class MimeoContextManager(Alive, metaclass=OnlyOneAlive):
         InvalidReferenceValueError
             If the field's value is not atomic one
         """
-        if isinstance(field_value, dict | list):
+        if isinstance(field_value, (dict, list)):
             raise InvalidReferenceValueError(field_value)
         ref_names = [ref_name
                      for ref_name, ref_meta in self._mimeo_config.refs.items()

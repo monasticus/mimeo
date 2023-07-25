@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import functools
 import sys
-from collections.abc import Callable
+from typing import Callable
 
 import pytest
 from aiohttp import BasicAuth

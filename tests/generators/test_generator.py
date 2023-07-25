@@ -1,8 +1,7 @@
 from __future__ import annotations
 
 import xml.etree.ElementTree as ElemTree
-from collections.abc import Iterator
-from typing import Any
+from typing import Any, Iterator
 
 import tests.utils as test_utils
 from mimeo.config.mimeo_config import MimeoTemplate

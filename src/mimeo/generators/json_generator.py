@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import json
 import logging
-from collections.abc import Iterator
+from typing import Iterator
 
 from mimeo.config import constants as cc
 from mimeo.config.mimeo_config import MimeoConfig, MimeoTemplate

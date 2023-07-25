@@ -9,8 +9,7 @@ from __future__ import annotations
 import logging
 import xml.etree.ElementTree as ElemTree
 from abc import ABCMeta, abstractmethod
-from collections.abc import Iterator
-from typing import Any
+from typing import Any, Iterator
 
 from mimeo.config.mimeo_config import MimeoTemplate
 from mimeo.context import MimeoContext, MimeoContextManager
@@ -305,7 +304,7 @@ class Generator(metaclass=ABCMeta):
             True if node's value is a list or a dict not being a parametrized
             Mimeo Util. Otherwise, False.
         """
-        return (isinstance(node_meta["value"], list | dict) and
+        return (isinstance(node_meta["value"], (list, dict)) and
                 not node_meta["mimeo_util"])
 
     @staticmethod

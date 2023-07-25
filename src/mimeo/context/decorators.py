@@ -15,7 +15,7 @@ It defines the following decorators:
 from __future__ import annotations
 
 import functools
-from collections.abc import Callable
+from typing import Callable
 
 from mimeo.config.mimeo_config import MimeoTemplate
 from mimeo.context import MimeoContext, MimeoContextManager

@@ -7,7 +7,7 @@ It exports only one class:
 from __future__ import annotations
 
 from abc import ABCMeta, abstractmethod
-from collections.abc import Collection, Generator
+from typing import Collection, Generator
 
 
 class Consumer(metaclass=ABCMeta):

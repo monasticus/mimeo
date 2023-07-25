@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import logging
 import xml.etree.ElementTree as ElemTree
-from collections.abc import Iterator
+from typing import Iterator
 from xml.dom import minidom
 
 from mimeo.config import constants as cc
