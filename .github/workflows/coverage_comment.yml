@@ -8,21 +8,21 @@ jobs:
       pull-requests: write
     steps:
       - uses: actions/checkout@v3
+
       - name: Set up Python 3.8
         uses: actions/setup-python@v4
         with:
           python-version: "3.8"
-      - name: Install dependencies
+
+      - name: Install Mimeo with poetry
         run: |
-          python -m pip install pip-tools
-          pip-compile --extra test pyproject.toml
-          pip install -r requirements.txt
-      - name: Build mimeo
-        run: pip install -e .
+          make install
+
       - name: Create test reports
         run: |
-          pytest --junitxml=pytest.xml --cov=src tests | tee output.txt
-          pytest --cov=src --cov-report=xml:coverage.xml tests
+          poetry run pytest --junitxml=pytest.xml --cov=src tests | tee output.txt
+          poetry run pytest --cov=src --cov-report=xml:coverage.xml tests
+
       - name: Put an overall test & coverage comment
         uses: MishaKav/pytest-coverage-comment@main
         with:
@@ -31,6 +31,7 @@ jobs:
           pytest-coverage-path: output.txt
           junitxml-path: pytest.xml
           junitxml-title: Test Results
+
       - name: Put a detailed coverage comment
         uses: orgoro/coverage@v3
         with:
