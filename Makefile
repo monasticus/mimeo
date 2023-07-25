@@ -1,6 +1,7 @@
 install:
 	@pip install poetry
 	@poetry install
+	@poetry self add poetry-bumpversion
 
 update:
 	poetry update
@@ -27,19 +28,8 @@ data:
 latest_tag:
 	@git tag --sort=committerdate --list '[0-9]*' | tail -1
 
-build:
-	@mkdir -p dist/archive
-	@if [ 0 -ne `find dist -maxdepth 1 -type f | wc -l` ] ; then\
-		mv dist/mimeograph* dist/archive;\
-	fi
-	@poetry build
-
 publish:
-	@poetry publish
-
-build_and_publish:
-	@make --no-print-directory build
-	@make --no-print-directory publish
+	@poetry --build publish
 
 linters:
 	poetry update ruff
