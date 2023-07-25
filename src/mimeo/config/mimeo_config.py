@@ -169,7 +169,7 @@ class MimeoConfigFactory:
         """
         parsed_source = xmltodict.parse(source)
         if cc.CONFIG_XML_ROOT_NAME not in parsed_source:
-            source_key = list(parsed_source.keys())[0]
+            source_key = next(iter(parsed_source.keys()))
             raise MimeoConfigurationNotFoundError(source_key)
         parsed_source = parsed_source[cc.CONFIG_XML_ROOT_NAME]
         return cls._parse_source_values(parsed_source)

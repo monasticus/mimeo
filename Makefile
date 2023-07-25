@@ -13,7 +13,7 @@ lint:
 	@poetry run ruff .
 
 lint_fix:
-	@poetry run ruff . -- fix
+	@poetry run ruff . --fix
 
 test:
 	poetry run pytest --cov=src/mimeo tests/

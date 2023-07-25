@@ -101,6 +101,7 @@ exclude = [
     "tmp"
 ]
 ignore-init-module-imports = true
+target-version = "py38"
 
 [tool.ruff.pydocstyle]
 convention = "numpy"
