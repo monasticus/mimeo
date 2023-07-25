@@ -75,8 +75,8 @@ from __future__ import annotations
 import re
 import unicodedata
 import zipfile
+from collections.abc import Callable
 from pathlib import Path
-from typing import Callable
 
 import pandas
 from requests import Session

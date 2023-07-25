@@ -6,7 +6,7 @@ It exports only one class:
 """
 from __future__ import annotations
 
-from typing import Collection, Generator
+from collections.abc import Collection, Generator
 
 from mimeo.consumers import Consumer
 

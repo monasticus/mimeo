@@ -9,7 +9,7 @@ from __future__ import annotations
 import asyncio
 import logging
 import uuid
-from typing import Collection, Generator
+from collections.abc import Collection, Generator
 
 from aiohttp import BasicAuth, ClientSession
 

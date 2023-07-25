@@ -12,9 +12,9 @@ import logging
 import os
 import queue
 import xml.etree.ElementTree as ElemTree
+from collections.abc import Iterable, Iterator
 from concurrent.futures import ThreadPoolExecutor
 from types import TracebackType
-from typing import Iterable, Iterator
 
 from mimeo.config.mimeo_config import MimeoConfig
 from mimeo.consumers import ConsumerFactory

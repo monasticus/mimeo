@@ -17,7 +17,8 @@ from __future__ import annotations
 
 import logging
 import re
-from typing import Any, ClassVar, Pattern
+from re import Pattern
+from typing import Any, ClassVar
 
 from mimeo.config import constants as cc
 from mimeo.context import MimeoContext, MimeoContextManager

@@ -7,8 +7,8 @@ It exports only one class:
 from __future__ import annotations
 
 import logging
+from collections.abc import Collection, Generator
 from pathlib import Path
-from typing import Collection, Generator
 
 import aiofiles
 
